@@ -1,3 +1,4 @@
 *.dat
-metawards
+/metawards
+python/.ipynb_checkpoints
 
