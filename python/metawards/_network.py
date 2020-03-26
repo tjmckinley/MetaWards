@@ -22,6 +22,7 @@ class Network:
 
     nnodes: int = 0
     nlinks: int = 0
+    plinks: int = 0
 
     play: List[ToLink] = None
     weekend: List[ToLink] = None
