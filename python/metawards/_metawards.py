@@ -48,7 +48,7 @@ def build_play_matrix(network: Network, params: Parameters,
                       max_links: int):
 
     nlinks = 0
-    links = (max_links + 1) * [ToLink()]
+    links = (max_links + 1) * [None]
 
     try:
         with open(params.input_files.play) as FILE:
@@ -82,9 +82,8 @@ def build_play_matrix(network: Network, params: Parameters,
 
                 nodes[from_id].end_p += 1
 
-                links[nlinks].ifrom = from_id
-                links[nlinks].ito = to_id
-                links[nlinks].weight = weight
+                links[nlinks] = ToLink(ifrom=from_id, ito=to_id,
+                                       weight=weight)
 
                 nodes[from_id].denominator_p += weight  # not denominator_p
                 nodes[from_id].play_suscept += weight
@@ -123,6 +122,8 @@ def build_play_matrix(network: Network, params: Parameters,
         raise ValueError(f"{params.input_files.play_size} is corrupted or "
                          f"unreadable? Error = {e.__class__}: {e}")
 
+    print(f"Number of play links equals {nlinks}")
+
     network.plinks = nlinks
     network.play = links
 
@@ -144,13 +145,15 @@ def build_wards_network(params: Parameters,
         play=0 builds network from input file and NOTHING ELSE
         play=1 build the play matrix in net->play
     """
-    nodes = (max_nodes + 1) * [Node()]   # need to pre-allocate nodes and links
-    links = (max_links + 1) * [ToLink()] # both of these use 1-indexing
+    nodes = (max_nodes + 1) * [None]   # need to pre-allocate nodes and links
+    links = (max_links + 1) * [None]   # both of these use 1-indexing
+
+    nlinks = 0
+    nnodes = 0
+
+    line = None
 
     try:
-        nlinks = 0
-        nnodes = 0
-
         with open(params.input_files.work, "r") as FILE:
             # this file is a set of links of from and to node IDs, with weights
             line = FILE.readline()
@@ -167,10 +170,9 @@ def build_wards_network(params: Parameters,
 
                 nlinks += 1
 
-                if nodes[from_id].label is None:
-                    nodes[from_id].label = from_id
-                    nodes[from_id].begin_to = nlinks
-                    nodes[to_id].end_to = nlinks
+                if nodes[from_id] is None or nodes[from_id].label is None:
+                    nodes[from_id] = Node(label=from_id, begin_to=nlinks,
+                                          end_to=nlinks)
                     nnodes += 1
 
                 if from_id == to_id:
@@ -179,28 +181,41 @@ def build_wards_network(params: Parameters,
                 nodes[from_id].end_to += 1
 
                 # original code does int(weight) even though this is a float?
-                links[nlinks].ifrom = from_id
-                links[nlinks].ito = to_id
-                links[nlinks].weight = int(weight)
-                links[nlinks].suscept = int(weight)
+                links[nlinks] = ToLink(ifrom=from_id, ito=to_id,
+                                       weight=int(weight), suscept=int(weight))
 
                 # again, int(weight) is in the code despite these being floats?
                 nodes[from_id].denominator_n += int(weight)
+
+                if nodes[to_id] is None:
+                    nodes[to_id] = Node()
+
                 nodes[to_id].denominator_d += int(weight)
 
                 line = FILE.readline()
     except Exception as e:
         raise ValueError(f"{params.input_files.work} is corrupted or "
-                         f"unreadable? Error = {e.__class__}: {e}")
+                         f"unreadable? line = {line}, "
+                         f"Error = {e.__class__}: {e}")
 
     network = Network(nnodes=nnodes, nlinks=nlinks)
+
+    print(f"Number of nodes equals {nnodes}")
+    print(f"Number of links equals {nlinks}")
 
     network.nodes = nodes
     network.to_links = links
 
     fill_in_gaps(network)
 
+    print(f"Number of nodes after filling equals {network.nnodes}")
+
     build_play_matrix(network=network, params=params, max_links=max_links)
+
+    # save memory by removing excess nodes and links
+    network.nodes = network.nodes[0:network.nnodes+1]
+    network.to_links = network.to_links[0:network.nlinks+1]
+    network.play = network.play[0:network.plinks+1]
 
     return network
 
@@ -220,6 +235,8 @@ def build_wards_network_distance(params: Parameters):
     links = network.to_links
     plinks = network.play
 
+    line = None
+
     try:
         with open(params.input_files.position, "r") as FILE:
             line = FILE.readline()
@@ -236,15 +253,36 @@ def build_wards_network_distance(params: Parameters):
                 line = FILE.readline()
     except Exception as e:
         raise ValueError(f"{params.input_files.position} is corrupted or "
-                         f"unreadable? Error = {e.__class__}: {e}")
+                         f"unreadable? Error = {e.__class__}: {e}, "
+                         f"line = {line}")
 
     for i in range(0, network.nlinks):  # shouldn't this be range(1, nlinks+1)?
+                                        # the fact there is a missing link at 0
+                                        # suggests this should be...
         link = links[i]
+
+        if link is None:
+            print(f"Missing link {i}?")
+            links[i] = ToLink()
+            continue
+
         ward = wards[link.ifrom]
+
+        if ward is None:
+            print(f"Missing ward {link.ifrom}?")
+            wards[link.ifrom] = Node()
+            ward = wards[link.ifrom]
+
         x1 = ward.x
         y1 = ward.y
 
         ward = wards[link.ito]
+
+        if ward is None:
+            print(f"Missing ward {link.ito}?")
+            wards[link.ito] = Node()
+            ward = wards[link.ito]
+
         x2 = ward.x
         y2 = ward.y
 
@@ -252,7 +290,10 @@ def build_wards_network_distance(params: Parameters):
         dy = y1 - y2
 
         distance = math.sqrt(dx*dx + dy*dy)
-        plinks[i].distance = distance
         links[i].distance = distance
+
+        # below line doesn't make sense and doesn't work. Why would the ith
+        # play link be related to the ith work link?
+        #plinks[i].distance = distance
 
     return network

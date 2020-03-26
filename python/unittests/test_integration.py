@@ -44,3 +44,7 @@ def test_integration():
     print("Building the network...")
     network = mw.build_wards_network_distance(params)
     print("Network built!")
+
+
+if __name__ == "__main__":
+    test_integration()
