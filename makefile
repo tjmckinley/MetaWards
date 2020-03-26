@@ -1,8 +1,8 @@
-LD = g++
-CC = g++
+LD = gcc
+CC = gcc
 
-wards.o: *.cpp *.h
-	$(CC) *.cpp -o wards.o $(shell gsl-config --cflags) $(shell gsl-config --libs) -lgsl -lm -O3
+wards: *.c *.h
+	$(CC) *.c -o metawards $(shell gsl-config --cflags) $(shell gsl-config --libs) -lgsl -lm -O3
 
 clean:  
-	rm wards.o
+	rm metawards
