@@ -256,6 +256,8 @@ def build_wards_network_distance(params: Parameters):
                          f"unreadable? Error = {e.__class__}: {e}, "
                          f"line = {line}")
 
+    total_distance = 0
+
     for i in range(0, network.nlinks):  # shouldn't this be range(1, nlinks+1)?
                                         # the fact there is a missing link at 0
                                         # suggests this should be...
@@ -291,9 +293,12 @@ def build_wards_network_distance(params: Parameters):
 
         distance = math.sqrt(dx*dx + dy*dy)
         links[i].distance = distance
+        total_distance += distance
 
         # below line doesn't make sense and doesn't work. Why would the ith
         # play link be related to the ith work link?
         #plinks[i].distance = distance
+
+    print(f"Total distance equals {total_distance}")
 
     return network

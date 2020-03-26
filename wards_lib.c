@@ -46,48 +46,48 @@ network *BuildWardsNetwork(parameters *par)
 // play=1 build the play matrix in net->play;
 
 {
-	
+
 	node *nlist;
 	to_link *llist;
-	
-	network *net; 
+
+	network *net;
 	int i, from, to;
 	double weight;//x=0,y=0;
 	int nnod,nlinks;
-	
+
 	FILE *inFile;
-		
+
 	nlist=(node *)calloc(sizeof(node),MAXSIZE);
 	llist=(to_link *)calloc(sizeof(to_link),MAXLINKS);
-	
+
 	net=(network *)malloc(sizeof(network));
-	
+
 	net->nodes=nlist;
 	net->to_links=llist;
-	
-	
+
+
 	inFile=fopen(par->WorkName,"r");
 	if( (inFile)==NULL){
-		
+
 		printf("ERROR: NETWORK FILE NOT FOUND %s... NETWORK NOT BUILT\n", par->WorkName );
 		return NULL;
-	
+
 	}
 	else
 		printf( "The file %s was opened... excellent, carry on.\n", par->WorkName );
-	
+
 	for(i=0;i<MAXSIZE;i++){
 		nlist[i].label=-1;
 		nlist[i].Denominator_D=nlist[i].Denominator_N=nlist[i].Denominator_P=nlist[i].Denominator_PD=0.0;
 	}
 
 	for(i=0;i<MAXLINKS;i++)llist[i].ifrom=llist[i].ito=0;
-	
+
 	// Read the data and count nodes
 	nnod=0;
 	nlinks=0;
 	while(!feof(inFile)){
-		
+
 		fscanf(inFile,"%d %d %lf\n",&from,&to,&weight);
 //		if(from!=to){
 //			weight=0;
@@ -99,7 +99,7 @@ network *BuildWardsNetwork(parameters *par)
 			printf("Renumber Files and start again!!!\n");
 			return NULL;
 		}
-		
+
 		if(nlist[from].label==-1){
 			nlist[from].label=from;
 			nlist[from].begin_to=nlinks;
@@ -113,44 +113,49 @@ network *BuildWardsNetwork(parameters *par)
 		llist[nlinks].ifrom=from;
 
 		llist[nlinks].ito=to;
-		
+
 		llist[nlinks].weight=(int)weight;
-	  	
+
 		llist[nlinks].suscept=(int)weight;
-		
+
 		nlist[from].Denominator_N+=(int)weight;
 		nlist[to].Denominator_D+=(int)weight;
 	}
-	
+
 	fclose(inFile);
-	
+
+	printf("Number of nodes equals %d\n", nnod);
+	printf("Number of links equals %d\n", nlinks);
+
 	net->nnodes=nnod;
 	net->nlinks=nlinks;
 	FillInGaps(net);
 
+	printf("Number of nodes after filling equals %d\n", net->nnodes);
+
 	BuildPlayMatrix(net,par);
 
 	return net;
-	
+
 }
 
 
 
 
 network *BuildWardsNetworkDistance(parameters *par)
-// Calls BuildWardsNetwork (as above), but adds extra bit, to read LocationFile and 
-// calculate distances of links, put them in net->to_links[i].distance 
-// Distances are not included in the play matrix. 
+// Calls BuildWardsNetwork (as above), but adds extra bit, to read LocationFile and
+// calculate distances of links, put them in net->to_links[i].distance
+// Distances are not included in the play matrix.
 {
 	int i1,i;
 	double x,y,x1,y1,x2,y2;
 //	double dist;
 	node *wards;
 	to_link *links,*plinks;
-	
-	
+
+
 	FILE *locf=fopen(par->PositionName,"r");
-	
+
 	network *net=BuildWardsNetwork(par);
 
 
@@ -166,15 +171,15 @@ network *BuildWardsNetworkDistance(parameters *par)
 	wards=net->nodes;
 	links=net->to_links;
 	plinks=net->play;
-	
+
 	if( (locf)==NULL ){
-		
+
 		printf("ERROR: LOCATION FILE NOT FOUND %s ... NETWORK NOT BUILT\n", par->PositionName );
 		return NULL;
-		
+
 	}
 	else printf("Location files %s found, great, carry on.\n",par->PositionName );
-	
+
 	while( !feof(locf) ){
 		fscanf(locf,"%d %lf %lf\n",&i1,&x,&y);
 		if(i1>net->nnodes){
@@ -182,22 +187,29 @@ network *BuildWardsNetworkDistance(parameters *par)
 				   i1,net->nnodes);
 		}
 		wards[i1].x=x;
-		wards[i1].y=y;		
+		wards[i1].y=y;
 	}
-	
+
+	double total_distance = 0;
+
 	for(i=0;i<net->nlinks;i++){
 		x1=wards[links[i].ifrom].x;
 		y1=wards[links[i].ifrom].y;
 
 		x2=wards[links[i].ito].x;
 		y2=wards[links[i].ito].y;
-		
+
+		total_distance += sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+
 		links[i].distance=plinks[i].distance=sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 #ifdef WEEKENDS
 		welinks[i].distance=links[i].distance;
 #endif
 	}
 	fclose(locf);
+
+	printf("Total distance equals %f\n", total_distance);
+
 	return net;
 }
 
@@ -212,10 +224,10 @@ network *BuildWardsNetworkDistanceIdentifiers(parameters *par){
 	node *wards=net->nodes;
 
 	if( (inF)==NULL ){
-		
+
 		printf("ERROR: IDENTIFIER FILE NOT FOUND %s ... NETWORK NOT BUILT\n", par->IdentifierName );
 		return NULL;
-		
+
 	}
 	else printf("Identifier file %s found, great, carry on.\n",par->IdentifierName );
 
@@ -225,24 +237,24 @@ network *BuildWardsNetworkDistanceIdentifiers(parameters *par){
 		strcpy(wards[i].id,temp);
 		i++;
 	}
-	
+
 	fclose(inF);
-	
+
 	inF=fopen(par->IdentifierName2,"r");
 	if( (inF)==NULL ){
-		
+
 		printf("ERROR: IDENTIFIER 2 FILE NOT FOUND %s ... NETWORK NOT BUILT\n", par->IdentifierName2 );
 		return NULL;
-		
+
 	}
 	else printf("Identifier 2 file %s found, great, carry on.\n",par->IdentifierName2 );
 	i=1;
 	while(!feof(inF)){
-		fscanf(inF,"%s %d\n",temp,&id);	
+		fscanf(inF,"%s %d\n",temp,&id);
 		wards[i].vacid=id;
 		i++;
 	}
-	
+
 
 	return net;
 }
@@ -285,23 +297,23 @@ int ApplyStaticDistanceCutoff(network *net, parameters *par){
 			checksum+=play[j].weight;
 		}
 		total_halted+=(int)ceil(pprop*wards[i].play_suscept);
-		
+
 		for(j=wards[i].begin_to;j<wards[i].end_to;j++){
 			tot_work_weight+=links[j].weight;
 			if(links[j].distance>cutoff){		//	collect proportion of workers to redistribute
 												// and set weight of those links to 0
 				pprop+=links[j].weight;
 				links[j].suscept=0.0;
-				
+
 			}
 		}
 		total_halted+=(int)pprop;
 		countrem=0.0;
 		for(j=wards[i].begin_to;j<wards[i].end_to;j++){
-		
+
 			if(links[j].distance<=cutoff){		//redistribute workers
-				
-				
+
+
 				temp=pprop*links[j].weight/tot_work_weight;
  				to_move = floor(temp);
 				p = temp - to_move;
@@ -369,11 +381,11 @@ void ResetWorkMatrix(network *net){
 void ResetPlaySusceptibles(network *net){
 	node *wards=net->nodes;
 	int i;
-	
+
 	for(i=1;i<=net->nnodes;i++){
 		wards[i].play_suscept=wards[i].save_play_suscept;
 	}
-	
+
 	return;
 }
 
@@ -384,7 +396,7 @@ void ResetEverything(network *net,parameters *par){
 	ResetPlaySusceptibles(net);
 #ifdef WEEKENDS
 	ResetWeekendMatrix(net);
-#endif	
+#endif
 	for(i=0;i<N_INF_CLASSES-1;i++)par->ContribFOI[i]=1;
 	return;
 }
@@ -394,9 +406,9 @@ void FillInGaps(network *net){
 	int i;
 	to_link *llinks=net->to_links;
 	node *nodes=net->nodes;
-	
+
 	for(i=1;i<=net->nlinks;i++){
-				
+
 		if(nodes[llinks[i].ito].label!=llinks[i].ito){
 			nodes[llinks[i].ito].label=llinks[i].ito;
 			net->nnodes++;
@@ -413,33 +425,33 @@ void BuildPlayMatrix(network *net,parameters *par){
 	node *nlist=net->nodes;
 	to_link *llist;
 	double cum=0;
-	
+
 	FILE *inFile=fopen(par->PlayName,"r");
 	FILE *inFile2=fopen(par->PlaySizeName,"r");
-	
+
 	if( (inFile)==NULL){
-		
+
 		printf("ERROR: PLAY FILE NOT FOUND \"%s\"... NETWORK NOT BUILT\n", par->PlayName );
 		return;
-		
+
 	}
 	else
 		printf( "The file %s was opened... excellent, carry on.\n", par->PlayName );
-	
+
 	if( (inFile2)==NULL){
-		
+
 		printf("ERROR: PlaySize FILE NOT FOUND \"%s\"... NETWORK NOT BUILT correctly\n", par->PlaySizeName );
 		return;
-		
+
 	}
 	else
 		printf( "The PlaySize file %s was opened... excellent, carry on.\n", par->PlaySizeName );
-	
-	
+
+
 	llist = (to_link *)calloc(sizeof(to_link),MAXLINKS); // assuming that there will be no more play links than work links
-	
+
 	nlinks=0;
-	
+
 	for(j=1;j<=net->nnodes;j++)nlist[j].label=-1;
 
 
@@ -498,7 +510,7 @@ void BuildPlayMatrix(network *net,parameters *par){
 	}
 
 	fclose(inFile);
-	
+
 	FillInGaps(net);
 
 	while(!feof(inFile2)){ // Read in the real number of play susceptibles.
@@ -506,16 +518,17 @@ void BuildPlayMatrix(network *net,parameters *par){
 		fscanf(inFile2,"%d %d\n",&i1,&i2);
 
 		nlist[i1].play_suscept=nlist[i1].Denominator_P=nlist[i1].save_play_suscept=i2;
-		
+
 
 	}
 	fclose(inFile2);
-	
-	
+
+	printf("Number of play links equals %d\n", nlinks);
+
 	net->plinks=nlinks;
 	net->play=llist;
 
-	
+
 	return;
 }
 
@@ -530,23 +543,23 @@ void BuildWeekendMatrix(network *net,parameters *par){
 	node *nlist=net->nodes;
 	to_link *llist;
 	double cum=0;
-	
+
 	FILE *inFile=fopen(par->WeekendName,"r");
-	
+
 	if( (inFile)==NULL){
-		
+
 		printf("ERROR: WEEKEND FILE NOT FOUND \"%s\"... NETWORK NOT BUILT\n", par->WeekendName );
 		return;
-		
+
 	}
 	else
 		printf( "The file %s was opened... excellent, carry on.\n", par->WeekendName );
-	
+
 
 	llist = (to_link *)calloc(sizeof(to_link),MAXLINKS); // assuming that there will be no more play links than work links
-	
+
 	nlinks=0;
-	
+
 	for(j=1;j<=net->nnodes;j++)nlist[j].label=-1;
 
 
@@ -584,20 +597,20 @@ void BuildWeekendMatrix(network *net,parameters *par){
 
 
 	fclose(inFile);
-	
+
 	FillInGaps(net);
 
 	net->welinks=nlinks;
 	net->weekend=llist;
 
-	
+
 	return;
 }
 
 void RescalePlayMatrix(network *net,	parameters *par){
-	//Static Play At Home rescaling. 
+	//Static Play At Home rescaling.
 	//for 1, everyone stays at home.
-	// for 0 a lot of people move around. 
+	// for 0 a lot of people move around.
 
 	int j;
 	to_link *llist=net->play;
@@ -607,9 +620,9 @@ void RescalePlayMatrix(network *net,	parameters *par){
 	  for(j=1;j<=net->plinks;j++){ //rescale appropriately!
 
 			if(llist[j].ifrom!=llist[j].ito){ // if it's not the home ward, then reduce the number of play movers
-				llist[j].weight=llist[j].suscept*(1-par->StaticPlayAtHome); // 
+				llist[j].weight=llist[j].suscept*(1-par->StaticPlayAtHome); //
 			}
-			else{  // if it is the home ward 
+			else{  // if it is the home ward
 				llist[j].weight=(1-llist[j].suscept)*(par->StaticPlayAtHome)+llist[j].suscept;
 			}
 		}
@@ -620,9 +633,9 @@ void RescalePlayMatrix(network *net,	parameters *par){
 
 
 void RescaleWeekendMatrix(network *net,	parameters *par){
-	//Static Play At Home rescaling. 
+	//Static Play At Home rescaling.
 	//for 1, everyone stays at home.
-	// for 0 a lot of people move around. 
+	// for 0 a lot of people move around.
 
 	int j;
 	to_link *llist=net->weekend;
@@ -655,7 +668,7 @@ void TestPlayMatrix(network *net){
 	node *wards=net->nodes;
 	to_link *links=net->play;
 	double cum=0;
-	
+
 	for(i=1;i<net->nnodes;i++){
 		for(j=wards[i].begin_p;j<wards[i].end_p;j++){
 		//	printf("%lf  ",links[j].weight);
@@ -675,7 +688,7 @@ void TestWeekendMatrix(network *net){
 	node *wards=net->nodes;
 	to_link *links=net->weekend;
 	double cum=0;
-	
+
 	for(i=1;i<net->nnodes;i++){
 		for(j=wards[i].begin_we;j<wards[i].end_we;j++){
 		//	printf("%lf  ",links[j].weight);
@@ -690,63 +703,63 @@ void TestWeekendMatrix(network *net){
 
 
 void MovePopulationFromPlayToWork(network *net, parameters *par, gsl_rng *r){
-	
+
 	// And Vice Versa From Work to Play
-	// The relevant parameters are par->PlayToWork 
+	// The relevant parameters are par->PlayToWork
 	//						   and par->WorkToPlay
 	//
 	// When both are 0, don't do anything;
 	// When PlayToWork > 0 move par->PlayToWork proportion from Play to Work.
 	// When WorkToPlay > 0 move par->WorkToPlay proportion from Work to Play.
-	
-	
+
+
 	int i;
 	double to_move,temp,p;
-	
+
 	double countrem=0.0;
 	double check=0.0;
-	
-	to_link *links=net->to_links; // workers (regular movements) 
+
+	to_link *links=net->to_links; // workers (regular movements)
 	node *wards=net->nodes;		// wards
-	to_link *play=net->play;	// links of players 
-	
-	
+	to_link *play=net->play;	// links of players
+
+
 	if(par->WorkToPlay > 0.0){
 		for(i=1;i<=net->nlinks;i++){
-			
+
 			to_move = ceil(links[i].suscept * par->WorkToPlay);
 			if(to_move > links[i].suscept){
 				printf("to_move > links[i].suscept\n");
 			}
 
 			links[i].suscept -= to_move;
-			
+
 			wards[links[i].ifrom].play_suscept += to_move;
 		}
 	}
-	
+
 	if(par->PlayToWork > 0.0){
-		
+
 		for(i=1;i<=net->plinks;i++){
-			
+
 			temp =   par->PlayToWork * (play[i].weight * wards[play[i].ifrom].save_play_suscept);
-			
+
 			to_move = floor(temp);
 			p = temp - to_move;
-			
+
 			countrem += p;
-			
+
 			if(countrem>=1.0){
 				to_move+=1.0; countrem-=1.0;
 			}
-			
+
 			if(wards[play[i].ifrom].play_suscept<to_move){
-				to_move=wards[play[i].ifrom].play_suscept;			
+				to_move=wards[play[i].ifrom].play_suscept;
 			}
 			wards[play[i].ifrom].play_suscept -= to_move;
 			links[i].suscept += to_move;
 		}
-		
+
 	}
 
 	RecalculateWorkDenominatorDay(net,par);
@@ -756,7 +769,7 @@ void MovePopulationFromPlayToWork(network *net, parameters *par, gsl_rng *r){
 
 }
 void RecalculatePlayDenominatorDay(network *net, parameters *par){
-	
+
 	node *wards=net->nodes;
 	to_link *plist=net->play;
 
@@ -768,7 +781,7 @@ void RecalculatePlayDenominatorDay(network *net, parameters *par){
 	//for(i=1;i<=net->nnodes;i++){
 	for(j=1;j<=net->plinks;j++){
 		wards[plist[j].ito].Denominator_PD += plist[j].weight * wards[plist[j].ifrom].play_suscept;
-		
+
 		sum += plist[j].weight * wards[plist[j].ifrom].play_suscept;
 	}
 
@@ -831,12 +844,12 @@ void TestNetwork(network *net){
 	node *wards=net->nodes;
 	to_link *links=net->to_links;
 	double sum,bigsum=0;
-	
+
 
 	for(i=1;i<=net->nnodes;i++){
 		//	while(wards[i].label!=-1){
 		//printf("%d %d \n",i,wards[i].label);
-		//printf("%lf %lf %lf \n",wards[i].Denominator_D,wards[i].Denominator_N,wards[i].Denominator_P); 
+		//printf("%lf %lf %lf \n",wards[i].Denominator_D,wards[i].Denominator_N,wards[i].Denominator_P);
 
 		sum=0;
 		for(j=wards[i].begin_to;j<wards[i].end_to;j++){
@@ -849,7 +862,7 @@ void TestNetwork(network *net){
 //				printf("play %lf\n",net->play[j]);
 			}
 		}
-		//printf("SUM	%lf Denominator_N %lf Denominator_P %lf\n",sum,wards[i].Denominator_N,wards[i].Denominator_P);	
+		//printf("SUM	%lf Denominator_N %lf Denominator_P %lf\n",sum,wards[i].Denominator_N,wards[i].Denominator_P);
 		bigsum+=sum+wards[i].play_suscept;
 	}
 	printf("bigsum %lf \n",bigsum);
@@ -859,7 +872,7 @@ void RemoveGraph(network *net){	//recursive removal of nodes
 	// Only works with lists, not with array
 	free(net->nodes);
 	free(net->to_links);
-	
+
 	free(net);
 }
 
@@ -870,9 +883,9 @@ void RemoveGraph(network *net){	//recursive removal of nodes
 int **InitialiseInfections(network *net){
 	int i;
 	int **inf=(int **)calloc(sizeof(int *),N_INF_CLASSES);
-	
+
 	for(i=0;i<N_INF_CLASSES;i++)inf[i]=(int *)calloc(sizeof(int),net->nlinks+1);
-	
+
 	return inf;
 }
 
@@ -885,57 +898,57 @@ void FreeInfections(int **p){
 int **InitialisePlayInfections(network *net){
 	int i;
 	int **inf=(int **)calloc(sizeof(int *),N_INF_CLASSES);
-	
+
 	for(i=0;i<N_INF_CLASSES;i++)inf[i]=(int *)calloc(sizeof(int),net->nnodes+1);
-	
+
 	return inf;
-	
+
 }
 
 
-void SeedInfectionAtRandomLink(network *net,parameters *par, 
+void SeedInfectionAtRandomLink(network *net,parameters *par,
 							   gsl_rng *r,char C,int **inf){
 	// char is a switch which controls whether we start the infection at a random node or a random link
 	// N for Node L for Link.
-	
-	int i=0;	
+
+	int i=0;
 	int j=0;
-	
+
 	node *wards=net->nodes;
-	
+
 	to_link *links=net->to_links;
-	
-	
-	
-	if(C=='L'){	
-		
+
+
+
+	if(C=='L'){
+
 		j=(int)ceil((net->nlinks-1)*gsl_rng_uniform(r));
-		
-		printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);	
-		
+
+		printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);
+
 		printf("seeding here\n");
 	}
-	
+
 	else if(C=='N'){
-		
+
 		i=(int)ceil((net->nnodes-1)*gsl_rng_uniform(r));
-		
+
 		while(links[j].ito!=i && links[j].ifrom!=i)j++;
-		
-		printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);	
-		
+
+		printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);
+
 		printf("seeding here\n");
-		
+
 	}
 	else {
 		printf("NEEDS TO BE NODE OR LINK SEEDING\n");
 		return;
-	} 
-	
+	}
+
 	inf[0][j]=par->initial_inf;
-	
+
 	return;
-	
+
 }
 
 #ifdef EXTRASEEDS
@@ -943,7 +956,7 @@ void LoadAdditionalSeeds(char *fname){
 	FILE *inF=fopen(fname,"r");
 	NADDSEEDS=0;
 	int t,loc,num;
-	
+
 	while(!feof(inF)){
 		fscanf(inF,"%d %d %d\n",&t,&num,&loc);
 //		printf("fname %s t %d num %d loc %d\n",fname,t,num,loc);
@@ -958,19 +971,19 @@ void LoadAdditionalSeeds(char *fname){
 void InfectAdditionalSeeds(network *net, parameters *par, int **inf,int **pinf,int t){
 	int i=0;
 	node *wards=net->nodes;
-		
+
 	// ADDSEEDS[i][0]=t of occurrence,...[][1]=location ward,[][2]=number of infecteds in ward;
 	for(i=0;i<NADDSEEDS;i++){
 		if(ADDSEEDS[i][0]==t){
 			if(wards[ADDSEEDS[i][1]].play_suscept<ADDSEEDS[i][2]){
 				printf("NOT ENOUGH SUSCEPTIBLES in WARD FOR SEEDING\n");
-				
+
 			}
 			else {
 				wards[ADDSEEDS[i][1]].play_suscept-=ADDSEEDS[i][2];
 				pinf[0][ADDSEEDS[i][1]]+=ADDSEEDS[i][2];
 			}
-			
+
 		}
 	}
 }
@@ -980,13 +993,13 @@ void InfectAdditionalSeeds(network *net, parameters *par, int **inf,int **pinf,i
 void SeedInfectionAtNode(network *net, parameters *par, int node_seed, int **inf, int **pinf){
 	node *wards=net->nodes;
 	to_link *links=net->to_links;
-	
+
 	int j=0;
-	
+
 	while(links[j].ito!=node_seed || links[j].ifrom!=node_seed)j++;
-	
-	//	printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);	
-	
+
+	//	printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);
+
 	//	printf("seeding here\n");
 
 	if(links[j].suscept<par->initial_inf){
@@ -1004,32 +1017,32 @@ void SeedInfectionAtNode(network *net, parameters *par, int node_seed, int **inf
 
 void SeedAllWards(network *net, parameters *par,int **inf, int **pinf,double expected){
 	node *wards=net->nodes;
-	double temp=0;	
+	double temp=0;
 	int i;
 	double total=57104043;
 	int to_seed=0;
 	double frac;
-	
+
 	frac=expected/total;
-	
+
 	for(i=0;i<=net->nnodes;i++){
 	  temp=wards[i].Denominator_N+wards[i].Denominator_P;
 	  to_seed=(int)(frac*temp + 0.5);
 	  wards[i].play_suscept-=to_seed;
-	  pinf[0][i]+=to_seed;		
+	  pinf[0][i]+=to_seed;
 	}
 
 	return;
 }
-						 
-						 
+
+
 void ClearAllInfections(network *net, int **inf, int **pinf){
 	int i,j;
-	
+
 	for(i=0;i<N_INF_CLASSES;i++){
 		for(j=0;j<=net->nlinks;j++)
 			inf[i][j]=0;
-		
+
 		for(j=0;j<=net->nnodes;j++)
 			pinf[i][j]=0;
 	}
@@ -1042,7 +1055,7 @@ void ClearAllInfections(network *net, int **inf, int **pinf){
 
 double Rate2Prob(double R){
 	if(R<1e-6) return R-R*R/2.0;
-	else return 1.0-exp(-R); 
+	else return 1.0-exp(-R);
 }
 
 void RunModel(network *net, parameters *par, int **inf,
@@ -1062,7 +1075,7 @@ void RunModel(network *net, parameters *par, int **inf,
 	int trigger=0;
 	size_t vac[MAXSIZE];
 	size_t wardsRA[MAXSIZE];
-	double RiskRA[MAXSIZE];	
+	double RiskRA[MAXSIZE];
 	size_t SortRA[MAXSIZE];
 	FILE *vacF=fopen("Vaccinated.dat","w");
 	for(i=0;i<MAXSIZE;i++){
@@ -1077,31 +1090,31 @@ void RunModel(network *net, parameters *par, int **inf,
 	//	wfiles=OpenWardFiles(par,track_wards);
 
 	ClearAllInfections(net,inf,playinf);
-	
+
 	//printf("node_seed %d\n \n",to_seed[s]);
 
-#ifndef IMPORTS	
+#ifndef IMPORTS
 	if(s<0){
 	  SeedAllWards(net,par,inf,playinf,par->DailyImports);
 	}
 	else SeedInfectionAtNode(net,par,to_seed[s],inf,playinf);
 #endif
-		
+
 	infecteds=ExtractData(net,inf,playinf,i,files);
 	day=1;
 
 #ifdef EXTRASEEDS
 	LoadAdditionalSeeds(par->AdditionalSeeding);
 #endif
-	
-	
-//#ifdef IMPORTS	
-	while(infecteds!=0 || i<5){	
+
+
+//#ifdef IMPORTS
+	while(infecteds!=0 || i<5){
 //#else
 //	while(infecteds!=0 && i != 1000){
 //#endif
-			
-			
+
+
 #ifdef EXTRASEEDS
 		InfectAdditionalSeeds(net,par,inf,playinf,i);
 #endif
@@ -1112,7 +1125,7 @@ void RunModel(network *net, parameters *par, int **inf,
 			IterateWeekend(net,inf,playinf,par,r,i);
 			printf("weekend\n");
 		}
-		else {	
+		else {
 			Iterate(net,inf,playinf,par,r,i);
 			printf("normal day\n");
 		}
@@ -1150,7 +1163,7 @@ void RunModel(network *net, parameters *par, int **inf,
 		fprintf(vacF,"%d %d\n",i,HowManyVaccinated(vac));
 #endif
 
-	
+
 		//OutputWardData(wfiles,track_wards,net,inf,playinf,i);
 
 
@@ -1173,18 +1186,18 @@ void GetMinMaxDistances(network *net, double *min, double *max){
 	int i;
 	to_link *links=net->to_links;
 //	FILE *temp=fopen("dist.dat","w");
-	
-	
+
+
 	*min=1000000;
 	*max=-1;
-	
+
 	for(i=1;i<=net->nlinks;i++){
 //		fprintf(temp,"%lf\n",links[i].distance);
-		
+
 		if(links[i].distance>*max)*max=links[i].distance;
 		if(links[i].distance<*min)*min=links[i].distance;
 	}
-	
+
 	//printf("maxdist %lf mindist %lf\n\n\n",*max,*min);
 //	fclose(temp);
 	return ;
@@ -1196,18 +1209,18 @@ int ReadDoneFile(char *fname,int *nodes_seeded){
   printf("%s\n",fname);
 	FILE *inF=fopen(fname,"r");
 	int i=0,i1;
-	
+
 	printf("%p -- \n",inF);
-	
+
 	while(!feof(inF)){
 	  fscanf(inF,"%d\n",&i1);
 		nodes_seeded[i]=i1;
 		i++;
 	}
 	fclose(inF);
-	
+
 	return i;
-	
+
 }
 
 
@@ -1224,7 +1237,7 @@ FILE **OpenFiles(){
 	files[5]=fopen("VarXY.dat","w");
 	files[6]=fopen("Dispersal.dat","w");
 	return files;
-	
+
 }
 
 void CloseFiles(FILE **files){
@@ -1256,7 +1269,7 @@ FILE **OpenWardFiles(parameters *par,int to_track[20]){
 
 	num=0;
 	while(!feof(inF)){
-		
+
 		fscanf(inF,"%d\n",&i);
 		to_track[num]=i;
 		num++;
@@ -1288,11 +1301,11 @@ void CloseWardFiles(FILE **files,int *to_track){
 }
 
 void OutputWardData(FILE **files,int *to_track,network *net,int **winf,int **pinf, int t){
-	
+
 	int i,j,w;
 	int WardTotal;
 	node *wards=net->nodes;
-	
+
 	w=0;
 	while(to_track[w]!=0){
 		WardTotal=0;
@@ -1304,25 +1317,25 @@ void OutputWardData(FILE **files,int *to_track,network *net,int **winf,int **pin
 				WardTotal+=winf[i][j];				// work infections sum
 			}
 
-		}		
+		}
 
 		fprintf(files[w],"%d %d\n",t,WardTotal);
 		w++;
-		
+
 	}
-	
+
 	return;
 
 }
 
 int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
-	
+
 	to_link *links=net->to_links;
 	node *wards=net->nodes;
-	
+
 	int i,j;
-	int InfWards[N_INF_CLASSES]; 
-	int PInfWards[N_INF_CLASSES]; 
+	int InfWards[N_INF_CLASSES];
+	int PInfWards[N_INF_CLASSES];
 	int InfTot[N_INF_CLASSES];
 	int PInfTot[N_INF_CLASSES];
 //	int TotalInfWard[N_INF_CLASSES][MAXSIZE];
@@ -1340,7 +1353,7 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 	sumX=sumY=sumX2=sumY2=meanX=meanY=varX=varY=Dispersal=0.0;
 
 	Recovereds=Susceptibles=Latent=0;
-	
+
 	fprintf(files[0],"%d ",t);
 	fprintf(files[1],"%d ",t);
 	//fprintf(files[2],"%d ",t);
@@ -1348,10 +1361,10 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 
 	for(j=1;j<=net->nnodes;j++)TotalNewInfWard[j]=TotalInfWard[j]=0;
 
-	for(i=0;i<N_INF_CLASSES;i++){ 
+	for(i=0;i<N_INF_CLASSES;i++){
 		nInfWards[i]=0;
-		InfTot[i]=PInfTot[i]=InfWards[i]=PInfWards[i]=0;	
-		
+		InfTot[i]=PInfTot[i]=InfWards[i]=PInfWards[i]=0;
+
 		for(j=1;j<=net->nlinks;j++){
 			if(i==0){
 				Susceptibles+= (int)links[j].suscept;
@@ -1361,19 +1374,19 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 #ifdef SELFISOLATE
 				if(i>4&&i<10)IsDangerous[links[j].ito]+=inf[i][j];
 #endif
-				InfTot[i]+=inf[i][j]; // number of infected links in class  i 
+				InfTot[i]+=inf[i][j]; // number of infected links in class  i
 				TotalInfWard[links[j].ifrom]+=inf[i][j];
 			}
 		}
-		
-		
-		
-		
+
+
+
+
 		for(j=1;j<=net->nnodes;j++){
 			if(i==0){
 				Susceptibles+= (int)wards[j].play_suscept;
 				if(pinf[i][j]>0)TotalNewInfWard[j]+=pinf[i][j];
-				
+
 				if(TotalNewInfWard[j]!=0){
 					sumX+=TotalNewInfWard[j]*wards[j].x;
 					sumY+=TotalNewInfWard[j]*wards[j].y;
@@ -1381,7 +1394,7 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 					sumY2+=TotalNewInfWard[j]*wards[j].y*wards[j].y;
 					TotalNew+=TotalNewInfWard[j];
 				}
-			
+
 			}
 			if(pinf[i][j]>0){
 				PInfTot[i]+=pinf[i][j];
@@ -1391,23 +1404,23 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 #endif
 			}
 			if(i<(N_INF_CLASSES-1) && TotalInfWard[j]>0) nInfWards[i]++;
-			
+
 	//		if(i==0)fprintf(files[2],"%d ",TotalInfWard[i][j]);
-			
+
 		}
-		
+
 		fprintf(files[0],"%d ",InfTot[i]);
 		fprintf(files[1],"%d ",nInfWards[i]);
 		fprintf(files[3],"%d ",PInfTot[i]);
-		
+
 		if(i==1)
 		  {Latent+=InfTot[i]+PInfTot[i];}
 		else if(i<N_INF_CLASSES-1 & i>1){
 			Total+=InfTot[i]+PInfTot[i];
 		}
 		else Recovereds+=InfTot[i]+PInfTot[i];
-	
-	
+
+
 	}
 
 	if(TotalNew>0){
@@ -1421,14 +1434,14 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 		fprintf(files[2],"%d %lf %lf\n",t,meanX,meanY);
 		fprintf(files[5],"%d %lf %lf\n",t,varX,varY);
 		fprintf(files[6],"%d %lf\n",t,Dispersal);
-	
+
 	}
 	else {
 
 		fprintf(files[2],"%d %lf %lf\n",t,0.0,0.0);
 		fprintf(files[5],"%d %lf %lf\n",t,0.0,0.0);
 		fprintf(files[6],"%d %lf\n",t,0.0);
-	
+
 	}
 
 	fprintf(files[0],"\n");
@@ -1458,31 +1471,31 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 
 
 int ExtractDataForGraphicsToFile(network *net, int **inf,int **pinf,FILE *outF){
-	
+
 	to_link *links=net->to_links;
 	node *wards=net->nodes;
-	
+
 	int i,j;
 
 	int InfTot[N_INF_CLASSES];
 	int TotalInfWard[N_INF_CLASSES][MAXSIZE];
-		
+
 	int Total=0;
 	int Recovereds,Susceptibles;
 	int TotalInfections[MAXSIZE];
 
 	Recovereds=Susceptibles=0;
-	
+
 	for(j=1;j<=net->nnodes;j++)TotalInfections[j]=0;
 
-	for(i=0;i<N_INF_CLASSES;i++){ 
+	for(i=0;i<N_INF_CLASSES;i++){
 
 		for(j=1;j<=net->nnodes;j++)TotalInfWard[i][j]=0;
-		
-		
+
+
 		for(j=1;j<=net->nlinks;j++){
 			if(inf[i][j]!=0){
-				InfTot[i]+=inf[i][j]; // number of infected links in class  i 
+				InfTot[i]+=inf[i][j]; // number of infected links in class  i
 				TotalInfWard[i][links[j].ifrom]+=inf[i][j];
 				if(i<N_INF_CLASSES-1){
 					TotalInfections[links[j].ifrom]+=inf[i][j];
@@ -1490,15 +1503,15 @@ int ExtractDataForGraphicsToFile(network *net, int **inf,int **pinf,FILE *outF){
 				}
 			}
 		}
-		
-		
-		
-		
+
+
+
+
 		for(j=1;j<=net->nnodes;j++){
 			TotalInfWard[i][j]+=pinf[i][j];
 			if(pinf[i][j]!=0 && i<N_INF_CLASSES-1){
 				TotalInfections[j]+=pinf[i][j];
-				Total+=pinf[i][j];			
+				Total+=pinf[i][j];
 			}
 			if(i==2)fprintf(outF,"%d ",TotalInfections[j]);// incidence
 			//if(i==N_INF_CLASSES-1)fprintf(outF,"%d ",TotalInfections[j]); // prevalences
@@ -1506,9 +1519,9 @@ int ExtractDataForGraphicsToFile(network *net, int **inf,int **pinf,FILE *outF){
 		}
 
 		  //if(i==N_INF_CLASSES-1)fprintf(outF,"%d ",TotalInfections[j]);// incidence
-		
+
 	}
-	
+
 	fprintf(outF,"\n");
 	return Total;
 }
@@ -1520,7 +1533,7 @@ int ExtractDataForGraphicsToFile(network *net, int **inf,int **pinf,FILE *outF){
 
 
 parameters *InitialiseParameters(){
-	
+
 #ifdef FLU
 	double beta[N_INF_CLASSES]={		0, 0, 0.5, 0.5, 0};
 	double Progress[N_INF_CLASSES]={	1, 1, 0.5, 0.5, 0};
@@ -1548,7 +1561,7 @@ parameters *InitialiseParameters(){
 	double TooIllToMove[N_INF_CLASSES]={0,0,0};
 	double ContribFOI[N_INF_CLASSES]={1,1,0};
 #endif
-	
+
 #ifdef NCOV
 	//double beta[N_INF_CLASSES]={	0, 0, 0.95, 0.95, 0};
 	double beta[N_INF_CLASSES]={	0, 0, 0.95, 0.95, 0};
@@ -1557,33 +1570,33 @@ parameters *InitialiseParameters(){
 	double TooIllToMove[N_INF_CLASSES]={ 0, 0, 0, 0.0, 0};
  	double ContribFOI[N_INF_CLASSES]={1, 1, 1, 1, 0}; // set to 1 for the time being;
 #endif
-	
+
 	int i;
 	parameters *par;
-	
-	
+
+
 	par=(parameters *)malloc(sizeof(parameters));
 
 	par->initial_inf=5;
 
 	par->LengthDay=0.7;
-	
+
 	par->PLengthDay=0.5;
-	
+
 	for(i=0;i<N_INF_CLASSES;i++){
 		par->beta[i]=beta[i];
 		par->Progress[i]=Progress[i];
 		par->TooIllToMove[i]=TooIllToMove[i];
 		par->ContribFOI[i]=ContribFOI[i];
-	}	
-	
+	}
+
 	par->DynDistCutoff = 10000000;
 	par->DataDistCutoff = 10000000;
 	par->WorkToPlay=0.0;
 	par->PlayToWork=0.0;
 	par->StaticPlayAtHome=0;
 	par->DynPlayAtHome=0;
-	
+
 	par->LocalVaccinationThresh = 4;
 	par->GlobalDetectionThresh = 4;
 	par->NeighbourWeightThreshold = 0.0;
@@ -1596,15 +1609,15 @@ parameters *InitialiseParameters(){
 
 
 void ReadParametersFile(parameters *par, char *fname,int lineno){
-  
+
   FILE *file = fopen(fname, "r"); //open file
-  
-  
+
+
   int linenumber,i;
   double b2,b3,s2,s3,s4;
   linenumber =lineno;
   printf("Input 3: line of parameter file to read %d\n\n",linenumber);
-  
+
   i = 0;
   if ( file != NULL ) // if file is there do loop
   {
@@ -1626,20 +1639,20 @@ void ReadParametersFile(parameters *par, char *fname,int lineno){
   {
     printf("ERROR: File %s not found\n",fname);//file doesn't exist
   }
-  
+
   //printf("Parameters used: b2: %lf b3:  %lf s2:  %lf s3:  %lf s4:  %lf\n",b2,b3,s2,s3,s4);
-  
+
   par->beta[2]=b2;
   par->beta[3]=b3;
-  par->Progress[1]=s2;  
+  par->Progress[1]=s2;
   par->Progress[2]=s3;
-  par->Progress[3]=s4;  
-  
+  par->Progress[3]=s4;
+
 //    printf("Parameters used: b0: %lf b1:  %lf b2:  %lf b3:  %lf b4:  %lf\n",par->beta[0],par->beta[1],par->beta[2],par->beta[3],par->beta[4]);
 //    printf("prog0: %lf prog1:  %lf prog2:  %lf prog3:  %lf prog4:  %lf\n",par->Progress[0],par->Progress[1],par->Progress[2],par->Progress[3],par->Progress[4]);
-  
+
   return;
-  
+
 }
 
 
@@ -1656,61 +1669,61 @@ void SetInputFileNames(int choice,parameters *par){
     //strcpy(par->PlayName,"C:/data/combined_matrix.dat");
     strcpy(par->IdentifierName,"Z:/data/Identifiers.dat");
     strcpy(par->IdentifierName2,"Z:/data/level2.dat");
-    
+
     strcpy(par->WeekendName,"Z:/data/WeekendMatrix.dat");
     strcpy(par->PlaySizeName,"Z:/data/PlaySize.dat");
     strcpy(par->PositionName,"Z:/data/CBB.dat");
     strcpy(par->SeedName,"Z:/data/seeds.dat");
     strcpy(par->NodesToTrack,"Z:/data/seeds.dat");
-    
+
     strcpy(par->AdditionalSeeding,"Z:/data/ExtraSeeds.dat");
-    
+
     //strcpy(par->NodesToTrack,"Z:/ldanon/data/AllWardInts.dat");
     return;
     break;
   case 2:
-    printf("Using files in /Users/ldanon/data/ \n");//for Macs 
+    printf("Using files in /Users/ldanon/data/ \n");//for Macs
     strcpy(par->WorkName,"/Users/ldanon/data/UK1.dat");
     strcpy(par->PlayName,"/Users/ldanon/data/Weights_new.dat");
-    
+
     strcpy(par->IdentifierName,"/Users/ldanon/data/Identifiers.dat");
     strcpy(par->IdentifierName2,"/Users/ldanon/data/level3.dat");
-    
+
     strcpy(par->WeekendName,"/Users/ldanon/data/WeekendMatrix.dat");
     strcpy(par->PlaySizeName,"/Users/ldanon/data/PlaySize.dat");
     strcpy(par->PositionName,"/Users/ldanon/data/CBB.dat");
     strcpy(par->SeedName,"/Users/ldanon/data/seeds.dat");
     strcpy(par->NodesToTrack,"/Users/ldanon/data/seeds.dat");
-    
+
     strcpy(par->AdditionalSeeding,"/Users/ldanon/data/ExtraSeeds.dat");
     return;
     break;
   case 3:
     printf("Using files in /users/leond/data/ \n");//for the cluster
-    
+
     strcpy(par->WorkName,"/users/leond/data/UK1.dat");
     strcpy(par->PlayName,"/users/leond/data/Weights_new.dat");
     strcpy(par->IdentifierName,"/users/leond/data/Identifiers.dat");
     strcpy(par->IdentifierName2,"/users/leond/data/level3.dat");
-    
+
     strcpy(par->WeekendName,"/users/leond/data/WeekendMatrix.dat");
     strcpy(par->PlaySizeName,"/users/leond/data/PlaySize.dat");
     strcpy(par->PositionName,"/users/leond/data/CBB.dat");
     strcpy(par->SeedName,"/users/leond/data/seeds.dat");
     strcpy(par->NodesToTrack,"/users/leond/data/seeds.dat");
-    
+
     strcpy(par->AdditionalSeeding,"/users/leond/data/ExtraSeeds.dat");
-    
-    
+
+
     return;
     break;
-  
+
   case 4:
 
     dirstring=getenv("HOME"); // home directory strin
     strcat(dirstring,"/GitHub/MetaWards/2011Data/"); // add to that the directory for 2011 data
     printf("Using files in %s \n", dirstring); //
-    
+
     strcat(strcpy(par->WorkName, dirstring), "EW1.dat");
     strcat(strcpy(par->PlayName, dirstring), "PlayMatrix.dat");
     strcat(strcpy(par->PlaySizeName, dirstring), "PlaySize.dat");
@@ -1721,13 +1734,13 @@ void SetInputFileNames(int choice,parameters *par){
     strcat(strcpy(par->UVFilename,dirstring),"UVScaling.csv");
 	  return;
 	  break;
-	  
+
   default:
     printf("WRONG WRONG WRONG\n");
   return;
   break;
   }
-  
+
 }
 
 
@@ -1746,7 +1759,7 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 	double thresh=0.01;
 //	int DayInfW,DayInfP,NightInfW,NightInfP;
 
-	
+
 	to_link *links=net->to_links;
 	node *wards=net->nodes;
 	to_link *plinks=net->play;
@@ -1763,9 +1776,9 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 
 
 			for(j=1;j<=net->nlinks;j++){ // Deterministic movements (to work).
-				
-				if(inf[i][j]>0){	
-					
+
+				if(inf[i][j]>0){
+
 					if(inf[i][j]>(int)links[j].weight){
 						printf("inf[%d][%d] %d > links[j].weight %lf\n",i,j,inf[i][j],links[j].weight );
 					}
@@ -1774,8 +1787,8 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 						if((double)(IsDangerous[links[j].ito]/(wards[links[j].ito].Denominator_D + wards[links[j].ito].Denominator_P))>thresh){
 							staying=inf[i][j];
 						}
-						else	
-#endif							
+						else
+#endif
 							staying = gsl_ran_binomial(r,par->TooIllToMove[i],inf[i][j]);	// number staying. This is G_ij//
 
 
@@ -1786,13 +1799,13 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 
 						wards[links[j].ifrom].DayFOI+=staying*par->ContribFOI[i]*par->beta[i]*uvscale;
 
-						//Daytime Force of 
+						//Daytime Force of
 						//Infection is proportional to
-						//numer of people staying 
+						//numer of people staying
 						//in the ward (too ill to work)
 						// this is the sum for all G_ij (including g_ii
-						
-						
+
+
 						wards[links[j].ito].DayFOI += moving*par->ContribFOI[i]*par->beta[i]*uvscale;
 
 						// Daytime FOI for destination is incremented (including self links, I_ii)
@@ -1803,13 +1816,13 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 					}
 
 					wards[links[j].ifrom].NightFOI += inf[i][j]*par->ContribFOI[i]*par->beta[i]*uvscale;
-					// Nighttime Force of Infection is 
+					// Nighttime Force of Infection is
 					// prop. to the number of Infected individuals
-					// in the ward 
+					// in the ward
 					// This I_ii in Lambda^N
 					//printf("%d   %d  %lf  %lf \n",t,temp->number,lt->to->DayFOI,lt->to->NightFOI);
 
-				}	
+				}
 
 			}// end of infectious class loop
 
@@ -1844,25 +1857,25 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 #ifdef SELFISOLATE
 							if((double)(IsDangerous[plinks[j].ito]/(wards[links[j].ito].Denominator_D + wards[links[j].ito].Denominator_P))>thresh){
 								staying+=playmove;
-							}	
+							}
 							else {
-#endif				
+#endif
 							  wards[plinks[k].ito].DayFOI += playmove * par->ContribFOI[i] * par->beta[i]*uvscale;
-							
-							
-#ifdef SELFISOLATE							
+
+
+#ifdef SELFISOLATE
 							}
 #endif
 							moving -= playmove;
 
 						}
 
-						k++;					
+						k++;
 					}
 
 					wards[j].DayFOI+= (moving + staying) * par->ContribFOI[i] * par->beta[i]*uvscale;
 
-				} 
+				}
 
 			}// loop through nodes
 
@@ -1920,21 +1933,21 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 	temp=0;
 
 	for(j=1;j<=net->nlinks;j++){ // actual new infections for fixed movements
-	
+
 		InfProb=0.0;
 
 		if(links[j].distance < cutoff){ // if distance is below cutoff (reasonable distance) infect in work ward
-			
+
 			if(wards[links[j].ito].DayFOI > 0){   // daytime infection of link j
 
 #ifdef SELFISOLATE
 				if((double)(IsDangerous[links[j].ito]/(wards[links[j].ito].Denominator_D + wards[links[j].ito].Denominator_P))>thresh){
 					InfProb=0;
 				}
-				else {	
+				else {
 #endif
 					Rate= (par->LengthDay)*(wards[links[j].ito].DayFOI)/
-						(wards[links[j].ito].Denominator_D + wards[links[j].ito].Denominator_PD); 
+						(wards[links[j].ito].Denominator_D + wards[links[j].ito].Denominator_PD);
 
 					InfProb=Rate2Prob(Rate);
 
@@ -1942,21 +1955,21 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 				}
 #endif
 
-			}	
+			}
 		}
 
 		else if(wards[links[j].ifrom].DayFOI>0){ // if distance is too large infect in home ward with day FOI
 
 			Rate=(par->LengthDay)*(wards[links[j].ifrom].DayFOI)/
-				(wards[links[j].ifrom].Denominator_D + wards[links[j].ifrom].Denominator_PD); 
+				(wards[links[j].ifrom].Denominator_D + wards[links[j].ifrom].Denominator_PD);
 			InfProb=Rate2Prob( Rate );
 
 		}
 
 		if(InfProb>0.0){ // Daytime Infection of workers
-			
+
 			l=gsl_ran_binomial(r,InfProb,(int)links[j].suscept); // actual infection
-			
+
 			if(l>0){
 	//			printf("InfProb %lf, susc %lf, l %d\n",InfProb,links[j].suscept,l);
 				inf[i][j] += l;
@@ -1973,7 +1986,7 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 
 		if(wards[links[j].ifrom].NightFOI>0){ //nighttime infection of workers j
 			Rate = (1.0-par->LengthDay)*(wards[links[j].ifrom].NightFOI)/
-				(wards[links[j].ifrom].Denominator_N + wards[links[j].ifrom].Denominator_P); 
+				(wards[links[j].ifrom].Denominator_N + wards[links[j].ifrom].Denominator_P);
 			InfProb = Rate2Prob( Rate );
 
 
@@ -2024,9 +2037,9 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 					if((double)(IsDangerous[plinks[j].ito]/(wards[plinks[k].ito].Denominator_P+wards[plinks[k].ito].Denominator_D))>thresh){
 						InfProb=0;
 						playmove=0;
-					}	
+					}
 					else {
-#endif		
+#endif
 					playmove = gsl_ran_binomial(r,ProbScaled,moving);
 
 					InfProb = Rate2Prob( (par->LengthDay)*(wards[plinks[k].ito].DayFOI)/
@@ -2111,11 +2124,11 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 
 //	int DayInfW,DayInfP,NightInfW,NightInfP;
 
-	
+
 	to_link *links=net->to_links;
 	node *wards=net->nodes;
 	to_link *welinks=net->weekend;
-	
+
 
 	for(i=1;i<=net->nnodes;i++){ // set all relevant variables to 0;
 		wards[i].DayFOI=wards[i].NightFOI=0.0;
@@ -2129,17 +2142,17 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 
 			for(j=1;j<=net->nlinks;j++){ // Sum up work movements of infection.
 				if(i==0)wesuscept[links[j].ifrom]+=(int)links[j].suscept; // sum up work susceptibles once
-				if(inf[i][j]>0)		
+				if(inf[i][j]>0)
 					weinf[i][links[j].ifrom]+=inf[i][j]; // sum up infecteds in the work matrix (pool together)
-							
+
 			}
 
-			for(j=1;j<=net->nnodes;j++){ // FOI and susceptibles loop 
+			for(j=1;j<=net->nnodes;j++){ // FOI and susceptibles loop
 				if(i==0)wesuscept[j]+=(int)wards[j].play_suscept; // sum up susceptibles once
 				if(playinf[i][j]>0)
 					weinf[i][j]+=playinf[i][j];  // add to work the infecteds in the play matrix (pool together)
 
-				if(weinf[i][j]>0){ // distribute infecteds and update FOI 
+				if(weinf[i][j]>0){ // distribute infecteds and update FOI
 				  wards[j].NightFOI += weinf[i][j] * par->ContribFOI[i] * par->beta[i]*(1-0.5+0.5*cos(2*M_PI*t/365.0));
 
 					staying = gsl_ran_binomial(r,(par->DynPlayAtHome)*par->TooIllToMove[i],weinf[i][j]); // number of people staying gets bigger as PlayAtHome increases
@@ -2158,7 +2171,7 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 
 						if(welinks[k].distance < cutoff){
 							ProbScaled=welinks[k].weight/(1-cum_prob);
-							
+
 							cum_prob += welinks[k].weight;
 
 							wemove = gsl_ran_binomial(r,ProbScaled,moving);
@@ -2169,12 +2182,12 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 
 						}
 
-						k++;					
+						k++;
 					}
 
 					wards[j].DayFOI+= (moving + staying) * par->ContribFOI[i] * par->beta[i]*(1-0.5+0.5*cos(2*M_PI*t/365.0)); // whatever is left contributes to home ward
 
-				} 
+				}
 
 			}// loop through nodes
 
@@ -2230,7 +2243,7 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 	i=0;
 
 	InfProb=0.0;
-	
+
 	for(j=1;j<=net->nnodes;j++){ // weekend loop where we do the "pooled" infecting
 
 		if(wesuscept[j]<0.0){
@@ -2242,7 +2255,7 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 		staying = gsl_ran_binomial(r,par->DynPlayAtHome,(int)wesuscept[j]);
 
 		moving = wesuscept[j] - staying;
-	
+
 		cum_prob=0;
 
 		// daytime infection of pooled susceptibles
@@ -2266,7 +2279,7 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 					InfProb = Rate2Prob( (par->LengthDay)*(wards[welinks[k].ito].DayFOI)/
 						(wards[welinks[k].ito].Denominator_P+wards[welinks[k].ito].Denominator_D) );
 
-					l = gsl_ran_binomial(r,InfProb,wemove);  // and how many of those are actually infected. 
+					l = gsl_ran_binomial(r,InfProb,wemove);  // and how many of those are actually infected.
 
 					moving -= wemove;
 
@@ -2304,7 +2317,7 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 				(wards[j].Denominator_N + wards[j].Denominator_P) );
 
 			l = gsl_ran_binomial(r,InfProb,(wesuscept[j]-newly_infected[j]));  // how many people get infected in home ward at night
-																					// the number of susceptibles is reduced by those already infected elsewhere. 
+																					// the number of susceptibles is reduced by those already infected elsewhere.
 			if(l>0){
 
 				newly_infected[j]+=l;
@@ -2323,9 +2336,9 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 		if(newly_infected[j]>0){
 	//		printf("weekend newly infected in (before) j=%d:  %d \n",j,newly_infected[j]);
 			cum_prob=(double)wards[j].play_suscept / wesuscept[j];
-	
+
 			wemove=gsl_ran_binomial(r,cum_prob,newly_infected[j]); // the total number that belong to the play matrix
-			
+
 			if(wemove>0){
 				if(wemove>(int)wards[j].play_suscept){
 					printf("wemove too large play\n");
@@ -2336,7 +2349,7 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 				wards[j].play_suscept-=wemove; // removed from the susceptibles of the play matrix
 
 				playinf[0][j]+=wemove; // added to the infecteds in the play matrix
-			
+
 			}
 
 			for(k=wards[j].begin_to;k<wards[j].end_to;k++){ // now for the work matrix
@@ -2353,7 +2366,7 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 							if(wemove>(int)links[k].suscept){ // its a DIRTY HACK!!
 								//if(wemove>(int)links[k].suscept+1){
 								//	printf("wemove %d > links.suscept %f \n",wemove,links[k].suscept);
-								//}	
+								//}
 								wemove=(int)links[k].suscept;
 							}
 							//	else printf("ok");
@@ -2375,7 +2388,7 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 			printf("weekend newly infected in j=%d:  %d \n",j,newly_infected[j]);
 			}
 		} // end of newly_infected[j]>0 if statement
-		
+
 
 	}// end of loop through nodes
 	return;
@@ -2388,7 +2401,7 @@ void IterateWeekend(network *net, int **inf, int **playinf, parameters *par, gsl
 
 void ExtractPlayMatrix(network *net){
 
-	int i;	
+	int i;
 	FILE *outF;
 	to_link *play=net->play;
 
@@ -2419,8 +2432,8 @@ void VaccinateWards(network *net,size_t *wardsRA,int **inf, int **pinf,size_t *v
 				cap--;
 				wardsRA[i]=-1;
 			}
-			
-		}	
+
+		}
 	}
 	return;
 }
@@ -2570,13 +2583,13 @@ void Vaccinate1(network *net, int iward, int **inf, int **pinf, size_t *vac,para
 			vac[iward]+=(int)links[j].suscept;
 			links[j].suscept=0;
 		}
-		
+
 //	}
 	return;
 }
 
 
-void FindWardsToVaccinate2(network *net,double *RiskRA, size_t *wardsRA, 
+void FindWardsToVaccinate2(network *net,double *RiskRA, size_t *wardsRA,
 						   int **inf, int **pinf, parameters *par){
 
 	int i;
@@ -2598,10 +2611,10 @@ void FindWardsToVaccinate2(network *net,double *RiskRA, size_t *wardsRA,
 //	for(i=1;i<=net->nnodes;i++){
 
 //		if(wardsRA[i]==0){ // if ward has not already been vaccinated or has not already been selected for vaccination
-//			Local=TotalWardInfectious(wards[i],i,inf,pinf,par);		
+//			Local=TotalWardInfectious(wards[i],i,inf,pinf,par);
 //			Global+=Local;
 //			if( Local > par->LocalVaccinationThresh){ // is ward infectious
-//				
+//
 //				wardsRA[i]=1;
 //				FindNeighboursToVaccinate(net,i,wardsRA,par);
 //			}
@@ -2650,16 +2663,16 @@ void FindWardsToVaccinate(network *net,size_t *wardsRA,int **inf,int **pinf,para
 	int i;
 	int Local,Global;
 	node *wards=net->nodes;
-	
+
 	Local=Global=0;
 
 	for(i=1;i<=net->nnodes;i++){
 
 		if(wardsRA[i]==0){ // if ward has not already been vaccinated or has not already been selected for vaccination
-			Local=TotalWardInfectious(wards[i],i,inf,pinf,par);		
+			Local=TotalWardInfectious(wards[i],i,inf,pinf,par);
 			Global+=Local;
 			if( Local > par->LocalVaccinationThresh){ // is ward infectious
-				
+
 				wardsRA[i]=1;
 				FindNeighboursToVaccinate(net,i,wardsRA,par);
 			}
@@ -2692,15 +2705,15 @@ void FindNeighboursToVaccinate(network *net,int iward,size_t *wardsRA, parameter
 			if(temp>par->NeighbourWeightThreshold)wardsRA[links[i].ito]=1;
 		}
 	}
-	
+
 	return;
 }
 
 int IsWardInfected(node ward,int iward,int **inf,int **pinf,parameters *par){
-	
+
 	int i,j;
 	int total=0;
-	
+
 	for(i=0;i<N_INF_CLASSES-1;i++)total+=pinf[i][iward];
 	if(total>par->LocalVaccinationThresh)return 1;
 
@@ -2712,23 +2725,23 @@ int IsWardInfected(node ward,int iward,int **inf,int **pinf,parameters *par){
 			}
 		}
 	}
-	
+
 	return 0;
 
 }
 
 int TotalWardInfectious(node ward,int iward,int **inf,int **pinf,parameters *par){
-	
+
 	int i,j;
 	int total=0;
-	
+
 	for(i=START_SYMPTOM;i<N_INF_CLASSES;i++)total+=pinf[i][iward];
 
 	for(j=ward.begin_to;j<=ward.end_to;j++){
 		for(i=START_SYMPTOM;i<N_INF_CLASSES;i++){
 			if(inf[i][j]!=0){
 				total+=inf[i][j];
-				
+
 			}
 		}
 	}
@@ -2740,7 +2753,7 @@ size_t HowManyVaccinated(size_t *vac){
 	int i;
 	size_t		tot=0;
 	for(i=1;i<MAXSIZE;i++)tot+=vac[i];
-	
+
 	return tot;
 }
 
@@ -2748,7 +2761,7 @@ size_t HowManyVaccinated(size_t *vac){
 
 
 void LinkControlMeasures(network *net, int **inf, int **pinf, char *cutFname){
-	
+
 	FILE *cutF=fopen(cutFname,"r");
 
 	int link_id;
@@ -2762,7 +2775,7 @@ void LinkControlMeasures(network *net, int **inf, int **pinf, char *cutFname){
 }
 
 void HaltMovementsInLink(network *net, int ilink, int **inf, int **pinf, double prop){
-	
+
 	to_link *work=net->to_links;
 	to_link *play=net->play;
 	node *wards=net->nodes;
@@ -2784,7 +2797,7 @@ void HaltMovementsInLink(network *net, int ilink, int **inf, int **pinf, double 
 	to_stay=(int)ceil(work[ilink].suscept*prop); // calculate number to move
 	work[ilink].suscept-=to_stay; // remove from susceptibles in link
 
-	work[wards[work[ilink].ifrom].self_w].suscept+=to_stay; // add to susceptibles in self link 
+	work[wards[work[ilink].ifrom].self_w].suscept+=to_stay; // add to susceptibles in self link
 	// wards[work[ilink].ifrom].play_suscept+=to_stay; // -----add to susceptibles in ward play matrix
 	// --------------------------------------------------------the above two lines should be equivalent.
 
@@ -2817,7 +2830,7 @@ int ImportInfection(network *net, int **inf, int **playinf, parameters *par, gsl
 		to_seed=gsl_ran_binomial(r,frac,(int)wards[i].play_suscept);
 		if(to_seed>0){
 			wards[i].play_suscept-=to_seed;
-			playinf[0][i]+=to_seed;		
+			playinf[0][i]+=to_seed;
 			tot+=to_seed;
 		}
 	}
@@ -2826,10 +2839,10 @@ int ImportInfection(network *net, int **inf, int **playinf, parameters *par, gsl
 		if(to_seed>0){
 			links[i].suscept-=to_seed;
 			inf[0][i]+=to_seed;
-			tot+=to_seed;	
+			tot+=to_seed;
 		}
 	}
 	return tot;
 }
-	
+
 //#endif
