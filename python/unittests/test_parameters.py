@@ -1,5 +1,5 @@
 
-from metawards import Parameters, Disease
+from metawards import Parameters, Disease, InputFiles
 
 import pytest
 import os
@@ -32,3 +32,9 @@ def test_parameter():
     assert(p.disease_params.progress[1] == 0.19)
     assert(p.disease_params.progress[2] == 0.91)
     assert(p.disease_params.progress[3] == 0.91)
+
+    i = InputFiles.get_files(4)
+
+    p.set_input_files(4)
+
+    assert(p.input_files == i)
