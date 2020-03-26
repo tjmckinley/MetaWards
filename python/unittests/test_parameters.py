@@ -2,6 +2,10 @@
 from metawards import Parameters, Disease
 
 import pytest
+import os
+
+script_dir = os.path.dirname(__file__)
+ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
 
 
 def test_parameter():
@@ -22,3 +26,10 @@ def test_parameter():
     with pytest.raises(KeyError):
         p = Parameters.create("not a disease")
 
+    p.read_file(ncovparams_csv, 0)
+
+    assert(p.beta[2] == 0.95)
+    assert(p.beta[3] == 0.95)
+    assert(p.Progress[1] == 0.19)
+    assert(p.Progress[2] == 0.91)
+    assert(p.Progress[3] == 0.91)

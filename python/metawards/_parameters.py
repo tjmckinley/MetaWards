@@ -93,3 +93,45 @@ class Parameters:
         par.UV = 0.0
 
         return par
+
+    def read_file(self, filename: str, line_number: int):
+        """Read in extra parameters from the specified line number
+           of the specified file
+        """
+        print(f"Reading in parameters from line {line_number} of {filename}")
+
+        i = 0
+        with open(filename, "r") as FILE:
+            line = FILE.readline()
+
+            if i == line_number:
+                words = line.split(",")
+
+                if len(words) != 5:
+                    raise ValueError(
+                        f"Corrupted input file. Expecting 5 values. "
+                        f"Received {line}")
+
+                vals = []
+
+                try:
+                    for word in words:
+                        vals.append(float(word))
+                except Exception:
+                    raise ValueError(
+                            f"Corrupted input file. Expected 5 numbers. "
+                            f"Received {line}")
+
+                self.beta[2] = vals[0]
+                self.beta[3] = vals[1]
+                self.Progress[1] = vals[2]
+                self.Progress[2] = vals[3]
+                self.Progress[3] = vals[4]
+
+                return
+            else:
+                i += 1
+
+        # get here if we can't find this line in the file
+        raise ValueError(f"Cannot read parameters from line {line_number} "
+                         f"as the file contains just {i} lines")
