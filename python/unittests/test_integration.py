@@ -45,6 +45,12 @@ def test_integration():
     network = mw.build_wards_network_distance(params)
     print("Network built!")
 
+    infections = mw.initialise_infections(network=network, params=params)
+
+    play_infections = mw.initialise_play_infections(network=network,
+                                                    params=params)
+
+    (mindist, maxdist) = mw.get_min_max_distances(network)
 
 if __name__ == "__main__":
     test_integration()

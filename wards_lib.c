@@ -1198,7 +1198,7 @@ void GetMinMaxDistances(network *net, double *min, double *max){
 		if(links[i].distance<*min)*min=links[i].distance;
 	}
 
-	//printf("maxdist %lf mindist %lf\n\n\n",*max,*min);
+	printf("maxdist %lf mindist %lf\n\n\n",*max,*min);
 //	fclose(temp);
 	return ;
 }

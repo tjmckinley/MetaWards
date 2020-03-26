@@ -9,7 +9,10 @@ from ._tolink import ToLink
 
 __all__ = ["read_done_file",
            "build_wards_network",
-           "build_wards_network_distance"]
+           "build_wards_network_distance",
+           "initialise_infections",
+           "initialise_play_infections",
+           "get_min_max_distances"]
 
 
 def read_done_file(filename: str):
@@ -31,6 +34,66 @@ def read_done_file(filename: str):
 
     except Exception as e:
         raise ValueError(f"Possible corruption of {filename}: {e}")
+
+
+def get_min_max_distances(network: Network):
+    """Return the minimum and maximum distances recorded in the network"""
+    mindist = None
+    maxdist = None
+
+    links = network.to_links
+
+    for link in links:
+        dist = link.distance
+
+        if dist:
+            if mindist is None:
+                mindist = dist
+                maxdist = dist
+            elif dist > maxdist:
+                maxdist = dist
+            elif dist < mindist:
+                mindist = dist
+
+    print(f"maxdist {maxdist} mindist {mindist}")
+
+    if mindist > 0:
+        print(f"The original code always gives a minimum distance of zero, "
+              f"so setting {mindist} to zero... (check if this is correct)")
+
+    mindist = 0
+
+    return (mindist, maxdist)
+
+
+def initialise_infections(network: Network, params: Parameters):
+    disease = params.disease_params
+
+    n = disease.N_INF_CLASSES()
+
+    infections = []
+
+    nlinks = network.nlinks + 1
+
+    for _ in range(0, n):
+        infections.append( nlinks * [0] )
+
+    return infections
+
+
+def initialise_play_infections(network: Network, params: Parameters):
+    disease = params.disease_params
+
+    n = disease.N_INF_CLASSES()
+
+    infections = []
+
+    nnodes = network.nnodes + 1
+
+    for _ in range(0, n):
+        infections.append( nnodes * [0] )
+
+    return infections
 
 
 def fill_in_gaps(network: Network):
