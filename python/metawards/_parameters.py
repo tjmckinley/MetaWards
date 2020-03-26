@@ -1,6 +1,10 @@
 
 from dataclasses import dataclass
 from typing import List
+from copy import deepcopy
+
+from ._inputfiles import InputFiles
+from ._disease import Disease
 
 __all__ = ["Parameters"]
 
@@ -11,27 +15,11 @@ class Parameters:
         """Allow creation of a null Parameters object"""
         pass
 
-    WorkName: str = None             # WORK MATRIX
-    PlayName: str = None             # PLAY MATRIX
-    WeekendName: str = None          # WEEKENDMATRIX
-    IdentifierName: str = None       # WARD NAMES
-    IdentifierName2: str = None      # WARD ID's (Communities, Counties,
-                                     #            Districts, UA's etc);
-
-    PositionName: str = None        # CENTRE of BOUNDING BOXES
-    PlaySizeName: str = None        # SIZE OF POPULATION IN THE PLAY PILE
-
-    SeedName: str = None            # LIST OF SEED NODES
-    NodesToTrack: str = None        # LIST OF NODES TO TRACK
-
-    AdditionalSeeding: str = None   #LIST OF EXTRA SEED WARDS...
+    input_files: InputFiles = None
 
     UVFilename: str = None
 
-    beta: List[float] = None        # (Python float == C double)
-    TooIllToMove: List[float] = None
-    Progress: List[float] = None
-    ContribFOI: List[float] = None
+    disease_params: Disease = None
 
     LengthDay: float = None
     PLengthDay: float = None
@@ -61,12 +49,8 @@ class Parameters:
             disease
         """
 
-        from ._disease import Disease
-        disease = Disease.get_disease(disease)
-
-        # Now build the parameters object that will hold parameters
-        # for this disease, plus space to hold the running simulation
-        from ._parameters import Parameters
+        if not isinstance(disease, Disease):
+            disease = Disease.get_disease(disease)
 
         par = Parameters()
 
@@ -74,10 +58,7 @@ class Parameters:
         par.LengthDay = 0.7
         par.PLengthDay = 0.5
 
-        par.beta = list(disease.beta)
-        par.Progress = list(disease.progress)
-        par.TooIllToMove = list(disease.TooIllToMove)
-        par.ContribFOI = list(disease.ContribFOI)
+        par.disease_params = deepcopy(disease)
 
         par.DynDistCutoff = 10000000
         par.DataDistCutoff = 10000000
@@ -93,6 +74,18 @@ class Parameters:
         par.UV = 0.0
 
         return par
+
+    def set_input_files(self, input_files: str):
+        """Set the input files that are used to initialise the
+           simulation
+        """
+        if not isinstance(input_files, InputFiles):
+            input_files = InputFiles.get_files(input_files)
+
+        print("Using input files:")
+        print(input_files)
+
+        self.input_files = deepcopy(input_files)
 
     def read_file(self, filename: str, line_number: int):
         """Read in extra parameters from the specified line number
@@ -122,11 +115,11 @@ class Parameters:
                             f"Corrupted input file. Expected 5 numbers. "
                             f"Received {line}")
 
-                self.beta[2] = vals[0]
-                self.beta[3] = vals[1]
-                self.Progress[1] = vals[2]
-                self.Progress[2] = vals[3]
-                self.Progress[3] = vals[4]
+                self.disease_params.beta[2] = vals[0]
+                self.disease_params.beta[3] = vals[1]
+                self.disease_params.progress[1] = vals[2]
+                self.disease_params.progress[2] = vals[3]
+                self.disease_params.progress[3] = vals[4]
 
                 return
             else:

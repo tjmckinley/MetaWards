@@ -15,8 +15,7 @@ def test_parameter():
     # first sanity test that we can create this disease
     p = Parameters.create("ncov")
 
-    assert(p.beta == list(d.beta))
-    assert(p.TooIllToMove == list(d.TooIllToMove))
+    assert(p.disease_params == d)
 
     # and that it can be "str'd"
     s = str(p)
@@ -28,8 +27,8 @@ def test_parameter():
 
     p.read_file(ncovparams_csv, 0)
 
-    assert(p.beta[2] == 0.95)
-    assert(p.beta[3] == 0.95)
-    assert(p.Progress[1] == 0.19)
-    assert(p.Progress[2] == 0.91)
-    assert(p.Progress[3] == 0.91)
+    assert(p.disease_params.beta[2] == 0.95)
+    assert(p.disease_params.beta[3] == 0.95)
+    assert(p.disease_params.progress[1] == 0.19)
+    assert(p.disease_params.progress[2] == 0.91)
+    assert(p.disease_params.progress[3] == 0.91)
