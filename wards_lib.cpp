@@ -985,9 +985,9 @@ void SeedInfectionAtNode(network *net, parameters *par, int node_seed, int **inf
 	
 	while(links[j].ito!=node_seed || links[j].ifrom!=node_seed)j++;
 	
-		printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);	
+	//	printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);	
 	
-		printf("seeding here\n");
+	//	printf("seeding here\n");
 
 	if(links[j].suscept<par->initial_inf){
 		wards[node_seed].play_suscept-=par->initial_inf;
@@ -1735,7 +1735,7 @@ void SetInputFileNames(int choice,parameters *par){
 void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r,int t){
 
 	int i,j,k;
-	double temp,uv=par->UV,uvscale=(1-uv/2.0+uv*cos(2*M_PI*t/365.0)/2.0);
+	double temp,uv=par->UV,uvscale=(1-uv/2.0+uv*cos(2*M_PI*(t)/365.0)/2.0); // starting day = 41
 	int staying, moving,playmove,l;
 	double InfProb,Rate;
 
