@@ -20,5 +20,8 @@ class Network:
     nodes: List[Node] = None
     to_links: List[ToLink] = None
 
+    nnodes: int = 0
+    nlinks: int = 0
+
     play: List[ToLink] = None
     weekend: List[ToLink] = None

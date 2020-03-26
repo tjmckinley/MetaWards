@@ -1,5 +1,6 @@
 
 from ._parameters import Parameters
+from ._network import Network
 
 
 __all__ = ["read_done_file",
@@ -28,6 +29,21 @@ def read_done_file(filename: str):
         raise ValueError(f"Possible corruption of {filename}: {e}")
 
 
+def fill_in_gaps(network: Network):
+    """Fills in gaps in the network"""
+    links = network.to_links
+
+    for i in range(1, len(network.to_links)):
+        link = links[i]
+        if network.nodes[link.ito].label != link.ito:
+            network.nodes[link.ito].label = link.ito
+            network.nnodes += 1
+
+
+def build_play_matrix(network: Network, params: Parameters):
+
+
+
 def build_wards_network(params: Parameters):
     """Creates a network from a file (specified in par->WorkFname) with format:
 
@@ -49,7 +65,7 @@ def build_wards_network(params: Parameters):
     from ._tolink import ToLink
 
     nodes = {}
-    links = []
+    links = [ToLink()]  # the code uses 1-indexing
 
     try:
         nlinks = 0
@@ -91,7 +107,7 @@ def build_wards_network(params: Parameters):
 
                 # original code does int(weight) even though this is a float?
                 link = ToLink(ifrom=from_id, ito=to_id, weight=int(weight),
-                              suscept=int(weight))
+                            suscept=int(weight))
 
                 links.append(link)
 
@@ -104,7 +120,7 @@ def build_wards_network(params: Parameters):
         raise ValueError(f"{params.input_files.work} is corrupted or "
                          f"unreadable? Error = {e.__class__}: {e}")
 
-    network = Network()
+    network = Network(nnodes=nnodes, nlinks=nlinks)
 
     if nnodes != len(nodes):
         raise AssertionError(f"Disagreement in number of nodes? {nnodes} "
@@ -118,6 +134,10 @@ def build_wards_network(params: Parameters):
             raise AssertionError(f"Invalid node key {key}: nnodes = {nnodes}")
 
         network.nodes[key] = value
+
+    fill_in_gaps(network)
+
+    build_play_matrix(network, params)
 
     return network
 
