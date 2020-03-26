@@ -20,21 +20,21 @@ class Node:
     end_we: int = None
     self_we: int = None
 
-    DayFOI: float = None        # numerator only
-    NightFOI: float = None      # numerator only
-    WeekendFOI: float = None    # numerator only
+    day_foi: float = 0.0        # numerator only
+    night_foi: float = 0.0      # numerator only
+    weekend_foi: float = 0.0    # numerator only
 
-    play_suscept: float = None
-    save_play_suscept: float = None
+    play_suscept: float = 0.0
+    save_play_suscept: float = 0.0
 
-    Denominator_N: float = None  #Denominator only
-    Denominator_D: float = None  # Maybe won't need
+    denominator_n: float = 0.0  #Denominator only
+    denominator_d: float = 0.0  # Maybe won't need
 
-    Denominator_P: float = None
-    Denominator_PD: float = None
-    x: float = None
-    y: float = None
-    b: float = None
+    denominator_p: float = 0.0
+    denominator_pd: float = 0.0
+    x: float = 0.0
+    y: float = 0.0
+    b: float = 0.0
 
     id: str = None
     vacid: int = None
