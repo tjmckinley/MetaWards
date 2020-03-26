@@ -1,4 +1,6 @@
 
+import math
+
 from ._parameters import Parameters
 from ._network import Network
 from ._node import Node
@@ -212,5 +214,45 @@ def build_wards_network_distance(params: Parameters):
 
     network = build_wards_network(params)
 
+    # ncov build does not have WEEKEND defined, so not writing this code now
+
+    wards = network.nodes
+    links = network.to_links
+    plinks = network.play
+
+    try:
+        with open(params.input_files.position, "r") as FILE:
+            line = FILE.readline()
+
+            while line:
+                words = line.split()
+                i1 = int(words[0])
+                x = float(words[1])
+                y = float(words[2])
+
+                wards[i1].x = x
+                wards[i1].y = y
+
+                line = FILE.readline()
+    except Exception as e:
+        raise ValueError(f"{params.input_files.position} is corrupted or "
+                         f"unreadable? Error = {e.__class__}: {e}")
+
+    for i in range(0, network.nlinks):  # shouldn't this be range(1, nlinks+1)?
+        link = links[i]
+        ward = wards[link.ifrom]
+        x1 = ward.x
+        y1 = ward.y
+
+        ward = wards[link.ito]
+        x2 = ward.x
+        y2 = ward.y
+
+        dx = x1 - x2
+        dy = y1 - y2
+
+        distance = math.sqrt(dx*dx + dy*dy)
+        plinks[i].distance = distance
+        links[i].distance = distance
 
     return network
