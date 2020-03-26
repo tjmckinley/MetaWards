@@ -52,5 +52,13 @@ def test_integration():
 
     (mindist, maxdist) = mw.get_min_max_distances(network)
 
+    params.dyn_dist_cutoff = maxdist + 1
+
+    s = -1
+
+    params.static_play_at_home = 0
+
+    mw.reset_everything(network=network, params=params)
+
 if __name__ == "__main__":
     test_integration()

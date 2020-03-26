@@ -12,7 +12,8 @@ __all__ = ["read_done_file",
            "build_wards_network_distance",
            "initialise_infections",
            "initialise_play_infections",
-           "get_min_max_distances"]
+           "get_min_max_distances",
+           "reset_everything"]
 
 
 def read_done_file(filename: str):
@@ -34,6 +35,52 @@ def read_done_file(filename: str):
 
     except Exception as e:
         raise ValueError(f"Possible corruption of {filename}: {e}")
+
+
+def reset_work_matrix(network: Network):
+    links = network.to_links
+
+    for i in range(1, network.nlinks+1):  # 1-indexed
+        if links[i] is None:
+            print(f"Missing a link at index {i}")
+        else:
+            links[i].suscept = links[i].weight
+
+
+def reset_play_matrix(network: Network):
+    links = network.play
+
+    for i in range(1, network.plinks+1):  # 1-indexed
+        if links[i] is None:
+            print(f"Missing a play link at index {i}?")
+        else:
+            links[i].weight = links[i].suscept
+
+
+def reset_play_susceptibles(network: Network):
+    nodes = network.nodes
+
+    for i in range(1, network.nnodes+1):  # 1-indexed
+        if nodes[i] is None:
+            print(f"Missing a node at index {i}?")
+        else:
+            nodes[i].play_suscept = nodes[i].save_play_suscept
+
+
+def reset_everything(network: Network, params: Parameters):
+    reset_work_matrix(network)
+    reset_play_matrix(network)
+    reset_play_susceptibles(network)
+
+    # if weekend
+    #    reset_weekend_matrix(network)
+
+    N_INF_CLASSES = params.disease_params.N_INF_CLASSES()
+
+    params.disease_params.contrib_foi = N_INF_CLASSES * [0]
+
+    for i in range(0, N_INF_CLASSES-1):   # why -1?
+        params.disease_params.contrib_foi[i] = 1
 
 
 def get_min_max_distances(network: Network):

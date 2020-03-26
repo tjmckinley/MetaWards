@@ -17,29 +17,29 @@ class Parameters:
 
     input_files: InputFiles = None
 
-    UVFilename: str = None
+    uv_filename: str = None
 
     disease_params: Disease = None
 
-    LengthDay: float = None
-    PLengthDay: float = None
+    length_day: float = None
+    plength_day: float = None
     initial_inf: int = None
 
-    StaticPlayAtHome: float = None
-    DynPlayAtHome: float = None
+    static_play_at_home: float = None
+    dyn_play_at_home: float = None
 
-    DataDistCutoff: float = None
-    DynDistCutoff: float = None
+    data_dist_cutoff: float = None
+    dyn_dist_cutoff: float = None
 
-    PlayToWork: float = None
-    WorkToPlay: float = None
+    play_to_work: float = None
+    work_to_play: float = None
 
-    LocalVaccinationThresh: int = None
-    GlobalDetectionThresh: int = None
-    DailyWardVaccinationCapacity: int = None
-    NeighbourWeightThreshold: float = None
+    local_vaccination_thresh: int = None
+    global_detection_thresh: int = None
+    daily_ward_vaccination_capacity: int = None
+    neighbour_weight_threshold: float = None
 
-    DailyImports: float = None # proportion of daily imports
+    daily_imports: float = None # proportion of daily imports
     UV: float = None
 
     @staticmethod
