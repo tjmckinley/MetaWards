@@ -8,6 +8,7 @@ _N_INF_CLASSES = 5   # the number of parameters in each list
 
 _diseases = {}
 
+@dataclass
 class Disease:
     """This class holds the parameters about a single disease"""
     beta: List[float]
