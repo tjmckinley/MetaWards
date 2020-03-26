@@ -39,6 +39,21 @@ class InputFiles:
                f"nodes_to_track = {self.nodes_to_track}\n" \
                f"additional_seeding = {self.additional_seeding}\n"
 
+    def assert_files_exist(self):
+        """Assert that all of the input files exist on disk"""
+        members = [attr for attr in dir(self)
+                    if not callable(getattr(self, attr))
+                        and not attr.startswith("__")]
+
+        print(members)
+
+        for member in members:
+            filename = getattr(self, member)
+            print(f"Testing {member} = {filename}")
+            if not os.path.exists(member) and os.path.isfile(member):
+                raise FileNotFoundError(
+                        f"Cannot find input file {member}")
+
     @staticmethod
     def set_files(name: str, files):
         """Set the input files associated with a particular key"""

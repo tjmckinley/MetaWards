@@ -85,6 +85,8 @@ class Parameters:
         print("Using input files:")
         print(input_files)
 
+        input_files.assert_files_exist()
+
         self.input_files = deepcopy(input_files)
 
     def read_file(self, filename: str, line_number: int):
