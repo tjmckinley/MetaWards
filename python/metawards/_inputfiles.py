@@ -45,14 +45,12 @@ class InputFiles:
                     if not callable(getattr(self, attr))
                         and not attr.startswith("__")]
 
-        print(members)
-
         for member in members:
             filename = getattr(self, member)
-            print(f"Testing {member} = {filename}")
-            if not os.path.exists(member) and os.path.isfile(member):
-                raise FileNotFoundError(
-                        f"Cannot find input file {member}")
+            if filename:
+                if not (os.path.exists(filename) and os.path.isfile(filename)):
+                    raise FileNotFoundError(
+                            f"Cannot find input file {member} = {filename}")
 
     @staticmethod
     def set_files(name: str, files):
@@ -87,7 +85,8 @@ _key4.position = os.path.join(_2011Data, "CBB2011.dat")
 _key4.seed = os.path.join(_2011Data, "seeds.dat")
 _key4.nodes_to_track = os.path.join(_2011Data, "seeds.dat")
 _key4.additional_seeding = os.path.join(_2011Data, "ExtraSeedsBrighton.dat")
-_key4.uv = os.path.join(_2011Data, "UVScaling.csv")
+_key4.uv = None          # Orig code has "UVScaling.csv" but this doesn't
+                         # exist and this variable is not yet used
 _key4.weekend = None     # this is not set in the original code?
 _key4.identifier = None  # this is not set in the original code?
 _key4.identifier2 = None # this is not set in the original code?
