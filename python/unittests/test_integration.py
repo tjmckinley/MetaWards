@@ -60,5 +60,8 @@ def test_integration():
 
     mw.reset_everything(network=network, params=params)
 
+    mw.rescale_play_matrix(network=network, params=params)
+
+
 if __name__ == "__main__":
     test_integration()

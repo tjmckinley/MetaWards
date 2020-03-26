@@ -13,7 +13,8 @@ __all__ = ["read_done_file",
            "initialise_infections",
            "initialise_play_infections",
            "get_min_max_distances",
-           "reset_everything"]
+           "reset_everything",
+           "rescale_play_matrix"]
 
 
 def read_done_file(filename: str):
@@ -35,6 +36,74 @@ def read_done_file(filename: str):
 
     except Exception as e:
         raise ValueError(f"Possible corruption of {filename}: {e}")
+
+
+def recalculate_play_denominator_day(network: Network, params: Parameters):
+
+    wards = network.nodes
+    links = network.play
+
+    for i in range(1, network.nnodes+1):  # 1-indexed
+        wards[i].denominator_pd = 0
+        wards[i].denominator_p = 0
+
+    sum = 0.0
+
+    for j in range(1, network.plinks+1):  # 1-indexed
+        link = links[j]
+        denom = link.weight * wards[link.ifrom].play_suscept
+        wards[link.ito].denominator_pd += denom
+
+        sum += denom
+
+    print(f"recalculate_play_denominator_day sum 1 = {sum}")
+
+    sum = 0.0
+
+    for i in range(1, network.nnodes+1):  # 1-indexed
+        ward = wards[i]
+
+        wards[i].denominator_pd = int(math.floor(ward.denominator_pd + 0.5))
+
+        wards[i].denominator_p = ward.play_suscept
+
+        if ward.play_suscept < 0.0:
+            print(f"Negative play_suscept? {ward}")
+
+        sum += wards[i].denominator_p
+
+    print(f"recalculate_play_denominator_day sum 2 = {sum}")
+
+
+def rescale_play_matrix(network: Network, params: Parameters):
+    """ Static Play At Home rescaling.
+	    for 1, everyone stays at home.
+	    for 0 a lot of people move around.
+    """
+
+    links = network.play
+    # nodes = network.nodes  # check if this is not needed in the code
+                             # as it was declared in the original function
+
+    if params.static_play_at_home > 0:
+        # if we are making people stay at home, then do this loop through nodes
+        # Rescale appropriately!
+        sclfac = 1.0 - params.static_play_at_home
+
+        for j in range(1, network.plinks+1):  # 1-indexed
+            link = links[j]
+
+            if link.ifrom != link.ito:
+                # if it's not the home ward, then reduce the
+                # number of play movers
+                links[j].weight = link.suscept * sclfac
+            else:
+                # if it is the home ward
+                links[j].weight = ((1.0 - link.suscept) * \
+                                   params.static_play_at_home) + \
+                                  link.suscept
+
+    recalculate_play_denominator_day(network=network, params=params)
 
 
 def reset_work_matrix(network: Network):
@@ -63,6 +132,9 @@ def reset_play_susceptibles(network: Network):
     for i in range(1, network.nnodes+1):  # 1-indexed
         if nodes[i] is None:
             print(f"Missing a node at index {i}?")
+            # create a null node - need to check if this is the best thing
+            # to do
+            nodes[i] = Node()
         else:
             nodes[i].play_suscept = nodes[i].save_play_suscept
 

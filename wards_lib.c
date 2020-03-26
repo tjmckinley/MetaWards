@@ -786,7 +786,7 @@ void RecalculatePlayDenominatorDay(network *net, parameters *par){
 	}
 
 
-	//printf("%f ",sum);
+	printf("RecalculatePlayDenominatorDay sum 1 %f \n",sum);
 
 	sum=0;
 
@@ -802,7 +802,7 @@ void RecalculatePlayDenominatorDay(network *net, parameters *par){
 
 	}
 
-	//printf("%f \n",sum);
+	printf("RecalculatePlayDenominatorDay sum 2 %f \n",sum);
 
 }
 
