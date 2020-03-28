@@ -6,6 +6,7 @@ from ._network import Network
 from ._node import Node
 from ._nodes import Nodes
 from ._tolink import ToLink
+from ._tolinks import ToLinks
 
 
 __all__ = ["read_done_file",
@@ -222,24 +223,24 @@ def fill_in_gaps(network: Network):
 
     for i in range(1, network.nlinks+1):  # careful of 1-indexing
         link = links[i]
-        if network.nodes[link.ito].label != link.ito:
-            network.nodes[link.ito].label = link.ito
+        if network.nodes.label[link.ito] != link.ito:
+            network.nodes.label[link.ito] = link.ito
             network.nnodes += 1
+            print("[CAREFUL!] Adding nodes...")
 
 
 def build_play_matrix(network: Network, params: Parameters,
                       max_links: int):
 
     nlinks = 0
-    links = (max_links + 1) * [None]
+    links = ToLinks(max_links + 1)
 
     try:
         with open(params.input_files.play) as FILE:
             nodes = network.nodes
 
             # resets the node label as a flag to check progress?
-            for j in range(1, network.nnodes+1): # careful of 1-indexing
-                nodes[j].label = None
+            nodes.label[:] = -1
 
             line = FILE.readline()
             while line:
@@ -255,21 +256,22 @@ def build_play_matrix(network: Network, params: Parameters,
                                 f"Zero in link list: ${from_id}-${to_id}! "
                                 f"Renumber files and start again")
 
-                if nodes[from_id].label is None:
-                    nodes[from_id].label = from_id
-                    nodes[from_id].begin_p = nlinks
-                    nodes[from_id].end_p = nlinks
+                if nodes.label[from_id] == -1:
+                    nodes.label[from_id] = from_id
+                    nodes.begin_p[from_id] = nlinks
+                    nodes.end_p[from_id] = nlinks
 
                 if from_id == to_id:
-                    nodes[from_id].self_p = nlinks
+                    nodes.self_p[from_id] = nlinks
 
-                nodes[from_id].end_p += 1
+                nodes.end_p[from_id] += 1
 
-                links[nlinks] = ToLink(ifrom=from_id, ito=to_id,
-                                       weight=weight)
+                links.ifrom[nlinks] = from_id
+                links.ito[nlinks] = to_id
+                links.weight[nlinks] = weight
 
-                nodes[from_id].denominator_p += weight  # not denominator_p
-                nodes[from_id].play_suscept += weight
+                nodes.denominator_p.denominator_p[from_id] += weight
+                nodes.play_suscept[from_id] += weight
 
                 line = FILE.readline()
     except Exception as e:
@@ -280,9 +282,9 @@ def build_play_matrix(network: Network, params: Parameters,
 
     for j in range(1, nlinks+1):   # careful 1-indexed
         if renormalise:
-            links[j].weight /= nodes[links[j].ifrom].denominator_p
+            links.weight[j] /= nodes.denominator_p[links.ifrom[j]]
 
-        links[j].suscept = links[j].weight
+        links.suscept[j] = links.weight[j]
 
     fill_in_gaps(network)
 
@@ -295,9 +297,9 @@ def build_play_matrix(network: Network, params: Parameters,
                 i1 = int(words[0])
                 i2 = int(words[1])
 
-                nodes[i1].play_suscept = i2
-                nodes[i1].denominator_p = i2
-                nodes[i1].save_play_suscept = i2
+                nodes.play_suscept[i1] = i2
+                nodes.denominator_p[i1] = i2
+                nodes.save_play_suscept[i1] = i2
 
                 line = FILE.readline()
 
@@ -329,7 +331,7 @@ def build_wards_network(params: Parameters,
         play=1 build the play matrix in net->play
     """
     nodes = Nodes(max_nodes+1)         # need to pre-allocate nodes and links
-    links = (max_links + 1) * [None]   # both of these use 1-indexing
+    links = ToLinks(max_links+1)       # both of these use 1-indexing
 
     nlinks = 0
     nnodes = 0
@@ -365,8 +367,10 @@ def build_wards_network(params: Parameters,
                 nodes.end_to[from_id] += 1
 
                 # original code does int(weight) even though this is a float?
-                links[nlinks] = ToLink(ifrom=from_id, ito=to_id,
-                                       weight=int(weight), suscept=int(weight))
+                links.ifrom[nlinks] = from_id
+                links.ito[nlinks] = to_id
+                links.weight[nlinks] = int(weight)
+                links.suscept[nlinks] = int(weight)
 
                 # again, int(weight) is in the code despite these being floats?
                 nodes.denominator_n[from_id] += int(weight)
@@ -385,8 +389,9 @@ def build_wards_network(params: Parameters,
     print(f"Number of nodes equals {nnodes}")
     print(f"Number of links equals {nlinks}")
 
-    # resize the nodes down to save memory
-    nodes.resize(nnodes)
+    # resize the nodes down to save memory (remember 1-indexed)
+    nodes.resize(nnodes+1)
+    links.resize(nlinks+1)
 
     network.nodes = nodes
     network.to_links = links

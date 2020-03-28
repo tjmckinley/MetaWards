@@ -89,7 +89,7 @@ class ToLinks:
                       weight=self.weight[i], suscept=self.suscept[i],
                       distance=self.distance[i], A=self.A[i])
 
-    def __setitem__(self, i: int, value: Node):
+    def __setitem__(self, i: int, value: ToLink):
         """Set the item as index 'i' equal to 'value'. This deep-copies
            'value' into this container
         """
