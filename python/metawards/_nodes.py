@@ -150,39 +150,39 @@ class Nodes:
         """
         i = self.assert_valid_index(i)
 
-        self.label[i] = value.label
-        self.begin_to[i] = value.begin_to
-        self.end_to[i] = value.end_to
-        self.self_w[i] = value.self_w
+        self.label[i] = value.label if value.label is not None else -1
+        self.begin_to[i] = value.begin_to if value.begin_to is not None else -1
+        self.end_to[i] = value.end_to if value.end_to is not None else -1
+        self.self_w[i] = value.self_w if value.self_w is not None else -1
 
-        self.begin_p[i] = value.begin_p
-        self.end_p[i] = value.end_p
-        self.self_p[i] = value.self._p
+        self.begin_p[i] = value.begin_p if value.begin_p is not None else -1
+        self.end_p[i] = value.end_p if value.end_p is not None else -1
+        self.self_p[i] = value.self._p if value.self_p is not None else -1
 
-        self.begin_we[i] = value.begin_we
-        self.end_we[i] = value.end_we
-        self.self_we[i] = value.self_we
+        self.begin_we[i] = value.begin_we if value.begin_we is not None else -1
+        self.end_we[i] = value.end_we if value.end_we is not None else -1
+        self.self_we[i] = value.self_we if value.self_we is not None else -1
 
-        self.day_foi[i] = value.day_foi
-        self.night_foi[i] = value.night_foi
-        self.weekend_foi[i] = value.weekend_foi
+        self.day_foi[i] = value.day_foi if value.day_foi is not None else 0.0
+        self.night_foi[i] = value.night_foi if value.night_foi is not None else 0.0
+        self.weekend_foi[i] = value.weekend_foi if value.weekend_foi is not None else 0.0
 
-        self.play_suscept[i] = value.play_suscept
-        self.save_play_suscept[i] = value.save_play_suscept
+        self.play_suscept[i] = value.play_suscept if value.play_suscept is not None else 0.0
+        self.save_play_suscept[i] = value.save_play_suscept if value.save_play_suscept is not None else 0.0
 
-        self.denominator_n[i] = value.denominator_n
-        self.denominator_d[i] = value.denominator_d
+        self.denominator_n[i] = value.denominator_n if value.denominator_n is not None else 0.0
+        self.denominator_d[i] = value.denominator_d if value.denominator_d is not None else 0.0
 
-        self.denominator_p[i] = value.denominator_p
-        self.denominator_pd[i] = value.denominator_pd
+        self.denominator_p[i] = value.denominator_p if value.denominator_p is not None else 0.0
+        self.denominator_pd[i] = value.denominator_pd if value.denominator_pd is not None else 0.0
 
-        self.x[i] = value.x
-        self.y[i] = value.y
+        self.x[i] = value.x if value.x is not None else 0.0
+        self.y[i] = value.y if value.y is not None else 0.0
 
-        self.b[i] = value.b
+        self.b[i] = value.b if value.b is not None else 0.0
 
-        self.id[i] = value.id
-        self.vacid[i] = value.vacid
+        self.id[i] = value.id  # this is a python list and can have None
+        self.vacid[i] = value.vacid if value.vacid is not None else -1
 
     def resize(self, N: int):
         """Resize this container to hold 'N' nodes. This will expand
