@@ -62,6 +62,12 @@ def test_integration():
 
     mw.rescale_play_matrix(network=network, params=params)
 
+    params.play_to_work = 0
+    params.work_to_play = 0
+
+    # TOMORROW - WRITE THIS BELOW FUNCTION
+    #mw.move_population_from_play_to_work(network=network, params=params,
+    #                                     rng=rng)
 
 if __name__ == "__main__":
     test_integration()
