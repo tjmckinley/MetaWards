@@ -41,18 +41,21 @@ def move_population_from_play_to_work(network: Network, params: Parameters,
 
     if params.work_to_play > 0.0:
         for i in range(1, network.nlinks+1):
-            to_move = math.ceil(links[i].suscept * params.work_to_play)
+            suscept = links.suscept[i]
+            to_move = math.ceil(suscept * params.work_to_play)
 
-            if to_move > links[i].suscept:
+            if to_move > suscept:
                 print(f"to_move > links[{i}].suscept")
 
-            links[i].suscept -= to_move
-            wards[links[i].ifrom].play_suscept += to_move
+            links.suscept[i] -= to_move
+            wards.play_suscept[links.ifrom[i]] += to_move
 
     if params.play_to_work > 0.0:
         for i in range(1, network.plinks+1):
-            temp = params.play_to_work * (play[i].weight *
-                                          wards[play[i].ifrom].save_play_suscept)
+            ifrom = play.ifrom[i]
+
+            temp = params.play_to_work * (play.weight[i] *
+                                          wards.save_play_suscept[ifrom])
 
             to_move = math.floor(temp)
             p = temp - to_move
@@ -63,11 +66,11 @@ def move_population_from_play_to_work(network: Network, params: Parameters,
                 to_move += 1.0
                 countrem -= 1.0
 
-            if wards[play[i].ifrom].play_suscept < to_move:
-                to_move = wards[play[i].ifrom].play_suscept
+            if wards.play_suscept[ifrom] < to_move:
+                to_move = wards.play_suscept[ifrom]
 
-            wards[play[i].ifrom].play_suscept -= to_move
-            links[i].suscept += to_move
+            wards.play_suscept[ifrom] -= to_move
+            links.suscept[i] += to_move
 
     recalculate_work_denominator_day(network=network, params=params)
     recalculate_play_denominator_day(network=network, params=params)
@@ -106,10 +109,12 @@ def recalculate_work_denominator_day(network: Network, params: Parameters):
         wards.denominator_n[i] = 0.0
 
     for j in range(1, network.nlinks+1):
-        link = links[j]
-        wards[link.ito].denominator_d += link.suscept
-        wards[link.ifrom].denominator_n += link.suscept
-        sum += link.suscept
+        ifrom = links.ifrom[j]
+        ito = links.ito[j]
+        suscept = links.suscept[j]
+        wards.denominator_d[ito] += suscept
+        wards.denominator_n[ifrom] += suscept
+        sum += suscept
 
     print(f"recalculate_work_denominator_day sum = {sum}")
 
@@ -120,15 +125,17 @@ def recalculate_play_denominator_day(network: Network, params: Parameters):
     links = network.play
 
     for i in range(1, network.nnodes+1):  # 1-indexed
-        wards[i].denominator_pd = 0
-        wards[i].denominator_p = 0
+        wards.denominator_pd[i] = 0
+        wards.denominator_p[i] = 0
 
     sum = 0.0
 
     for j in range(1, network.plinks+1):  # 1-indexed
-        link = links[j]
-        denom = link.weight * wards[link.ifrom].play_suscept
-        wards[link.ito].denominator_pd += denom
+        ifrom = links.ifrom[j]
+        ito = links.ito[j]
+        weight = links.weight[j]
+        denom = weight * wards.play_suscept[ifrom]
+        wards.denominator_pd[ito] += denom
 
         sum += denom
 
@@ -137,16 +144,17 @@ def recalculate_play_denominator_day(network: Network, params: Parameters):
     sum = 0.0
 
     for i in range(1, network.nnodes+1):  # 1-indexed
-        ward = wards[i]
+        pd = wards.denominator_pd[i]
+        play_suscept = wards.play_suscept[i]
 
-        wards[i].denominator_pd = int(math.floor(ward.denominator_pd + 0.5))
+        wards.denominator_pd[i] = int(math.floor(pd + 0.5))
 
-        wards[i].denominator_p = ward.play_suscept
+        wards.denominator_p[i] = play_suscept
 
-        if ward.play_suscept < 0.0:
-            print(f"Negative play_suscept? {ward}")
+        if play_suscept < 0.0:
+            print(f"Negative play_suscept? {wards[i]}")
 
-        sum += wards[i].denominator_p
+        sum += play_suscept
 
     print(f"recalculate_play_denominator_day sum 2 = {sum}")
 
@@ -167,17 +175,19 @@ def rescale_play_matrix(network: Network, params: Parameters):
         sclfac = 1.0 - params.static_play_at_home
 
         for j in range(1, network.plinks+1):  # 1-indexed
-            link = links[j]
+            ifrom = links[j].ifrom
+            ito = links[j].ito
 
-            if link.ifrom != link.ito:
+            if ifrom != ito:
                 # if it's not the home ward, then reduce the
                 # number of play movers
-                links[j].weight = link.suscept * sclfac
+                links.weight[j] = links.suscept[j] * sclfac
             else:
                 # if it is the home ward
-                links[j].weight = ((1.0 - link.suscept) * \
+                suscept = links.suscept[j]
+                links.weight[j] = ((1.0 - suscept) * \
                                    params.static_play_at_home) + \
-                                  link.suscept
+                                   suscept
 
     recalculate_play_denominator_day(network=network, params=params)
 
@@ -186,33 +196,33 @@ def reset_work_matrix(network: Network):
     links = network.to_links
 
     for i in range(1, network.nlinks+1):  # 1-indexed
-        if links[i] is None:
+        if links.ifrom[i] == -1:
             print(f"Missing a link at index {i}")
         else:
-            links[i].suscept = links[i].weight
+            links.suscept[i] = links.weight[i]
 
 
 def reset_play_matrix(network: Network):
     links = network.play
 
     for i in range(1, network.plinks+1):  # 1-indexed
-        if links[i] is None:
+        if links.ifrom[i] == -1:
             print(f"Missing a play link at index {i}?")
         else:
-            links[i].weight = links[i].suscept
+            links.weight[i] = links.suscept[i]
 
 
 def reset_play_susceptibles(network: Network):
     nodes = network.nodes
 
     for i in range(1, network.nnodes+1):  # 1-indexed
-        if nodes[i] is None:
+        if nodes.label[i] == -1:
             print(f"Missing a node at index {i}?")
             # create a null node - need to check if this is the best thing
             # to do
             nodes[i] = Node()
         else:
-            nodes[i].play_suscept = nodes[i].save_play_suscept
+            nodes.play_suscept[i] = nodes.save_play_suscept[i]
 
 
 def reset_everything(network: Network, params: Parameters):
@@ -238,8 +248,8 @@ def get_min_max_distances(network: Network):
 
     links = network.to_links
 
-    for link in links:
-        dist = link.distance
+    for i in range(1, network.nlinks+1):
+        dist = links.distance[i]
 
         if dist:
             if mindist is None:
