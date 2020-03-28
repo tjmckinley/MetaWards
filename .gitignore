@@ -1,4 +1,8 @@
 *.dat
 /metawards
 python/.ipynb_checkpoints
+python/build
+python/metawards_c.c
+python/metawards_c.cpython*
 __pycache__
+

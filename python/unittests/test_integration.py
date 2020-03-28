@@ -2,7 +2,7 @@
 import pytest
 import os
 
-import metawards as mw
+import metawards_c as mw
 
 from pygsl import rng as gsl_rng
 
