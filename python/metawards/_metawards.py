@@ -1,6 +1,8 @@
 
 import math
 
+from numba import jit
+
 from ._parameters import Parameters
 from ._network import Network
 from ._node import Node
@@ -270,7 +272,7 @@ def build_play_matrix(network: Network, params: Parameters,
                 links.ito[nlinks] = to_id
                 links.weight[nlinks] = weight
 
-                nodes.denominator_p.denominator_p[from_id] += weight
+                nodes.denominator_p[from_id] += weight
                 nodes.play_suscept[from_id] += weight
 
                 line = FILE.readline()
@@ -338,6 +340,38 @@ def build_wards_network(params: Parameters,
 
     line = None
 
+    @jit
+    def assign_value(nodes: Nodes, links: ToLinks,
+                     from_id: int, to_id: int, weight: float,
+                     nlinks: int, nnodes: int):
+        nlinks += 1
+
+        if nodes.label[from_id] == -1:
+            nodes.label[from_id] = from_id
+            nodes.begin_to[from_id] = nlinks
+            nodes.end_to[from_id] = nlinks
+            nnodes += 1
+
+        if from_id == to_id:
+            nodes.self_w[from_id] = nlinks
+
+        nodes.end_to[from_id] += 1
+
+        # original code does int(weight) even though this is a float?
+        links.ifrom[nlinks] = from_id
+        links.ito[nlinks] = to_id
+        links.weight[nlinks] = int(weight)
+        links.suscept[nlinks] = int(weight)
+
+        # again, int(weight) is in the code despite these being floats?
+        nodes.denominator_n[from_id] += int(weight)
+
+        if nodes.label[to_id] == -1:
+            nodes.denominator_d[to_id] += int(weight)
+
+        return (nnodes, nlinks)
+
+
     try:
         with open(params.input_files.work, "r") as FILE:
             # this file is a set of links of from and to node IDs, with weights
@@ -350,34 +384,15 @@ def build_wards_network(params: Parameters,
 
                 if from_id == 0 or to_id == 0:
                     raise ValueError(
-                                f"Zero in link list: ${from_id}-${to_id}! "
+                                f"Zero in link list {from_id}-{to_id} "
                                 f"Renumber files and start again")
 
-                nlinks += 1
-
-                if nodes.label[from_id] == -1:
-                    nodes.label[from_id] = from_id
-                    nodes.begin_to[from_id] = nlinks
-                    nodes.end_to[from_id] = nlinks
-                    nnodes += 1
-
-                if from_id == to_id:
-                    nodes.self_w[from_id] = nlinks
-
-                nodes.end_to[from_id] += 1
-
-                # original code does int(weight) even though this is a float?
-                links.ifrom[nlinks] = from_id
-                links.ito[nlinks] = to_id
-                links.weight[nlinks] = int(weight)
-                links.suscept[nlinks] = int(weight)
-
-                # again, int(weight) is in the code despite these being floats?
-                nodes.denominator_n[from_id] += int(weight)
-
-                if nodes.label[to_id] == -1:
-                    nodes.denominator_d[to_id] += int(weight)
-
+                (nnodes, nlinks) = assign_value(nodes=nodes, links=links,
+                                                from_id=from_id,
+                                                to_id=to_id,
+                                                weight=weight,
+                                                nnodes=nnodes,
+                                                nlinks=nlinks)
                 line = FILE.readline()
     except Exception as e:
         raise ValueError(f"{params.input_files.work} is corrupted or "
