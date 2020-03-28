@@ -14,7 +14,7 @@ def _resize(a, N, default_value):
     if N < len(a):
         return a[0:N]
     else:
-        return a + array(a.typecode, N*[default_value])
+        return a + array(a.typecode, (N-len(a))*[default_value])
 
 
 class Nodes:
@@ -112,39 +112,43 @@ class Nodes:
         """
         i = self.assert_valid_index(i)
 
-        return Node(label=self.label[i],
-                    begin_to=self.begin_to[i],
-                    end_to=self.end_to[i],
-                    self_w=self.self_w[i],
+        try:
+            return Node(label=self.label[i],
+                        begin_to=self.begin_to[i],
+                        end_to=self.end_to[i],
+                        self_w=self.self_w[i],
 
-                    begin_p=self.begin_p[i],
-                    end_p=self.end_p[i],
-                    self_p=self.self_p[i],
+                        begin_p=self.begin_p[i],
+                        end_p=self.end_p[i],
+                        self_p=self.self_p[i],
 
-                    begin_we=self.begin_we[i],
-                    end_we=self.end_we[i],
-                    self_we=self.self_we[i],
+                        begin_we=self.begin_we[i],
+                        end_we=self.end_we[i],
+                        self_we=self.self_we[i],
 
-                    day_foi=self.day_foi[i],
-                    night_foi=self.night_foi[i],
-                    weekend_foi=self.weekend_foi[i],
+                        day_foi=self.day_foi[i],
+                        night_foi=self.night_foi[i],
+                        weekend_foi=self.weekend_foi[i],
 
-                    play_suscept=self.play_suscept[i],
-                    save_play_suscept=self.save_play_suscept[i],
+                        play_suscept=self.play_suscept[i],
+                        save_play_suscept=self.save_play_suscept[i],
 
-                    denominator_n=self.denominator_n[i],
-                    denominator_d=self.denominator_d[i],
+                        denominator_n=self.denominator_n[i],
+                        denominator_d=self.denominator_d[i],
 
-                    denominator_p=self.denominator_p[i],
-                    denominator_pd=self.denominator_pd[i],
+                        denominator_p=self.denominator_p[i],
+                        denominator_pd=self.denominator_pd[i],
 
-                    x=self.x[i],
-                    y=self.y[i],
+                        x=self.x[i],
+                        y=self.y[i],
 
-                    b=self.b[i],
+                        b=self.b[i],
 
-                    id=self.id[i],
-                    vacid=self.vacid[i])
+                        id=self.id[i],
+                        vacid=self.vacid[i])
+        except Exception as e:
+            print(f"Error at index {i}: size = {len(self)}: {e.__class__} {e}")
+            raise e
 
     def __setitem__(self, i: int, value: Node):
         """Set the item as index 'i' equal to 'value'. This deep-copies
@@ -239,7 +243,8 @@ class Nodes:
 
         self.vacid = _resize(self.vacid, N, -1)
 
-        if N < len(self.id):
+        if N < size:
             self.id = self.id[0:N]
         else:
-            self.id += (N - len(self.id)) * [None]
+            self.id = self.id + ((N - size) * [None])
+            assert(len(self.id) == N)

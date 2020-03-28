@@ -135,6 +135,8 @@ network *BuildWardsNetwork(parameters *par)
 
 	BuildPlayMatrix(net,par);
 
+	printf("Number of nodes after play matrix equals %d\n", net->nnodes);
+
 	return net;
 
 }
@@ -410,6 +412,7 @@ void FillInGaps(network *net){
 	for(i=1;i<=net->nlinks;i++){
 
 		if(nodes[llinks[i].ito].label!=llinks[i].ito){
+			printf("Adding link %d %d %d\n", i, llinks[i].ito, net->nnodes);
 			nodes[llinks[i].ito].label=llinks[i].ito;
 			net->nnodes++;
 		}

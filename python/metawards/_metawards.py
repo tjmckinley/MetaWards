@@ -1,10 +1,13 @@
 
 import math
+from array import array
 
 from ._parameters import Parameters
 from ._network import Network
 from ._node import Node
+from ._nodes import Nodes
 from ._tolink import ToLink
+from ._tolinks import ToLinks
 
 
 __all__ = ["read_done_file",
@@ -99,8 +102,8 @@ def recalculate_work_denominator_day(network: Network, params: Parameters):
     sum = 0
 
     for i in range(1, network.nnodes+1):
-        wards[i].denominator_d = 0.0
-        wards[i].denominator_n = 0.0
+        wards.denominator_d[i] = 0.0
+        wards.denominator_n[i] = 0.0
 
     for j in range(1, network.nlinks+1):
         link = links[j]
@@ -292,26 +295,32 @@ def fill_in_gaps(network: Network):
     """Fills in gaps in the network"""
     links = network.to_links
 
+    added = 0
+
     for i in range(1, network.nlinks+1):  # careful of 1-indexing
-        link = links[i]
-        if network.nodes[link.ito].label != link.ito:
-            network.nodes[link.ito].label = link.ito
+        link_to = links.ito[i]
+        if network.nodes.label[link_to] != link_to:
+            print(f"ADDING LINK {i} {link_to} {network.nnodes}")
+            network.nodes.label[link_to] = link_to
             network.nnodes += 1
+
+            added += 1
+            assert added < 20   # something if too many missing links
 
 
 def build_play_matrix(network: Network, params: Parameters,
                       max_links: int):
 
     nlinks = 0
-    links = (max_links + 1) * [None]
+    links = ToLinks(max_links + 1)
 
     try:
         with open(params.input_files.play) as FILE:
-            nodes = network.nodes
-
             # resets the node label as a flag to check progress?
-            for j in range(1, network.nnodes+1): # careful of 1-indexing
-                nodes[j].label = None
+            for j in range(1, network.nnodes+1):
+                network.nodes.label[j] = -1
+
+            nodes = network.nodes
 
             line = FILE.readline()
             while line:
@@ -327,21 +336,22 @@ def build_play_matrix(network: Network, params: Parameters,
                                 f"Zero in link list: ${from_id}-${to_id}! "
                                 f"Renumber files and start again")
 
-                if nodes[from_id].label is None:
-                    nodes[from_id].label = from_id
-                    nodes[from_id].begin_p = nlinks
-                    nodes[from_id].end_p = nlinks
+                if nodes.label[from_id] == -1:
+                    nodes.label[from_id] = from_id
+                    nodes.begin_p[from_id] = nlinks
+                    nodes.end_p[from_id] = nlinks
 
                 if from_id == to_id:
-                    nodes[from_id].self_p = nlinks
+                    nodes.self_p[from_id] = nlinks
 
-                nodes[from_id].end_p += 1
+                nodes.end_p[from_id] += 1
 
-                links[nlinks] = ToLink(ifrom=from_id, ito=to_id,
-                                       weight=weight)
+                links.ifrom[nlinks] = from_id
+                links.ito[nlinks] = to_id
+                links.weight[nlinks] = weight
 
-                nodes[from_id].denominator_p += weight  # not denominator_p
-                nodes[from_id].play_suscept += weight
+                nodes.denominator_p[from_id] += weight  # not denominator_p
+                nodes.play_suscept[from_id] += weight
 
                 line = FILE.readline()
     except Exception as e:
@@ -352,9 +362,9 @@ def build_play_matrix(network: Network, params: Parameters,
 
     for j in range(1, nlinks+1):   # careful 1-indexed
         if renormalise:
-            links[j].weight /= nodes[links[j].ifrom].denominator_p
+            links.weight[j] /= nodes.denominator_p[links.ifrom[j]]
 
-        links[j].suscept = links[j].weight
+        links.suscept[j] = links.weight[j]
 
     fill_in_gaps(network)
 
@@ -367,9 +377,9 @@ def build_play_matrix(network: Network, params: Parameters,
                 i1 = int(words[0])
                 i2 = int(words[1])
 
-                nodes[i1].play_suscept = i2
-                nodes[i1].denominator_p = i2
-                nodes[i1].save_play_suscept = i2
+                nodes.play_suscept[i1] = i2
+                nodes.denominator_p[i1] = i2
+                nodes.save_play_suscept[i1] = i2
 
                 line = FILE.readline()
 
@@ -400,8 +410,8 @@ def build_wards_network(params: Parameters,
         play=0 builds network from input file and NOTHING ELSE
         play=1 build the play matrix in net->play
     """
-    nodes = (max_nodes + 1) * [None]   # need to pre-allocate nodes and links
-    links = (max_links + 1) * [None]   # both of these use 1-indexing
+    nodes = Nodes(max_nodes + 1)     # need to pre-allocate nodes and links
+    links = ToLinks(max_links + 1)   # both of these use 1-indexing
 
     nlinks = 0
     nnodes = 0
@@ -425,27 +435,27 @@ def build_wards_network(params: Parameters,
 
                 nlinks += 1
 
-                if nodes[from_id] is None or nodes[from_id].label is None:
-                    nodes[from_id] = Node(label=from_id, begin_to=nlinks,
-                                          end_to=nlinks)
+                if nodes.label[from_id] == -1:
+                    nodes.label[from_id] = from_id
+                    nodes.begin_to[from_id] = nlinks
+                    nodes.end_to[from_id] = nlinks
                     nnodes += 1
 
                 if from_id == to_id:
-                    nodes[from_id].self_w = nlinks
+                    nodes.self_w[from_id] = nlinks
 
-                nodes[from_id].end_to += 1
+                nodes.end_to[from_id] += 1
 
                 # original code does int(weight) even though this is a float?
-                links[nlinks] = ToLink(ifrom=from_id, ito=to_id,
-                                       weight=int(weight), suscept=int(weight))
+                links.ifrom[nlinks] = from_id
+                links.ito[nlinks] = to_id
+                links.weight[nlinks] = int(weight)
+                links.suscept[nlinks] = int(weight)
 
                 # again, int(weight) is in the code despite these being floats?
-                nodes[from_id].denominator_n += int(weight)
+                nodes.denominator_n[from_id] += int(weight)
 
-                if nodes[to_id] is None:
-                    nodes[to_id] = Node()
-
-                nodes[to_id].denominator_d += int(weight)
+                nodes.denominator_d[to_id] += int(weight)
 
                 line = FILE.readline()
     except Exception as e:
@@ -455,11 +465,11 @@ def build_wards_network(params: Parameters,
 
     network = Network(nnodes=nnodes, nlinks=nlinks)
 
-    print(f"Number of nodes equals {nnodes}")
-    print(f"Number of links equals {nlinks}")
-
     network.nodes = nodes
     network.to_links = links
+
+    print(f"Number of nodes equals {nnodes}")
+    print(f"Number of links equals {nlinks}")
 
     fill_in_gaps(network)
 
@@ -467,10 +477,12 @@ def build_wards_network(params: Parameters,
 
     build_play_matrix(network=network, params=params, max_links=max_links)
 
-    # save memory by removing excess nodes and links
-    network.nodes = network.nodes[0:network.nnodes+1]
-    network.to_links = network.to_links[0:network.nlinks+1]
-    network.play = network.play[0:network.plinks+1]
+    print(f"Number of nodes after build play equals {network.nnodes}")
+
+    print(f"Resize nodes to {network.nnodes + 1}")
+    network.nodes.resize(network.nnodes + 1)     # remember 1-indexed
+    network.to_links.resize(network.nlinks + 1)  # remember 1-indexed
+    network.play.resize(network.plinks + 1)      # remember 1-indexed
 
     return network
 
@@ -502,8 +514,8 @@ def build_wards_network_distance(params: Parameters):
                 x = float(words[1])
                 y = float(words[2])
 
-                wards[i1].x = x
-                wards[i1].y = y
+                wards.x[i1] = x
+                wards.y[i1] = y
 
                 line = FILE.readline()
     except Exception as e:
@@ -518,28 +530,11 @@ def build_wards_network_distance(params: Parameters):
                                         # suggests this should be...
         link = links[i]
 
-        if link is None:
-            print(f"Missing link {i}?")
-            links[i] = ToLink()
-            continue
-
         ward = wards[link.ifrom]
-
-        if ward is None:
-            print(f"Missing ward {link.ifrom}?")
-            wards[link.ifrom] = Node()
-            ward = wards[link.ifrom]
-
         x1 = ward.x
         y1 = ward.y
 
         ward = wards[link.ito]
-
-        if ward is None:
-            print(f"Missing ward {link.ito}?")
-            wards[link.ito] = Node()
-            ward = wards[link.ito]
-
         x2 = ward.x
         y2 = ward.y
 
@@ -547,12 +542,12 @@ def build_wards_network_distance(params: Parameters):
         dy = y1 - y2
 
         distance = math.sqrt(dx*dx + dy*dy)
-        links[i].distance = distance
+        links.distance[i] = distance
         total_distance += distance
 
         # below line doesn't make sense and doesn't work. Why would the ith
         # play link be related to the ith work link?
-        #plinks[i].distance = distance
+        #plinks.distance[i] = distance
 
     print(f"Total distance equals {total_distance}")
 
