@@ -211,7 +211,7 @@ class Nodes:
 
         self.begin_p = _resize(self.begin_p, N, -1)
         self.end_p = _resize(self.end_p, N, -1)
-        self.self_p = _resize(self.self._p, N, -1)
+        self.self_p = _resize(self.self_p, N, -1)
 
         self.begin_we = _resize(self.begin_we, N, -1)
         self.end_we = _resize(self.end_we, N, -1)

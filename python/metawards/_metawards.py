@@ -4,6 +4,7 @@ import math
 from ._parameters import Parameters
 from ._network import Network
 from ._node import Node
+from ._nodes import Nodes
 from ._tolink import ToLink
 
 
@@ -327,7 +328,7 @@ def build_wards_network(params: Parameters,
         play=0 builds network from input file and NOTHING ELSE
         play=1 build the play matrix in net->play
     """
-    nodes = (max_nodes + 1) * [None]   # need to pre-allocate nodes and links
+    nodes = Nodes(max_nodes+1)         # need to pre-allocate nodes and links
     links = (max_links + 1) * [None]   # both of these use 1-indexing
 
     nlinks = 0
@@ -352,27 +353,26 @@ def build_wards_network(params: Parameters,
 
                 nlinks += 1
 
-                if nodes[from_id] is None or nodes[from_id].label is None:
-                    nodes[from_id] = Node(label=from_id, begin_to=nlinks,
-                                          end_to=nlinks)
+                if nodes.label[from_id] == -1:
+                    nodes.label[from_id] = from_id
+                    nodes.begin_to[from_id] = nlinks
+                    nodes.end_to[from_id] = nlinks
                     nnodes += 1
 
                 if from_id == to_id:
-                    nodes[from_id].self_w = nlinks
+                    nodes.self_w[from_id] = nlinks
 
-                nodes[from_id].end_to += 1
+                nodes.end_to[from_id] += 1
 
                 # original code does int(weight) even though this is a float?
                 links[nlinks] = ToLink(ifrom=from_id, ito=to_id,
                                        weight=int(weight), suscept=int(weight))
 
                 # again, int(weight) is in the code despite these being floats?
-                nodes[from_id].denominator_n += int(weight)
+                nodes.denominator_n[from_id] += int(weight)
 
-                if nodes[to_id] is None:
-                    nodes[to_id] = Node()
-
-                nodes[to_id].denominator_d += int(weight)
+                if nodes.label[to_id] == -1:
+                    nodes.denominator_d[to_id] += int(weight)
 
                 line = FILE.readline()
     except Exception as e:
@@ -384,6 +384,9 @@ def build_wards_network(params: Parameters,
 
     print(f"Number of nodes equals {nnodes}")
     print(f"Number of links equals {nlinks}")
+
+    # resize the nodes down to save memory
+    nodes.resize(nnodes)
 
     network.nodes = nodes
     network.to_links = links
