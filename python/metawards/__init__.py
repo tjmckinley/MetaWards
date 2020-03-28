@@ -9,3 +9,7 @@ from ._metawards import *
 from ._parameters import *
 from ._disease import *
 from ._inputfiles import *
+from ._nodes import *
+from ._node import *
+from ._tolink import *
+
