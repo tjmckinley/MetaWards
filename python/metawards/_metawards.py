@@ -14,7 +14,60 @@ __all__ = ["read_done_file",
            "initialise_play_infections",
            "get_min_max_distances",
            "reset_everything",
-           "rescale_play_matrix"]
+           "rescale_play_matrix",
+           "move_population_from_play_to_work"]
+
+
+def move_population_from_play_to_work(network: Network, params: Parameters,
+                                      rng):
+    """And Vice Versa From Work to Play
+       The relevant parameters are par->PlayToWork
+                                   and par->WorkToPlay
+
+       When both are 0, don't do anything;
+       When PlayToWork > 0 move par->PlayToWork proportion from Play to Work.
+       When WorkToPlay > 0 move par->WorkToPlay proportion from Work to Play.
+    """
+
+    countrem = 0.0
+    check = 0.0     # don't use check and doesn't use the random generator?
+
+    links = network.to_links   # workers, regular movements
+    wards = network.nodes
+    play = network.play        # links of players
+
+    if params.work_to_play > 0.0:
+        for i in range(1, network.nlinks+1):
+            to_move = math.ceil(links[i].suscept * params.work_to_play)
+
+            if to_move > links[i].suscept:
+                print(f"to_move > links[{i}].suscept")
+
+            links[i].suscept -= to_move
+            wards[links[i].ifrom].play_suscept += to_move
+
+    if params.play_to_work > 0.0:
+        for i in range(1, network.plinks+1):
+            temp = params.play_to_work * (play[i].weight *
+                                          wards[play[i].ifrom].save_play_suscept)
+
+            to_move = math.floor(temp)
+            p = temp - to_move
+
+            countrem += p
+
+            if countrem >= 1.0:
+                to_move += 1.0
+                countrem -= 1.0
+
+            if wards[play[i].ifrom].play_suscept < to_move:
+                to_move = wards[play[i].ifrom].play_suscept
+
+            wards[play[i].ifrom].play_suscept -= to_move
+            links[i].suscept += to_move
+
+    recalculate_work_denominator_day(network=network, params=params)
+    recalculate_play_denominator_day(network=network, params=params)
 
 
 def read_done_file(filename: str):
@@ -36,6 +89,26 @@ def read_done_file(filename: str):
 
     except Exception as e:
         raise ValueError(f"Possible corruption of {filename}: {e}")
+
+
+def recalculate_work_denominator_day(network: Network, params: Parameters):
+
+    wards = network.nodes
+    links = network.to_links
+
+    sum = 0
+
+    for i in range(1, network.nnodes+1):
+        wards[i].denominator_d = 0.0
+        wards[i].denominator_n = 0.0
+
+    for j in range(1, network.nlinks+1):
+        link = links[j]
+        wards[link.ito].denominator_d += link.suscept
+        wards[link.ifrom].denominator_n += link.suscept
+        sum += link.suscept
+
+    print(f"recalculate_work_denominator_day sum = {sum}")
 
 
 def recalculate_play_denominator_day(network: Network, params: Parameters):

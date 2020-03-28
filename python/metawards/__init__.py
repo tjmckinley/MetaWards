@@ -9,3 +9,4 @@ from ._metawards import *
 from ._parameters import *
 from ._disease import *
 from ._inputfiles import *
+from ._run_model import *

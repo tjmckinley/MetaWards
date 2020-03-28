@@ -65,9 +65,15 @@ def test_integration():
     params.play_to_work = 0
     params.work_to_play = 0
 
-    # TOMORROW - WRITE THIS BELOW FUNCTION
-    #mw.move_population_from_play_to_work(network=network, params=params,
-    #                                     rng=rng)
+    mw.move_population_from_play_to_work(network=network, params=params,
+                                         rng=rng)  # rng not used?
+
+    params.daily_imports = 0.0
+
+    mw.run_model(network=network, params=params, infections=infections,
+                 play_infections=play_infections,
+                 rng=rng, to_seed=to_seed, s=s)
+
 
 if __name__ == "__main__":
     test_integration()

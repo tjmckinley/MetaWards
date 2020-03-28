@@ -822,6 +822,8 @@ void RecalculateWorkDenominatorDay(network *net, parameters *par){
 		sum += (int)links[j].suscept;
 	}
 
+	printf("recalculate_work_denominator_day sum = %d\n", sum);
+
 	//	printf("%d ",sum);
 	//outF=fopen("workd.dat","w");
 	//for(i=1;i<=net->nnodes;i++){
