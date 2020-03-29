@@ -15,3 +15,7 @@ from ._nodes import *
 from ._tolink import *
 from ._tolinks import *
 from ._run_model import *
+
+# import the pyx cython-compiled modules
+from ._test import *
+
