@@ -1,5 +1,7 @@
 
 import math
+from libc.math cimport sqrt
+
 from array import array
 
 from ._parameters import Parameters
@@ -542,32 +544,50 @@ def build_wards_network_distance(params: Parameters):
 
     print("Calculating distances...")
 
-    total_distance = 0
-    n_invalid = 0
+    cdef double total_distance = 0
+    cdef int n_invalid = 0
+
+    cdef int [:] links_ifrom = links.ifrom
+    cdef int [:] links_ito = links.ito
+    cdef double [:] wards_x = wards.x
+    cdef double [:] wards_y = wards.y
+
+    cdef double [:] links_distance = links.distance
+    cdef double [:] plinks_distance = plinks.distance
+
+    cdef double dx = 0.0
+    cdef double dy = 0.0
+
+    cdef int plinks_size = len(plinks.distance)
+
+    cdef int ifrom = 0
+    cdef int ito = 0
+
+    cdef int i = 0
 
     for i in range(0, network.nlinks):  # shouldn't this be range(1, nlinks+1)?
                                         # the fact there is a missing link at 0
                                         # suggests this should be...
-        ifrom = links.ifrom[i]
-        ito = links.ito[i]
+        ifrom = links_ifrom[i]
+        ito = links_ito[i]
 
-        x1 = wards.x[ifrom]
-        y1 = wards.y[ifrom]
+        x1 = wards_x[ifrom]
+        y1 = wards_y[ifrom]
 
-        x2 = wards.x[ito]
-        y2 = wards.y[ito]
+        x2 = wards_x[ito]
+        y2 = wards_y[ito]
 
         dx = x1 - x2
         dy = y1 - y2
 
-        distance = math.sqrt(dx*dx + dy*dy)
-        links.distance[i] = distance
+        distance = sqrt(dx*dx + dy*dy)
+        links_distance[i] = distance
         total_distance += distance
 
         # below line doesn't make sense and doesn't work all the time.
         # Why would the ith play link be related to the ith work link?
-        if i >= 0 and i < len(plinks.distance):
-            plinks.distance[i] = distance
+        if i >= 0 and i < plinks_size:
+            plinks_distance[i] = distance
         else:
             n_invalid += 1
 
