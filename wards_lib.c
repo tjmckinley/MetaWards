@@ -962,12 +962,15 @@ void LoadAdditionalSeeds(char *fname){
 	NADDSEEDS=0;
 	int t,loc,num;
 
+	printf("Loading additional seeds from %s\n", fname);
+
 	while(!feof(inF)){
 		fscanf(inF,"%d %d %d\n",&t,&num,&loc);
 //		printf("fname %s t %d num %d loc %d\n",fname,t,num,loc);
 		ADDSEEDS[NADDSEEDS][0]=t;
 		ADDSEEDS[NADDSEEDS][1]=loc;
 		ADDSEEDS[NADDSEEDS][2]=num;
+		printf("%d  %d  %d\n", t, loc, num);
 		NADDSEEDS++;
 	}
 	fclose(inF);
@@ -985,6 +988,7 @@ void InfectAdditionalSeeds(network *net, parameters *par, int **inf,int **pinf,i
 
 			}
 			else {
+				printf("SEEDING %d  %d  %d\n", ADDSEEDS[i][0], ADDSEEDS[i][1], ADDSEEDS[i][2]);
 				wards[ADDSEEDS[i][1]].play_suscept-=ADDSEEDS[i][2];
 				pinf[0][ADDSEEDS[i][1]]+=ADDSEEDS[i][2];
 			}
@@ -1402,6 +1406,7 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 
 			}
 			if(pinf[i][j]>0){
+				printf("pinf[%d][%d] > 0: %d\n", i, j, pinf[i][j]);
 				PInfTot[i]+=pinf[i][j];
 				TotalInfWard[j]+=pinf[i][j];
 #ifdef SELFISOLATE
@@ -1419,7 +1424,10 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 		fprintf(files[3],"%d ",PInfTot[i]);
 
 		if(i==1)
-		  {Latent+=InfTot[i]+PInfTot[i];}
+		{
+			printf("latent %d  %d\n", InfTot[i], PInfTot[i]);
+			Latent+=InfTot[i]+PInfTot[i];
+		}
 		else if(i<N_INF_CLASSES-1 & i>1){
 			Total+=InfTot[i]+PInfTot[i];
 		}
@@ -1898,6 +1906,10 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 				l=gsl_ran_binomial(r,par->Progress[i],inf[i][j]);
 
 				if(l>0){
+					printf("strange?\n");
+					printf("%d  %f  %d  %d\n", inf[i][j], par->Progress[i], i, j);
+					printf("recover play_infections[%d][%d] += %d\n", i+1, j, l);
+					printf("recover play_infections[%d][%d] -= %d\n", i, j, l);
 					inf[i+1][j]+=l;
 
 					inf[i][j]-=l;
