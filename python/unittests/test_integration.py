@@ -74,6 +74,8 @@ def test_integration():
                  play_infections=play_infections,
                  rng=rng, to_seed=to_seed, s=s)
 
+    print("End of the run")
+
 
 if __name__ == "__main__":
     test_integration()

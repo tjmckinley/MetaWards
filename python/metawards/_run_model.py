@@ -505,15 +505,20 @@ def extract_data_for_graphics(network: Network, infections,
     MAXSIZE = network.nnodes
 
     int_t = "i"
+    null_int1 = N_INF_CLASSES * [0]
+    null_int2 = MAXSIZE * [0]
 
-    inf_tot = array(int_t, N_INF_CLASSES, 0)
+    inf_tot = array(int_t, null_int1)
     total_inf_ward = []
     for i in range(0, N_INF_CLASSES):
-        total_inf_ward.append( array(int_t, MAXSIZE, 0) )
+        total_inf_ward.append( array(int_t, null_int2) )
 
     total = 0
 
-    total_infections = array(int_t, MAXSIZE, 0)
+    total_infections = array(int_t, null_int2)
+
+    null_int1 = None
+    null_int2 = None
 
     for i in range(0, N_INF_CLASSES):
         for j in range(1, network.nlinks+1):
@@ -570,13 +575,19 @@ def extract_data(network: Network, infections, play_infections,
         raise AssertionError("You must pass in the 'is_dangerous' array "
                              "if SELFISOLATE is True")
 
-    inf_tot = array(int_t, N_INF_CLASSES, 0)
-    pinf_tot = array(int_t, N_INF_CLASSES, 0)
+    null_int1 = N_INF_CLASSES * [0]
+    null_int2 = MAXSIZE * [0]
 
-    total_inf_ward = array(int_t, MAXSIZE, 0)
-    total_new_inf_ward = array(int_t, MAXSIZE, 0)
+    inf_tot = array(int_t, null_int1)
+    pinf_tot = array(int_t, null_int1)
 
-    n_inf_wards = array(int_t, N_INF_CLASSES, 0)
+    total_inf_ward = array(int_t, null_int2)
+    total_new_inf_ward = array(int_t, null_int2)
+
+    n_inf_wards = array(int_t, null_int1)
+
+    null_int1 = None
+    null_int2 = None
 
     total = 0
     total_new = 0
@@ -783,10 +794,13 @@ def run_model(network: Network, params: Parameters,
 
     if VACCINATE:
         trigger = 0
-        vac = array(int_t, size, 0)
-        #wards_ra = array(int_t, size, 0)
-        risk_ra = array(float_t, size, 0.0)
-        sort_ra = array(int_t, size, 0)
+        null_int = size * [0]
+        null_float = size * [0.0]
+
+        vac = array(int_t, null_int)
+        #wards_ra = array(int_t, null_int)
+        risk_ra = array(float_t, null_float)
+        sort_ra = array(int_t, null_int)
         VACF = open(os.path.join(output_dir, "Vaccinated.dat", "w"))
 
     files = open_files(output_dir=output_dir)
