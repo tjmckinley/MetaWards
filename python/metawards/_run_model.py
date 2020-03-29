@@ -537,7 +537,7 @@ def extract_data_for_graphics(network: Network, infections,
                 total += pinf_ij
 
             if i == 2:
-                FILE.write("%d ", total_infections[j])   # incidence
+                FILE.write("%d " % total_infections[j])   # incidence
 
                 #if i == N_INF_CLASSES - 1:
                 #    FILE.write("%d ", total_infections[j])  # prevalence

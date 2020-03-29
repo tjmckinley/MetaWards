@@ -33,7 +33,13 @@ int main(int argc, char *argv[]){
 	printf("Input 1: random seed %d\n\n",atoi(argv[1]));
 
 	r = gsl_rng_alloc (gsl_rng_default);
-	gsl_rng_set (r, -1*(int)time(NULL) + atoi(argv[1]));
+	//gsl_rng_set (r, -1*(int)time(NULL) + atoi(argv[1]));
+
+	// will directly set the seed so have reproducible runs for
+	// comparison to python
+	printf("WARNING - FIXING SEED FOR DEBUGGING\n");
+	printf("DO NOT USE THIS CODE IN PRODUCTION\n");
+	gsl_rng_set(r, atoi(argv[1]));
 
 	for (int i=1; i<=5; ++i){
 		int rand = gsl_ran_binomial(r, 0.5, 100);
