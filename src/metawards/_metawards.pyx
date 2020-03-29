@@ -210,24 +210,33 @@ def rescale_play_matrix(network: Network, params: Parameters):
     # nodes = network.nodes  # check if this is not needed in the code
                              # as it was declared in the original function
 
-    if params.static_play_at_home > 0:
+    cdef double static_play_at_home = params.static_play_at_home
+    cdef double sclfac = 0.0
+    cdef int j = 0
+    cdef int ifrom = 0
+    cdef int ito = 0
+    cdef int [:] links_ito = links.ito
+    cdef int [:] links_ifrom = links.ifrom
+    cdef double [:] links_weight = links.weight
+    cdef double [:] links_suscept = links.suscept
+
+    if static_play_at_home > 0:
         # if we are making people stay at home, then do this loop through nodes
         # Rescale appropriately!
-        sclfac = 1.0 - params.static_play_at_home
+        sclfac = 1.0 - static_play_at_home
 
         for j in range(1, network.plinks+1):  # 1-indexed
-            ifrom = links[j].ifrom
-            ito = links[j].ito
+            ifrom = links_ifrom[j]
+            ito = links_ito[j]
 
             if ifrom != ito:
                 # if it's not the home ward, then reduce the
                 # number of play movers
-                links.weight[j] = links.suscept[j] * sclfac
+                links_weight[j] = links_suscept[j] * sclfac
             else:
                 # if it is the home ward
-                suscept = links.suscept[j]
-                links.weight[j] = ((1.0 - suscept) * \
-                                   params.static_play_at_home) + \
+                suscept = links_suscept[j]
+                links_weight[j] = ((1.0 - suscept) * static_play_at_home) + \
                                    suscept
 
     recalculate_play_denominator_day(network=network, params=params)
