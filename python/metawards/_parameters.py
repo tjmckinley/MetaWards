@@ -9,34 +9,6 @@ from ._disease import Disease
 __all__ = ["Parameters"]
 
 
-
-	par->initial_inf=5;
-
-	par->LengthDay=0.7;
-
-	par->PLengthDay=0.5;
-
-	for(i=0;i<N_INF_CLASSES;i++){
-		par->beta[i]=beta[i];
-		par->Progress[i]=Progress[i];
-		par->TooIllToMove[i]=TooIllToMove[i];
-		par->ContribFOI[i]=ContribFOI[i];
-	}
-
-	par->DynDistCutoff = 10000000;
-	par->DataDistCutoff = 10000000;
-	par->WorkToPlay=0.0;
-	par->PlayToWork=0.0;
-	par->StaticPlayAtHome=0;
-	par->DynPlayAtHome=0;
-
-	par->LocalVaccinationThresh = 4;
-	par->GlobalDetectionThresh = 4;
-	par->NeighbourWeightThreshold = 0.0;
-	par->DailyWardVaccinationCapacity = 5;
-	par->UV=0.0;
-
-
 @dataclass
 class Parameters:
     def __init__(self):
