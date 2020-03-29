@@ -824,7 +824,7 @@ def run_model(network: Network, params: Parameters,
         sort_ra = array(int_t, null_int)
         VACF = open(os.path.join(output_dir, "Vaccinated.dat", "w"))
 
-    files = open_files(output_dir=output_dir)
+    files = open_files(output_dir)
 
     clear_all_infections(infections=infections,
                          play_infections=play_infections)

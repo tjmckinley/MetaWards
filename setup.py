@@ -26,7 +26,9 @@ def no_cythonize(extensions, **_ignore):
 extensions = [
     Extension("metawards._test", ["src/metawards/_test.pyx"]),
     Extension("metawards._nodes", ["src/metawards/_nodes.pyx"]),
-    Extension("metawards._tolinks", ["src/metawards/_tolinks.pyx"])
+    Extension("metawards._tolinks", ["src/metawards/_tolinks.pyx"]),
+    Extension("metawards._metawards", ["src/metawards/_metawards.pyx"]),
+    Extension("metawards._run_model", ["src/metawards/_run_model.pyx"])
 ]
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
