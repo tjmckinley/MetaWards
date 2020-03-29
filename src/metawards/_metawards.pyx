@@ -1,5 +1,4 @@
 
-import math
 from libc.math cimport sqrt, ceil, floor
 
 from array import array
