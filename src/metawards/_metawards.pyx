@@ -119,18 +119,29 @@ def recalculate_work_denominator_day(network: Network, params: Parameters):
     wards = network.nodes
     links = network.to_links
 
-    sum = 0
+    cdef double sum = 0
+    cdef int i = 0
+
+    cdef double [:] wards_denominator_d = wards.denominator_d
+    cdef double [:] wards_denominator_n = wards.denominator_n
 
     for i in range(1, network.nnodes+1):
-        wards.denominator_d[i] = 0.0
-        wards.denominator_n[i] = 0.0
+        wards_denominator_d[i] = 0.0
+        wards_denominator_n[i] = 0.0
+
+    cdef int j = 0
+    cdef int [:] links_ifrom = links.ifrom
+    cdef int [:] links_ito = links.ito
+    cdef double [:] links_suscept = links.suscept
+    cdef int ifrom = 0
+    cdef int ito = 0
 
     for j in range(1, network.nlinks+1):
-        ifrom = links.ifrom[j]
-        ito = links.ito[j]
-        suscept = links.suscept[j]
-        wards.denominator_d[ito] += suscept
-        wards.denominator_n[ifrom] += suscept
+        ifrom = links_ifrom[j]
+        ito = links_ito[j]
+        suscept = links_suscept[j]
+        wards_denominator_d[ito] += suscept
+        wards_denominator_n[ifrom] += suscept
         sum += suscept
 
     print(f"recalculate_work_denominator_day sum = {sum}")
@@ -141,32 +152,45 @@ def recalculate_play_denominator_day(network: Network, params: Parameters):
     wards = network.nodes
     links = network.play
 
+    cdef int i = 0
+    cdef double [:] wards_denominator_pd = wards.denominator_pd
+    cdef double [:] wards_denominator_p = wards.denominator_p
+
     for i in range(1, network.nnodes+1):  # 1-indexed
         wards.denominator_pd[i] = 0
         wards.denominator_p[i] = 0
 
-    sum = 0.0
+    cdef double sum = 0.0
+    cdef int j = 0
+    cdef int [:] links_ifrom = links.ifrom
+    cdef int [:] links_ito = links.ito
+    cdef int ifrom = 0
+    cdef int ito = 0
+    cdef double weight = 0.0
+    cdef double [:] links_weight = links.weight
+    cdef double denom = 0.0
+    cdef double [:] wards_play_suscept = wards.play_suscept
 
     for j in range(1, network.plinks+1):  # 1-indexed
-        ifrom = links.ifrom[j]
-        ito = links.ito[j]
-        weight = links.weight[j]
-        denom = weight * wards.play_suscept[ifrom]
-        wards.denominator_pd[ito] += denom
+        ifrom = links_ifrom[j]
+        ito = links_ito[j]
+        weight = links_weight[j]
+        denom = weight * wards_play_suscept[ifrom]
+        wards_denominator_pd[ito] += denom
 
         sum += denom
 
     print(f"recalculate_play_denominator_day sum 1 = {sum}")
 
     sum = 0.0
+    cdef double play_suscept = 0
 
     for i in range(1, network.nnodes+1):  # 1-indexed
-        pd = wards.denominator_pd[i]
-        play_suscept = wards.play_suscept[i]
+        pd = wards_denominator_pd[i]
+        play_suscept = wards_play_suscept[i]
 
-        wards.denominator_pd[i] = int(math.floor(pd + 0.5))
-
-        wards.denominator_p[i] = play_suscept
+        wards_denominator_pd[i] = floor(pd + 0.5)
+        wards_denominator_p[i] = play_suscept
 
         if play_suscept < 0.0:
             print(f"Negative play_suscept? {wards[i]}")
