@@ -528,10 +528,27 @@ def build_wards_network(params: Parameters,
     nodes = Nodes(max_nodes + 1)     # need to pre-allocate nodes and links
     links = ToLinks(max_links + 1)   # both of these use 1-indexing
 
-    nlinks = 0
-    nnodes = 0
+    cdef int nlinks = 0
+    cdef int nnodes = 0
 
     line = None
+
+    cdef int from_id = 0
+    cdef int to_id = 0
+    cdef double weight = 0.0
+
+    cdef int [:] nodes_label = nodes.label
+    cdef int [:] nodes_begin_to = nodes.begin_to
+    cdef int [:] nodes_end_to = nodes.end_to
+    cdef int [:] nodes_self_w = nodes.self_w
+
+    cdef int [:] links_ito = links.ito
+    cdef int [:] links_ifrom = links.ifrom
+    cdef double [:] links_weight = links.weight
+    cdef double [:] links_suscept = links.suscept
+
+    cdef double [:] nodes_denominator_d = nodes.denominator_d
+    cdef double [:] nodes_denominator_n = nodes.denominator_n
 
     try:
         with open(params.input_files.work, "r") as FILE:
@@ -550,27 +567,26 @@ def build_wards_network(params: Parameters,
 
                 nlinks += 1
 
-                if nodes.label[from_id] == -1:
-                    nodes.label[from_id] = from_id
-                    nodes.begin_to[from_id] = nlinks
-                    nodes.end_to[from_id] = nlinks
+                if nodes_label[from_id] == -1:
+                    nodes_label[from_id] = from_id
+                    nodes_begin_to[from_id] = nlinks
+                    nodes_end_to[from_id] = nlinks
                     nnodes += 1
 
                 if from_id == to_id:
-                    nodes.self_w[from_id] = nlinks
+                    nodes_self_w[from_id] = nlinks
 
-                nodes.end_to[from_id] += 1
+                nodes_end_to[from_id] += 1
 
                 # original code does int(weight) even though this is a float?
-                links.ifrom[nlinks] = from_id
-                links.ito[nlinks] = to_id
-                links.weight[nlinks] = int(weight)
-                links.suscept[nlinks] = int(weight)
+                links_ifrom[nlinks] = from_id
+                links_ito[nlinks] = to_id
+                links_weight[nlinks] = int(weight)
+                links_suscept[nlinks] = int(weight)
 
                 # again, int(weight) is in the code despite these being floats?
-                nodes.denominator_n[from_id] += int(weight)
-
-                nodes.denominator_d[to_id] += int(weight)
+                nodes_denominator_n[from_id] += int(weight)
+                nodes_denominator_d[to_id] += int(weight)
 
                 line = FILE.readline()
     except Exception as e:
@@ -620,6 +636,13 @@ def build_wards_network_distance(params: Parameters):
 
     print("Reading in the positions...")
 
+    cdef int i1 = 0
+    cdef double x = 0.0
+    cdef double y = 0.0
+
+    cdef double [:] wards_x = wards.x
+    cdef double [:] wards_y = wards.y
+
     try:
         with open(params.input_files.position, "r") as FILE:
             line = FILE.readline()
@@ -646,8 +669,6 @@ def build_wards_network_distance(params: Parameters):
 
     cdef int [:] links_ifrom = links.ifrom
     cdef int [:] links_ito = links.ito
-    cdef double [:] wards_x = wards.x
-    cdef double [:] wards_y = wards.y
 
     cdef double [:] links_distance = links.distance
     cdef double [:] plinks_distance = plinks.distance
