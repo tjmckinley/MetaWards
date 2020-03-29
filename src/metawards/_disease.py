@@ -1,12 +1,14 @@
 
 from dataclasses import dataclass
 from typing import List
+import pathlib
+import os
 
 __all__ = ["Disease"]
 
-_N_INF_CLASSES = 5   # the number of parameters in each list
+_default_disease_path = os.path.join(pathlib.Path.home(),
+                                     "GitHub", "MetaWardsData", "diseases")
 
-_diseases = {}
 
 @dataclass
 class Disease:
@@ -15,12 +17,24 @@ class Disease:
     progress: List[float] = None
     too_ill_to_move: List[float] = None
     contrib_foi: List[float] = None
+    _name: str = None
+    _version: str = None
+    _authors: str = None
+    _contacts: str = None
+    _references: str = None
+    _disease_path: str = None
 
     def __str__(self):
-        return f"beta = {self.beta}\n" \
+        return f"Disease {self._name}\n" \
+               f"loaded from {self._model_path}\n" \
+               f"version: {self._version}\n" \
+               f"author(s): {self._authors}\n" \
+               f"contact(s): {self._contacts}\n" \
+               f"references(s): {self._references}\n\n" \
+               f"beta = {self.beta}\n" \
                f"progress = {self.progress}\n" \
                f"too_ill_to_move = {self.too_ill_to_move}\n" \
-               f"contrib_foi = {self.contrib_foi}\n"
+               f"contrib_foi = {self.contrib_foi}\n\n"
 
     def __eq__(self, other):
         return self.beta == other.beta and \
@@ -28,48 +42,61 @@ class Disease:
                self.too_ill_to_move == other.too_ill_to_move and \
                self.contrib_foi == other.contrib_foi
 
-    @staticmethod
-    def N_INF_CLASSES():
-        global _N_INF_CLASSES
-        return _N_INF_CLASSES
+    def N_INF_CLASSES(self):
+        return len(self.beta)
+
+    def _validate(self):
+        """Check that the loaded parameters make sense"""
+        try:
+            n = len(self.beta)
+
+            assert len(self.progress) == n
+            assert len(self.too_ill_to_move) == n
+            assert len(self.contrib_foi) == n
+        except Exception as e:
+            raise AssertionError(f"Data read for disease {self._name} "
+                                 f"is corrupted! {e.__class__}: {e}")
 
     @staticmethod
-    def set_disease(name: str, disease):
-        """Set the parameters for the named disease"""
-        if not isinstance(disease, Disease):
-            raise TypeError("The disease should be type 'Disease'")
+    def load(disease: str = "ncov",
+             disease_path: str=_default_disease_path):
+        """Load the disease parameters for the specified disease.
+           This will look for a file called f"{disease}.json"
+           in the directory "disease_path"
+
+           By default this will load the ncov (SARS-Cov-2)
+           parameters from
+           $HOME/GitHub/model_data/2011Data/diseases/ncov.json
+        """
+
+        json_file = os.path.join(disease_path, f"{disease}.json")
 
         try:
-            assert(len(disease.beta) == _N_INF_CLASSES)
-            assert(len(disease.progress) == _N_INF_CLASSES)
-            assert(len(disease.too_ill_to_move) == _N_INF_CLASSES)
-            assert(len(disease.contrib_foi) == _N_INF_CLASSES)
-        except Exception:
-            raise ValueError(f"The number of parameters for each list "
-                             f"in the disease must be {_N_INF_CLASSES}")
+            with open(json_file, "r") as FILE:
+                import json
+                data = json.load(FILE)
 
-        global _diseases
-        _diseases[str(name).lower().strip()] = disease
+        except Exception as e:
+            print(f"Could not find the disease file {json_file}")
+            print(f"Either it does not exist of was corrupted.")
+            print(f"Error was {e.__class__} {e}")
+            print(f"To download the disease data type the command:")
+            print(f"  git clone https://github.com/chryswoods/MetaWardsData")
+            print(f"and then re-run this function passing in the full")
+            print(f"path to where you downloaded this directory")
+            raise FileNotFoundError(f"Could not find or read {json_file}: "
+                                    f"{e.__class__} {e}")
 
-    @staticmethod
-    def get_disease(name: str):
-        """Return the parameters for the named disease"""
-        global _diseases
-        try:
-            return _diseases[str(name).lower().strip()]
-        except KeyError:
-            raise KeyError(f"There are no parameters for disease '{name}' "
-                           f"Known diseases are {list(_diseases.keys())}")
+        disease = Disease(beta=data["beta"],
+                          progress=data["progress"],
+                          too_ill_to_move=data["too_ill_to_move"],
+                          contrib_foi=data["contrib_foi"],
+                          _name=disease,
+                          _authors=data["author(s)"],
+                          _contacts=data["contact(s)"],
+                          _references=data["reference(s)"],
+                          _disease_path=disease_path)
 
-# Initialise the _diseases dictionary with data for ncov. Ideally
-# this would come from a json data file (or equivalent) to stop
-# researchers having to edit this code. They can use the
-# "set_disease" function above to change this though
-_ncov = Disease()
+        disease._validate()
 
-_ncov.beta = [0.0, 0.0, 0.95, 0.95, 0.0]
-_ncov.progress = [1.0, 0.1923, 0.909091, 0.909091, 0.0]
-_ncov.too_ill_to_move = [0.0, 0.0, 0.0, 0.0, 0.0]
-_ncov.contrib_foi = [1.0, 1.0, 1.0, 1.0, 0.0]
-
-Disease.set_disease("ncov", _ncov)
+        return disease

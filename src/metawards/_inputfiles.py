@@ -29,6 +29,9 @@ class InputFiles:
     _model_path: str = None          # Path to the data files
     _model_name: str = None          # Name of the model
     _model_version: str = None       # Version loaded from the data
+    _authors: str = None             # Author(s) of this data
+    _contacts: str = None            # Contact(s) for this data
+    _references: str = None          # References for this data
 
     def model_name(self):
         """Return the name of this model"""
@@ -45,6 +48,9 @@ class InputFiles:
     def __str__(self):
         return f"Model {self._model_name} version {self._model_version}\n" \
                f"loaded from {self._model_path}\n" \
+               f"author(s): {self._authors}\n" \
+               f"contact(s): {self._contacts}\n" \
+               f"references(s): {self._references}\n\n" \
                f"work = {self.work}\n" \
                f"play = {self.play}\n" \
                f"identifier = {self.identifier}\n" \
@@ -54,7 +60,7 @@ class InputFiles:
                f"position = {self.position}\n" \
                f"seed = {self.seed}\n" \
                f"nodes_to_track = {self.nodes_to_track}\n" \
-               f"additional_seeding = {self.additional_seeding}\n"
+               f"additional_seeding = {self.additional_seeding}\n\n"
 
     def _localise(self):
         """Localise the filenames in this input files set. This will
@@ -120,7 +126,10 @@ class InputFiles:
                            uv=files["uv"],
                            _model_path=model_path,
                            _model_name=model,
-                           _model_version=files["version"])
+                           _model_version=files["version"],
+                           _references=files["reference(s)"],
+                           _authors=files["author(s)"],
+                           _contacts=files["contact(s)"])
 
         model._localise()
 

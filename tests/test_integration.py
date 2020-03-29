@@ -32,15 +32,17 @@ def test_integration():
         r = rng.binomial(0.5, 100)
         print(f"random number {i} equals {r}")
 
-    params = mw.Parameters.create("ncov")
+    params = mw.Parameters.load(parameters="march29")
+
+    disease = mw.Disease.load(disease="ncov")
+    params.set_disease(disease)
+
+    input_files = mw.InputFiles.load(model="2011Data")
+    params.set_input_files(input_files)
 
     params.read_file(inputfile, line_num)
 
     params.UV = UV
-
-    input_files = mw.InputFiles.load(model="2011Data")
-
-    params.set_input_files(input_files)
 
     to_seed = mw.read_done_file(params.input_files.seed)
 
