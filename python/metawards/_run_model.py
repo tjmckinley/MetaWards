@@ -759,14 +759,14 @@ def open_files(output_dir: str):
     """
     files = []
 
-    files.append( open(os.path.join(output_dir, "WorkInfections.dat", "w")) )
-    files.append( open(os.path.join(output_dir, "NumberWardsInfected.dat",
-                       "w")) )
-    files.append( open(os.path.join(output_dir, "MeanXY.dat", "w")) )
-    files.append( open(os.path.join(output_dir, "PlayInfections.dat", "w")) )
-    files.append( open(os.path.join(output_dir, "TotalInfections.dat", "w")) )
-    files.append( open(os.path.join(output_dir, "VarXY.dat", "w")) )
-    files.append( open(os.path.join(output_dir, "Dispersal.dat", "w")) )
+    files.append( open(os.path.join(output_dir, "WorkInfections.dat"), "w") )
+    files.append( open(os.path.join(output_dir, "NumberWardsInfected.dat"),
+                       "w") )
+    files.append( open(os.path.join(output_dir, "MeanXY.dat"), "w") )
+    files.append( open(os.path.join(output_dir, "PlayInfections.dat"), "w") )
+    files.append( open(os.path.join(output_dir, "TotalInfections.dat"), "w") )
+    files.append( open(os.path.join(output_dir, "VarXY.dat"), "w") )
+    files.append( open(os.path.join(output_dir, "Dispersal.dat"), "w") )
 
     return files
 
@@ -783,18 +783,12 @@ def run_model(network: Network, params: Parameters,
               WEEKENDS: bool = False):
     """Actually run the model... Real work happens here"""
 
-    # test seeding of the random number generator by drawing and printing
-    # 5 random numbers
-    for i in range(1,6):
-        r = ran_binomial(rng, 1.0, 5)
-        print(f"random number {i} equals {r}")
-
     int_t = "i"    # signed int64
     float_t = "d"  # double (float64)
 
     size = MAXSIZE   # suspect this will be the number of nodes
 
-    EXPORT = open(os.path.join(output_dir, "ForMattData.dat", "w"))
+    EXPORT = open(os.path.join(output_dir, "ForMattData.dat"), "w")
 
     if VACCINATE:
         trigger = 0

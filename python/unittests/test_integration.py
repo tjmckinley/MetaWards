@@ -26,6 +26,12 @@ def test_integration():
 
     rng.set(seed)
 
+    # test seeding of the random number generator by drawing and printing
+    # 5 random numbers
+    for i in range(1,6):
+        r = rng.binomial(0.5, 100)
+        print(f"random number {i} equals {r}")
+
     params = mw.Parameters.create("ncov")
 
     params.read_file(inputfile, line_num)
