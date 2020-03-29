@@ -26,8 +26,9 @@ class InputFiles:
     additional_seeding: str = None  # LIST OF EXTRA SEED WARDS...
     uv: str = None                  # UV file
 
-    _model_path: str = None          # Path to the data files
+    _filename: str = None            # Full path of the description.json file
     _model_name: str = None          # Name of the model
+    _model_path: str = None          # Directory containing the input files
     _model_version: str = None       # Version loaded from the data
     _authors: str = None             # Author(s) of this data
     _contacts: str = None            # Contact(s) for this data
@@ -47,7 +48,8 @@ class InputFiles:
 
     def __str__(self):
         return f"Model {self._model_name} version {self._model_version}\n" \
-               f"loaded from {self._model_path}\n" \
+               f"loaded from {self._filename}\n" \
+               f"root directory {self._model_path}\n" \
                f"author(s): {self._authors}\n" \
                f"contact(s): {self._contacts}\n" \
                f"references(s): {self._references}\n\n" \
@@ -86,16 +88,27 @@ class InputFiles:
     @staticmethod
     def load(model: str = "2011Data",
              model_path: str=_default_model_path,
-             description: str="description.json"):
+             description: str="description.json",
+             filename: str = None):
         """Load the parameters associated with the passed model.
            This will look for the parameters specified in
            the json file called "model_path/model/description"
 
            By default this will load the 2011Data parameters
            from $HOME/GitHub/model_data/2011Data/description.json
+
+           Alternatively you can provide the full path to the
+           description json file usng the 'filename' argument.
+           All files within this description will be searched
+           for using the directory that contains that file
+           as a base
         """
 
-        json_file = os.path.join(model_path, model, description)
+        if filename:
+            json_file = filename
+            model_path = os.path.dirname(filename)
+        else:
+            json_file = os.path.join(model_path, model, description)
 
         try:
             with open(json_file, "r") as FILE:
@@ -124,8 +137,9 @@ class InputFiles:
                            nodes_to_track=files["nodes_to_track"],
                            additional_seeding=files["additional_seeding"],
                            uv=files["uv"],
+                           _filename=json_file,
                            _model_path=model_path,
-                           _model_name=model,
+                           _model_name=files["name"],
                            _model_version=files["version"],
                            _references=files["reference(s)"],
                            _authors=files["author(s)"],

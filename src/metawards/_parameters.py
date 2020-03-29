@@ -17,10 +17,6 @@ _default_parameters_path = os.path.join(pathlib.Path.home(),
 
 @dataclass
 class Parameters:
-    def __init__(self):
-        """Allow creation of a null Parameters object"""
-        pass
-
     input_files: InputFiles = None
     uv_filename: str = None
     disease_params: Disease = None
@@ -51,47 +47,49 @@ class Parameters:
     _authors: str = None
     _contacts: str = None
     _references: str = None
-    _parameters_path: str = None
+    _filename: str = None
 
     def __str__(self):
         return f"Parameters {self._name}\n" \
-               f"loaded from {self._parameters_path}\n" \
+               f"loaded from {self._filename}\n" \
                f"version: {self._version}\n" \
                f"author(s): {self._authors}\n" \
                f"contact(s): {self._contacts}\n" \
                f"references(s): {self._references}\n\n" \
-    length_day: float = 0.7
-    plength_day: float = 0.5
-    initial_inf: int = 5
-
-    static_play_at_home: float = 0.0
-    dyn_play_at_home: float = 0.0
-
-    data_dist_cutoff: float = 10000000.0
-    dyn_dist_cutoff: float = 10000000.0
-
-    play_to_work: float = 0.0
-    work_to_play: float = 0.0
-
-    local_vaccination_thresh: int = 4
-    global_detection_thresh: int = 4
-    daily_ward_vaccination_capacity: int = 5
-    neighbour_weight_threshold: float = 0.0
-
-    daily_imports: float = 0.0 # proportion of daily imports
-    UV: float = 0.0
+               f"length_day = {self.length_day}\n" \
+               f"plength_day = {self.plength_day}\n" \
+               f"initial_inf = {self.initial_inf}\n" \
+               f"static_play_at_home = {self.static_play_at_home}\n" \
+               f"dyn_play_at_home = {self.dyn_play_at_home}\n" \
+               f"data_dist_cutoff = {self.data_dist_cutoff}\n" \
+               f"dyn_dist_cutoff = {self.dyn_dist_cutoff}\n" \
+               f"play_to_work = {self.play_to_work}\n" \
+               f"work_to_play = {self.work_to_play}\n" \
+               f"local_vaccination_thresh = {self.local_vaccination_thresh}\n" \
+               f"global_detection_thresh = {self.global_detection_thresh}\n" \
+               f"daily_ward_vaccination_capacity = {self.daily_ward_vaccination_capacity}\n" \
+               f"neighbour_weight_threshold = {self.neighbour_weight_threshold}\n" \
+               f"daily_imports = {self.daily_imports}\n" \
+               f"UV = {self.UV}\n\n"
 
     @staticmethod
     def load(parameters: str = "march29",
-             parameters_path: str = _default_parameters_path):
+             parameters_path: str = _default_parameters_path,
+             filename: str = None):
         """ This will return a Parameters object containing all of the
             parameters loaded from the parameters found in file
             f"{parameters_path}/{parameters}.json"
 
             By default this will load the march29 parameters from
-           $HOME/GitHub/model_data/2011Data/parameters/march29.json
+            $HOME/GitHub/model_data/2011Data/parameters/march29.json
+
+            Alternatively, you can provide the exact path to the
+            filename via the 'filename' argument
         """
-        json_file = os.path.join(parameters_path, f"{parameters}.json")
+        if filename:
+            json_file = filename
+        else:
+            json_file = os.path.join(parameters_path, f"{parameters}.json")
 
         try:
             with open(json_file, "r") as FILE:
@@ -130,11 +128,11 @@ class Parameters:
                          _version=data["version"],
                          _contacts=data["contact(s)"],
                          _references=data["reference(s)"],
-                         _parameters_path=parameters_path
+                         _filename=json_file
                          )
 
         print("Using parameters:")
-        print(self)
+        print(par)
 
         return par
 
@@ -148,11 +146,11 @@ class Parameters:
         self.input_files = deepcopy(input_files)
 
     def set_disease(self, disease: Disease):
-        '""Set the disease that will be modelled"""
+        """"Set the disease that will be modelled"""
         print("Using disease")
         print(disease)
 
-        self.disease = deepcopy(disease)
+        self.disease_params = deepcopy(disease)
 
     def read_file(self, filename: str, line_number: int):
         """Read in extra parameters from the specified line number

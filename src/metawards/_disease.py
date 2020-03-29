@@ -22,11 +22,11 @@ class Disease:
     _authors: str = None
     _contacts: str = None
     _references: str = None
-    _disease_path: str = None
+    _filename: str = None
 
     def __str__(self):
         return f"Disease {self._name}\n" \
-               f"loaded from {self._model_path}\n" \
+               f"loaded from {self._filename}\n" \
                f"version: {self._version}\n" \
                f"author(s): {self._authors}\n" \
                f"contact(s): {self._contacts}\n" \
@@ -59,7 +59,8 @@ class Disease:
 
     @staticmethod
     def load(disease: str = "ncov",
-             disease_path: str=_default_disease_path):
+             disease_path: str=_default_disease_path,
+             filename: str = None):
         """Load the disease parameters for the specified disease.
            This will look for a file called f"{disease}.json"
            in the directory "disease_path"
@@ -67,9 +68,15 @@ class Disease:
            By default this will load the ncov (SARS-Cov-2)
            parameters from
            $HOME/GitHub/model_data/2011Data/diseases/ncov.json
+
+           Alternatively you can provide the full path to the
+           json file via the "filename" argument
         """
 
-        json_file = os.path.join(disease_path, f"{disease}.json")
+        if filename:
+            json_file = filename
+        else:
+            json_file = os.path.join(disease_path, f"{disease}.json")
 
         try:
             with open(json_file, "r") as FILE:
@@ -95,7 +102,7 @@ class Disease:
                           _authors=data["author(s)"],
                           _contacts=data["contact(s)"],
                           _references=data["reference(s)"],
-                          _disease_path=disease_path)
+                          _filename=json_file)
 
         disease._validate()
 
