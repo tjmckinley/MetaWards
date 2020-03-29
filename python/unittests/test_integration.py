@@ -43,13 +43,15 @@ def test_integration():
 
     print("Building the network...")
     network = mw.build_wards_network_distance(params)
-    print("Network built!")
 
+    print("Initialise infections...")
     infections = mw.initialise_infections(network=network, params=params)
 
+    print("Initialise play infections...")
     play_infections = mw.initialise_play_infections(network=network,
                                                     params=params)
 
+    print("Get min/max distances...")
     (mindist, maxdist) = mw.get_min_max_distances(network)
 
     params.dyn_dist_cutoff = maxdist + 1
@@ -58,18 +60,22 @@ def test_integration():
 
     params.static_play_at_home = 0
 
+    print("Reset everything...")
     mw.reset_everything(network=network, params=params)
 
+    print("Rescale play matrix...")
     mw.rescale_play_matrix(network=network, params=params)
 
     params.play_to_work = 0
     params.work_to_play = 0
 
+    print("Move population from play to work...")
     mw.move_population_from_play_to_work(network=network, params=params,
                                          rng=rng)  # rng not used?
 
     params.daily_imports = 0.0
 
+    print("Run the model...")
     mw.run_model(network=network, params=params, infections=infections,
                  play_infections=play_infections,
                  rng=rng, to_seed=to_seed, s=s)

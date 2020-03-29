@@ -280,8 +280,11 @@ def initialise_infections(network: Network, params: Parameters):
 
     nlinks = network.nlinks + 1
 
+    int_t = "i"
+    null_int = nlinks * [0]
+
     for _ in range(0, n):
-        infections.append( array("i", nlinks, 0) )
+        infections.append( array(int_t, null_int) )
 
     return infections
 
@@ -295,8 +298,11 @@ def initialise_play_infections(network: Network, params: Parameters):
 
     nnodes = network.nnodes + 1
 
+    int_t = "i"
+    null_int = nnodes * [0]
+
     for _ in range(0, n):
-        infections.append( array("i", nnodes, 0) )
+        infections.append( array(int_t, null_int) )
 
     return infections
 
@@ -514,6 +520,8 @@ def build_wards_network_distance(params: Parameters):
 
     line = None
 
+    print("Reading in the positions...")
+
     try:
         with open(params.input_files.position, "r") as FILE:
             line = FILE.readline()
@@ -533,20 +541,21 @@ def build_wards_network_distance(params: Parameters):
                          f"unreadable? Error = {e.__class__}: {e}, "
                          f"line = {line}")
 
+    print("Calculating distances...")
+
     total_distance = 0
 
     for i in range(0, network.nlinks):  # shouldn't this be range(1, nlinks+1)?
                                         # the fact there is a missing link at 0
                                         # suggests this should be...
-        link = links[i]
+        ifrom = links.ifrom[i]
+        ito = links.ito[i]
 
-        ward = wards[link.ifrom]
-        x1 = ward.x
-        y1 = ward.y
+        x1 = wards.x[ifrom]
+        y1 = wards.y[ifrom]
 
-        ward = wards[link.ito]
-        x2 = ward.x
-        y2 = ward.y
+        x2 = wards.x[ito]
+        y2 = wards.y[ito]
 
         dx = x1 - x2
         dy = y1 - y2
@@ -557,7 +566,7 @@ def build_wards_network_distance(params: Parameters):
 
         # below line doesn't make sense and doesn't work. Why would the ith
         # play link be related to the ith work link?
-        #plinks.distance[i] = distance
+        # plinks.distance[i] = distance
 
     print(f"Total distance equals {total_distance}")
 

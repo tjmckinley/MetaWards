@@ -5,8 +5,6 @@ from typing import List
 from array import array
 import math
 
-from pygsl import rng as gsl_rng
-
 import os
 
 __all__ = ["run_model"]
@@ -25,7 +23,7 @@ def ran_binomial(rng, p: float, n: int):
     """Return a random number drawn from the binomial distribution
        [p,n] (see gsl_ran_binomial for documentation)
     """
-    return gsl_rng.binomial_pdf(rng, p, n)
+    return rng.binomial(p, n)
 
 
 def import_infection(network: Network, infections, play_infections,
@@ -784,6 +782,12 @@ def run_model(network: Network, params: Parameters,
               EXTRASEEDS: bool = True,
               WEEKENDS: bool = False):
     """Actually run the model... Real work happens here"""
+
+    # test seeding of the random number generator by drawing and printing
+    # 5 random numbers
+    for i in range(1,6):
+        r = ran_binomial(rng, 1.0, 5)
+        print(f"random number {i} equals {r}")
 
     int_t = "i"    # signed int64
     float_t = "d"  # double (float64)
