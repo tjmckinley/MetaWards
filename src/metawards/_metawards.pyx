@@ -245,15 +245,25 @@ def rescale_play_matrix(network: Network, params: Parameters):
 def reset_work_matrix(network: Network):
     links = network.to_links
 
+    cdef int i = 0
+    cdef int [:] links_ifrom = links.ifrom
+    cdef double [:] links_suscept = links.suscept
+    cdef double [:] links_weight = links.weight
+
     for i in range(1, network.nlinks+1):  # 1-indexed
-        if links.ifrom[i] == -1:
+        if links_ifrom[i] == -1:
             print(f"Missing a link at index {i}")
         else:
-            links.suscept[i] = links.weight[i]
+            links_suscept[i] = links_weight[i]
 
 
 def reset_play_matrix(network: Network):
     links = network.play
+
+    cdef int i = 0
+    cdef int [:] links_ifrom = links.ifrom
+    cdef double [:] links_suscept = links.suscept
+    cdef double [:] links_weight = links.weight
 
     for i in range(1, network.plinks+1):  # 1-indexed
         if links.ifrom[i] == -1:
@@ -265,14 +275,19 @@ def reset_play_matrix(network: Network):
 def reset_play_susceptibles(network: Network):
     nodes = network.nodes
 
+    cdef int i = 0
+    cdef int [:] nodes_label = nodes.label
+    cdef double [:] nodes_play_suscept = nodes.play_suscept
+    cdef double [:] nodes_save_play_suscept = nodes.save_play_suscept
+
     for i in range(1, network.nnodes+1):  # 1-indexed
-        if nodes.label[i] == -1:
+        if nodes_label[i] == -1:
             print(f"Missing a node at index {i}?")
             # create a null node - need to check if this is the best thing
             # to do
             nodes[i] = Node()
         else:
-            nodes.play_suscept[i] = nodes.save_play_suscept[i]
+            nodes_play_suscept[i] = nodes_save_play_suscept[i]
 
 
 def reset_everything(network: Network, params: Parameters):
@@ -293,16 +308,20 @@ def reset_everything(network: Network, params: Parameters):
 
 def get_min_max_distances(network: Network):
     """Return the minimum and maximum distances recorded in the network"""
-    mindist = None
-    maxdist = None
-
     links = network.to_links
 
+    cdef double mindist = -1.0
+    cdef double maxdist = -1.0
+
+    cdef int i = 0
+    cdef double dist = 0.0
+    cdef double [:] links_distance = links.distance
+
     for i in range(1, network.nlinks+1):
-        dist = links.distance[i]
+        dist = links_distance[i]
 
         if dist:
-            if mindist is None:
+            if mindist < 0.0:
                 mindist = dist
                 maxdist = dist
             elif dist > maxdist:
@@ -359,34 +378,60 @@ def initialise_play_infections(network: Network, params: Parameters):
 
 def fill_in_gaps(network: Network):
     """Fills in gaps in the network"""
+    nodes = network.nodes
     links = network.to_links
 
-    added = 0
+    cdef int added = 0
+    cdef int i = 0
+    cdef int link_to = 0
+    cdef int [:] links_ito = links.ito
+    cdef int [:] nodes_label = nodes.label
+
+    cdef int nnodes = network.nnodes
 
     for i in range(1, network.nlinks+1):  # careful of 1-indexing
-        link_to = links.ito[i]
-        if network.nodes.label[link_to] != link_to:
+        link_to = links_ito[i]
+        if nodes_label[link_to] != link_to:
             print(f"ADDING LINK {i} {link_to} {network.nnodes}")
-            network.nodes.label[link_to] = link_to
-            network.nnodes += 1
+            nodes_label[link_to] = link_to
+            nnodes += 1
 
             added += 1
             assert added < 20   # something if too many missing links
+
+    network.nnodes = nnodes
 
 
 def build_play_matrix(network: Network, params: Parameters,
                       max_links: int):
 
-    nlinks = 0
+    nodes = network.nodes
     links = ToLinks(max_links + 1)
+
+    cdef int nlinks = 0
+    cdef int j = 0
+    cdef int from_id = 0
+    cdef int to_id = 0
+    cdef double weight = 0.0
+
+    cdef int [:] nodes_label = nodes.label
+    cdef int [:] nodes_begin_p = nodes.begin_p
+    cdef int [:] nodes_end_p = nodes.end_p
+    cdef int [:] nodes_self_p = nodes.self_p
+
+    cdef int [:] links_ifrom = links.ifrom
+    cdef int [:] links_ito = links.ito
+    cdef double [:] links_weight = links.weight
+    cdef double [:] links_suscept = links.suscept
+
+    cdef double [:] nodes_denominator_p = nodes.denominator_p
+    cdef double [:] nodes_play_suscept = nodes.play_suscept
 
     try:
         with open(params.input_files.play) as FILE:
             # resets the node label as a flag to check progress?
             for j in range(1, network.nnodes+1):
-                network.nodes.label[j] = -1
-
-            nodes = network.nodes
+                nodes_label[j] = -1
 
             line = FILE.readline()
             while line:
@@ -402,22 +447,22 @@ def build_play_matrix(network: Network, params: Parameters,
                                 f"Zero in link list: ${from_id}-${to_id}! "
                                 f"Renumber files and start again")
 
-                if nodes.label[from_id] == -1:
-                    nodes.label[from_id] = from_id
-                    nodes.begin_p[from_id] = nlinks
-                    nodes.end_p[from_id] = nlinks
+                if nodes_label[from_id] == -1:
+                    nodes_label[from_id] = from_id
+                    nodes_begin_p[from_id] = nlinks
+                    nodes_end_p[from_id] = nlinks
 
                 if from_id == to_id:
-                    nodes.self_p[from_id] = nlinks
+                    nodes_self_p[from_id] = nlinks
 
-                nodes.end_p[from_id] += 1
+                nodes_end_p[from_id] += 1
 
-                links.ifrom[nlinks] = from_id
-                links.ito[nlinks] = to_id
-                links.weight[nlinks] = weight
+                links_ifrom[nlinks] = from_id
+                links_ito[nlinks] = to_id
+                links_weight[nlinks] = weight
 
-                nodes.denominator_p[from_id] += weight  # not denominator_p
-                nodes.play_suscept[from_id] += weight
+                nodes_denominator_p[from_id] += weight  # not denominator_p
+                nodes_play_suscept[from_id] += weight
 
                 line = FILE.readline()
     except Exception as e:
@@ -428,11 +473,15 @@ def build_play_matrix(network: Network, params: Parameters,
 
     for j in range(1, nlinks+1):   # careful 1-indexed
         if renormalise:
-            links.weight[j] /= nodes.denominator_p[links.ifrom[j]]
+            links_weight[j] /= nodes_denominator_p[links_ifrom[j]]
 
-        links.suscept[j] = links.weight[j]
+        links_suscept[j] = links_weight[j]
 
     fill_in_gaps(network)
+
+    cdef int i1 = 0
+    cdef int i2 = 0
+    cdef double [:] nodes_save_play_suscept = nodes.save_play_suscept
 
     try:
         with open(params.input_files.play_size, "r") as FILE:
@@ -443,9 +492,9 @@ def build_play_matrix(network: Network, params: Parameters,
                 i1 = int(words[0])
                 i2 = int(words[1])
 
-                nodes.play_suscept[i1] = i2
-                nodes.denominator_p[i1] = i2
-                nodes.save_play_suscept[i1] = i2
+                nodes_play_suscept[i1] = i2
+                nodes_denominator_p[i1] = i2
+                nodes_save_play_suscept[i1] = i2
 
                 line = FILE.readline()
 
