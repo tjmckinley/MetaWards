@@ -281,7 +281,7 @@ def initialise_infections(network: Network, params: Parameters):
     nlinks = network.nlinks + 1
 
     for _ in range(0, n):
-        infections.append( nlinks * [0] )
+        infections.append( array("i", nlinks, 0) )
 
     return infections
 
@@ -296,7 +296,7 @@ def initialise_play_infections(network: Network, params: Parameters):
     nnodes = network.nnodes + 1
 
     for _ in range(0, n):
-        infections.append( nnodes * [0] )
+        infections.append( array("i", nnodes, 0) )
 
     return infections
 

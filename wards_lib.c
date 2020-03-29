@@ -1003,7 +1003,7 @@ void SeedInfectionAtNode(network *net, parameters *par, int node_seed, int **inf
 
 	while(links[j].ito!=node_seed || links[j].ifrom!=node_seed)j++;
 
-	//	printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);
+	printf("j %d link from %d to %d\n",j,links[j].ifrom,links[j].ito);
 
 	//	printf("seeding here\n");
 
@@ -1096,7 +1096,7 @@ void RunModel(network *net, parameters *par, int **inf,
 
 	ClearAllInfections(net,inf,playinf);
 
-	//printf("node_seed %d\n \n",to_seed[s]);
+	printf("node_seed %d\n \n",to_seed[s]);
 
 #ifndef IMPORTS
 	if(s<0){
