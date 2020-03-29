@@ -252,10 +252,6 @@ def iterate(network: Network, infections, play_infections,
                                  inf_ij)
 
                 if l > 0:
-                    print(f"strange?")
-                    print(f"{inf_ij} {params.disease_params.progress[i]} {i} {j}")
-                    print(f"recover play_infections[{i+1}][{j}] += {l}")
-                    print(f"recover play_infections[{i}][{j}] -= {l}")
                     play_infections[i+1][j] += l
                     play_infections[i][j] -= l
 
@@ -401,7 +397,7 @@ def iterate(network: Network, infections, play_infections,
                         # infection
                         #print(f"PLAY: InfProb {inf_prob}, susc {playmove}, "
                         #      f"l {l}")
-                        print(f"daytime play_infections[{i}][{j}] += {l}")
+                        #print(f"daytime play_infections[{i}][{j}] += {l}")
                         play_infections[i][j] += l
                         wards.play_suscept[j] -= l
 
@@ -421,7 +417,7 @@ def iterate(network: Network, infections, play_infections,
 
             if l > 0:
                 # another infections, this time from home
-                print(f"staying home play_infections[{i}][{j}] += {l}")
+                #print(f"staying home play_infections[{i}][{j}] += {l}")
                 play_infections[i][j] += l
                 wards.play_suscept[j] -= l
 
@@ -437,7 +433,7 @@ def iterate(network: Network, infections, play_infections,
 
             if l > 0:
                 # another infection
-                print(f"nighttime play_infections[{i}][{j}] += {l}")
+                #print(f"nighttime play_infections[{i}][{j}] += {l}")
                 play_infections[i][j] += l
                 wards.play_suscept[j] -= l
 
@@ -483,7 +479,7 @@ def infect_additional_seeds(network: Network, params: Parameters,
                 print(f"Not enough susceptibles in ward for seeding")
             else:
                 wards.play_suscept[seed[1]] -= seed[2]
-                print(f"seeding play_infections[0][{seed[1]}] += {seed[2]}")
+                #print(f"seeding play_infections[0][{seed[1]}] += {seed[2]}")
                 play_infections[0][seed[1]] += seed[2]
 
 
@@ -657,7 +653,7 @@ def extract_data(network: Network, infections, play_infections,
                     total_new += newinf
 
             if play_infections[i][j] > 0:
-                print(f"pinf[{i}][{j}] > 0: {play_infections[i][j]}")
+                #print(f"pinf[{i}][{j}] > 0: {play_infections[i][j]}")
                 pinf = play_infections[i][j]
                 pinf_tot[i] += pinf
                 total_inf_ward[j] += pinf
@@ -674,7 +670,6 @@ def extract_data(network: Network, infections, play_infections,
         files[3].write("%d " % pinf_tot[i])
 
         if i == 1:
-            print(f"latent {inf_tot[i]}  {pinf_tot[i]}")
             latent += inf_tot[i] + pinf_tot[i]
         elif (i < N_INF_CLASSES-1) and (i > 1):
             total += inf_tot[i] + pinf_tot[i]
@@ -724,11 +719,11 @@ def seed_infection_at_node(network: Network, params: Parameters,
     while (links.ito[j] != seed) or (links.ifrom[j] != seed):
         j += 1
 
-    print(f"j {j} link from {links.ifrom[j]} to {links.ito[j]}")
+    #print(f"j {j} link from {links.ifrom[j]} to {links.ito[j]}")
 
     if links.suscept[j] < params.initial_inf:
         wards.play_suscept[seed] -= params.initial_inf
-        print(f"seed at play_infections[0][{seed}] += {params.initial_inf}")
+        #print(f"seed at play_infections[0][{seed}] += {params.initial_inf}")
         play_infections[0][seed] += params.initial_inf
 
     infections[0][j] = params.initial_inf

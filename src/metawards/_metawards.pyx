@@ -543,6 +543,7 @@ def build_wards_network_distance(params: Parameters):
     print("Calculating distances...")
 
     total_distance = 0
+    n_invalid = 0
 
     for i in range(0, network.nlinks):  # shouldn't this be range(1, nlinks+1)?
                                         # the fact there is a missing link at 0
@@ -568,7 +569,10 @@ def build_wards_network_distance(params: Parameters):
         if i >= 0 and i < len(plinks.distance):
             plinks.distance[i] = distance
         else:
-            print(f"Setting invalid plinks.distance[{i}]")
+            n_invalid += 1
+
+    if n_invalid > 0:
+        print(f"WARNING: Set {n_invalid} plink distances!")
 
     print(f"Total distance equals {total_distance}")
 
