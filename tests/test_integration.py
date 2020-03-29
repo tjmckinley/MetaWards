@@ -86,7 +86,9 @@ def test_integration():
     params.daily_imports = 0.0
 
     print("Run the model...")
-    mw.run_model(network=network, params=params, infections=infections,
+    mw.run_model(network=network, params=params,
+                 population=57104043,
+                 infections=infections,
                  play_infections=play_infections,
                  rng=rng, to_seed=to_seed, s=s, output_dir="tmp")
 

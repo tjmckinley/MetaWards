@@ -28,7 +28,7 @@ def ran_binomial(rng, p: float, n: int):
 
 def import_infection(network: Network, infections, play_infections,
                      params: Parameters, rng,
-                     population: int = 57104043):
+                     population: int):
 
     links = network.to_links
     wards = network.nodes
@@ -59,8 +59,8 @@ def import_infection(network: Network, infections, play_infections,
 
 def iterate(network: Network, infections, play_infections,
             params: Parameters, rng, timestep: int,
+            population: int,
             is_dangerous=None,
-            population: int = 57104043,
             SELFISOLATE: bool = False,
             IMPORTS: bool = False):
     """Iterate the model forward one timestep (day) using the supplied
@@ -446,7 +446,9 @@ def iterate(network: Network, infections, play_infections,
 
 def iterate_weekend(network: Network, infections, play_infections,
                     params: Parameters, rng, timestep: int,
-                    is_dangerous = None, SELFISOLATE: bool = False):
+                    population: int,
+                    is_dangerous = None, SELFISOLATE: bool = False,
+                   ):
     """Iterate the model forward one timestep (day) using the supplied
        network and parameters, advancing the supplied infections,
        and using the supplied random number generator (rng)
@@ -734,7 +736,7 @@ def seed_infection_at_node(network: Network, params: Parameters,
 
 
 def seed_all_wards(network: Network, play_infections,
-                   expected: int, population: int = 57104043):
+                   expected: int, population: int):
     """Seed the wards with an initial set of infections, assuming
        an 'expected' number of infected people out of a population
        of 'population'
@@ -875,7 +877,8 @@ def run_model(network: Network, params: Parameters,
             if day > 5:
                 iterate_weekend(network=network, infections=infections,
                                 play_infections=play_infections,
-                                params=params, rng=rng, timestep=timestep)
+                                params=params, rng=rng, timestep=timestep,
+                                population=population)
                 print("weekend")
             else:
                 iterate(network=network, infections=infections,
