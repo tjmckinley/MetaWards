@@ -182,129 +182,119 @@ def iterate(network: Network, infections, play_infections,
         # end of params.disease_params.contrib_foi[i] > 0:
     # end of loop over all disease classes
 
+    for i in range(N_INF_CLASSES-2, -1, -1):  # loop down to 0
+        # recovery, move through classes backwards
+        for j in range(1, network.nlinks+1):
+            inf_ij = infections[i][j]
 
-	for(i=N_INF_CLASSES-2;i>=0;i--){ // recovery, move through classes backwards.
+            if inf_ij > 0:
+                l = ran_binomial(rng, params.disease_params.progress[i],
+                                 inf_ij)
 
-		for(j=1;j<=net->nlinks;j++){
+                if l > 0:
+                    infections[i+1][j] += l
+                    infections[i][j] -= l
 
-			if(inf[i][j]>0){
+            elif inf_ij != 0:
+                print(f"inf_ij problem {i} {j} {inf_ij}")
 
-				l=gsl_ran_binomial(r,par->Progress[i],inf[i][j]);
+        for j in range(1, network.nnodes+1):
+            inf_ij = play_infections[i][j]
 
-				if(l>0){
-					inf[i+1][j]+=l;
+            if inf_ij > 0:
+                l = ran_binomial(rng, params.disease_params.progress[i],
+                                 inf_ij)
 
-					inf[i][j]-=l;
+                if l > 0:
+                    play_infections[i+1][j] += l
+                    play_infections[i][j] -= l
 
-				}
+            elif inf_ij != 0:
+                print(f"play_inf_ij problem {i} {j} {inf_ij}")
+    # end of recovery loop
 
-			}
-			else if(inf[i][j]!=0){
-				printf("PROBLEMs\n");
+	i = 0
+    inf_prob = 0.0
+    temp = 0
 
-			}
+    for j in range(1, network.nlinks+1):
+        # actual new infections for fixed movements
+        inf_prob = 0
 
-		}
+        distance = links.distance[j]
 
-		for(j=1;j<=net->nnodes;j++){
-			if(playinf[i][j]>0){
-				l=gsl_ran_binomial(r,par->Progress[i],playinf[i][j]);
+        if distance < cutoff:
+            # distance is below cutoff (reasonable distance)
+            # infect in work ward
+            ifrom = links.ifrom[j]
+            ito = links.ito[j]
 
-				if(l>0){
+            if wards.day_foi[ito] > 0:
+                # daytime infection of link j
+                if SELFISOLATE:
+                    frac = is_dangerous[ito] / float(
+                                            wards.denominator_d[ito] +
+                                            wards.denominator_p[ito])
 
-					playinf[i+1][j]+=l;
-					playinf[i][j]-=l;
+                    if frac > thresh:
+                        inf_prob = 0.0
+                    else:
+                        rate = float(params.length_day *
+                                     wards.day_foi[ito]) /   \
+                               float(wards.denominator_d[ito] +
+                                     wards.denominator_pd[ito])
 
-				}
-			}
-			else if(playinf[i][j]!=0){
-				printf("PROBLEMS!!!");
-			}
-		}
+                        inf_prob = rate_to_prob(rate)
+                else:
+                    rate = float(params.length_day *
+                                    wards.day_foi[ito]) /   \
+                           float(wards.denominator_d[ito] +
+                                    wards.denominator_pd[ito])
 
-	}
+                    inf_prob = rate_to_prob(rate)
 
+            # end of if wards.day_foi[ito] > 0
+        # end of if distance < cutoff
+        elif wards.day_foi[ifrom] > 0:
+            # if distance is too large then infect in home ward with day FOI
+            rate = float(params.length_day * wards.day_foi[ifrom]) /  \
+                   float(wards.denominator_d[ifrom] +
+                         wards.denominator_pd[ifrom])
 
+            inf_prob = rate_to_prob(rate)
 
-	i=0;
+        if inf_prob > 0.0:
+            # daytime infection of workers
+            l = ran_binomial(rng, inf_prob, int(links.suscept[j]))
 
-	InfProb=0.0;
-	temp=0;
+            if l > 0:
+                # actual infection
+                print(f"InfProb {inf_prob}, susc {links.suscept[j]}, l {l}")
+				infections[i][j] += l
+				links.suscept[j] -= l
 
-	for(j=1;j<=net->nlinks;j++){ // actual new infections for fixed movements
+        if wards.night_foi[ifrom] > 0:
+            # nighttime infection of workers
+            rate = (1.0 - params.length_day) * (wards.night_foi[ifrom]) /  \
+                   float(wards.denominator_n[ifrom] +
+                         wards.denominator_p[ifrom])
 
-		InfProb=0.0;
+            inf_prob = rate_to_prob(rate)
 
-		if(links[j].distance < cutoff){ // if distance is below cutoff (reasonable distance) infect in work ward
+            l = ran_binomial(rng, inf_prob, int(links.suscept[j]))
 
-			if(wards[links[j].ito].DayFOI > 0){   // daytime infection of link j
+            if l > links.suscept[j]:
+                print(f"l > links[{j}].suscept {links.suscept[j]} nighttime")
 
-#ifdef SELFISOLATE
-				if((double)(IsDangerous[links[j].ito]/(wards[links[j].ito].Denominator_D + wards[links[j].ito].Denominator_P))>thresh){
-					InfProb=0;
-				}
-				else {
-#endif
-					Rate= (par->LengthDay)*(wards[links[j].ito].DayFOI)/
-						(wards[links[j].ito].Denominator_D + wards[links[j].ito].Denominator_PD);
+            if l > 0:
+                # actual infection
+                print(f"NIGHT InfProb {inf_prob}, susc {links.suscept[j]}, {l}")
 
-					InfProb=Rate2Prob(Rate);
+                infections[i][j] += l
+                links.suscept[j] -= l
+        # end of wards.night_foi[ifrom] > 0  (nighttime infections)
+    # end of loop over all network links
 
-#ifdef SELFISOLATE
-				}
-#endif
-
-			}
-		}
-
-		else if(wards[links[j].ifrom].DayFOI>0){ // if distance is too large infect in home ward with day FOI
-
-			Rate=(par->LengthDay)*(wards[links[j].ifrom].DayFOI)/
-				(wards[links[j].ifrom].Denominator_D + wards[links[j].ifrom].Denominator_PD);
-			InfProb=Rate2Prob( Rate );
-
-		}
-
-		if(InfProb>0.0){ // Daytime Infection of workers
-
-			l=gsl_ran_binomial(r,InfProb,(int)links[j].suscept); // actual infection
-
-			if(l>0){
-	//			printf("InfProb %lf, susc %lf, l %d\n",InfProb,links[j].suscept,l);
-				inf[i][j] += l;
-				links[j].suscept -= l;
-
-			}
-
-			InfProb=0.0;
-
-		}
-
-
-		InfProb=0.0;
-
-		if(wards[links[j].ifrom].NightFOI>0){ //nighttime infection of workers j
-			Rate = (1.0-par->LengthDay)*(wards[links[j].ifrom].NightFOI)/
-				(wards[links[j].ifrom].Denominator_N + wards[links[j].ifrom].Denominator_P);
-			InfProb = Rate2Prob( Rate );
-
-
-
-			l = gsl_ran_binomial(r,InfProb,(int)(links[j].suscept));
-			if(l > links[j].suscept){
-				printf("l > links[j].suscept nighttime\n");
-			}
-			if(l>0){
-	//			printf("NIGHT InfProb %lf, susc %lf, l %d\n",InfProb,links[j].suscept,l);
-				inf[i][j]+=l;
-				links[j].suscept -= l;
-
-
-			}
-
-		}
-
-	}
 
 	for(j=1;j<=net->nnodes;j++){ // playmatrix loop.
 		InfProb=0.0;
@@ -414,7 +404,7 @@ def iterate_weekend(network: Network, infections, play_infections,
        If SELFISOLATE is True then you need to pass in
        is_dangerous, which should be an array("i", network.nnodes)
     """
-    pass
+    raise AssertionError("Will write iterate_weekend later...")
 
 
 def how_many_vaccinated(vac):
