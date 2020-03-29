@@ -2,5 +2,6 @@
 *.dat
 original/metawards
 notebooks/.ipynb_checkpoints
-src/build
+/build
+src/metawards/*.c
 __pycache__
