@@ -1096,7 +1096,7 @@ void RunModel(network *net, parameters *par, int **inf,
 
 	ClearAllInfections(net,inf,playinf);
 
-	printf("node_seed %d\n \n",to_seed[s]);
+	printf("node_seed %d (%d)\n \n",to_seed[s], s);
 
 #ifndef IMPORTS
 	if(s<0){

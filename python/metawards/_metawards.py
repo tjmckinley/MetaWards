@@ -507,7 +507,6 @@ def build_wards_network_distance(params: Parameters):
     """Calls BuildWardsNetwork (as above), but adds extra bit, to
        read LocationFile and calculate distances of links, put them
        in net->to_links[i].distance
-       Distances are not included in the play matrix
     """
 
     network = build_wards_network(params)
@@ -564,9 +563,12 @@ def build_wards_network_distance(params: Parameters):
         links.distance[i] = distance
         total_distance += distance
 
-        # below line doesn't make sense and doesn't work. Why would the ith
-        # play link be related to the ith work link?
-        # plinks.distance[i] = distance
+        # below line doesn't make sense and doesn't work all the time.
+        # Why would the ith play link be related to the ith work link?
+        if i >= 0 and i < len(plinks.distance):
+            plinks.distance[i] = distance
+        else:
+            print(f"Setting invalid plinks.distance[{i}]")
 
     print(f"Total distance equals {total_distance}")
 

@@ -813,7 +813,13 @@ def run_model(network: Network, params: Parameters,
     clear_all_infections(infections=infections,
                          play_infections=play_infections)
 
-    print(f"node_seed {to_seed[s]}")
+    if s < 0:
+        print(f"Negative value of s? {s}")
+        to_seed = 0
+    else:
+        to_seed = to_seed[s]
+
+    print(f"node_seed {to_seed}")
 
     if not IMPORTS:
         if s < 0:
@@ -823,7 +829,7 @@ def run_model(network: Network, params: Parameters,
                            population=population)
         else:
             seed_infection_at_node(network=network, params=params,
-                                   seed=to_seed[s],
+                                   seed=to_seed,
                                    infections=infections,
                                    play_infections=play_infections)
 
