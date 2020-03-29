@@ -1,6 +1,6 @@
 
 import math
-from libc.math cimport sqrt
+from libc.math cimport sqrt, ceil, floor
 
 from array import array
 
@@ -34,32 +34,47 @@ def move_population_from_play_to_work(network: Network, params: Parameters,
        When WorkToPlay > 0 move par->WorkToPlay proportion from Work to Play.
     """
 
-    countrem = 0.0
-    check = 0.0     # don't use check and doesn't use the random generator?
+    cdef double check = 0.0     # don't use check and
+                                # doesn't use the random generator?
 
     links = network.to_links   # workers, regular movements
     wards = network.nodes
     play = network.play        # links of players
 
+    cdef int i = 0
+    cdef double [:] links_suscept = links.suscept
+    cdef double [:] wards_play_suscept = wards.play_suscept
+    cdef int [:] links_ifrom = links.ifrom
+    cdef double to_move = 0.0
+    cdef double work_to_play = params.work_to_play
+    cdef double play_to_work = params.play_to_work
+
     if params.work_to_play > 0.0:
         for i in range(1, network.nlinks+1):
-            suscept = links.suscept[i]
-            to_move = math.ceil(suscept * params.work_to_play)
+            suscept = links_suscept[i]
+            to_move = ceil(suscept * work_to_play)
 
             if to_move > suscept:
                 print(f"to_move > links[{i}].suscept")
 
-            links.suscept[i] -= to_move
-            wards.play_suscept[links.ifrom[i]] += to_move
+            links_suscept[i] -= to_move
+            wards_play_suscept[links_ifrom[i]] += to_move
+
+    cdef int ifrom = 0
+    cdef int [:] play_ifrom = play.ifrom
+    cdef double [:] play_weight = play.weight
+    cdef double [:] wards_save_play_suscept = wards.save_play_suscept
+    cdef double countrem = 0.0
+    cdef temp, p
 
     if params.play_to_work > 0.0:
         for i in range(1, network.plinks+1):
-            ifrom = play.ifrom[i]
+            ifrom = play_ifrom[i]
 
-            temp = params.play_to_work * (play.weight[i] *
-                                          wards.save_play_suscept[ifrom])
+            temp = play_to_work * (play_weight[i] *
+                                   wards_save_play_suscept[ifrom])
 
-            to_move = math.floor(temp)
+            to_move = floor(temp)
             p = temp - to_move
 
             countrem += p
@@ -68,11 +83,11 @@ def move_population_from_play_to_work(network: Network, params: Parameters,
                 to_move += 1.0
                 countrem -= 1.0
 
-            if wards.play_suscept[ifrom] < to_move:
-                to_move = wards.play_suscept[ifrom]
+            if wards_play_suscept[ifrom] < to_move:
+                to_move = wards_play_suscept[ifrom]
 
-            wards.play_suscept[ifrom] -= to_move
-            links.suscept[i] += to_move
+            wards_play_suscept[ifrom] -= to_move
+            links_suscept[i] += to_move
 
     recalculate_work_denominator_day(network=network, params=params)
     recalculate_play_denominator_day(network=network, params=params)
