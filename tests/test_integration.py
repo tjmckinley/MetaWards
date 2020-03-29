@@ -38,7 +38,9 @@ def test_integration():
 
     params.UV = UV
 
-    params.set_input_files(4)
+    input_files = mw.InputFiles.load(model="2011Data")
+
+    params.set_input_files(input_files)
 
     to_seed = mw.read_done_file(params.input_files.seed)
 

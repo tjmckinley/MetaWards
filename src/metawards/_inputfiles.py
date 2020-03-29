@@ -1,15 +1,14 @@
 
 from dataclasses import dataclass
 import os
+import pathlib
 
 __all__ = ["InputFiles"]
 
 _inputfiles = {}
 
-# All input data files needed by this module will be in the
-# metawards/data directory
-_2011Data = os.path.join(os.path.dirname(__file__),
-                         "data", "2011Data")
+_default_model_path = os.path.join(pathlib.Path.home(),
+                                   "GitHub", "MetaWardsData", "model_data")
 
 
 @dataclass
@@ -27,8 +26,26 @@ class InputFiles:
     additional_seeding: str = None  # LIST OF EXTRA SEED WARDS...
     uv: str = None                  # UV file
 
+    _model_path: str = None          # Path to the data files
+    _model_name: str = None          # Name of the model
+    _model_version: str = None       # Version loaded from the data
+
+    def model_name(self):
+        """Return the name of this model"""
+        return self._model_name
+
+    def model_path(self):
+        """Return the path to the directory containing this model"""
+        return self._model_path
+
+    def model_version(self):
+        """Return the version of the data in this model"""
+        return self._model_version
+
     def __str__(self):
-        return f"work = {self.work}\n" \
+        return f"Model {self._model_name} version {self._model_version}\n" \
+               f"loaded from {self._model_path}\n" \
+               f"work = {self.work}\n" \
                f"play = {self.play}\n" \
                f"identifier = {self.identifier}\n" \
                f"identifier2 = {self.identifier2}\n" \
@@ -39,56 +56,72 @@ class InputFiles:
                f"nodes_to_track = {self.nodes_to_track}\n" \
                f"additional_seeding = {self.additional_seeding}\n"
 
-    def assert_files_exist(self):
-        """Assert that all of the input files exist on disk"""
+    def _localise(self):
+        """Localise the filenames in this input files set. This will
+           prepend model_path/model to every filename and will also
+           double-check that all files exist and are readable
+        """
         members = [attr for attr in dir(self)
                     if not callable(getattr(self, attr))
-                        and not attr.startswith("__")]
+                        and not attr.startswith("_")]
 
         for member in members:
             filename = getattr(self, member)
             if filename:
+                filename = os.path.join(self._model_path, self._model_name,
+                                        filename)
+
                 if not (os.path.exists(filename) and os.path.isfile(filename)):
                     raise FileNotFoundError(
                             f"Cannot find input file {member} = {filename}")
 
-    @staticmethod
-    def set_files(name: str, files):
-        """Set the input files associated with a particular key"""
-        if not isinstance(files, InputFiles):
-            raise TypeError("The input files should be type 'InputFiles'")
-
-        global _inputfiles
-        _inputfiles[str(name).lower().strip()] = files
+                setattr(self, member, filename)
 
     @staticmethod
-    def get_files(name: str):
-        """Return the datafiles for the specified key"""
-        global _inputfiles
+    def load(model: str = "2011Data",
+             model_path: str=_default_model_path,
+             description: str="description.json"):
+        """Load the parameters associated with the passed model.
+           This will look for the parameters specified in
+           the json file called "model_path/model/description"
+
+           By default this will load the 2011Data parameters
+           from $HOME/GitHub/model_data/2011Data/description.json
+        """
+
+        json_file = os.path.join(model_path, model, description)
+
         try:
-            return _inputfiles[str(name).lower().strip()]
-        except KeyError:
-            raise KeyError(f"There are no input files for key '{name}' "
-                           f"Known input files are {list(_inputfiles.keys())}")
+            with open(json_file, "r") as FILE:
+                import json
+                files = json.load(FILE)
 
+        except Exception as e:
+            print(f"Could not find the model file {json_file}")
+            print(f"Either it does not exist of was corrupted.")
+            print(f"Error was {e.__class__} {e}")
+            print(f"To download the model data type the command:")
+            print(f"  git clone https://github.com/chryswoods/MetaWardsData")
+            print(f"and then re-run this function passing in the full")
+            print(f"path to where you downloaded this directory")
+            raise FileNotFoundError(f"Could not find or read {json_file}: "
+                                    f"{e.__class__} {e}")
 
-# Initialise the _inputfiles dictionary for key '4'. Ideally
-# this would come from a json data file (or equivalent) to stop
-# researchers having to edit this code. They can use the
-# "set_files" function above to change this though
-_key4 = InputFiles()
+        model = InputFiles(work=files["work"],
+                           play=files["play"],
+                           identifier=files["identifier"],
+                           identifier2=files["identifier2"],
+                           weekend=files["weekend"],
+                           play_size=files["play_size"],
+                           position=files["position"],
+                           seed=files["seed"],
+                           nodes_to_track=files["nodes_to_track"],
+                           additional_seeding=files["additional_seeding"],
+                           uv=files["uv"],
+                           _model_path=model_path,
+                           _model_name=model,
+                           _model_version=files["version"])
 
-_key4.work = os.path.join(_2011Data, "EW1.dat")
-_key4.play = os.path.join(_2011Data, "PlayMatrix.dat")
-_key4.play_size = os.path.join(_2011Data, "PlaySize.dat")
-_key4.position = os.path.join(_2011Data, "CBB2011.dat")
-_key4.seed = os.path.join(_2011Data, "seeds.dat")
-_key4.nodes_to_track = os.path.join(_2011Data, "seeds.dat")
-_key4.additional_seeding = os.path.join(_2011Data, "ExtraSeedsBrighton.dat")
-_key4.uv = None          # Orig code has "UVScaling.csv" but this doesn't
-                         # exist and this variable is not yet used
-_key4.weekend = None     # this is not set in the original code?
-_key4.identifier = None  # this is not set in the original code?
-_key4.identifier2 = None # this is not set in the original code?
+        model._localise()
 
-InputFiles.set_files(4, _key4)
+        return model

@@ -73,17 +73,12 @@ class Parameters:
 
         return par
 
-    def set_input_files(self, input_files: str):
+    def set_input_files(self, input_files: InputFiles):
         """Set the input files that are used to initialise the
            simulation
         """
-        if not isinstance(input_files, InputFiles):
-            input_files = InputFiles.get_files(input_files)
-
         print("Using input files:")
         print(input_files)
-
-        input_files.assert_files_exist()
 
         self.input_files = deepcopy(input_files)
 
