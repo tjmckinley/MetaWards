@@ -343,7 +343,7 @@ def iterate(network: Network, infections, play_infections,
 
         suscept = wards.play_suscept[j]
 
-        if suscept < 0.0:
+        if suscept < 0.0 or suscept is None:
             print(f"play_suscept is less than 0 ({suscept}) "
                   f"problem {j}, {wards.label[j]}")
 
@@ -500,7 +500,7 @@ def extract_data_for_graphics(network: Network, infections,
     links = network.to_links
 
     N_INF_CLASSES = len(infections)
-    MAXSIZE = network.nnodes
+    MAXSIZE = network.nnodes + 1
 
     int_t = "i"
     null_int1 = N_INF_CLASSES * [0]
@@ -565,7 +565,7 @@ def extract_data(network: Network, infections, play_infections,
 
     int_t = "i"
     N_INF_CLASSES = len(infections)
-    MAXSIZE = network.nnodes
+    MAXSIZE = network.nnodes + 1
 
     assert len(infections) == len(play_infections)
 
@@ -684,13 +684,13 @@ def extract_data(network: Network, infections, play_infections,
     files[1].write("\n")
     files[3].write("\n")
     files[4].write("%d \n" % total)
-    files[4].fflush()
+    files[4].flush()
 
     print(f"S: {susceptibles}    ", end="")
     print(f"E: {latent}    ", end="")
     print(f"I: {total}    ", end="")
     print(f"R: {recovereds}    ", end="")
-    print(f"IW: {n_inf_wards}   ", end="")
+    print(f"IW: {n_inf_wards[0]}   ", end="")
     print(f"TOTAL POPULATION {susceptibles+total+recovereds}")
 
     return (total+latent)
@@ -787,6 +787,13 @@ def run_model(network: Network, params: Parameters,
     float_t = "d"  # double (float64)
 
     size = MAXSIZE   # suspect this will be the number of nodes
+
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
+    if not os.path.isdir(output_dir):
+        raise AssertionError(f"The specified output directory ({output_dir}) "
+                             f"does not appear to be a valid directory")
 
     EXPORT = open(os.path.join(output_dir, "ForMattData.dat"), "w")
 

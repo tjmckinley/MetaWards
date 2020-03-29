@@ -84,7 +84,7 @@ def test_integration():
     print("Run the model...")
     mw.run_model(network=network, params=params, infections=infections,
                  play_infections=play_infections,
-                 rng=rng, to_seed=to_seed, s=s)
+                 rng=rng, to_seed=to_seed, s=s, output_dir="tmp")
 
     print("End of the run")
 
