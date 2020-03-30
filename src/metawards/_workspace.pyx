@@ -35,6 +35,9 @@ class Workspace:
         self.total_inf_ward = array(int_t, null_int_MAXSIZE)
         self.total_new_inf_ward = array(int_t, null_int_MAXSIZE)
 
+        self.total_infections = array(int_t, null_int_MAXSIZE)
+        self.prevalence = array(int_t, null_int_MAXSIZE)
+
     def zero_all(self):
         """Reset the values of all of the arrays to zero"""
         cdef int i = 0
@@ -45,6 +48,8 @@ class Workspace:
 
         cdef int [:] total_inf_ward = self.total_inf_ward
         cdef int [:] total_new_inf_ward = self.total_new_inf_ward
+        cdef int [:] total_infections = self.total_infections
+        cdef int [:] prevalence = self.prevalence
 
         for i in range(0, self.N_INF_CLASSES):
             inf_tot[i] = 0
@@ -54,3 +59,5 @@ class Workspace:
         for i in range(0, self.MAXSIZE):
             total_inf_ward[i] = 0
             total_new_inf_ward[i] = 0
+            total_infections[i] = 0
+            prevalence[i] = 0

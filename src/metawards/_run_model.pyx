@@ -592,43 +592,48 @@ def load_additional_seeds(filename: str):
 
 
 def extract_data_for_graphics(network: Network, infections,
-                              play_infections, FILE):
+                              play_infections, workspace: Workspace,
+                              FILE):
     """Extract data that will be used for graphical analysis"""
     links = network.to_links
 
-    N_INF_CLASSES = len(infections)
-    MAXSIZE = network.nnodes + 1
+    cdef int N_INF_CLASSES = len(infections)
 
-    int_t = "i"
-    null_int1 = N_INF_CLASSES * [0]
-    null_int2 = MAXSIZE * [0]
+    assert workspace.N_INF_CLASSES == N_INF_CLASSES
+    assert workspace.MAXSIZE >= network.nnodes+1
 
-    inf_tot = array(int_t, null_int1)
-    total_inf_ward = []
-    for i in range(0, N_INF_CLASSES):
-        total_inf_ward.append( array(int_t, null_int2) )
+    workspace.zero_all()
 
-    total = 0
+    cdef int i, j, inf_ij, pinf_ij, ifrom
+    cdef int total = 0
 
-    total_infections = array(int_t, null_int2)
-
-    null_int1 = None
-    null_int2 = None
+    cdef int [:] infections_i, play_infections_i
+    cdef int [:] inf_tot = workspace.inf_tot
+    cdef int [:] total_inf_ward = workspace.total_inf_ward
+    cdef int [:] total_infections = workspace.total_infections
+    cdef int [:] prevalence = workspace.prevalence
+    cdef int [:] links_ifrom = links.ifrom
 
     for i in range(0, N_INF_CLASSES):
+        infections_i = infections[i]
+        play_infections_i = play_infections[i]
+
+        for j in range(1, network.nnodes+1):
+            total_inf_ward[j] = 0
+
         for j in range(1, network.nlinks+1):
-            inf_ij = infections[i][j]
+            inf_ij = infections_i[j]
             if inf_ij != 0:
                 inf_tot[i] += inf_ij
-                ifrom = links.ifrom[j]
-                total_inf_ward[i][ifrom] += inf_ij
+                ifrom = links_ifrom[j]
+                total_inf_ward[ifrom] += inf_ij
                 if i < N_INF_CLASSES-1:
                     total_infections[ifrom] += inf_ij
                     total += inf_ij
 
         for j in range(1, network.nnodes+1):
-            pinf_ij = play_infections[i][j]
-            total_inf_ward[i][j] += pinf_ij
+            pinf_ij = play_infections_i[j]
+            total_inf_ward[j] += pinf_ij
             if (pinf_ij != 0) and (i < N_INF_CLASSES-1):
                 total_infections[j] += pinf_ij
                 total += pinf_ij
@@ -636,11 +641,11 @@ def extract_data_for_graphics(network: Network, infections,
             if i == 2:
                 FILE.write("%d " % total_infections[j])   # incidence
 
-                #if i == N_INF_CLASSES - 1:
-                #    FILE.write("%d ", total_infections[j])  # prevalence
+                if i == N_INF_CLASSES - 1:
+                    FILE.write("%d ", total_infections[j])  # prevalence
 
-                #if i == N_INF_CLASSES - 1:
-                #    prevalence[j] = total_infections[j]
+                if i == N_INF_CLASSES - 1:
+                    prevalence[j] = total_infections[j]
 
     FILE.write("\n")
 
@@ -648,7 +653,8 @@ def extract_data_for_graphics(network: Network, infections,
 
 def extract_data(network: Network, infections, play_infections,
                  timestep: int, files, workspace: Workspace,
-                 is_dangerous=None, SELFISOLATE: bool = False):
+                 population: int = None, is_dangerous=None,
+                 SELFISOLATE: bool = False):
     """Extract data for timestep 'timestep' from the network and
        infections and write this to the output files in 'files'
        (these must have been opened by 'open_files'). You need
@@ -658,8 +664,6 @@ def extract_data(network: Network, infections, play_infections,
        If SELFISOLATE is True then you need to pass in
        is_dangerous, which should be an array("i", network.nnodes)
     """
-    _start_total = time.time_ns()
-    _start = time.time_ns()
     links = network.to_links
     wards = network.nodes
 
@@ -702,10 +706,6 @@ def extract_data(network: Network, infections, play_infections,
 
     cdef int newinf, pinf
 
-    #files[0].write("%d " % timestep)
-    #files[1].write("%d " % timestep)
-    #files[3].write("%d " % timestep)
-
     cdef int i = 0
     cdef int j = 0
 
@@ -724,21 +724,17 @@ def extract_data(network: Network, infections, play_infections,
     cdef double x = 0.0
     cdef double y = 0.0
 
-    _end = time.time_ns()
-    timings = []
-    timings.append(("setup", _end-_start))
-
-    _start_loop = time.time_ns()
-
-    _delta1 = 0
-    _delta2 = 0
-    _delta3 = 0
+    files[0].write("%d " % timestep)
+    files[1].write("%d " % timestep)
+    files[3].write("%d " % timestep)
 
     for i in range(0, N_INF_CLASSES):
         infections_i = infections[i]
         play_infections_i = play_infections[i]
 
-        _start = time.time_ns()
+        n_inf_wards[i] = 0
+        inf_tot[i] = 0
+        pinf_tot[i] = 0
 
         for j in range(1, network.nnodes+1):
             if i == 0:
@@ -752,11 +748,6 @@ def extract_data(network: Network, infections, play_infections,
 
                 inf_tot[i] += infections_i[j]
                 total_inf_ward[links_ifrom[j]] += infections_i[j]
-
-        _end = time.time_ns()
-        _delta1 += _end - _start
-
-        _start = time.time_ns()
 
         for j in range(1, network.nnodes+1):
             if i == 0:
@@ -787,11 +778,6 @@ def extract_data(network: Network, infections, play_infections,
             if (i < N_INF_CLASSES-1) and total_inf_ward[j] > 0:
                 n_inf_wards[i] += 1
 
-        _end = time.time_ns()
-        _delta2 = _end - _start
-
-        _start = time.time_ns()
-
         files[0].write("%d " % inf_tot[i])
         files[1].write("%d " % n_inf_wards[i])
         files[3].write("%d " % pinf_tot[i])
@@ -802,17 +788,6 @@ def extract_data(network: Network, infections, play_infections,
             total += inf_tot[i] + pinf_tot[i]
         else:
             recovereds += inf_tot[i] + pinf_tot[i]
-
-        _end = time.time_ns()
-        _delta3 += _end - _start
-
-    _end_loop = time.time_ns()
-    timings.append(("delta1", _delta1))
-    timings.append(("delta2", _delta2))
-    timings.append(("delta3", _delta3))
-    timings.append(("loop", _end_loop - _start_loop))
-
-    _start = time.time_ns()
 
     if total_new > 0:
         mean_x = sum_x / total_new
@@ -826,7 +801,6 @@ def extract_data(network: Network, infections, play_infections,
         files[5].write("%d %f %f\n" % (timestep, var_x, var_y))
         files[6].write("%d %f\n" % (timestep, dispersal))
     else:
-        pass
         files[2].write("%d %f %f\n" % (timestep, 0.0, 0.0))
         files[5].write("%d %f %f\n" % (timestep, 0.0, 0.0))
         files[6].write("%d %f\n" % (timestep, 0.0))
@@ -837,9 +811,6 @@ def extract_data(network: Network, infections, play_infections,
     files[3].write("\n")
     files[4].flush()
 
-    _end = time.time_ns()
-    timings.append(("files", _end - _start))
-
     print(f"S: {susceptibles}    ", end="")
     print(f"E: {latent}    ", end="")
     print(f"I: {total}    ", end="")
@@ -847,11 +818,12 @@ def extract_data(network: Network, infections, play_infections,
     print(f"IW: {n_inf_wards[0]}   ", end="")
     print(f"TOTAL POPULATION {susceptibles+total+recovereds}")
 
-    _end_total = time.time_ns()
-    timings.append(("total", _end_total-_start_total))
-
-    print("\nEXTRACT_DATA")
-    print_timings(timings)
+    if population is not None:
+        sum_population = susceptibles+total+recovereds
+        if sum_population != population:
+            print(f"DISAGREEMENT WITH POPULATION COUNT! {population} "
+                  f"versus {sum_population}!")
+            assert sum_population == population
 
     return (total+latent)
 
@@ -1003,7 +975,8 @@ def run_model(network: Network, params: Parameters,
     cdef int infecteds = extract_data(network=network, infections=infections,
                                       play_infections=play_infections,
                                       timestep=timestep, files=files,
-                                      workspace=workspace)
+                                      workspace=workspace,
+                                      population=population)
 
     cdef int day = 0
 
@@ -1066,14 +1039,15 @@ def run_model(network: Network, params: Parameters,
         infecteds = extract_data(network=network, infections=infections,
                                  play_infections=play_infections,
                                  timestep=timestep, files=files,
-                                 workspace=workspace)
+                                 workspace=workspace,
+                                 population=population)
         _end = time.time_ns()
         timings.append(("extract_data", _end-_start))
 
         _start = time.time_ns()
         extract_data_for_graphics(network=network, infections=infections,
                                   play_infections=play_infections,
-                                  FILE=EXPORT)
+                                  workspace=workspace, FILE=EXPORT)
         _end = time.time_ns()
         timings.append(("extract_for_graphcs", _end-_start))
 
