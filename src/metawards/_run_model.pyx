@@ -135,6 +135,7 @@ def iterate(network: Network, infections, play_infections,
     cdef double scl_foi_uv = 0.0
     cdef double contrib_foi = 0.0
     cdef double beta = 0.0
+    cdef play_at_home_scl = 0.0
 
     cdef int j = 0
     cdef int k = 0
@@ -182,8 +183,13 @@ def iterate(network: Network, infections, play_infections,
         scl_foi_uv = contrib_foi * beta * uvscale
         too_ill_to_move = params.disease_params.too_ill_to_move[i]
 
+        # number of people staying gets bigger as
+        # PlayAtHome increases
+        play_at_home_scl = <float>(params.dyn_play_at_home *
+                                   too_ill_to_move)
+
         infections_i = infections[i]
-        play_infections[i] = play_infections[i]
+        play_infections_i = play_infections[i]
 
         if contrib_foi > 0:
             _start = time.time_ns()
@@ -254,16 +260,11 @@ def iterate(network: Network, infections, play_infections,
             _start = time.time_ns()
             for j in range(1, network.nnodes+1):
                 # playmatrix loop FOI loop (random/unpredictable movements)
-                inf_ij = play_infections[i][j]
+                inf_ij = play_infections_i[j]
                 if inf_ij > 0:
                     wards_night_foi[j] += inf_ij * scl_foi_uv
 
-                    # number of people staying gets bigger as
-                    # PlayAtHome increases
-                    scl = float(params.dyn_play_at_home *
-                                params.disease_params.too_ill_to_move[i])
-
-                    staying = ran_binomial(rng, scl, inf_ij)
+                    staying = ran_binomial(rng, play_at_home_scl, inf_ij)
 
                     if staying < 0:
                         print(f"staying < 0")
