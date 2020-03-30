@@ -1,9 +1,7 @@
+/.vscode
 *.dat
-/metawards
-python/.ipynb_checkpoints
-python/build
-python/metawards_c.c
-python/metawards_c.cpython*
-python/tmp
+original/metawards
+notebooks/.ipynb_checkpoints
+/build
+src/metawards/*.c
 __pycache__
-
