@@ -8,12 +8,13 @@ _N_INF_CLASSES = 5   # the number of parameters in each list
 
 _diseases = {}
 
+@dataclass
 class Disease:
     """This class holds the parameters about a single disease"""
-    beta: List[float]
-    progress: List[float]
-    too_ill_to_move: List[float]
-    contrib_foi: List[float]
+    beta: List[float] = None
+    progress: List[float] = None
+    too_ill_to_move: List[float] = None
+    contrib_foi: List[float] = None
 
     def __str__(self):
         return f"beta = {self.beta}\n" \

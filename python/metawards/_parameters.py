@@ -16,31 +16,29 @@ class Parameters:
         pass
 
     input_files: InputFiles = None
-
-    UVFilename: str = None
-
+    uv_filename: str = None
     disease_params: Disease = None
 
-    LengthDay: float = None
-    PLengthDay: float = None
-    initial_inf: int = None
+    length_day: float = 0.7
+    plength_day: float = 0.5
+    initial_inf: int = 5
 
-    StaticPlayAtHome: float = None
-    DynPlayAtHome: float = None
+    static_play_at_home: float = 0.0
+    dyn_play_at_home: float = 0.0
 
-    DataDistCutoff: float = None
-    DynDistCutoff: float = None
+    data_dist_cutoff: float = 10000000.0
+    dyn_dist_cutoff: float = 10000000.0
 
-    PlayToWork: float = None
-    WorkToPlay: float = None
+    play_to_work: float = 0.0
+    work_to_play: float = 0.0
 
-    LocalVaccinationThresh: int = None
-    GlobalDetectionThresh: int = None
-    DailyWardVaccinationCapacity: int = None
-    NeighbourWeightThreshold: float = None
+    local_vaccination_thresh: int = 4
+    global_detection_thresh: int = 4
+    daily_ward_vaccination_capacity: int = 5
+    neighbour_weight_threshold: float = 0.0
 
-    DailyImports: float = None # proportion of daily imports
-    UV: float = None
+    daily_imports: float = 0.0 # proportion of daily imports
+    UV: float = 0.0
 
     @staticmethod
     def create(disease: str):
@@ -55,22 +53,22 @@ class Parameters:
         par = Parameters()
 
         par.initial_inf = 5
-        par.LengthDay = 0.7
-        par.PLengthDay = 0.5
+        par.length_day = 0.7
+        par.plength_day = 0.5
 
         par.disease_params = deepcopy(disease)
 
-        par.DynDistCutoff = 10000000
-        par.DataDistCutoff = 10000000
-        par.WorkToPlay = 0.0
-        par.PlayToWork = 0.0
-        par.StaticPlayAtHome = 0
-        par.DynPlayAtHome = 0
+        par.dyn_dist_cutoff = 10000000.0
+        par.data_dist_cutoff = 10000000.0
+        par.work_to_play = 0.0
+        par.play_to_work = 0.0
+        par.static_play_at_home = 0.0
+        par.dyn_play_at_home = 0.0
 
-        par.LocalVaccinationThresh = 4
-        par.GlobalDetectionThresh = 4
-        par.NeighbourWeightThreshold = 0.0
-        par.DailyWardVaccinationCapacity = 5
+        par.local_vaccination_thresh = 4
+        par.global_detection_thresh = 4
+        par.neighbour_weight_threshold = 0.0
+        par.daily_ward_vaccination_capacity = 5
         par.UV = 0.0
 
         return par
