@@ -735,7 +735,7 @@ def extract_data(network: Network, infections, play_infections,
                 susceptibles += <int>(links_suscept[j])
                 total_new_inf_ward[links_ifrom[j]] += infections_i[j]
 
-            if infections[i][j] != 0:
+            if infections_i[j] != 0:
                 if SELFISOLATE:
                     if (i > 4) and (i < 10):
                         is_dangerous[links_ito[j]] += infections_i[j]
