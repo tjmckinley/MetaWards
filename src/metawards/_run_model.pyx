@@ -718,6 +718,11 @@ def extract_data(network: Network, infections, play_infections,
     cdef double [:] wards_x = wards.x
     cdef double [:] wards_y = wards.y
 
+    cdef int [:] is_dangerous_array
+
+    if SELFISOLATE:
+        is_dangerous_array = is_dangerous
+
     for i in range(0, N_INF_CLASSES):
         # do we need to initialise total_new_inf_wards and
         # total_inf_wards to 0?
@@ -762,7 +767,7 @@ def extract_data(network: Network, infections, play_infections,
 
                 if SELFISOLATE:
                     if (i > 4) and (i < 10):
-                        is_dangerous[i] += pinf
+                        is_dangerous_array[i] += pinf
 
             if (i < N_INF_CLASSES-1) and total_inf_ward[j] > 0:
                 n_inf_wards[i] += 1
@@ -779,13 +784,13 @@ def extract_data(network: Network, infections, play_infections,
             recovereds += inf_tot[i] + pinf_tot[i]
 
     if total_new > 0:
-        mean_x = float(sum_x) / float(total_new)
-        mean_y = float(sum_y) / float(total_new)
+        mean_x = <double>sum_x / <double>total_new
+        mean_y = <double>sum_y / <double>total_new
 
-        var_x = float(sum_x2 - sum_x*mean_x) / float(total_new - 1)
-        var_y = float(sum_y2 - sum_y*mean_y) / float(total_new - 1)
+        var_x = <double>(sum_x2 - sum_x*mean_x) / <double>(total_new - 1)
+        var_y = <double>(sum_y2 - sum_y*mean_y) / <double>(total_new - 1)
 
-        dispersal = math.sqrt(var_x + var_y)
+        dispersal = sqrt(var_x + var_y)
         files[2].write("%d %f %f\n" % (timestep, mean_x, mean_y))
         files[5].write("%d %f %f\n" % (timestep, var_x, var_y))
         files[6].write("%d %f\n" % (timestep, dispersal))
