@@ -1,6 +1,8 @@
 
 from libc.math cimport sqrt, cos, pi, exp
 
+import math
+
 from ._network import Network
 from ._parameters import Parameters
 from ._workspace import Workspace
@@ -667,113 +669,93 @@ def extract_data(network: Network, infections, play_infections,
     links = network.to_links
     wards = network.nodes
 
+    int_t = "i"
     N_INF_CLASSES = len(infections)
     MAXSIZE = network.nnodes + 1
 
-    assert workspace.N_INF_CLASSES == N_INF_CLASSES
-    assert workspace.MAXSIZE == MAXSIZE
     assert len(infections) == len(play_infections)
-
-    # make sure that the workspace is initialised to zero
-    workspace.zero_all()
 
     if SELFISOLATE and (is_dangerous is None):
         raise AssertionError("You must pass in the 'is_dangerous' array "
                              "if SELFISOLATE is True")
 
-    cdef int [:] inf_tot = workspace.inf_tot
-    cdef int [:] pinf_tot = workspace.pinf_tot
-    cdef int [:] total_inf_ward = workspace.total_inf_ward
-    cdef int [:] total_new_inf_ward = workspace.total_new_inf_ward
-    cdef int [:] n_inf_wards = workspace.n_inf_wards
+    null_int1 = N_INF_CLASSES * [0]
+    null_int2 = MAXSIZE * [0]
 
-    cdef int total = 0
-    cdef int total_new = 0
+    inf_tot = array(int_t, null_int1)
+    pinf_tot = array(int_t, null_int1)
 
-    cdef int recovereds = 0
-    cdef int susceptibles = 0
-    cdef int latent = 0
+    total_inf_ward = array(int_t, null_int2)
+    total_new_inf_ward = array(int_t, null_int2)
 
-    cdef double sum_x = 0.0
-    cdef double sum_y = 0.0
-    cdef double sum_x2 = 0.0
-    cdef double sum_y2 = 0.0
-    cdef double mean_x = 0.0
-    cdef double mean_y = 0.0
-    cdef double var_x = 0.0
-    cdef double var_y = 0.0
-    cdef double dispersal = 0.0
+    n_inf_wards = array(int_t, null_int1)
 
-    cdef int newinf, pinf
+    null_int1 = None
+    null_int2 = None
 
-    cdef int i = 0
-    cdef int j = 0
+    total = 0
+    total_new = 0
 
-    cdef double [:] links_suscept = links.suscept
-    cdef int [:] links_ifrom = links.ifrom
-    cdef int [:] links_ito = links.ito
+    recovereds = 0
+    susceptibles = 0
+    latent = 0
 
-    cdef int [:] infections_i
-    cdef int [:] play_infections_i
-    cdef int [:] is_dangerous_array = is_dangerous
-
-    cdef double [:] wards_x = wards.x
-    cdef double [:] wards_y = wards.y
-    cdef double [:] wards_play_suscept = wards.play_suscept
-
-    cdef double x = 0.0
-    cdef double y = 0.0
+    sum_x = 0.0
+    sum_y = 0.0
+    sum_x2 = 0.0
+    sum_y2 = 0.0
+    mean_x = 0.0
+    mean_y = 0.0
+    var_x = 0.0
+    var_y = 0.0
+    dispersal = 0.0
 
     files[0].write("%d " % timestep)
     files[1].write("%d " % timestep)
     files[3].write("%d " % timestep)
 
     for i in range(0, N_INF_CLASSES):
-        infections_i = infections[i]
-        play_infections_i = play_infections[i]
+        # do we need to initialise total_new_inf_wards and
+        # total_inf_wards to 0?
 
-        n_inf_wards[i] = 0
-        inf_tot[i] = 0
-        pinf_tot[i] = 0
-
-        for j in range(1, network.nnodes+1):
+        for j in range(1, network.nlinks+1):
             if i == 0:
-                susceptibles += <int>links_suscept[j]
-                total_new_inf_ward[links_ifrom[j]] += infections_i[j]
+                susceptibles += int(links.suscept[j])
+                total_new_inf_ward[links.ifrom[j]] += infections[i][j]
 
-            if infections_i[j] != 0:
+            if infections[i][j] != 0:
                 if SELFISOLATE:
                     if (i > 4) and (i < 10):
-                        is_dangerous_array[links_ito[j]] += infections_i[j]
+                        is_dangerous[links.ito[j]] += infections[i][j]
 
-                inf_tot[i] += infections_i[j]
-                total_inf_ward[links_ifrom[j]] += infections_i[j]
+                inf_tot[i] += infections[i][j]
+                total_inf_ward[links.ifrom[j]] += infections[i][j]
 
         for j in range(1, network.nnodes+1):
             if i == 0:
-                susceptibles += <int>wards_play_suscept[j]
-                if play_infections_i[j] > 0:
-                    total_new_inf_ward[j] += play_infections_i[j]
+                susceptibles += int(wards.play_suscept[j])
+                if play_infections[i][j] > 0:
+                    total_new_inf_ward[j] += play_infections[i][j]
 
                 if total_new_inf_ward[j] != 0:
                     newinf = total_new_inf_ward[j]
-                    x = wards_x[j]
-                    y = wards_y[j]
+                    x = wards.x[j]
+                    y = wards.y[j]
                     sum_x += newinf * x
                     sum_y += newinf * y
                     sum_x2 += newinf * x * x
                     sum_y2 += newinf * y * y
                     total_new += newinf
 
-            if play_infections_i[j] > 0:
+            if play_infections[i][j] > 0:
                 #print(f"pinf[{i}][{j}] > 0: {play_infections[i][j]}")
-                pinf = play_infections_i[j]
+                pinf = play_infections[i][j]
                 pinf_tot[i] += pinf
                 total_inf_ward[j] += pinf
 
                 if SELFISOLATE:
                     if (i > 4) and (i < 10):
-                        is_dangerous_array[i] += pinf
+                        is_dangerous[i] += pinf
 
             if (i < N_INF_CLASSES-1) and total_inf_ward[j] > 0:
                 n_inf_wards[i] += 1
@@ -790,13 +772,13 @@ def extract_data(network: Network, infections, play_infections,
             recovereds += inf_tot[i] + pinf_tot[i]
 
     if total_new > 0:
-        mean_x = sum_x / total_new
-        mean_y = sum_y / total_new
+        mean_x = float(sum_x) / float(total_new)
+        mean_y = float(sum_y) / float(total_new)
 
-        var_x = (sum_x2 - sum_x*mean_x) / (total_new - 1)
-        var_y = (sum_y2 - sum_y*mean_y) / (total_new - 1)
+        var_x = float(sum_x2 - sum_x*mean_x) / float(total_new - 1)
+        var_y = float(sum_y2 - sum_y*mean_y) / float(total_new - 1)
 
-        dispersal = sqrt(var_x + var_y)
+        dispersal = math.sqrt(var_x + var_y)
         files[2].write("%d %f %f\n" % (timestep, mean_x, mean_y))
         files[5].write("%d %f %f\n" % (timestep, var_x, var_y))
         files[6].write("%d %f\n" % (timestep, dispersal))
@@ -807,8 +789,8 @@ def extract_data(network: Network, infections, play_infections,
 
     files[0].write("\n")
     files[1].write("\n")
-    files[4].write("%d \n" % total)
     files[3].write("\n")
+    files[4].write("%d \n" % total)
     files[4].flush()
 
     print(f"S: {susceptibles}    ", end="")
@@ -823,7 +805,6 @@ def extract_data(network: Network, infections, play_infections,
         if sum_population != population:
             print(f"DISAGREEMENT WITH POPULATION COUNT! {population} "
                   f"versus {sum_population}!")
-            assert sum_population == population
 
     return (total+latent)
 
