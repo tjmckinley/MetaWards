@@ -5,6 +5,8 @@ Details of authorship / license etc to be written here
 
 """
 
+__version__ = 0.1.0
+
 from ._metawards import *
 from ._parameters import *
 from ._disease import *
