@@ -3,6 +3,8 @@ from libc.math cimport sqrt, cos, pi, exp
 
 from ._network import Network
 from ._parameters import Parameters
+from ._workspace import Workspace
+
 from typing import List
 from array import array
 import math
@@ -912,6 +914,9 @@ def run_model(network: Network, params: Parameters,
               EXTRASEEDS: bool = True,
               WEEKENDS: bool = False):
     """Actually run the model... Real work happens here"""
+
+    # create a workspace in which to run the model
+    workspace = Workspace(network=network, params=params)
 
     int_t = "i"    # signed int64
     float_t = "d"  # double (float64)
