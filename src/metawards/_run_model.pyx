@@ -279,7 +279,7 @@ def iterate(network: Network, infections, play_infections,
                     while (moving > 0) and (k < end_p):
                         # distributing people across play wards
                         if plinks_distance[k] < cutoff:
-                            weight = float(plinks_weight[k])
+                            weight = plinks_weight[k]
                             ifrom = plinks_ifrom[k]
                             ito = plinks_ito[k]
 
@@ -289,7 +289,7 @@ def iterate(network: Network, infections, play_infections,
                             playmove = ran_binomial(rng, prob_scaled, moving)
 
                             if SELFISOLATE:
-                                frac = is_dangerous[ito] / float(
+                                frac = is_dangerous_array[ito] / <float>(
                                                 wards_denominator_d[ito] +
                                                 wards_denominator_p[ito])
 
@@ -315,33 +315,40 @@ def iterate(network: Network, infections, play_infections,
         # end of params.disease_params.contrib_foi[i] > 0:
     # end of loop over all disease classes
 
+    cdef int [:] infections_i_plus_one, play_infections_i_plus_one
+    cdef double disease_progress = 0.0
+
     _start_recovery = time.time_ns()
     for i in range(N_INF_CLASSES-2, -1, -1):  # loop down to 0
         # recovery, move through classes backwards
+        infections_i = infections[i]
+        infections_i_plus_one = infections[i+1]
+        play_infections_i = play_infections[i]
+        play_infections_i_plus_one = play_infections[i+1]
+        disease_progress = params.disease_params.progress[i]
+
         for j in range(1, network.nlinks+1):
-            inf_ij = infections[i][j]
+            inf_ij = infections_i[j]
 
             if inf_ij > 0:
-                l = ran_binomial(rng, params.disease_params.progress[i],
-                                 inf_ij)
+                l = ran_binomial(rng, disease_progress, inf_ij)
 
                 if l > 0:
-                    infections[i+1][j] += l
-                    infections[i][j] -= l
+                    infections_i_plus_one[j] += l
+                    infections_i[j] -= l
 
             elif inf_ij != 0:
                 print(f"inf_ij problem {i} {j} {inf_ij}")
 
         for j in range(1, network.nnodes+1):
-            inf_ij = play_infections[i][j]
+            inf_ij = play_infections_i[j]
 
             if inf_ij > 0:
-                l = ran_binomial(rng, params.disease_params.progress[i],
-                                 inf_ij)
+                l = ran_binomial(rng, disease_progress, inf_ij)
 
                 if l > 0:
-                    play_infections[i+1][j] += l
-                    play_infections[i][j] -= l
+                    play_infections_i_plus_one[j] += l
+                    play_infections_i[j] -= l
 
             elif inf_ij != 0:
                 print(f"play_inf_ij problem {i} {j} {inf_ij}")
