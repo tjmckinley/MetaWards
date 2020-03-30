@@ -17,7 +17,7 @@ class Workspace:
            passed network with the passed parameters
         """
         N_INF_CLASSES = params.disease_params.N_INF_CLASSES()
-        MAXSIZE = network.nnodes
+        MAXSIZE = network.nnodes + 1  # 1-indexed
 
         int_t = "i"
         float_t = "d"
