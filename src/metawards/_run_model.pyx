@@ -16,15 +16,14 @@ import os
 __all__ = ["run_model"]
 
 
-def rate_to_prob(rate: float):
+cdef double rate_to_prob(double rate):
     """Convert the return the probability associated with the passed
        infection rate
     """
-    cdef double r = rate
-    if r < 1e-6:
-        return r - (r*r / 2.0)
+    if rate < 1e-6:
+        return rate - (rate*rate / 2.0)
     else:
-        return 1.0 - exp(-r)
+        return 1.0 - exp(-rate)
 
 
 def ran_binomial(rng, p: float, n: int):
@@ -356,6 +355,14 @@ def iterate(network: Network, infections, play_infections,
     _end_recovery = time.time_ns()
     timings.append(("recovery", _end_recovery-_start_recovery))
 
+    cdef double length_day = params.length_day
+    cdef double rate, inf_prob
+
+    # i is set to 0 now as we are only dealing now with new infections
+    i = 0
+    infections_i = infections[i]
+    play_infections_i = play_infections[i]
+
     _start_fixed = time.time_ns()
     for j in range(1, network.nlinks+1):
         # actual new infections for fixed movements
@@ -372,24 +379,24 @@ def iterate(network: Network, infections, play_infections,
             if wards_day_foi[ito] > 0:
                 # daytime infection of link j
                 if SELFISOLATE:
-                    frac = is_dangerous[ito] / float(
+                    frac = is_dangerous_array[ito] / <float>(
                                             wards_denominator_d[ito] +
                                             wards_denominator_p[ito])
 
                     if frac > thresh:
                         inf_prob = 0.0
                     else:
-                        rate = float(params.length_day *
-                                     wards_day_foi[ito]) /   \
-                               float(wards_denominator_d[ito] +
-                                     wards_denominator_pd[ito])
+                        rate = <float>(length_day *
+                                       wards_day_foi[ito]) /   \
+                               <float>(wards_denominator_d[ito] +
+                                       wards_denominator_pd[ito])
 
                         inf_prob = rate_to_prob(rate)
                 else:
-                    rate = float(params.length_day *
-                                    wards_day_foi[ito]) /   \
-                           float(wards.denominator_d[ito] +
-                                    wards_denominator_pd[ito])
+                    rate = <float>(length_day *
+                                   wards_day_foi[ito]) /   \
+                           <float>(wards_denominator_d[ito] +
+                                   wards_denominator_pd[ito])
 
                     inf_prob = rate_to_prob(rate)
 
@@ -397,31 +404,31 @@ def iterate(network: Network, infections, play_infections,
         # end of if distance < cutoff
         elif wards_day_foi[ifrom] > 0:
             # if distance is too large then infect in home ward with day FOI
-            rate = float(params.length_day * wards_day_foi[ifrom]) /  \
-                   float(wards_denominator_d[ifrom] +
-                         wards_denominator_pd[ifrom])
+            rate = <float>(length_day * wards_day_foi[ifrom]) /  \
+                   <float>(wards_denominator_d[ifrom] +
+                           wards_denominator_pd[ifrom])
 
             inf_prob = rate_to_prob(rate)
 
         if inf_prob > 0.0:
             # daytime infection of workers
-            l = ran_binomial(rng, inf_prob, int(links_suscept[j]))
+            l = ran_binomial(rng, inf_prob, <int>(links_suscept[j]))
 
             if l > 0:
                 # actual infection
                 #print(f"InfProb {inf_prob}, susc {links.suscept[j]}, l {l}")
-                infections[i][j] += l
+                infections_i[j] += l
                 links_suscept[j] -= l
 
         if wards_night_foi[ifrom] > 0:
             # nighttime infection of workers
-            rate = (1.0 - params.length_day) * (wards_night_foi[ifrom]) /  \
-                   float(wards_denominator_n[ifrom] +
-                         wards_denominator_p[ifrom])
+            rate = (1.0 - length_day) * (wards_night_foi[ifrom]) /  \
+                   <float>(wards_denominator_n[ifrom] +
+                           wards_denominator_p[ifrom])
 
             inf_prob = rate_to_prob(rate)
 
-            l = ran_binomial(rng, inf_prob, int(links.suscept[j]))
+            l = ran_binomial(rng, inf_prob, <int>(links.suscept[j]))
 
             if l > links_suscept[j]:
                 print(f"l > links[{j}].suscept {links_suscept[j]} nighttime")
@@ -429,8 +436,7 @@ def iterate(network: Network, infections, play_infections,
             if l > 0:
                 # actual infection
                 # print(f"NIGHT InfProb {inf_prob}, susc {links.suscept[j]}, {l}")
-
-                infections[i][j] += l
+                infections_i[j] += l
                 links_suscept[j] -= l
         # end of wards.night_foi[ifrom] > 0  (nighttime infections)
     # end of loop over all network links
