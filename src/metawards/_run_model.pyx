@@ -149,6 +149,7 @@ def iterate(network: Network, infections, play_infections,
     cdef double frac = 0.0
     cdef double staying, moving
     cdef double cumulative_prob
+    cdef double too_ill_to_move
 
     cdef int [:] wards_begin_p = wards.begin_p
     cdef int [:] wards_end_p = wards.end_p
@@ -168,43 +169,54 @@ def iterate(network: Network, infections, play_infections,
 
     cdef int [:] wards_label = wards.label
 
+    cdef int [:] infections_i, play_infections_i
+
+    cdef int [:] is_dangerous_array
+
+    if SELFISOLATE:
+        is_dangerous_array = is_dangerous
+
     for i in range(0, N_INF_CLASSES):
         contrib_foi = params.disease_params.contrib_foi[i]
         beta = params.disease_params.beta[i]
         scl_foi_uv = contrib_foi * beta * uvscale
+        too_ill_to_move = params.disease_params.too_ill_to_move[i]
+
+        infections_i = infections[i]
+        play_infections[i] = play_infections[i]
 
         if contrib_foi > 0:
             _start = time.time_ns()
             for j in range(1, network.nlinks+1):
                 # deterministic movements (e.g. to work)
-                inf_ij = infections[i][j]
+                inf_ij = infections_i[j]
                 if inf_ij > 0:
                     weight = links_weight[j]
                     ifrom = links_ifrom[j]
                     ito = links_ito[j]
 
-                    if inf_ij > int(weight):
+                    if inf_ij > <int>(weight):
                         print(f"inf[{i}][{j}] {inf_ij} > links[j].weight "
                               f"{weight}")
 
                     if links_distance[j] < cutoff:
                         if SELFISOLATE:
-                            frac = float(is_dangerous[ito]) / float(
-                                     wards.denominator_d[ito] +
-                                     wards.denominator_p[ito])
+                            frac = <float>(is_dangerous_array[ito]) / <float>(
+                                     wards_denominator_d[ito] +
+                                     wards_denominator_p[ito])
 
                             if frac > thresh:
-                                staying = infections[i][j]
+                                staying = infections_i[j]
                             else:
                                 # number staying - this is G_ij
                                 staying = ran_binomial(rng,
-                                                       params.disease_params.too_ill_to_move[i],
+                                                       too_ill_to_move,
                                                        inf_ij)
                         else:
                             # number staying - this is G_ij
                             staying = ran_binomial(rng,
-                                                    params.disease_params.too_ill_to_move[i],
-                                                    inf_ij)
+                                                   too_ill_to_move,
+                                                   inf_ij)
 
                         if staying < 0:
                             print(f"staying < 0")
