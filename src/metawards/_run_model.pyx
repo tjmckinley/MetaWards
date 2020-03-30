@@ -669,7 +669,6 @@ def extract_data(network: Network, infections, play_infections,
     links = network.to_links
     wards = network.nodes
 
-    int_t = "i"
     N_INF_CLASSES = len(infections)
     MAXSIZE = network.nnodes + 1
 
@@ -679,40 +678,36 @@ def extract_data(network: Network, infections, play_infections,
         raise AssertionError("You must pass in the 'is_dangerous' array "
                              "if SELFISOLATE is True")
 
-    null_int1 = N_INF_CLASSES * [0]
-    null_int2 = MAXSIZE * [0]
-
-    inf_tot = array(int_t, null_int1)
-    pinf_tot = array(int_t, null_int1)
-
-    total_inf_ward = array(int_t, null_int2)
-    total_new_inf_ward = array(int_t, null_int2)
-
-    n_inf_wards = array(int_t, null_int1)
-
-    null_int1 = None
-    null_int2 = None
-
-    total = 0
-    total_new = 0
-
-    recovereds = 0
-    susceptibles = 0
-    latent = 0
-
-    sum_x = 0.0
-    sum_y = 0.0
-    sum_x2 = 0.0
-    sum_y2 = 0.0
-    mean_x = 0.0
-    mean_y = 0.0
-    var_x = 0.0
-    var_y = 0.0
-    dispersal = 0.0
+    workspace.zero_all()
 
     files[0].write("%d " % timestep)
     files[1].write("%d " % timestep)
     files[3].write("%d " % timestep)
+
+    cdef int [:] inf_tot = workspace.inf_tot
+    cdef int [:] pinf_tot = workspace.pinf_tot
+    cdef int [:] total_inf_ward = workspace.total_inf_ward
+    cdef int [:] total_new_inf_ward = workspace.total_new_inf_ward
+    cdef int [:] n_inf_wards = workspace.n_inf_wards
+
+    cdef int total = 0
+    cdef int total_new = 0
+
+    cdef int recovereds = 0
+    cdef int susceptibles = 0
+    cdef int latent = 0
+
+    cdef double sum_x = 0.0
+    cdef double sum_y = 0.0
+    cdef double sum_x2 = 0.0
+    cdef double sum_y2 = 0.0
+    cdef double mean_x = 0.0
+    cdef double mean_y = 0.0
+    cdef double var_x = 0.0
+    cdef double var_y = 0.0
+    cdef double dispersal = 0.0
+
+    cdef int i, j
 
     for i in range(0, N_INF_CLASSES):
         # do we need to initialise total_new_inf_wards and
