@@ -1406,7 +1406,7 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 
 			}
 			if(pinf[i][j]>0){
-				printf("pinf[%d][%d] > 0: %d\n", i, j, pinf[i][j]);
+				//printf("pinf[%d][%d] > 0: %d\n", i, j, pinf[i][j]);
 				PInfTot[i]+=pinf[i][j];
 				TotalInfWard[j]+=pinf[i][j];
 #ifdef SELFISOLATE
@@ -1425,7 +1425,7 @@ int ExtractData(network *net,int **inf,int **pinf, int t, FILE **files){
 
 		if(i==1)
 		{
-			printf("latent %d  %d\n", InfTot[i], PInfTot[i]);
+			//printf("latent %d  %d\n", InfTot[i], PInfTot[i]);
 			Latent+=InfTot[i]+PInfTot[i];
 		}
 		else if(i<N_INF_CLASSES-1 & i>1){
@@ -1906,10 +1906,6 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 				l=gsl_ran_binomial(r,par->Progress[i],inf[i][j]);
 
 				if(l>0){
-					printf("strange?\n");
-					printf("%d  %f  %d  %d\n", inf[i][j], par->Progress[i], i, j);
-					printf("recover play_infections[%d][%d] += %d\n", i+1, j, l);
-					printf("recover play_infections[%d][%d] -= %d\n", i, j, l);
 					inf[i+1][j]+=l;
 
 					inf[i][j]-=l;

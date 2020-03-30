@@ -1,8 +1,8 @@
 LD = gcc
 CC = gcc
 
-wards: *.c *.h
-	$(CC) *.c -o metawards $(shell gsl-config --cflags) $(shell gsl-config --libs) -lgsl -lm -O3
+metawards: src/*.c src/*.h
+	$(CC) src/*.c -o metawards $(shell gsl-config --cflags) $(shell gsl-config --libs) -Isrc -lgsl -lm -O3
 
 clean:  
 	rm metawards
