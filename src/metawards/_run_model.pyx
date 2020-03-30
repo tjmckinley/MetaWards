@@ -645,6 +645,16 @@ def extract_data_for_graphics(network: Network, infections,
 
     return total
 
+_global_null_int1 = 10 * [0]
+_global_null_int2 = 10050 * [0]
+
+global_inf_tot = array("i", _global_null_int1)
+global_pinf_tot = array("i", _global_null_int1)
+
+global_total_inf_ward = array("i", _global_null_int2)
+global_total_new_inf_ward = array("i", _global_null_int2)
+
+global_n_inf_wards = array("i", _global_null_int1)
 
 def extract_data(network: Network, infections, play_infections,
                  timestep: int, files, is_dangerous=None,
@@ -659,7 +669,6 @@ def extract_data(network: Network, infections, play_infections,
     links = network.to_links
     wards = network.nodes
 
-    int_t = "i"
     N_INF_CLASSES = len(infections)
     MAXSIZE = network.nnodes + 1
 
@@ -669,23 +678,18 @@ def extract_data(network: Network, infections, play_infections,
         raise AssertionError("You must pass in the 'is_dangerous' array "
                              "if SELFISOLATE is True")
 
-    null_int1 = N_INF_CLASSES * [0]
-    null_int2 = MAXSIZE * [0]
+    global global_inf_tot, global_pinf_tot, global_total_inf_ward
+    global global_total_new_inf_ward, global_n_inf_wards
 
-    inf_tot = array(int_t, null_int1)
-    pinf_tot = array(int_t, null_int1)
+    cdef int [:] inf_tot_array = global_inf_tot
+    cdef int [:] pinf_tot_array = global_pinf_tot
+    cdef int [:] total_inf_ward_array = global_total_inf_ward
+    cdef int [:] total_new_inf_ward_array = global_total_new_inf_ward
+    cdef int [:] n_inf_wards_array = global_n_inf_wards
 
-    total_inf_ward = array(int_t, null_int2)
-    total_new_inf_ward = array(int_t, null_int2)
-
-    n_inf_wards = array(int_t, null_int1)
-
-    cdef int [:] inf_tot_array = inf_tot
-    cdef int [:] pinf_tot_array = pinf_tot
-    cdef int [:] total_inf_ward_array = total_inf_ward
-    cdef int [:] total_new_inf_ward_array = total_new_inf_ward
-
-    cdef int [:] n_inf_wards_array = n_inf_wards
+    # will need to initialise the above arrays to ZERO. The approach
+    # I will move to is to create a "workspace" object that can be
+    # allocated once in run_model and then re-used for each extract_data
 
     cdef int total = 0
     cdef int total_new = 0
@@ -706,9 +710,9 @@ def extract_data(network: Network, infections, play_infections,
 
     cdef int newinf, pinf
 
-    files[0].write("%d " % timestep)
-    files[1].write("%d " % timestep)
-    files[3].write("%d " % timestep)
+    #files[0].write("%d " % timestep)
+    #files[1].write("%d " % timestep)
+    #files[3].write("%d " % timestep)
 
     cdef int i = 0
     cdef int j = 0
@@ -738,14 +742,14 @@ def extract_data(network: Network, infections, play_infections,
         for j in range(1, network.nlinks+1):
             if i == 0:
                 susceptibles += int(links_suscept[j])
-                total_new_inf_ward[links_ifrom[j]] += infections_i[j]
+                total_new_inf_ward_array[links_ifrom[j]] += infections_i[j]
 
             if infections_i[j] != 0:
                 if SELFISOLATE:
                     if (i > 4) and (i < 10):
                         is_dangerous_array[links_ito[j]] += infections_i[j]
 
-                inf_tot[i] += infections_i[j]
+                inf_tot_array[i] += infections_i[j]
                 total_inf_ward_array[links_ifrom[j]] += infections_i[j]
 
         for j in range(1, network.nnodes+1):
@@ -777,9 +781,9 @@ def extract_data(network: Network, infections, play_infections,
             if (i < N_INF_CLASSES-1) and total_inf_ward_array[j] > 0:
                 n_inf_wards_array[i] += 1
 
-        files[0].write("%d " % inf_tot_array[i])
-        files[1].write("%d " % n_inf_wards_array[i])
-        files[3].write("%d " % pinf_tot_array[i])
+        #files[0].write("%d " % inf_tot_array[i])
+        #files[1].write("%d " % n_inf_wards_array[i])
+        #files[3].write("%d " % pinf_tot_array[i])
 
         if i == 1:
             latent += inf_tot_array[i] + pinf_tot_array[i]
@@ -796,25 +800,26 @@ def extract_data(network: Network, infections, play_infections,
         var_y = float(sum_y2 - sum_y*mean_y) / float(total_new - 1)
 
         dispersal = math.sqrt(var_x + var_y)
-        files[2].write("%d %f %f\n" % (timestep, mean_x, mean_y))
-        files[5].write("%d %f %f\n" % (timestep, var_x, var_y))
-        files[6].write("%d %f\n" % (timestep, dispersal))
+        #files[2].write("%d %f %f\n" % (timestep, mean_x, mean_y))
+        #files[5].write("%d %f %f\n" % (timestep, var_x, var_y))
+        #files[6].write("%d %f\n" % (timestep, dispersal))
     else:
-        files[2].write("%d %f %f\n" % (timestep, 0.0, 0.0))
-        files[5].write("%d %f %f\n" % (timestep, 0.0, 0.0))
-        files[6].write("%d %f\n" % (timestep, 0.0))
+        pass
+        #files[2].write("%d %f %f\n" % (timestep, 0.0, 0.0))
+        #files[5].write("%d %f %f\n" % (timestep, 0.0, 0.0))
+        #files[6].write("%d %f\n" % (timestep, 0.0))
 
-    files[0].write("\n")
-    files[1].write("\n")
-    files[3].write("\n")
-    files[4].write("%d \n" % total)
-    files[4].flush()
+    #files[0].write("\n")
+    #files[1].write("\n")
+    #files[4].write("%d \n" % total)
+    #files[3].write("\n")
+    #files[4].flush()
 
     print(f"S: {susceptibles}    ", end="")
     print(f"E: {latent}    ", end="")
     print(f"I: {total}    ", end="")
     print(f"R: {recovereds}    ", end="")
-    print(f"IW: {n_inf_wards[0]}   ", end="")
+    print(f"IW: {n_inf_wards_array[0]}   ", end="")
     print(f"TOTAL POPULATION {susceptibles+total+recovereds}")
 
     return (total+latent)
