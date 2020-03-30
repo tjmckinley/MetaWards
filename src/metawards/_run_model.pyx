@@ -708,43 +708,55 @@ def extract_data(network: Network, infections, play_infections,
     cdef double dispersal = 0.0
 
     cdef int i, j
+    cdef double [:] links_suscept = links.suscept
+    cdef int [:] links_ifrom = links.ifrom
+    cdef int [:] links_ito = links.ito
+
+    cdef int [:] infections_i, play_infections_i
+
+    cdef double [:] wards_play_suscept = wards.play_suscept
+    cdef double [:] wards_x = wards.x
+    cdef double [:] wards_y = wards.y
 
     for i in range(0, N_INF_CLASSES):
         # do we need to initialise total_new_inf_wards and
         # total_inf_wards to 0?
 
+        infections_i = infections[i]
+        play_infections_i = play_infections[i]
+
         for j in range(1, network.nlinks+1):
             if i == 0:
-                susceptibles += int(links.suscept[j])
-                total_new_inf_ward[links.ifrom[j]] += infections[i][j]
+                susceptibles += <int>(links_suscept[j])
+                total_new_inf_ward[links_ifrom[j]] += infections_i[j]
 
             if infections[i][j] != 0:
                 if SELFISOLATE:
                     if (i > 4) and (i < 10):
-                        is_dangerous[links.ito[j]] += infections[i][j]
+                        is_dangerous[links_ito[j]] += infections_i[j]
 
-                inf_tot[i] += infections[i][j]
-                total_inf_ward[links.ifrom[j]] += infections[i][j]
+                inf_tot[i] += infections_i[j]
+                total_inf_ward[links_ifrom[j]] += infections_i[j]
 
         for j in range(1, network.nnodes+1):
             if i == 0:
-                susceptibles += int(wards.play_suscept[j])
-                if play_infections[i][j] > 0:
-                    total_new_inf_ward[j] += play_infections[i][j]
+                susceptibles += <int>(wards_play_suscept[j])
+                if play_infections_i[j] > 0:
+                    total_new_inf_ward[j] += play_infections_i[j]
 
                 if total_new_inf_ward[j] != 0:
                     newinf = total_new_inf_ward[j]
-                    x = wards.x[j]
-                    y = wards.y[j]
+                    x = wards_x[j]
+                    y = wards_y[j]
                     sum_x += newinf * x
                     sum_y += newinf * y
                     sum_x2 += newinf * x * x
                     sum_y2 += newinf * y * y
                     total_new += newinf
 
-            if play_infections[i][j] > 0:
+            if play_infections_i[j] > 0:
                 #print(f"pinf[{i}][{j}] > 0: {play_infections[i][j]}")
-                pinf = play_infections[i][j]
+                pinf = play_infections_i[j]
                 pinf_tot[i] += pinf
                 total_inf_ward[j] += pinf
 
