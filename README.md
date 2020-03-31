@@ -65,7 +65,7 @@ to use a GPL3 license for this Python package. Once we have replaced
 the binomial function we will re-evaluate the license under which this
 code is distributed.
 
-## Installation
+## Installation
 
 You can install the code from source by typing;
 
