@@ -26,7 +26,7 @@ then push your tag to GitHub
 git push --tags
 ```
 
-## Creating the pip package
+## Creating the pip package
 
 To create the pip package and upload to pypi type;
 
