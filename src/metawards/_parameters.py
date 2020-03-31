@@ -48,6 +48,7 @@ class Parameters:
     _contacts: str = None
     _references: str = None
     _filename: str = None
+    _repository: str = None
 
     def __str__(self):
         return f"Parameters {self._name}\n" \
@@ -135,7 +136,8 @@ class Parameters:
                          _version=data["version"],
                          _contacts=data["contact(s)"],
                          _references=data["reference(s)"],
-                         _filename=json_file
+                         _filename=json_file,
+                         _repository=repository
                          )
 
         print("Using parameters:")
@@ -147,6 +149,10 @@ class Parameters:
         """Set the input files that are used to initialise the
            simulation
         """
+        if isinstance(input_files, str):
+            input_files = InputFiles.load(input_files,
+                                          repository=self._repository)
+
         print("Using input files:")
         print(input_files)
 
@@ -154,6 +160,10 @@ class Parameters:
 
     def set_disease(self, disease: Disease):
         """"Set the disease that will be modelled"""
+        if isinstance(disease, str):
+            disease = Disease.load(disease,
+                                   repository=self._repository)
+
         print("Using disease")
         print(disease)
 
