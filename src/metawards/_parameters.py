@@ -11,9 +11,9 @@ from ._disease import Disease
 __all__ = ["Parameters"]
 
 _default_parameters_path = os.path.join(pathlib.Path.home(),
-                                        "GitHub", "MetaWardsData",
-                                        "parameters")
+                                        "GitHub", "MetaWardsData")
 
+_default_folder_name = "parameters"
 
 @dataclass
 class Parameters:
@@ -74,11 +74,12 @@ class Parameters:
 
     @staticmethod
     def load(parameters: str = "march29",
-             parameters_path: str = _default_parameters_path,
+             repository: str = None,
+             folder: str=_default_folder_name,
              filename: str = None):
         """ This will return a Parameters object containing all of the
             parameters loaded from the parameters found in file
-            f"{parameters_path}/{parameters}.json"
+            f"{repository}/{folder}/{parameters}.json"
 
             By default this will load the march29 parameters from
             $HOME/GitHub/model_data/2011Data/parameters/march29.json
@@ -86,10 +87,16 @@ class Parameters:
             Alternatively, you can provide the exact path to the
             filename via the 'filename' argument
         """
-        if filename:
-            json_file = filename
-        else:
-            json_file = os.path.join(parameters_path, f"{parameters}.json")
+
+        if filename is None:
+            if repository is None:
+                repository = os.getenv("METAWARDSDATA")
+                if repository is None:
+                    repository = _default_parameters_path
+
+            filename = os.path.join(repository, folder, f"{parameters}.json")
+
+        json_file = filename
 
         try:
             with open(json_file, "r") as FILE:

@@ -7,7 +7,9 @@ import os
 __all__ = ["Disease"]
 
 _default_disease_path = os.path.join(pathlib.Path.home(),
-                                     "GitHub", "MetaWardsData", "diseases")
+                                     "GitHub", "MetaWardsData")
+
+_default_folder_name = "diseases"
 
 
 @dataclass
@@ -59,11 +61,12 @@ class Disease:
 
     @staticmethod
     def load(disease: str = "ncov",
-             disease_path: str=_default_disease_path,
+             repository: str=None,
+             folder: str=_default_folder_name,
              filename: str = None):
         """Load the disease parameters for the specified disease.
            This will look for a file called f"{disease}.json"
-           in the directory "disease_path"
+           in the directory f"{repository}/{disease}/{disease}.ncon"
 
            By default this will load the ncov (SARS-Cov-2)
            parameters from
@@ -73,10 +76,16 @@ class Disease:
            json file via the "filename" argument
         """
 
-        if filename:
-            json_file = filename
-        else:
-            json_file = os.path.join(disease_path, f"{disease}.json")
+        if filename is None:
+            if repository is None:
+                repository = os.getenv("METAWARDSDATA")
+                if repository is None:
+                    repository = _default_disease_path
+
+            filename = os.path.join(repository, folder,
+                                    f"{disease}.json")
+
+        json_file = filename
 
         try:
             with open(json_file, "r") as FILE:

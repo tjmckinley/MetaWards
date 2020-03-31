@@ -193,6 +193,8 @@ network *BuildWardsNetworkDistance(parameters *par)
 	}
 
 	double total_distance = 0;
+	double distance, distance2;
+	int nwrong = 0;
 
 	for(i=0;i<net->nlinks;i++){
 		x1=wards[links[i].ifrom].x;
@@ -201,9 +203,30 @@ network *BuildWardsNetworkDistance(parameters *par)
 		x2=wards[links[i].ito].x;
 		y2=wards[links[i].ito].y;
 
+		distance = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 		total_distance += sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 
 		links[i].distance=plinks[i].distance=sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+
+		if (i >= 0 && i < net->plinks){
+			if (plinks[i].ifrom != links[i].ifrom || plinks[i].ito != links[i].ito)
+			{
+				x1 = wards[plinks[i].ifrom].x;
+				y1 = wards[plinks[i].ifrom].y;
+				x2 = wards[plinks[i].ito].x;
+				y2 = wards[plinks[i].ito].y;
+
+				distance2 = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+
+				if (nwrong < 10){
+					printf("%d %d %d %d %d\n", i, links[i].ifrom, plinks[i].ifrom,
+												links[i].ito, plinks[i].ito);
+					printf("%f  %f\n", distance, distance2);
+					nwrong += 1;
+				}
+			}
+		}
+
 #ifdef WEEKENDS
 		welinks[i].distance=links[i].distance;
 #endif
