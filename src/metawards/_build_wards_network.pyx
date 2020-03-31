@@ -4,8 +4,6 @@ from ._network import Network
 from ._nodes import Nodes
 from ._links import Links
 
-from ._metawards import build_play_matrix, fill_in_gaps
-
 __all__ = ["build_wards_network"]
 
 
@@ -105,11 +103,20 @@ def build_wards_network(params: Parameters,
     print(f"Number of nodes equals {nnodes}")
     print(f"Number of links equals {nlinks}")
 
+    # save the parameters used to build the network
+    # within the network - this will save having to pass
+    # them separately, which is error-prone
+    network.params = params
+    network.max_links = max_links
+    network.max_nodes = max_nodes
+
+    from ._utils import fill_in_gaps
     fill_in_gaps(network)
 
     print(f"Number of nodes after filling equals {network.nnodes}")
 
-    build_play_matrix(network=network, params=params, max_links=max_links)
+    from ._utils import build_play_matrix
+    build_play_matrix(network)
 
     print(f"Number of nodes after build play equals {network.nnodes}")
 

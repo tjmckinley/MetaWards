@@ -1,5 +1,6 @@
 
 from dataclasses import dataclass
+from typing import List
 
 from ._parameters import Parameters
 from ._nodes import Nodes
@@ -15,14 +16,30 @@ class Network:
        work (predictable) links. There are also additional links for
        play (unpredictable/random) and weekend
     """
-    nodes: Nodes = None        # The list of nodes (wards) in the network
-    to_links: Links = None     # The links between nodes (work)
-    play: Links = None         # The links between nodes (play)
-    weekend: Links = None      # The links between nodes (weekend)
 
-    nnodes: int = 0            # the number of nodes in the network
-    nlinks: int = 0            # the number of links in the network
-    plinks: int = 0            # the number of play links in the network
+    """The list of nodes (wards) in the network"""
+    nodes: Nodes = None
+    """The links between nodes (work)"""
+    to_links: Links = None
+    """The links between nodes (play)"""
+    play: Links = None
+    """The links between nodes (weekend)"""
+    weekend: Links = None
+
+    """The number of nodes in the network"""
+    nnodes: int = 0
+    """The number of links in the network"""
+    nlinks: int = 0
+    """The number of play links in the network"""
+    plinks: int = 0
+
+    """The maximum allowable number of nodes in the network"""
+    max_nodes: int = 10050
+    """The maximum allowable number of links in the network"""
+    max_links: int = 2414000
+
+    """To seed provides additional seeding information"""
+    to_seed: List[int] = None
 
     params: Parameters = None  # The parameters used to generate this network
 
@@ -51,20 +68,24 @@ class Network:
            will be shrunk back after building.
         """
         if build_function is None:
-            from metawards.utils import build_wards_network
+            from ._utils import build_wards_network
             build_function = build_wards_network
 
         network = build_function(params=params,
                                  max_nodes=max_nodes,
                                  max_links=max_links)
 
-        # save the parameters used to build the network
-        # within the network - this will save having to pass
-        # them separately, which is error-prone
-        network.params = params
-
         if calculate_distances:
             network.add_distances(distance_function=distance_function)
+
+        if params.input_files.seed:
+            from ._utils import read_done_file
+            to_seed = read_done_file(params.input_files.seed)
+            nseeds = len(to_seed)
+
+            print(to_seed)
+            print(f"Number of seeds equals {nseeds}")
+            network.to_seed = to_seed
 
         return network
 
@@ -78,10 +99,17 @@ class Network:
         """
 
         if distance_function is None:
-            from metawards.utils import add_wards_network_distance
+            from ._utils import add_wards_network_distance
             distance_function = add_wards_network_distance
 
         distance_function(self)
+
+        # now need to update the dynamic distance cutoff based on the
+        # maximum distance between nodes
+        print("Get min/max distances...")
+        (_mindist, maxdist) = self.get_min_max_distances()
+
+        self.params.dyn_dist_cutoff = maxdist + 1
 
     def initialise_infections(self):
         """Initialise and return the space that will be used
@@ -101,5 +129,27 @@ class Network:
         """Calculate and return the minimum and maximum distances
            between nodes in the network
         """
+        try:
+            return self._min_max_distances
+        except Exception:
+            pass
+
         from ._utils import get_min_max_distances
-        return get_min_max_distances(self)
+        self._min_max_distances = get_min_max_distances(self)
+
+        return self._min_max_distances
+
+    def reset_everything(self):
+        """Resets the network ready for a new run of the model"""
+        from ._utils import reset_everything
+        reset_everything(self)
+
+    def rescale_play_matrix(self):
+        """Rescale the play matrix"""
+        from ._utils import rescale_play_matrix
+        rescale_play_matrix(self)
+
+    def move_from_play_to_work(self):
+        """Move the population from play to work"""
+        from ._utils import move_population_from_play_to_work
+        move_population_from_play_to_work(self)

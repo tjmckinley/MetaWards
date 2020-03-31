@@ -57,12 +57,10 @@ def test_integration():
 
     params.UV = UV
 
-    to_seed = mw.read_done_file(params.input_files.seed)
-
-    nseeds = len(to_seed)
-
-    print(to_seed)
-    print(f"Number of seeds equals {nseeds}")
+    params.static_play_at_home = 0
+    params.play_to_work = 0
+    params.work_to_play = 0
+    params.daily_imports = 0.0
 
     print("Building the network...")
     network = mw.Network.build(params=params,
@@ -74,36 +72,23 @@ def test_integration():
     print("Initialise play infections...")
     play_infections = network.initialise_play_infections()
 
-    print("Get min/max distances...")
-    (mindist, maxdist) = network.get_min_max_distances()
+    print("Reset everything...")
+    network.reset_everything()
 
-    params.dyn_dist_cutoff = maxdist + 1
+    print("Rescale play matrix...")
+    network.rescale_play_matrix()
+
+    print("Move population from play to work...")
+    network.move_from_play_to_work()
 
     s = -1
 
-    params.static_play_at_home = 0
-
-    print("Reset everything...")
-    mw.reset_everything(network=network, params=params)
-
-    print("Rescale play matrix...")
-    mw.rescale_play_matrix(network=network, params=params)
-
-    params.play_to_work = 0
-    params.work_to_play = 0
-
-    print("Move population from play to work...")
-    mw.move_population_from_play_to_work(network=network, params=params,
-                                         rng=rng)  # rng not used?
-
-    params.daily_imports = 0.0
-
     print("Run the model...")
-    population = mw.run_model(network=network, params=params,
+    population = mw.run_model(network=network,
                               population=57104043,
                               infections=infections,
                               play_infections=play_infections,
-                              rng=rng, to_seed=to_seed, s=s, output_dir="tmp",
+                              rng=rng, s=s, output_dir="tmp",
                               nsteps=20)
 
     print("End of the run")
