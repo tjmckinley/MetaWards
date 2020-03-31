@@ -118,7 +118,7 @@ directory that is bundled in this repo.
 ### Running an ensemble
 
 We will be integrating this Python port with
-[https://docs.python.org/3.7/library/multiprocessing.html?highlight=process](multiprocessing) and
+[multiprocessing](https://docs.python.org/3.7/library/multiprocessing.html) and
 [dask](https://dask.org) to enable multiple models and seeds
 to be run in parallel over distributed resources. The aim is to have
 this parallel code working by the beginning of Easter.
