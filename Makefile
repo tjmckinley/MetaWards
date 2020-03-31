@@ -12,7 +12,7 @@ install:
 	CYTHONIZE=1 pip install --user .
 
 install-from-source: dist
-	pip install --user dist/metawards-0.2.0b.tar.gz
+	pip install --user dist/metawards-0.2.0.tar.gz
 
 clean:
 	$(RM) -r build dist

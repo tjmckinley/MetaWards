@@ -91,15 +91,24 @@ pip install metawards
 
 ## Running
 
-Currently the Python port is under development so the simple front-end
-script is not yet ready. At the moment, you can see how to use the software
-by duplicating the code in [test_integration.py](https://github.com/chryswoods/MetaWards/blob/devel/tests/test_integration.py).
+You can either load and use the Python classes directly, or you can 
+run the `metawards` front-end command line program that is automatically installed.
 
-This test duplicates a run of the MetaWards C program that is bundled
+```
+metawards --help
+```
+
+will print out all of the help for the program. For example;
+
+```
+metawards --input tests/data/ncovparams.csv --seed 15324 --nsteps 30
+```
+
+This will duplicate the run of the MetaWards C program that is bundled
 in this repository that was run using;
 
 ```
-metawards 15324 ncovparams.csv 0 1.0
+./original/metawards 15324 tests/data/ncovparams.csv 0 1.0
 ```
 
 The original C code, command line and expected output are in the
