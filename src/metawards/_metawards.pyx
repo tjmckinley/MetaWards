@@ -12,7 +12,6 @@ from ._links import Links
 
 
 __all__ = ["read_done_file",
-           "get_min_max_distances",
            "reset_everything",
            "rescale_play_matrix",
            "move_population_from_play_to_work"]
@@ -299,40 +298,6 @@ def reset_everything(network: Network, params: Parameters):
 
     for i in range(0, N_INF_CLASSES-1):   # why -1?
         params.disease_params.contrib_foi[i] = 1
-
-
-def get_min_max_distances(network: Network):
-    """Return the minimum and maximum distances recorded in the network"""
-    links = network.to_links
-
-    cdef double mindist = -1.0
-    cdef double maxdist = -1.0
-
-    cdef int i = 0
-    cdef double dist = 0.0
-    cdef double [:] links_distance = links.distance
-
-    for i in range(1, network.nlinks+1):
-        dist = links_distance[i]
-
-        if dist:
-            if mindist < 0.0:
-                mindist = dist
-                maxdist = dist
-            elif dist > maxdist:
-                maxdist = dist
-            elif dist < mindist:
-                mindist = dist
-
-    print(f"maxdist {maxdist} mindist {mindist}")
-
-    if mindist > 0:
-        print(f"The original code always gives a minimum distance of zero, "
-              f"so setting {mindist} to zero... (check if this is correct)")
-
-    mindist = 0
-
-    return (mindist, maxdist)
 
 
 def fill_in_gaps(network: Network):

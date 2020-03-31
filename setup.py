@@ -36,6 +36,7 @@ extensions = [
     Extension("metawards._workspace", ["src/metawards/_workspace.pyx"]),
     Extension("metawards._build_wards_network", ["src/metawards/_build_wards_network.pyx"]),
     Extension("metawards._add_wards_network_distance", ["src/metawards/_add_wards_network_distance.pyx"]),
+    Extension("metawards._get_min_max_distances", ["src/metawards/_get_min_max_distances.pyx"]),
 ]
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))

@@ -11,4 +11,4 @@ from ._initialise_infections import *
 # pyx imports
 from ._build_wards_network import *
 from ._add_wards_network_distance import *
-
+from ._get_min_max_distances import *

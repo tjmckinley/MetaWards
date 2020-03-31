@@ -75,7 +75,7 @@ def test_integration():
     play_infections = network.initialise_play_infections()
 
     print("Get min/max distances...")
-    (mindist, maxdist) = mw.get_min_max_distances(network)
+    (mindist, maxdist) = network.get_min_max_distances()
 
     params.dyn_dist_cutoff = maxdist + 1
 

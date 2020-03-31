@@ -96,3 +96,10 @@ class Network:
         """
         from ._utils import initialise_play_infections
         return initialise_play_infections(self)
+
+    def get_min_max_distances(self):
+        """Calculate and return the minimum and maximum distances
+           between nodes in the network
+        """
+        from ._utils import get_min_max_distances
+        return get_min_max_distances(self)
