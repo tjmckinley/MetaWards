@@ -2,7 +2,7 @@
 import pytest
 import os
 
-import metawards as mw
+from metawards import Parameters, Network, run_model, Population
 
 from pygsl import rng as gsl_rng
 
@@ -38,7 +38,7 @@ def test_integration():
         print(f"random number {i} equals {r}")
 
     try:
-        params = mw.Parameters.load(parameters="march29", repository=data_repo)
+        params = Parameters.load(parameters="march29", repository=data_repo)
     except Exception as e:
         print(f"Unable to load parameter files. Make sure that you have "
               f"cloned the MetaWardsData repository and have set the "
@@ -47,30 +47,19 @@ def test_integration():
               f"default is $HOME/GitHub/MetaWardsData")
         raise e
 
-    disease = mw.Disease.load(disease="ncov", repository=data_repo)
-    params.set_disease(disease)
-
-    input_files = mw.InputFiles.load(model="2011Data", repository=data_repo)
-    params.set_input_files(input_files)
+    params.set_disease("ncov")
+    params.set_input_files("2011Data")
 
     params.read_file(inputfile, line_num)
 
     params.UV = UV
-
     params.static_play_at_home = 0
     params.play_to_work = 0
     params.work_to_play = 0
     params.daily_imports = 0.0
 
     print("Building the network...")
-    network = mw.Network.build(params=params,
-                               calculate_distances=True)
-
-    print("Initialise infections...")
-    infections = network.initialise_infections()
-
-    print("Initialise play infections...")
-    play_infections = network.initialise_play_infections()
+    network = Network.build(params=params, calculate_distances=True)
 
     print("Reset everything...")
     network.reset_everything()
@@ -83,25 +72,31 @@ def test_integration():
 
     s = -1
 
+    print("Initialise infections...")
+    infections = network.initialise_infections()
+
+    print("Initialise play infections...")
+    play_infections = network.initialise_play_infections()
+
     print("Run the model...")
-    population = mw.run_model(network=network,
-                              population=57104043,
-                              infections=infections,
-                              play_infections=play_infections,
-                              rng=rng, s=s, output_dir="tmp",
-                              nsteps=20)
+    population = run_model(network=network,
+                           population=57104043,
+                           infections=infections,
+                           play_infections=play_infections,
+                           rng=rng, s=s, output_dir="tmp",
+                           nsteps=20)
 
     print("End of the run")
 
     print(f"Model output:  {population}")
 
     # The original C code has this expected population after 20 steps
-    expected = mw.Population(initial=57104043,
-                             susceptibles=56081923,
-                             latent=61,
-                             total=17,
-                             recovereds=76,
-                             n_inf_wards=24)
+    expected = Population(initial=57104043,
+                          susceptibles=56081923,
+                          latent=61,
+                          total=17,
+                          recovereds=76,
+                          n_inf_wards=24)
 
     print(f"Expect output: {expected}")
 
