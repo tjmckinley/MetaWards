@@ -2,9 +2,9 @@
 from array import array   # timing shows quicker for random access
                           # than numpy
 
-from ._tolink import ToLink
+from ._link import Link
 
-__all__ = ["ToLinks"]
+__all__ = ["Links"]
 
 
 def _resize(a, N, default_value):
@@ -17,13 +17,13 @@ def _resize(a, N, default_value):
         return a + array(a.typecode, N*[default_value])
 
 
-class ToLinks:
-    """This is a container class for ToLinks. This uses arrays
-       to store a list of ToLink objects as a "struct of arrays".
+class Links:
+    """This is a container class for Links. This uses arrays
+       to store a list of Link objects as a "struct of arrays".
        This should improve speed of loading and access.
     """
     def __init__(self, N: int=0):
-        """Create a container for up to "N" ToLinks"""
+        """Create a container for up to "N" Links"""
         if N <= 0:
             self._is_null = True
         else:
@@ -36,7 +36,7 @@ class ToLinks:
             null_float = N * [0.0]
 
             # Struct of arrays for each piece of data. See the
-            # ToLink class for information about what each variable
+            # Link class for information about what each variable
             # holds. Code uses "-1" to represent a null value
             self.ifrom = array(int_t, null_int)
             self.ito = array(int_t, null_int)
@@ -87,11 +87,11 @@ class ToLinks:
         """
         i = self.assert_valid_index(i)
 
-        return ToLink(ifrom=self.ifrom[i], ito=self.ito[i],
-                      weight=self.weight[i], suscept=self.suscept[i],
-                      distance=self.distance[i], A=self.A[i])
+        return Link(ifrom=self.ifrom[i], ito=self.ito[i],
+                    weight=self.weight[i], suscept=self.suscept[i],
+                    distance=self.distance[i], A=self.A[i])
 
-    def __setitem__(self, i: int, value: ToLink):
+    def __setitem__(self, i: int, value: Link):
         """Set the item as index 'i' equal to 'value'. This deep-copies
            'value' into this container
         """
@@ -109,15 +109,15 @@ class ToLinks:
            the container if 'N' is greater than len(self), or will
            contract the container (deleting excess links) if 'N'
            is less than len(self). This function is called typically
-           when you pre-allocate a large ToLinks container, and then
+           when you pre-allocate a large Links container, and then
            want to reduce the size to fit the number of loaded links
         """
         if self.is_null():
-            # Assign to a new ToLinks object created with this size
-            self.__dict__ = ToLinks(N).__dict__
+            # Assign to a new Links object created with this size
+            self.__dict__ = Links(N).__dict__
             return
         elif N <= 0:
-            self.__dict__ = ToLinks(0).__dict__
+            self.__dict__ = Links(0).__dict__
 
         size = len(self)
 

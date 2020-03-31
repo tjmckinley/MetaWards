@@ -810,7 +810,7 @@ def extract_data(network: Network, infections, play_infections,
         else:
             recovereds += inf_tot[i] + pinf_tot[i]
 
-    if total_new > 0:
+    if total_new > 1:  # CHECK - this should be > 1 rather than > 0
         mean_x = <double>sum_x / <double>total_new
         mean_y = <double>sum_y / <double>total_new
 
@@ -929,9 +929,9 @@ def open_files(output_dir: str):
     return files
 
 
-def run_model(network: Network, params: Parameters,
+def run_model(network: Network,
               infections, play_infections,
-              rng, to_seed: List[float], s: int,
+              rng, s: int,
               output_dir: str=".",
               population: int=57104043,
               nsteps: int=None,
@@ -944,6 +944,13 @@ def run_model(network: Network, params: Parameters,
        will run until completion or until 'nsteps' have been
        completed (whichever happens first)
     """
+
+    params = network.params
+
+    if params is None:
+        return Population(initial=population)
+
+    to_seed = network.to_seed
 
     # create a workspace in which to run the model
     workspace = Workspace(network=network, params=params)
