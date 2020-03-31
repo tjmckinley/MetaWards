@@ -664,10 +664,14 @@ def build_wards_network_distance(params: Parameters):
     print("Calculating distances...")
 
     cdef double total_distance = 0
+    cdef double distance, distance2
     cdef int n_invalid = 0
 
     cdef int [:] links_ifrom = links.ifrom
     cdef int [:] links_ito = links.ito
+
+    cdef int [:] plinks_ifrom = plinks.ifrom
+    cdef int [:] plinks_ito = plinks.ito
 
     cdef double [:] links_distance = links.distance
     cdef double [:] plinks_distance = plinks.distance
@@ -679,12 +683,15 @@ def build_wards_network_distance(params: Parameters):
 
     cdef int ifrom = 0
     cdef int ito = 0
+    cdef int ifrom2 = 0
+    cdef int ito2 = 0
 
     cdef int i = 0
+    cdef int ninvalid = 0
 
-    for i in range(0, network.nlinks):  # shouldn't this be range(1, nlinks+1)?
-                                        # the fact there is a missing link at 0
-                                        # suggests this should be...
+    for i in range(1, network.nlinks+1):  # shouldn't this be range(1, nlinks+1)?
+                                          # the fact there is a missing link at 0
+                                          # suggests this should be...
         ifrom = links_ifrom[i]
         ito = links_ito[i]
 
@@ -704,12 +711,37 @@ def build_wards_network_distance(params: Parameters):
         # below line doesn't make sense and doesn't work all the time.
         # Why would the ith play link be related to the ith work link?
         if i >= 0 and i < plinks_size:
-            plinks_distance[i] = distance
+            ifrom2 = plinks_ifrom[i]
+            ito2 = plinks_ito[i]
+
+            x1 = wards_x[ifrom2]
+            y1 = wards_y[ifrom2]
+            x2 = wards_x[ito2]
+            y2 = wards_y[ito2]
+
+            dx = x1 - x2
+            dy = y1 - y2
+
+            distance2 = sqrt(dx*dx + dy*dy)
+
+            if distance != distance2:
+                if ninvalid < 10:
+                    print(plinks_size)
+                    print(f"WARNING: DIFFERENT DISTANCES {i} {distance} vs "
+                          f"{distance2}, {ifrom} vs {ifrom2} "
+                          f"and {ito} vs {ito2}")
+                elif ninvalid == 10:
+                    print("NOT PRINTING ANY MORE!")
+
+                ninvalid += 1
+                n_invalid += 1
+
+            plinks_distance[i] = distance2
         else:
             n_invalid += 1
 
     if n_invalid > 0:
-        print(f"WARNING: Set {n_invalid} plink distances!")
+        print(f"WARNING: Set {n_invalid} invalid plink distances!")
 
     print(f"Total distance equals {total_distance}")
 

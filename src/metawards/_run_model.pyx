@@ -145,9 +145,9 @@ def iterate(network: Network, infections, play_infections,
     cdef int [:] links_ito = links.ito
     cdef int ifrom = 0
     cdef int ito = 0
+    cdef int staying, moving, playmove
     cdef double [:] links_distance = links.distance
     cdef double frac = 0.0
-    cdef double staying, moving
     cdef double cumulative_prob
     cdef double too_ill_to_move
 
@@ -428,7 +428,7 @@ def iterate(network: Network, infections, play_infections,
 
             inf_prob = rate_to_prob(rate)
 
-            l = ran_binomial(rng, inf_prob, <int>(links.suscept[j]))
+            l = ran_binomial(rng, inf_prob, <int>(links_suscept[j]))
 
             if l > links_suscept[j]:
                 print(f"l > links[{j}].suscept {links_suscept[j]} nighttime")

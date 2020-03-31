@@ -14,6 +14,11 @@ def test_integration():
     """This test repeats main_RepeatsNcov.c and validates that the
        various stages report the same results as the original C code
     """
+    data_repo = os.getenv("METAWARDSDATA")
+
+    if data_repo:
+        print(f"Loading all data from MetaWardsData repo in {data_repo}")
+
     seed = 15324
 
     inputfile = ncovparams_csv
@@ -32,12 +37,12 @@ def test_integration():
         r = rng.binomial(0.5, 100)
         print(f"random number {i} equals {r}")
 
-    params = mw.Parameters.load(parameters="march29")
+    params = mw.Parameters.load(parameters="march29", repository=data_repo)
 
-    disease = mw.Disease.load(disease="ncov")
+    disease = mw.Disease.load(disease="ncov", repository=data_repo)
     params.set_disease(disease)
 
-    input_files = mw.InputFiles.load(model="2011Data")
+    input_files = mw.InputFiles.load(model="2011Data", repository=data_repo)
     params.set_input_files(input_files)
 
     params.read_file(inputfile, line_num)

@@ -8,7 +8,9 @@ __all__ = ["InputFiles"]
 _inputfiles = {}
 
 _default_model_path = os.path.join(pathlib.Path.home(),
-                                   "GitHub", "MetaWardsData", "model_data")
+                                   "GitHub", "MetaWardsData")
+
+_default_folder_name = "model_data"
 
 
 @dataclass
@@ -76,8 +78,7 @@ class InputFiles:
         for member in members:
             filename = getattr(self, member)
             if filename:
-                filename = os.path.join(self._model_path, self._model_name,
-                                        filename)
+                filename = os.path.join(self._model_path, filename)
 
                 if not (os.path.exists(filename) and os.path.isfile(filename)):
                     raise FileNotFoundError(
@@ -87,12 +88,13 @@ class InputFiles:
 
     @staticmethod
     def load(model: str = "2011Data",
-             model_path: str=_default_model_path,
+             repository: str=_default_model_path,
+             folder: str=_default_folder_name,
              description: str="description.json",
              filename: str = None):
         """Load the parameters associated with the passed model.
            This will look for the parameters specified in
-           the json file called "model_path/model/description"
+           the json file called f"{repository}/{folder}/{model}/{description}"
 
            By default this will load the 2011Data parameters
            from $HOME/GitHub/model_data/2011Data/description.json
@@ -104,11 +106,17 @@ class InputFiles:
            as a base
         """
 
-        if filename:
-            json_file = filename
-            model_path = os.path.dirname(filename)
-        else:
-            json_file = os.path.join(model_path, model, description)
+        if filename is None:
+            if repository is None:
+                repository = os.getenv("METAWARDSDATA")
+                if repository is None:
+                    repository = _default_model_path
+
+            filename = os.path.join(repository, folder,
+                                    model, description)
+
+        json_file = filename
+        model_path = os.path.dirname(filename)
 
         try:
             with open(json_file, "r") as FILE:
