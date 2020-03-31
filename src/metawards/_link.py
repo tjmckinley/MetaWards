@@ -1,11 +1,11 @@
 
 from dataclasses import dataclass
 
-__all__ = ["ToLink"]
+__all__ = ["Link"]
 
 
 @dataclass
-class ToLink:
+class Link:
     """This is a link between nodes in the network"""
     ifrom: int = None        # integers (indexes) of origins and destinations
     ito: int = None
@@ -14,7 +14,7 @@ class ToLink:
                              # number of susceptibles in work matrix
 
     suscept: float = None    # number of susceptibles in the case of the
-                             # work matrix, used to save the weight of
+                             # work matrix. Used to save the weight of
                              # the play matrix
 
     distance: float = None   # the distance between two wards

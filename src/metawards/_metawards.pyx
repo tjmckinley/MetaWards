@@ -7,8 +7,8 @@ from ._parameters import Parameters
 from ._network import Network
 from ._node import Node
 from ._nodes import Nodes
-from ._tolink import ToLink
-from ._tolinks import ToLinks
+from ._link import Link
+from ._links import Links
 
 
 __all__ = ["read_done_file",
@@ -403,7 +403,7 @@ def build_play_matrix(network: Network, params: Parameters,
                       max_links: int):
 
     nodes = network.nodes
-    links = ToLinks(max_links + 1)
+    links = Links(max_links + 1)
 
     cdef int nlinks = 0
     cdef int j = 0

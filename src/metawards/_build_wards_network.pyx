@@ -2,7 +2,7 @@
 from ._parameters import Parameters
 from ._network import Network
 from ._nodes import Nodes
-from ._tolinks import ToLinks
+from ._links import Links
 
 from ._metawards import build_play_matrix, fill_in_gaps
 
@@ -27,7 +27,7 @@ def build_wards_network(params: Parameters,
          asymmetric links
     """
     nodes = Nodes(max_nodes + 1)     # need to pre-allocate nodes and links
-    links = ToLinks(max_links + 1)   # both of these use 1-indexing
+    links = Links(max_links + 1)   # both of these use 1-indexing
 
     cdef int nlinks = 0
     cdef int nnodes = 0

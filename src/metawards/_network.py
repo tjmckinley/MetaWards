@@ -1,9 +1,9 @@
 
 from dataclasses import dataclass
-from typing import List
 
-from ._node import Node
-from ._tolink import ToLink
+from ._parameters import Parameters
+from ._nodes import Nodes
+from ._links import Links
 
 __all__ = ["Network"]
 
@@ -17,12 +17,14 @@ class Network:
        from the custom network/node/link written in C to this
        Python code
     """
-    nodes: List[Node] = None
-    to_links: List[ToLink] = None
+    nodes: Nodes = None        # The list of nodes (wards) in the network
+    to_links: Links = None     # The links between nodes (work)
+    play: Links = None         # The links between nodes (play)
+    weekend: Links = None      # The links between nodes (weekend)
 
-    nnodes: int = 0
-    nlinks: int = 0
-    plinks: int = 0
+    nnodes: int = 0            # the number of nodes in the network
+    nlinks: int = 0            # the number of links in the network
+    plinks: int = 0            # the number of play links in the network
 
-    play: List[ToLink] = None
-    weekend: List[ToLink] = None
+    params: Parameters = None  # The parameters used to generate this network
+
