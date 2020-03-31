@@ -37,7 +37,15 @@ def test_integration():
         r = rng.binomial(0.5, 100)
         print(f"random number {i} equals {r}")
 
-    params = mw.Parameters.load(parameters="march29", repository=data_repo)
+    try:
+        params = mw.Parameters.load(parameters="march29", repository=data_repo)
+    except Exception as e:
+        print(f"Unable to load parameter files. Make sure that you have "
+              f"cloned the MetaWardsData repository and have set the "
+              f"environment variable METAWARDSDATA to point to the "
+              f"local directory containing the repository, e.g. the "
+              f"default is $HOME/GitHub/MetaWardsData")
+        raise e
 
     disease = mw.Disease.load(disease="ncov", repository=data_repo)
     params.set_disease(disease)
@@ -91,13 +99,28 @@ def test_integration():
     params.daily_imports = 0.0
 
     print("Run the model...")
-    mw.run_model(network=network, params=params,
-                 population=57104043,
-                 infections=infections,
-                 play_infections=play_infections,
-                 rng=rng, to_seed=to_seed, s=s, output_dir="tmp")
+    population = mw.run_model(network=network, params=params,
+                              population=57104043,
+                              infections=infections,
+                              play_infections=play_infections,
+                              rng=rng, to_seed=to_seed, s=s, output_dir="tmp",
+                              nsteps=20)
 
     print("End of the run")
+
+    print(f"Model output:  {population}")
+
+    # The original C code has this expected population after 20 steps
+    expected = mw.Population(initial=57104043,
+                             susceptibles=56081923,
+                             latent=61,
+                             total=17,
+                             recovereds=76,
+                             n_inf_wards=24)
+
+    print(f"Expect output: {expected}")
+
+    assert population == expected
 
 
 if __name__ == "__main__":

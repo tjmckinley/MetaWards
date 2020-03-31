@@ -6,6 +6,7 @@ import math
 from ._network import Network
 from ._parameters import Parameters
 from ._workspace import Workspace
+from ._population import Population
 
 from typing import List
 from array import array
@@ -681,7 +682,7 @@ def extract_data_for_graphics(network: Network, infections,
 
 def extract_data(network: Network, infections, play_infections,
                  timestep: int, files, workspace: Workspace,
-                 population: int = None, is_dangerous=None,
+                 population: Population, is_dangerous=None,
                  SELFISOLATE: bool = False):
     """Extract data for timestep 'timestep' from the network and
        infections and write this to the output files in 'files'
@@ -839,12 +840,17 @@ def extract_data(network: Network, infections, play_infections,
     print(f"TOTAL POPULATION {susceptibles+total+recovereds}")
 
     if population is not None:
-        sum_population = susceptibles+total+recovereds
-        if sum_population != population:
-            print(f"DISAGREEMENT WITH POPULATION COUNT! {population} "
-                  f"versus {sum_population}!")
+        population.susceptibles = susceptibles
+        population.total = total
+        population.recovereds = recovereds
+        population.latent = latent
+        population.n_inf_wards = n_inf_wards[0]
 
-    return (total+latent)
+        if population.population != population.initial:
+            print(f"DISAGREEMENT WITH POPULATION COUNT! {population.initial} "
+                  f"versus {population.population}!")
+
+    return total + latent
 
 
 def seed_infection_at_node(network: Network, params: Parameters,
@@ -928,15 +934,22 @@ def run_model(network: Network, params: Parameters,
               rng, to_seed: List[float], s: int,
               output_dir: str=".",
               population: int=57104043,
+              nsteps: int=None,
               MAXSIZE: int=10050,
               VACCINATE: bool = False,
               IMPORTS: bool = False,
               EXTRASEEDS: bool = True,
               WEEKENDS: bool = False):
-    """Actually run the model... Real work happens here"""
+    """Actually run the model... Real work happens here. The model
+       will run until completion or until 'nsteps' have been
+       completed (whichever happens first)
+    """
 
     # create a workspace in which to run the model
     workspace = Workspace(network=network, params=params)
+
+    # create a population object to monitor the outbreak
+    population = Population(initial=population)
 
     int_t = "i"    # signed int64
     float_t = "d"  # double (float64)
@@ -981,7 +994,7 @@ def run_model(network: Network, params: Parameters,
             seed_all_wards(network=network,
                            play_infections=play_infections,
                            expected=params.daily_imports,
-                           population=population)
+                           population=population.initial)
         else:
             seed_infection_at_node(network=network, params=params,
                                    seed=to_seed,
@@ -1025,7 +1038,7 @@ def run_model(network: Network, params: Parameters,
                 iterate_weekend(network=network, infections=infections,
                                 play_infections=play_infections,
                                 params=params, rng=rng, timestep=timestep,
-                                population=population)
+                                population=population.initial)
                 _end = time.time_ns()
                 timings.append(("iterate weekend", _end-_start))
                 print("weekend")
@@ -1034,7 +1047,7 @@ def run_model(network: Network, params: Parameters,
                 iterate(network=network, infections=infections,
                         play_infections=play_infections,
                         params=params, rng=rng, timestep=timestep,
-                        population=population)
+                        population=population.initial)
                 _end = time.time_ns()
                 timings.append(("iterate", _end-_start))
                 print("normal day")
@@ -1048,7 +1061,7 @@ def run_model(network: Network, params: Parameters,
             iterate(network=network, infections=infections,
                     play_infections=play_infections,
                     params=params, rng=rng, timestep=timestep,
-                    population=population)
+                    population=population.initial)
             _end = time.time_ns()
             timings.append(("iterate", _end-_start))
 
@@ -1071,6 +1084,11 @@ def run_model(network: Network, params: Parameters,
         timings.append(("extract_for_graphcs", _end-_start))
 
         timestep += 1
+
+        if nsteps is not None:
+            if timestep > nsteps:
+                print(f"Exiting model run early at nsteps = {nsteps}")
+                break
 
         if VACCINATE:
             _start = time.time_ns()
@@ -1121,3 +1139,5 @@ def run_model(network: Network, params: Parameters,
         FILE.close()
 
     print(f"Infection died ... Ending at time {timestep}")
+
+    return population
