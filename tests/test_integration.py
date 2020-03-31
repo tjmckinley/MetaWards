@@ -65,7 +65,8 @@ def test_integration():
     print(f"Number of seeds equals {nseeds}")
 
     print("Building the network...")
-    network = mw.build_wards_network_distance(params)
+    network = mw.build_wards_network(params=params)
+    mw.add_wards_network_distance(network=network, params=params)
 
     print("Initialise infections...")
     infections = mw.initialise_infections(network=network, params=params)

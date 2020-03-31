@@ -22,13 +22,20 @@ def no_cythonize(extensions, **_ignore):
         extension.sources[:] = sources
     return extensions
 
+# Currently each file compiles to its own module. Ideally I'd like
+# them all to compile into a single module library, but this doesn't
+# work (get the error "ImportError: dynamic module does not define 
+# init function" and the answers on stackoverflow didn't work. 
+# If anyone can help please do :-)
 
 extensions = [
     Extension("metawards._nodes", ["src/metawards/_nodes.pyx"]),
     Extension("metawards._tolinks", ["src/metawards/_tolinks.pyx"]),
     Extension("metawards._metawards", ["src/metawards/_metawards.pyx"]),
     Extension("metawards._run_model", ["src/metawards/_run_model.pyx"]),
-    Extension("metawards._workspace", ["src/metawards/_workspace.pyx"])
+    Extension("metawards._workspace", ["src/metawards/_workspace.pyx"]),
+    Extension("metawards._build_wards_network", ["src/metawards/_build_wards_network.pyx"]),
+    Extension("metawards._add_wards_network_distance", ["src/metawards/_add_wards_network_distance.pyx"]),
 ]
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
