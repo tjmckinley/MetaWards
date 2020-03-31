@@ -5,6 +5,7 @@ from typing import List
 from ._parameters import Parameters
 from ._nodes import Nodes
 from ._links import Links
+from ._population import Population
 
 __all__ = ["Network"]
 
@@ -87,6 +88,18 @@ class Network:
             print(f"Number of seeds equals {nseeds}")
             network.to_seed = to_seed
 
+        # By default, we initialise the network ready for a run,
+        # namely make sure everything is reset and the population
+        # is at work
+        print("Reset everything...")
+        network.reset_everything()
+
+        print("Rescale play matrix...")
+        network.rescale_play_matrix()
+
+        print("Move population from play to work...")
+        network.move_from_play_to_work()
+
         return network
 
     def add_distances(self, distance_function=None):
@@ -153,3 +166,58 @@ class Network:
         """Move the population from play to work"""
         from ._utils import move_population_from_play_to_work
         move_population_from_play_to_work(self)
+
+    def run(self, population: Population,
+                  seed: int = None,
+                  output_dir: str = "tmp",
+                  nsteps: int = None,
+                  s: int = None):
+        """Run the model simulation for the passed population.
+           The random number seed is given in 'seed'. If this
+           is None, then a random seed is used.
+
+           All output files are written to 'output_dir'
+
+           The simulation will continue until the infection has
+           died out or until 'nsteps' has passed (keep as 'None'
+           to prevent exiting early).
+
+           s is used to select the 'to_seed' entry to seed
+           the nodes
+        """
+        from pygsl import rng as gsl_rng
+
+        rng = gsl_rng.rng()
+
+        if seed is None:
+            import random
+            seed = random.randint(10000, 99999999)
+
+        print(f"Using random number seed: {seed}")
+        rng.set(seed)
+
+        # Create space to hold the results of the simulation
+        print("Initialise infections...")
+        infections = self.initialise_infections()
+
+        print("Initialise play infections...")
+        play_infections = self.initialise_play_infections()
+
+        # test seeding of the random number generator by drawing and printing
+        # 5 random numbers - this is temporary, and only used to
+        # facilitate comparison to the original C code
+        for i in range(1,6):
+            r = rng.binomial(0.5, 100)
+            print(f"random number {i} equals {r}")
+
+        from ._utils import run_model
+        population = run_model(network=self,
+                               population=population.initial,
+                               infections=infections,
+                               play_infections=play_infections,
+                               rng=rng, s=s, output_dir=output_dir,
+                               nsteps=nsteps)
+
+        # do we want to save infections and play_infections for inspection?
+
+        return population

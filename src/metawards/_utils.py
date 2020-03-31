@@ -19,3 +19,5 @@ from ._recalculate_denominators import *
 from ._move_population import *
 from ._fill_in_gaps import *
 from ._build_play_matrix import *
+from ._workspace import *
+from ._run_model import *
