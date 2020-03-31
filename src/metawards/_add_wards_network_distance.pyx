@@ -7,9 +7,8 @@ from ._network import Network
 __all__ = ["add_wards_network_distance"]
 
 
-def add_wards_network_distance(network: Network,
-                               params: Parameters):
-    """Reads the location data in parameters.input_files.position
+def add_wards_network_distance(network: Network):
+    """Reads the location data in network.parameters.input_files.position
        and adds those locations to all of the nodes in the passed
        network. Then it calculates all of the distances between
        the nodes for each link and puts that into the
@@ -17,7 +16,7 @@ def add_wards_network_distance(network: Network,
     """
 
     # ncov build does not have WEEKEND defined, so not writing this code now
-
+    params = network.params
     wards = network.nodes
     links = network.to_links
     plinks = network.play

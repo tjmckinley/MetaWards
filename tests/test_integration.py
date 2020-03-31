@@ -65,15 +65,14 @@ def test_integration():
     print(f"Number of seeds equals {nseeds}")
 
     print("Building the network...")
-    network = mw.build_wards_network(params=params)
-    mw.add_wards_network_distance(network=network, params=params)
+    network = mw.Network.build(params=params,
+                               calculate_distances=True)
 
     print("Initialise infections...")
-    infections = mw.initialise_infections(network=network, params=params)
+    infections = network.initialise_infections()
 
     print("Initialise play infections...")
-    play_infections = mw.initialise_play_infections(network=network,
-                                                    params=params)
+    play_infections = network.initialise_play_infections()
 
     print("Get min/max distances...")
     (mindist, maxdist) = mw.get_min_max_distances(network)

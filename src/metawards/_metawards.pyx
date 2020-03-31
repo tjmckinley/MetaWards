@@ -12,8 +12,6 @@ from ._links import Links
 
 
 __all__ = ["read_done_file",
-           "initialise_infections",
-           "initialise_play_infections",
            "get_min_max_distances",
            "reset_everything",
            "rescale_play_matrix",
@@ -335,42 +333,6 @@ def get_min_max_distances(network: Network):
     mindist = 0
 
     return (mindist, maxdist)
-
-
-def initialise_infections(network: Network, params: Parameters):
-    disease = params.disease_params
-
-    n = disease.N_INF_CLASSES()
-
-    infections = []
-
-    nlinks = network.nlinks + 1
-
-    int_t = "i"
-    null_int = nlinks * [0]
-
-    for _ in range(0, n):
-        infections.append( array(int_t, null_int) )
-
-    return infections
-
-
-def initialise_play_infections(network: Network, params: Parameters):
-    disease = params.disease_params
-
-    n = disease.N_INF_CLASSES()
-
-    infections = []
-
-    nnodes = network.nnodes + 1
-
-    int_t = "i"
-    null_int = nnodes * [0]
-
-    for _ in range(0, n):
-        infections.append( array(int_t, null_int) )
-
-    return infections
 
 
 def fill_in_gaps(network: Network):
