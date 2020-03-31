@@ -5,7 +5,7 @@ Details of authorship / license etc to be written here
 
 """
 
-__version__ = "0.2.0a"
+__version__ = "0.2.0b"
 
 from ._parameters import *
 from ._disease import *
