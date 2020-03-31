@@ -14,6 +14,11 @@ def test_integration():
     """This test repeats main_RepeatsNcov.c and validates that the
        various stages report the same results as the original C code
     """
+    data_repo = os.getenv("METAWARDSDATA")
+
+    if data_repo:
+        print(f"Loading all data from MetaWardsData repo in {data_repo}")
+
     seed = 15324
 
     inputfile = ncovparams_csv
@@ -32,12 +37,20 @@ def test_integration():
         r = rng.binomial(0.5, 100)
         print(f"random number {i} equals {r}")
 
-    params = mw.Parameters.load(parameters="march29")
+    try:
+        params = mw.Parameters.load(parameters="march29", repository=data_repo)
+    except Exception as e:
+        print(f"Unable to load parameter files. Make sure that you have "
+              f"cloned the MetaWardsData repository and have set the "
+              f"environment variable METAWARDSDATA to point to the "
+              f"local directory containing the repository, e.g. the "
+              f"default is $HOME/GitHub/MetaWardsData")
+        raise e
 
-    disease = mw.Disease.load(disease="ncov")
+    disease = mw.Disease.load(disease="ncov", repository=data_repo)
     params.set_disease(disease)
 
-    input_files = mw.InputFiles.load(model="2011Data")
+    input_files = mw.InputFiles.load(model="2011Data", repository=data_repo)
     params.set_input_files(input_files)
 
     params.read_file(inputfile, line_num)
@@ -86,13 +99,28 @@ def test_integration():
     params.daily_imports = 0.0
 
     print("Run the model...")
-    mw.run_model(network=network, params=params,
-                 population=57104043,
-                 infections=infections,
-                 play_infections=play_infections,
-                 rng=rng, to_seed=to_seed, s=s, output_dir="tmp")
+    population = mw.run_model(network=network, params=params,
+                              population=57104043,
+                              infections=infections,
+                              play_infections=play_infections,
+                              rng=rng, to_seed=to_seed, s=s, output_dir="tmp",
+                              nsteps=20)
 
     print("End of the run")
+
+    print(f"Model output:  {population}")
+
+    # The original C code has this expected population after 20 steps
+    expected = mw.Population(initial=57104043,
+                             susceptibles=56081923,
+                             latent=61,
+                             total=17,
+                             recovereds=76,
+                             n_inf_wards=24)
+
+    print(f"Expect output: {expected}")
+
+    assert population == expected
 
 
 if __name__ == "__main__":
