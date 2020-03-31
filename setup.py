@@ -65,4 +65,9 @@ setup(
         "dev": dev_requires,
         "docs": ["sphinx", "sphinx-rtd-theme"]
     },
+    entry_points={
+        "console_scripts": [
+           "metawards = metawards.app.run:cli"
+        ]
+    }
 )

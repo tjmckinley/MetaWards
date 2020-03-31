@@ -810,7 +810,7 @@ def extract_data(network: Network, infections, play_infections,
         else:
             recovereds += inf_tot[i] + pinf_tot[i]
 
-    if total_new > 0:
+    if total_new > 1:  # CHECK - this should be > 1 rather than > 0
         mean_x = <double>sum_x / <double>total_new
         mean_y = <double>sum_y / <double>total_new
 
