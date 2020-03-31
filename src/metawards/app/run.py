@@ -61,8 +61,6 @@ def cli():
 
     args = parser.parse_args()
 
-    print(args)
-
     if args.input is None:
         parser.print_help(sys.stdout)
         sys.exit(0)
