@@ -5,3 +5,7 @@ notebooks/.ipynb_checkpoints
 /build
 src/metawards/*.c
 __pycache__
+/dist
+/src/metawards.egg-info
+/2011Data
+

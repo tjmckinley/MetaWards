@@ -20,4 +20,5 @@ from ._run_model import *
 from ._test import *
 from ._nodes import *
 from ._tolinks import *
+from ._workspace import *
 
