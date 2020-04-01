@@ -1,4 +1,5 @@
 
+cimport cython
 from cpython cimport array
 
 import array   # timing shows quicker for random access
@@ -50,6 +51,8 @@ def resize_array(a, size: int, default: any = None):
         return a + array(a.typecode, (size-len(a))*[default])
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def create_double_array(size: int, default: float=None):
     """Create a new array.array of the specified size. If
        default is set then all values will be initialised to
@@ -72,6 +75,8 @@ def create_double_array(size: int, default: float=None):
     return dbl_array
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def create_int_array(size: int, default: int=None):
     """Create a new array.array of the specified size. If
        default is set then all values will be initialised to

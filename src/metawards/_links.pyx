@@ -1,4 +1,5 @@
 
+cimport cython
 from ._link import Link
 
 from ._array import create_double_array, create_int_array, \
@@ -12,6 +13,8 @@ class Links:
        to store a list of Link objects as a "struct of arrays".
        This should improve speed of loading and access.
     """
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def __init__(self, N: int=0):
         """Create a container for up to "N" Links"""
         if N <= 0:

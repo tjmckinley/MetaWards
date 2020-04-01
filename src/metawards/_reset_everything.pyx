@@ -1,4 +1,6 @@
 
+cimport cython
+
 from ._network import Network
 from ._node import Node
 
@@ -6,13 +8,15 @@ __all__ = ["reset_work_matrix", "reset_play_matrix",
            "reset_play_susceptibles", "reset_everything"]
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def reset_work_matrix(network: Network):
     links = network.to_links
 
     cdef int i = 0
-    cdef int [:] links_ifrom = links.ifrom
-    cdef double [:] links_suscept = links.suscept
-    cdef double [:] links_weight = links.weight
+    cdef int [::1] links_ifrom = links.ifrom
+    cdef double [::1] links_suscept = links.suscept
+    cdef double [::1] links_weight = links.weight
 
     for i in range(1, network.nlinks+1):  # 1-indexed
         if links_ifrom[i] == -1:
@@ -25,9 +29,9 @@ def reset_play_matrix(network: Network):
     links = network.play
 
     cdef int i = 0
-    cdef int [:] links_ifrom = links.ifrom
-    cdef double [:] links_suscept = links.suscept
-    cdef double [:] links_weight = links.weight
+    cdef int [::1] links_ifrom = links.ifrom
+    cdef double [::1] links_suscept = links.suscept
+    cdef double [::1] links_weight = links.weight
 
     for i in range(1, network.plinks+1):  # 1-indexed
         if links.ifrom[i] == -1:
@@ -40,9 +44,9 @@ def reset_play_susceptibles(network: Network):
     nodes = network.nodes
 
     cdef int i = 0
-    cdef int [:] nodes_label = nodes.label
-    cdef double [:] nodes_play_suscept = nodes.play_suscept
-    cdef double [:] nodes_save_play_suscept = nodes.save_play_suscept
+    cdef int [::1] nodes_label = nodes.label
+    cdef double [::1] nodes_play_suscept = nodes.play_suscept
+    cdef double [::1] nodes_save_play_suscept = nodes.save_play_suscept
 
     for i in range(1, network.nnodes+1):  # 1-indexed
         if nodes_label[i] == -1:

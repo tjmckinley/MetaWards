@@ -1,4 +1,6 @@
 
+cimport cython
+
 from ._node import Node
 from ._array import create_double_array, create_int_array, \
                     create_string_array, resize_array
@@ -11,6 +13,8 @@ class Nodes:
        to store a list of Node objects as a "struct of arrays".
        This should improve speed of loading and access.
     """
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def __init__(self, N: int=0):
         """Create a container for up to "N" nodes"""
         if N <= 0:

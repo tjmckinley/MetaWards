@@ -1,4 +1,6 @@
 
+cimport cython
+
 from libc.stdio cimport FILE, fopen, fscanf, fclose, feof
 
 from ._network import Network
@@ -7,6 +9,8 @@ from ._profiler import Profiler, NullProfiler
 
 __all__ = ["build_play_matrix"]
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def build_play_matrix(network: Network, profiler: Profiler=None):
     """Build the play matrix for the passed network"""
     if profiler is None:
@@ -31,18 +35,18 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
     cdef int to_id = 0
     cdef double weight = 0.0
 
-    cdef int [:] nodes_label = nodes.label
-    cdef int [:] nodes_begin_p = nodes.begin_p
-    cdef int [:] nodes_end_p = nodes.end_p
-    cdef int [:] nodes_self_p = nodes.self_p
+    cdef int [::1] nodes_label = nodes.label
+    cdef int [::1] nodes_begin_p = nodes.begin_p
+    cdef int [::1] nodes_end_p = nodes.end_p
+    cdef int [::1] nodes_self_p = nodes.self_p
 
-    cdef int [:] links_ifrom = links.ifrom
-    cdef int [:] links_ito = links.ito
-    cdef double [:] links_weight = links.weight
-    cdef double [:] links_suscept = links.suscept
+    cdef int [::1] links_ifrom = links.ifrom
+    cdef int [::1] links_ito = links.ito
+    cdef double [::1] links_weight = links.weight
+    cdef double [::1] links_suscept = links.suscept
 
-    cdef double [:] nodes_denominator_p = nodes.denominator_p
-    cdef double [:] nodes_play_suscept = nodes.play_suscept
+    cdef double [::1] nodes_denominator_p = nodes.denominator_p
+    cdef double [::1] nodes_play_suscept = nodes.play_suscept
 
     p = p.start("read_play_file")
 
@@ -66,10 +70,10 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
 
             nlinks += 1
 
-            if from_id == 0 or to_id == 0:
-                raise ValueError(
-                            f"Zero in link list: ${from_id}-${to_id}! "
-                            f"Renumber files and start again")
+            #if from_id == 0 or to_id == 0:
+            #    raise ValueError(
+            #                f"Zero in link list: ${from_id}-${to_id}! "
+            #                f"Renumber files and start again")
 
             if nodes_label[from_id] == -1:
                 nodes_label[from_id] = from_id
@@ -115,7 +119,7 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
 
     cdef int i1 = 0
     cdef int i2 = 0
-    cdef double [:] nodes_save_play_suscept = nodes.save_play_suscept
+    cdef double [::1] nodes_save_play_suscept = nodes.save_play_suscept
 
     p = p.start("read_play_size_file")
 

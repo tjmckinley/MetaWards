@@ -106,8 +106,8 @@ def iterate(network: Network, infections, play_infections,
     plinks = network.play
 
     cdef int i = 0
-    cdef double [:] wards_day_foi = wards.day_foi
-    cdef double [:] wards_night_foi = wards.night_foi
+    cdef double [::1] wards_day_foi = wards.day_foi
+    cdef double [::1] wards_night_foi = wards.night_foi
 
     timings = []
 
@@ -141,38 +141,38 @@ def iterate(network: Network, infections, play_infections,
     cdef int k = 0
     cdef int inf_ij = 0
     cdef double weight = 0.0
-    cdef double [:] links_weight = links.weight
-    cdef int [:] links_ifrom = links.ifrom
-    cdef int [:] links_ito = links.ito
+    cdef double [::1] links_weight = links.weight
+    cdef int [::1] links_ifrom = links.ifrom
+    cdef int [::1] links_ito = links.ito
     cdef int ifrom = 0
     cdef int ito = 0
     cdef int staying, moving, playmove
-    cdef double [:] links_distance = links.distance
+    cdef double [::1] links_distance = links.distance
     cdef double frac = 0.0
     cdef double cumulative_prob
     cdef double too_ill_to_move
 
-    cdef int [:] wards_begin_p = wards.begin_p
-    cdef int [:] wards_end_p = wards.end_p
+    cdef int [::1] wards_begin_p = wards.begin_p
+    cdef int [::1] wards_end_p = wards.end_p
 
-    cdef double [:] plinks_distance = plinks.distance
-    cdef double [:] plinks_weight = plinks.weight
-    cdef int [:] plinks_ifrom = plinks.ifrom
-    cdef int [:] plinks_ito = plinks.ito
+    cdef double [::1] plinks_distance = plinks.distance
+    cdef double [::1] plinks_weight = plinks.weight
+    cdef int [::1] plinks_ifrom = plinks.ifrom
+    cdef int [::1] plinks_ito = plinks.ito
 
-    cdef double [:] wards_denominator_d = wards.denominator_d
-    cdef double [:] wards_denominator_n = wards.denominator_n
-    cdef double [:] wards_denominator_p = wards.denominator_p
-    cdef double [:] wards_denominator_pd = wards.denominator_pd
+    cdef double [::1] wards_denominator_d = wards.denominator_d
+    cdef double [::1] wards_denominator_n = wards.denominator_n
+    cdef double [::1] wards_denominator_p = wards.denominator_p
+    cdef double [::1] wards_denominator_pd = wards.denominator_pd
 
-    cdef double [:] links_suscept = links.suscept
-    cdef double [:] wards_play_suscept = wards.play_suscept
+    cdef double [::1] links_suscept = links.suscept
+    cdef double [::1] wards_play_suscept = wards.play_suscept
 
-    cdef int [:] wards_label = wards.label
+    cdef int [::1] wards_label = wards.label
 
-    cdef int [:] infections_i, play_infections_i
+    cdef int [::1] infections_i, play_infections_i
 
-    cdef int [:] is_dangerous_array
+    cdef int [::1] is_dangerous_array
 
     if SELFISOLATE:
         is_dangerous_array = is_dangerous
@@ -315,7 +315,7 @@ def iterate(network: Network, infections, play_infections,
         # end of params.disease_params.contrib_foi[i] > 0:
     # end of loop over all disease classes
 
-    cdef int [:] infections_i_plus_one, play_infections_i_plus_one
+    cdef int [::1] infections_i_plus_one, play_infections_i_plus_one
     cdef double disease_progress = 0.0
 
     _start_recovery = time.time_ns()
@@ -636,12 +636,12 @@ def extract_data_for_graphics(network: Network, infections,
     cdef int i, j, inf_ij, pinf_ij, ifrom
     cdef int total = 0
 
-    cdef int [:] infections_i, play_infections_i
-    cdef int [:] inf_tot = workspace.inf_tot
-    cdef int [:] total_inf_ward = workspace.total_inf_ward
-    cdef int [:] total_infections = workspace.total_infections
-    cdef int [:] prevalence = workspace.prevalence
-    cdef int [:] links_ifrom = links.ifrom
+    cdef int [::1] infections_i, play_infections_i
+    cdef int [::1] inf_tot = workspace.inf_tot
+    cdef int [::1] total_inf_ward = workspace.total_inf_ward
+    cdef int [::1] total_infections = workspace.total_infections
+    cdef int [::1] prevalence = workspace.prevalence
+    cdef int [::1] links_ifrom = links.ifrom
 
     for i in range(0, N_INF_CLASSES):
         infections_i = infections[i]
@@ -711,11 +711,11 @@ def extract_data(network: Network, infections, play_infections,
     files[1].write("%d " % timestep)
     files[3].write("%d " % timestep)
 
-    cdef int [:] inf_tot = workspace.inf_tot
-    cdef int [:] pinf_tot = workspace.pinf_tot
-    cdef int [:] total_inf_ward = workspace.total_inf_ward
-    cdef int [:] total_new_inf_ward = workspace.total_new_inf_ward
-    cdef int [:] n_inf_wards = workspace.n_inf_wards
+    cdef int [::1] inf_tot = workspace.inf_tot
+    cdef int [::1] pinf_tot = workspace.pinf_tot
+    cdef int [::1] total_inf_ward = workspace.total_inf_ward
+    cdef int [::1] total_new_inf_ward = workspace.total_new_inf_ward
+    cdef int [::1] n_inf_wards = workspace.n_inf_wards
 
     cdef int total = 0
     cdef int total_new = 0
@@ -735,17 +735,17 @@ def extract_data(network: Network, infections, play_infections,
     cdef double dispersal = 0.0
 
     cdef int i, j
-    cdef double [:] links_suscept = links.suscept
-    cdef int [:] links_ifrom = links.ifrom
-    cdef int [:] links_ito = links.ito
+    cdef double [::1] links_suscept = links.suscept
+    cdef int [::1] links_ifrom = links.ifrom
+    cdef int [::1] links_ito = links.ito
 
-    cdef int [:] infections_i, play_infections_i
+    cdef int [::1] infections_i, play_infections_i
 
-    cdef double [:] wards_play_suscept = wards.play_suscept
-    cdef double [:] wards_x = wards.x
-    cdef double [:] wards_y = wards.y
+    cdef double [::1] wards_play_suscept = wards.play_suscept
+    cdef double [::1] wards_x = wards.x
+    cdef double [::1] wards_y = wards.y
 
-    cdef int [:] is_dangerous_array
+    cdef int [::1] is_dangerous_array
 
     if SELFISOLATE:
         is_dangerous_array = is_dangerous
