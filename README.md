@@ -54,7 +54,7 @@ Proceedings of the National Academy of Sciences May 2010, 107 (19) 8866-8870; DO
 Leon Danon, Ellen Brooks-Pollock, Mick Bailey, Matt J Keeling
 medRxiv 2020.02.12.20022566; doi: [10.1101/2020.02.12.20022566](https://doi.org/10.1101/2020.02.12.20022566)
 
-## Dependancies
+## Dependencies
 
 The code requires Python 3.7 or above and depends on
 [pygsl](http://pygsl.sourceforge.net) and [cython](https://cython.org).
