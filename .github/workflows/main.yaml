@@ -35,17 +35,21 @@ jobs:
         run: pip install sphinx sphinx_issues sphinx_rtd_theme
         if: matrix.python-version == 3.8
       - name: Build documentation
-        run: |
-          cd doc
-          sphinx-build make html
+        working-directory: ./doc
+        run: sphinx-build make html
+        if: matrix.python-version == 3.8
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
         if: matrix.python-version == 3.8
       - name: Update website files
-        run: |
-          cd ../docs
-          git checkout gh-pages
-          cp ../doc/build/html/* .
+        working-directory: ./gh-pages/docs
+        run: cp ${{ github.workspace }}/doc/build/html/* .
         if: matrix.python-version == 3.8
       - name: Commit website changes
+        working-directory: ./gh-pages
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -55,5 +59,6 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           branch: 'gh-pages'
+          directory: 'gh-pages'
           github_token: ${{ secrets.GITHUB_TOKEN }}
         if: matrix.python-version == 3.8
