@@ -1,5 +1,4 @@
 
-
 from ._node import Node
 from ._array import create_double_array, create_int_array, \
                     create_string_array, resize_array
