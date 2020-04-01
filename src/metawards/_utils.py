@@ -21,3 +21,4 @@ from ._fill_in_gaps import *
 from ._build_play_matrix import *
 from ._workspace import *
 from ._run_model import *
+from ._array import *

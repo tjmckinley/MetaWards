@@ -42,6 +42,7 @@ extensions = [
     Extension("metawards._move_population", ["src/metawards/_move_population.pyx"]),
     Extension("metawards._fill_in_gaps", ["src/metawards/_fill_in_gaps.pyx"]),
     Extension("metawards._build_play_matrix", ["src/metawards/_build_play_matrix.pyx"]),
+    Extension("metawards._array", ["src/metawards/_array.pyx"]),
 ]
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))

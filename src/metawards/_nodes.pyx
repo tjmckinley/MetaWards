@@ -1,20 +1,10 @@
 
-from array import array   # timing shows quicker for random access
-                          # than numpy
 
 from ._node import Node
+from ._array import create_double_array, create_int_array, \
+                    create_string_array, resize_array
 
 __all__ = ["Nodes"]
-
-
-def _resize(a, N, default_value):
-    """Resize the passed numpy array to size N, adding 'default_value'
-       if this will grow the array
-    """
-    if N < len(a):
-        return a[0:N]
-    else:
-        return a + array(a.typecode, (N-len(a))*[default_value])
 
 
 class Nodes:
@@ -29,48 +19,42 @@ class Nodes:
         else:
             self._is_null = False
 
-            int_t = "i"        # all data should fit into an int32
-            float_t = "d"      # original code uses doubles
-
-            null_int = N * [-1]
-            null_float = N * [0.0]
-
             # Struct of arrays for each piece of data. See the
             # Node class for information about what each variable
             # holds. Code uses "-1" to represent a null value
-            self.label = array(int_t, null_int)
-            self.begin_to = array(int_t, null_int)
-            self.end_to = array(int_t, null_int)
-            self.self_w = array(int_t, null_int)
+            self.label = create_int_array(N, -1)
+            self.begin_to = create_int_array(N, -1)
+            self.end_to = create_int_array(N, -1)
+            self.self_w = create_int_array(N, -1)
 
-            self.begin_p = array(int_t, null_int)
-            self.end_p = array(int_t, null_int)
-            self.self_p = array(int_t, null_int)
+            self.begin_p = create_int_array(N, -1)
+            self.end_p = create_int_array(N, -1)
+            self.self_p = create_int_array(N, -1)
 
-            self.begin_we = array(int_t, null_int)
-            self.end_we = array(int_t, null_int)
-            self.self_we = array(int_t, null_int)
+            self.begin_we = create_int_array(N, -1)
+            self.end_we = create_int_array(N, -1)
+            self.self_we = create_int_array(N, -1)
 
-            self.day_foi = array(float_t, null_float)
-            self.night_foi = array(float_t, null_float)
-            self.weekend_foi = array(float_t, null_float)
+            self.day_foi = create_double_array(N, 0.0)
+            self.night_foi = create_double_array(N, 0.0)
+            self.weekend_foi = create_double_array(N, 0.0)
 
-            self.play_suscept = array(float_t, null_float)
-            self.save_play_suscept = array(float_t, null_float)
+            self.play_suscept = create_double_array(N, 0.0)
+            self.save_play_suscept = create_double_array(N, 0.0)
 
-            self.denominator_n = array(float_t, null_float)
-            self.denominator_d = array(float_t, null_float)
+            self.denominator_n = create_double_array(N, 0.0)
+            self.denominator_d = create_double_array(N, 0.0)
 
-            self.denominator_p = array(float_t, null_float)
-            self.denominator_pd = array(float_t, null_float)
+            self.denominator_p = create_double_array(N, 0.0)
+            self.denominator_pd = create_double_array(N, 0.0)
 
-            self.x = array(float_t, null_float)  # no good initialiser for x
-            self.y = array(float_t, null_float)  # no good initialiser for y
+            self.x = create_double_array(N, 0.0)  # no good initialiser for x
+            self.y = create_double_array(N, 0.0)  # no good initialiser for y
 
-            self.b = array(float_t, null_float)
+            self.b = create_double_array(N, 0.0)
 
-            self.id = N * [None]   # this is a list of strings
-            self.vacid = array(int_t, null_int)
+            self.id = create_string_array(N)
+            self.vacid = create_int_array(N, -1)
 
     def is_null(self):
         return self._is_null
@@ -210,41 +194,37 @@ class Nodes:
         if N == size:
             return
 
-        self.label = _resize(self.label, N, -1)
-        self.begin_to = _resize(self.begin_to, N, -1)
-        self.end_to = _resize(self.end_to, N, -1)
-        self.self_w = _resize(self.self_w, N, -1)
+        self.label = resize_array(self.label, N, -1)
+        self.begin_to = resize_array(self.begin_to, N, -1)
+        self.end_to = resize_array(self.end_to, N, -1)
+        self.self_w = resize_array(self.self_w, N, -1)
 
-        self.begin_p = _resize(self.begin_p, N, -1)
-        self.end_p = _resize(self.end_p, N, -1)
-        self.self_p = _resize(self.self_p, N, -1)
+        self.begin_p = resize_array(self.begin_p, N, -1)
+        self.end_p = resize_array(self.end_p, N, -1)
+        self.self_p = resize_array(self.self_p, N, -1)
 
-        self.begin_we = _resize(self.begin_we, N, -1)
-        self.end_we = _resize(self.end_we, N, -1)
-        self.self_we = _resize(self.self_we, N, -1)
+        self.begin_we = resize_array(self.begin_we, N, -1)
+        self.end_we = resize_array(self.end_we, N, -1)
+        self.self_we = resize_array(self.self_we, N, -1)
 
-        self.day_foi = _resize(self.day_foi, N, 0.0)
-        self.night_foi = _resize(self.night_foi, N, 0.0)
-        self.weekend_foi = _resize(self.weekend_foi, N, 0.0)
+        self.day_foi = resize_array(self.day_foi, N, 0.0)
+        self.night_foi = resize_array(self.night_foi, N, 0.0)
+        self.weekend_foi = resize_array(self.weekend_foi, N, 0.0)
 
-        self.play_suscept = _resize(self.play_suscept, N, 0.0)
-        self.save_play_suscept = _resize(self.save_play_suscept, N, 0.0)
+        self.play_suscept = resize_array(self.play_suscept, N, 0.0)
+        self.save_play_suscept = resize_array(self.save_play_suscept, N, 0.0)
 
-        self.denominator_n = _resize(self.denominator_n, N, 0.0)
-        self.denominator_d = _resize(self.denominator_d, N, 0.0)
+        self.denominator_n = resize_array(self.denominator_n, N, 0.0)
+        self.denominator_d = resize_array(self.denominator_d, N, 0.0)
 
-        self.denominator_p = _resize(self.denominator_p, N, 0.0)
-        self.denominator_pd = _resize(self.denominator_pd, N, 0.0)
+        self.denominator_p = resize_array(self.denominator_p, N, 0.0)
+        self.denominator_pd = resize_array(self.denominator_pd, N, 0.0)
 
-        self.x = _resize(self.x, N, 0.0)
-        self.y = _resize(self.y, N, 0.0)
+        self.x = resize_array(self.x, N, 0.0)
+        self.y = resize_array(self.y, N, 0.0)
 
-        self.b = _resize(self.b, N, 0.0)
+        self.b = resize_array(self.b, N, 0.0)
 
-        self.vacid = _resize(self.vacid, N, -1)
+        self.vacid = resize_array(self.vacid, N, -1)
 
-        if N < size:
-            self.id = self.id[0:N]
-        else:
-            self.id = self.id + ((N - size) * [None])
-            assert(len(self.id) == N)
+        self.id = resize_array(self.id, N)
