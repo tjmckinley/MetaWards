@@ -50,7 +50,8 @@ class Network:
               build_function=None,
               distance_function=None,
               max_nodes:int = 10050,
-              max_links:int = 2414000):
+              max_links:int = 2414000,
+              profile:bool = True):
         """Builds and returns a new Network that is described by the
            passed parameters. If 'calculate_distances' is True, then
            this will also read in the ward positions and add
@@ -68,37 +69,63 @@ class Network:
            the maximum possible number of nodes and links. The memory buffers
            will be shrunk back after building.
         """
+        if profile:
+            from metawards import Profiler
+            p = Profiler()
+        else:
+            from metawards import NullProfiler
+            p = NullProfiler()
+
+        p = p.start("Network.build")
+
         if build_function is None:
             from ._utils import build_wards_network
             build_function = build_wards_network
 
+        p = p.start("build_function")
         network = build_function(params=params,
+                                 profiler=p,
                                  max_nodes=max_nodes,
                                  max_links=max_links)
+        p = p.stop()
 
         if calculate_distances:
+            p = p.start("add_distances")
             network.add_distances(distance_function=distance_function)
+            p = p.stop()
 
         if params.input_files.seed:
             from ._utils import read_done_file
+            p = p.start("read_done_file")
             to_seed = read_done_file(params.input_files.seed)
             nseeds = len(to_seed)
 
             print(to_seed)
             print(f"Number of seeds equals {nseeds}")
             network.to_seed = to_seed
+            p = p.stop()
 
         # By default, we initialise the network ready for a run,
         # namely make sure everything is reset and the population
         # is at work
         print("Reset everything...")
+        p = p.start("reset_everything")
         network.reset_everything()
+        p = p.stop()
 
         print("Rescale play matrix...")
+        p = p.start("rescale_play_matrix")
         network.rescale_play_matrix()
+        p = p.stop()
 
         print("Move population from play to work...")
+        p = p.start("move_from_play_to_work")
         network.move_from_play_to_work()
+        p = p.stop()
+
+        if not p.is_null():
+            p = p.stop()
+            print(p)
 
         return network
 

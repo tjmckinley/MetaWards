@@ -1,7 +1,25 @@
 
 import time
 
-__all__ = ["Profiler"]
+__all__ = ["Profiler", "NullProfiler"]
+
+
+class NullProfiler:
+    """This is a null profiler that does nothing"""
+    def __init__(self, name:str = None, parent=None):
+        pass
+
+    def is_null(self) -> bool:
+        return True
+
+    def __str__(self):
+        return "No profiling data collected"
+
+    def start(self, name: str = None):
+        return self
+
+    def stop(self):
+        return self
 
 
 class Profiler:
@@ -16,6 +34,10 @@ class Profiler:
         self._start = None
         self._end = None
 
+    def is_null(self) -> bool:
+        """Return whether this is a null profiler"""
+        return False
+
     def _to_string(self):
         """Used to write the results of profiling as a report"""
         lines = []
@@ -27,7 +49,12 @@ class Profiler:
                 self._name = "Total time"
 
         if t:
-            lines.append("%s: %.3f ms" % (self._name,t))
+            if len(self._children) > 0:
+                lines.append("%s: %.3f ms (%.3f ms)" % (self._name, t,
+                                                        self.child_total()))
+            else:
+                lines.append("%s: %.3f ms" % (self._name, t))
+
         elif self._start is None:
             lines.append(f"{self._name}")
         else:
