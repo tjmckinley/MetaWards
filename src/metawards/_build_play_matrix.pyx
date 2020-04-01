@@ -70,10 +70,10 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
 
             nlinks += 1
 
-            #if from_id == 0 or to_id == 0:
-            #    raise ValueError(
-            #                f"Zero in link list: ${from_id}-${to_id}! "
-            #                f"Renumber files and start again")
+            if from_id == 0 or to_id == 0:
+                raise ValueError(
+                            f"Zero in link list: ${from_id}-${to_id}! "
+                            f"Renumber files and start again")
 
             if nodes_label[from_id] == -1:
                 nodes_label[from_id] = from_id

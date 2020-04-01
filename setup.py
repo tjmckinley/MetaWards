@@ -53,6 +53,8 @@ for e in extensions:
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
 
+os.environ['CFLAGS'] = '-O3 -march=native -Wall'
+
 if CYTHONIZE:
     compiler_directives = {"language_level": 3, "embedsignature": True}
     extensions = cythonize(extensions, compiler_directives=compiler_directives)
