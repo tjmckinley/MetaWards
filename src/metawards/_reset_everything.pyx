@@ -24,7 +24,8 @@ def reset_work_matrix(network: Network):
         else:
             links_suscept[i] = links_weight[i]
 
-
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def reset_play_matrix(network: Network):
     links = network.play
 
@@ -40,6 +41,8 @@ def reset_play_matrix(network: Network):
             links.weight[i] = links.suscept[i]
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def reset_play_susceptibles(network: Network):
     nodes = network.nodes
 
@@ -51,9 +54,7 @@ def reset_play_susceptibles(network: Network):
     for i in range(1, network.nnodes+1):  # 1-indexed
         if nodes_label[i] == -1:
             print(f"Missing a node at index {i}?")
-            # create a null node - need to check if this is the best thing
-            # to do
-            nodes[i] = Node()
+            # the data will already be initialised to 0
         else:
             nodes_play_suscept[i] = nodes_save_play_suscept[i]
 

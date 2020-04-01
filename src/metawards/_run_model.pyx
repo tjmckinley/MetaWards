@@ -7,10 +7,10 @@ from ._network import Network
 from ._parameters import Parameters
 from ._workspace import Workspace
 from ._population import Population
+from ._profiler import Profiler, NullProfiler
 
 from typing import List
 from array import array
-import time
 
 import os
 
@@ -65,17 +65,9 @@ def import_infection(network: Network, infections, play_infections,
     return total
 
 
-def print_timings(timings):
-    """Print out the timing information from timings"""
-    print("\nTIMING")
-    for timing in timings:
-        # times in nanoseconds - convert to ms
-        print(f"{timing[0]}: {timing[1]/1000000.0} ms")
-
-
 def iterate(network: Network, infections, play_infections,
             params: Parameters, rng, timestep: int,
-            population: int,
+            population: int, profiler: Profiler=None,
             is_dangerous=None,
             SELFISOLATE: bool = False,
             IMPORTS: bool = False):
@@ -89,7 +81,10 @@ def iterate(network: Network, infections, play_infections,
        If SELFISOLATE is True then you need to pass in
        is_dangerous, which should be an array("i", network.nnodes)
     """
-    _start_total = time.time_ns()
+    if profiler is None:
+        profiler = NullProfiler()
+
+    p = profiler.start("iterate")
 
     cdef double uv = params.UV
     cdef int ts = timestep
@@ -109,17 +104,15 @@ def iterate(network: Network, infections, play_infections,
     cdef double [::1] wards_day_foi = wards.day_foi
     cdef double [::1] wards_night_foi = wards.night_foi
 
-    timings = []
-
-    _start = time.time_ns()
+    p = p.start("setup")
     for i in range(1, network.nnodes+1):
         wards_day_foi[i] = 0.0
         wards_night_foi[i] = 0.0
-    _end = time.time_ns()
-    timings.append( ("SETUP", _end - _start) )
+
+    p = p.stop()
 
     if IMPORTS:
-        _start = time.time_ns()
+        p = p.start("imports")
         imported = import_infection(network=network, infections=infections,
                                     play_infections=play_infections,
                                     params=params, rng=rng,
@@ -127,9 +120,7 @@ def iterate(network: Network, infections, play_infections,
 
         print(f"Day: {timestep} Imports: expected {params.daily_imports} "
               f"actual {imported}")
-        _end = time.time_ns()
-        timings.append( ("IMPORTS", _end - _start) )
-
+        p = p.stop()
 
     cdef int N_INF_CLASSES = len(infections)
     cdef double scl_foi_uv = 0.0
@@ -177,6 +168,7 @@ def iterate(network: Network, infections, play_infections,
     if SELFISOLATE:
         is_dangerous_array = is_dangerous
 
+    p = p.start("loop_over_classes")
     for i in range(0, N_INF_CLASSES):
         contrib_foi = params.disease_params.contrib_foi[i]
         beta = params.disease_params.beta[i]
@@ -192,7 +184,7 @@ def iterate(network: Network, infections, play_infections,
         play_infections_i = play_infections[i]
 
         if contrib_foi > 0:
-            _start = time.time_ns()
+            p = p.start(f"work_{i}")
             for j in range(1, network.nlinks+1):
                 # deterministic movements (e.g. to work)
                 inf_ij = infections_i[j]
@@ -254,10 +246,9 @@ def iterate(network: Network, infections, play_infections,
 
                 # end of if inf_ij (are there any new infections)
             # end of infectious class loop
-            _end = time.time_ns()
-            timings.append( (f"work_{i}", _end - _start) )
+            p = p.stop()
 
-            _start = time.time_ns()
+            p = p.start(f"play_{i}")
             for j in range(1, network.nnodes+1):
                 # playmatrix loop FOI loop (random/unpredictable movements)
                 inf_ij = play_infections_i[j]
@@ -310,15 +301,15 @@ def iterate(network: Network, infections, play_infections,
                 # end of if inf_ij (there are new infections)
 
             # end of loop over all nodes
-            _end = time.time_ns()
-            timings.append( (f"play_{i}", _end - _start) )
+            p = p.stop()
         # end of params.disease_params.contrib_foi[i] > 0:
+    p = p.stop()
     # end of loop over all disease classes
 
     cdef int [::1] infections_i_plus_one, play_infections_i_plus_one
     cdef double disease_progress = 0.0
 
-    _start_recovery = time.time_ns()
+    p = p.start("recovery")
     for i in range(N_INF_CLASSES-2, -1, -1):  # loop down to 0
         # recovery, move through classes backwards
         infections_i = infections[i]
@@ -353,8 +344,7 @@ def iterate(network: Network, infections, play_infections,
             elif inf_ij != 0:
                 print(f"play_inf_ij problem {i} {j} {inf_ij}")
     # end of recovery loop
-    _end_recovery = time.time_ns()
-    timings.append(("recovery", _end_recovery-_start_recovery))
+    p = p.stop()
 
     cdef double length_day = params.length_day
     cdef double rate, inf_prob
@@ -364,7 +354,7 @@ def iterate(network: Network, infections, play_infections,
     infections_i = infections[i]
     play_infections_i = play_infections[i]
 
-    _start_fixed = time.time_ns()
+    p = p.start("fixed")
     for j in range(1, network.nlinks+1):
         # actual new infections for fixed movements
         inf_prob = 0
@@ -441,13 +431,12 @@ def iterate(network: Network, infections, play_infections,
                 links_suscept[j] -= l
         # end of wards.night_foi[ifrom] > 0  (nighttime infections)
     # end of loop over all network links
-    _end_fixed = time.time_ns()
-    timings.append(("fixed", _end_fixed-_start_fixed))
+    p = p.stop()
 
     cdef int suscept = 0
     cdef double dyn_play_at_home = params.dyn_play_at_home
 
-    _start_play = time.time_ns()
+    p = p.start("play")
     for j in range(1, network.nnodes+1):
         # playmatrix loop
         inf_prob = 0.0
@@ -547,17 +536,14 @@ def iterate(network: Network, infections, play_infections,
                 play_infections_i[j] += l
                 wards_play_suscept[j] -= l
     # end of loop over wards (nodes)
-    _end_play = time.time_ns()
-    timings.append(("play", _end_play-_start_play))
+    p = p.stop()
 
-    _end_total = time.time_ns()
-    timings.append(("TOTAL", _end_total - _start_total))
-    print_timings(timings)
+    p.stop()
 
 
 def iterate_weekend(network: Network, infections, play_infections,
                     params: Parameters, rng, timestep: int,
-                    population: int,
+                    population: int, profiler: Profiler = None,
                     is_dangerous = None, SELFISOLATE: bool = False,
                    ):
     """Iterate the model forward one timestep (day) using the supplied
@@ -622,8 +608,13 @@ def load_additional_seeds(filename: str):
 
 def extract_data_for_graphics(network: Network, infections,
                               play_infections, workspace: Workspace,
-                              FILE):
+                              FILE, profiler: Profiler = None):
     """Extract data that will be used for graphical analysis"""
+    if profiler is None:
+        profiler = NullProfiler()
+
+    p = profiler.start("extract_data_for_graphics")
+
     links = network.to_links
 
     cdef int N_INF_CLASSES = len(infections)
@@ -642,6 +633,8 @@ def extract_data_for_graphics(network: Network, infections,
     cdef int [::1] total_infections = workspace.total_infections
     cdef int [::1] prevalence = workspace.prevalence
     cdef int [::1] links_ifrom = links.ifrom
+
+    p = p.start("loop_over_n_inf_classes")
 
     for i in range(0, N_INF_CLASSES):
         infections_i = infections[i]
@@ -678,12 +671,15 @@ def extract_data_for_graphics(network: Network, infections,
 
     FILE.write("\n")
 
+    p = p.stop()
+    p.stop()
+
     return total
 
 def extract_data(network: Network, infections, play_infections,
                  timestep: int, files, workspace: Workspace,
                  population: Population, is_dangerous=None,
-                 SELFISOLATE: bool = False):
+                 profiler: Profiler=None, SELFISOLATE: bool = False):
     """Extract data for timestep 'timestep' from the network and
        infections and write this to the output files in 'files'
        (these must have been opened by 'open_files'). You need
@@ -693,6 +689,11 @@ def extract_data(network: Network, infections, play_infections,
        If SELFISOLATE is True then you need to pass in
        is_dangerous, which should be an array("i", network.nnodes)
     """
+    if profiler is None:
+        profiler = NullProfiler()
+
+    p = profiler.start("extract_data")
+
     links = network.to_links
     wards = network.nodes
 
@@ -749,6 +750,8 @@ def extract_data(network: Network, infections, play_infections,
 
     if SELFISOLATE:
         is_dangerous_array = is_dangerous
+
+    p = p.start("loop_over_classes")
 
     for i in range(0, N_INF_CLASSES):
         # do we need to initialise total_new_inf_wards and
@@ -810,6 +813,9 @@ def extract_data(network: Network, infections, play_infections,
         else:
             recovereds += inf_tot[i] + pinf_tot[i]
 
+    p = p.stop()
+
+    p = p.start("write_to_files")
     if total_new > 1:  # CHECK - this should be > 1 rather than > 0
         mean_x = <double>sum_x / <double>total_new
         mean_y = <double>sum_y / <double>total_new
@@ -832,6 +838,8 @@ def extract_data(network: Network, infections, play_infections,
     files[4].write("%d \n" % total)
     files[4].flush()
 
+    p = p.stop()
+
     print(f"S: {susceptibles}    ", end="")
     print(f"E: {latent}    ", end="")
     print(f"I: {total}    ", end="")
@@ -849,6 +857,8 @@ def extract_data(network: Network, infections, play_infections,
         if population.population != population.initial:
             print(f"DISAGREEMENT WITH POPULATION COUNT! {population.initial} "
                   f"versus {population.population}!")
+
+    p.stop()
 
     return total + latent
 
@@ -935,6 +945,7 @@ def run_model(network: Network,
               output_dir: str=".",
               population: int=57104043,
               nsteps: int=None,
+              profile: bool=True,
               MAXSIZE: int=10050,
               VACCINATE: bool = False,
               IMPORTS: bool = False,
@@ -945,6 +956,13 @@ def run_model(network: Network,
        completed (whichever happens first)
     """
 
+    if profile:
+        p = Profiler()
+    else:
+        p = NullProfiler()
+
+    p = p.start("run_model")
+
     params = network.params
 
     if params is None:
@@ -953,7 +971,9 @@ def run_model(network: Network,
     to_seed = network.to_seed
 
     # create a workspace in which to run the model
+    p = p.start("allocate workspace")
     workspace = Workspace(network=network, params=params)
+    p = p.stop()
 
     # create a population object to monitor the outbreak
     population = Population(initial=population)
@@ -973,6 +993,7 @@ def run_model(network: Network,
     EXPORT = open(os.path.join(output_dir, "ForMattData.dat"), "w")
 
     if VACCINATE:
+        p = p.start("allocate_vaccinate")
         trigger = 0
         null_int = size * [0]
         null_float = size * [0.0]
@@ -982,11 +1003,16 @@ def run_model(network: Network,
         risk_ra = array(float_t, null_float)
         sort_ra = array(int_t, null_int)
         VACF = open(os.path.join(output_dir, "Vaccinated.dat", "w"))
+        p = p.stop()
 
+    p = p.start("open_files")
     files = open_files(output_dir)
+    p = p.stop()
 
+    p = p.start("clear_all_infections")
     clear_all_infections(infections=infections,
                          play_infections=play_infections)
+    p = p.stop()
 
     if s < 0:
         print(f"Negative value of s? {s}")
@@ -997,6 +1023,7 @@ def run_model(network: Network,
     print(f"node_seed {to_seed}")
 
     if not IMPORTS:
+        p = p.start("seeding_imports")
         if s < 0:
             seed_all_wards(network=network,
                            play_infections=play_infections,
@@ -1007,15 +1034,18 @@ def run_model(network: Network,
                                    seed=to_seed,
                                    infections=infections,
                                    play_infections=play_infections)
+        p = p.stop()
 
     cdef int timestep = 0  # start timestep of the model
                            # (day since infection starts)
 
+    p = p.start("extract_data")
     cdef int infecteds = extract_data(network=network, infections=infections,
                                       play_infections=play_infections,
                                       timestep=timestep, files=files,
                                       workspace=workspace,
                                       population=population)
+    p = p.stop()
 
     cdef int day = 0
 
@@ -1023,40 +1053,47 @@ def run_model(network: Network,
         day = 1  # day number of the week, 1-5 = weekday, 6-7 = weekend
 
     if EXTRASEEDS:
+        p = p.start("load_additional_seeds")
         additional_seeds = load_additional_seeds(
                                 params.input_files.additional_seeding)
+        p = p.stop()
 
+    p = p.start("run_model_loop")
     while (infecteds != 0) or (timestep < 5):
-        _start_total = time.time_ns()
-        timings = []
+        if profile:
+            p2 = Profiler()
+        else:
+            p2 = NullProfiler()
+
+        p2 = p2.start(f"timing for iteration {timestep}")
+
         if EXTRASEEDS:
-            _start = time.time_ns()
+            p2 = p2.start("additional_seeds")
             infect_additional_seeds(network=network, params=params,
                                     infections=infections,
                                     play_infections=play_infections,
                                     additional_seeds=additional_seeds,
                                     timestep=timestep)
-            _end = time.time_ns()
-            timings.append(("additional seeds", _end - _start))
+            p2 = p2.stop()
 
         if WEEKENDS:
             if day > 5:
-                _start = time.time_ns()
+                p2 = p2.start("iterate_weekend")
                 iterate_weekend(network=network, infections=infections,
                                 play_infections=play_infections,
                                 params=params, rng=rng, timestep=timestep,
-                                population=population.initial)
-                _end = time.time_ns()
-                timings.append(("iterate weekend", _end-_start))
+                                population=population.initial,
+                                profiler=p2)
+                p2 = p2.stop()
                 print("weekend")
             else:
-                _start = time.time_ns()
+                p2 = p2.start("iterate")
                 iterate(network=network, infections=infections,
                         play_infections=play_infections,
                         params=params, rng=rng, timestep=timestep,
-                        population=population.initial)
-                _end = time.time_ns()
-                timings.append(("iterate", _end-_start))
+                        population=population.initial,
+                        profiler=p2)
+                p2 = p2.stop()
                 print("normal day")
 
             if day == 7:
@@ -1064,31 +1101,31 @@ def run_model(network: Network,
 
             day += 1
         else:
-            _start = time.time_ns()
+            p2 = p2.start("iterate")
             iterate(network=network, infections=infections,
                     play_infections=play_infections,
                     params=params, rng=rng, timestep=timestep,
-                    population=population.initial)
-            _end = time.time_ns()
-            timings.append(("iterate", _end-_start))
+                    population=population.initial,
+                    profiler=p2)
+            p2 = p2.stop()
 
         print(f"\n {timestep} {infecteds}")
 
-        _start = time.time_ns()
+        p2 = p2.start("extract_data")
         infecteds = extract_data(network=network, infections=infections,
                                  play_infections=play_infections,
                                  timestep=timestep, files=files,
                                  workspace=workspace,
-                                 population=population)
-        _end = time.time_ns()
-        timings.append(("extract_data", _end-_start))
+                                 population=population,
+                                 profiler=p2)
+        p2 = p2.stop()
 
-        _start = time.time_ns()
+        p2 = p2.start("extract_data_for_graphics")
         extract_data_for_graphics(network=network, infections=infections,
                                   play_infections=play_infections,
-                                  workspace=workspace, FILE=EXPORT)
-        _end = time.time_ns()
-        timings.append(("extract_for_graphcs", _end-_start))
+                                  workspace=workspace, FILE=EXPORT,
+                                  profiler=p2)
+        p2 = p2.stop()
 
         timestep += 1
 
@@ -1098,7 +1135,7 @@ def run_model(network: Network,
                 break
 
         if VACCINATE:
-            _start = time.time_ns()
+            p2 = p2.start("vaccinate")
             #vaccinate_wards(network=network, wards_ra=wards_ra,
             #                infections=infections,
             #                play_infections=play_infections,
@@ -1126,17 +1163,18 @@ def run_model(network: Network,
                         params.disease_params.contrib_foi[j] = 0.2
 
             VACF.write("%d %d\n" % (timestep, how_many_vaccinated(vac)))
-            _end = time.time_ns()
-            timings.append(("vaccinate", _end-_start))
+            p2 = p2.stop()
 
         # end of "IF VACCINATE"
+        p2 = p2.stop()
 
-        _end_total = time.time_ns()
-        timings.append(("TOTAL", _end_total - _start_total))
-        print("TOTAL ITERATION")
-        print_timings(timings)
+        print(f"\n{p2}\n")
+
     # end of while loop
 
+    p = p.stop()
+
+    p = p.start("closing_files")
     EXPORT.close()
 
     if VACCINATE:
@@ -1144,6 +1182,11 @@ def run_model(network: Network,
 
     for FILE in files:
         FILE.close()
+
+    p = p.stop()
+
+    if not p.is_null():
+        print(f"\nOVERALL MODEL TIMING\n{p}")
 
     print(f"Infection died ... Ending at time {timestep}")
 
