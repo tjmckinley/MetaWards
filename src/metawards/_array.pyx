@@ -62,10 +62,12 @@ def create_double_array(size: int, default: float=None):
     cdef int i
     cdef double d
 
+    cdef double [::1] view = dbl_array
+
     if default is not None:
         d = default
         for i in range(0,s):
-            dbl_array[i] = d
+            view[i] = d
 
     return dbl_array
 
@@ -81,9 +83,11 @@ def create_int_array(size: int, default: int=None):
 
     cdef int i, d
 
+    cdef int [::1] view = int_array
+
     if default is not None:
         d = default
         for i in range(0,s):
-            int_array[i] = d
+            view[i] = d
 
     return int_array
