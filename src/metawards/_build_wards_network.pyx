@@ -76,7 +76,7 @@ def build_wards_network(params: Parameters,
 
     try:
         while not feof(cfile):
-            fscanf(cfile,"%d %d %lf\n",&from_id,&to_id,&weight)
+            fscanf(cfile, "%d %d %lf\n", &from_id, &to_id, &weight)
 
             iweight = <int>weight
 
@@ -140,7 +140,7 @@ def build_wards_network(params: Parameters,
 
     from ._utils import build_play_matrix
     p = p.start("build_play_matrix")
-    build_play_matrix(network)
+    build_play_matrix(network=network, profiler=p)
     p = p.stop()
 
     print(f"Number of nodes after build play equals {network.nnodes}")
