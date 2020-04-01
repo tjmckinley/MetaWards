@@ -45,6 +45,12 @@ extensions = [
     Extension("metawards._array", ["src/metawards/_array.pyx"]),
 ]
 
+# disable bounds checking and wraparound globally as the code already
+# checks for this and doesn't use negative indexing. It can be 
+# turned on as needed in the modules
+for e in extensions:
+    e.cython_directives = {"boundscheck": False, "wraparound": False}
+
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
 
 if CYTHONIZE:

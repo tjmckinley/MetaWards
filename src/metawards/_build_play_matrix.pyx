@@ -7,7 +7,6 @@ from ._profiler import Profiler, NullProfiler
 
 __all__ = ["build_play_matrix"]
 
-
 def build_play_matrix(network: Network, profiler: Profiler=None):
     """Build the play matrix for the passed network"""
     if profiler is None:

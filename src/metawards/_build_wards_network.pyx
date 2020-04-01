@@ -10,7 +10,6 @@ from ._profiler import Profiler, NullProfiler
 
 __all__ = ["build_wards_network"]
 
-
 def build_wards_network(params: Parameters,
                         profiler: Profiler = None,
                         max_nodes:int = 10050,
