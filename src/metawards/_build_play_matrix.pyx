@@ -119,22 +119,26 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
     cdef double [:] nodes_save_play_suscept = nodes.save_play_suscept
 
     p = p.start("read_play_size_file")
+
+    # need to use C file reading as too slow in python
+    filename = params.input_files.play_size.encode("UTF-8")
+    fname = filename
+    cfile = fopen(fname, "r")
+
+    if cfile == NULL:
+        raise FileNotFoundError(f"No such file or directory: {filename}")
+
     try:
-        with open(params.input_files.play_size, "r") as FILE:
-            line = FILE.readline()
+        while not feof(cfile):
+            fscanf(cfile, "%d %d\n", &i1, &i2)
 
-            while line:
-                words = line.split()
-                i1 = int(words[0])
-                i2 = int(words[1])
+            nodes_play_suscept[i1] = i2
+            nodes_denominator_p[i1] = i2
+            nodes_save_play_suscept[i1] = i2
 
-                nodes_play_suscept[i1] = i2
-                nodes_denominator_p[i1] = i2
-                nodes_save_play_suscept[i1] = i2
-
-                line = FILE.readline()
-
+        fclose(cfile)
     except Exception as e:
+        fclose(cfile)
         raise ValueError(f"{params.input_files.play_size} is corrupted or "
                          f"unreadable? Error = {e.__class__}: {e}")
 
