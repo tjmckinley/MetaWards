@@ -129,8 +129,8 @@ def iterate(network: Network, infections, play_infections,
 
         # number of people staying gets bigger as
         # PlayAtHome increases
-        play_at_home_scl = <float>(params.dyn_play_at_home *
-                                   too_ill_to_move)
+        play_at_home_scl = <double>(params.dyn_play_at_home *
+                                    too_ill_to_move)
 
         infections_i = infections[i]
         play_infections_i = play_infections[i]
@@ -151,7 +151,7 @@ def iterate(network: Network, infections, play_infections,
 
                     if links_distance[j] < cutoff:
                         if SELFISOLATE:
-                            frac = <float>(is_dangerous_array[ito]) / <float>(
+                            frac = <double>(is_dangerous_array[ito]) / <double>(
                                      wards_denominator_d[ito] +
                                      wards_denominator_p[ito])
 
@@ -232,7 +232,7 @@ def iterate(network: Network, infections, play_infections,
                             playmove = _ran_binomial(r, prob_scaled, moving)
 
                             if SELFISOLATE:
-                                frac = is_dangerous_array[ito] / <float>(
+                                frac = is_dangerous_array[ito] / <double>(
                                                 wards_denominator_d[ito] +
                                                 wards_denominator_p[ito])
 
@@ -322,23 +322,23 @@ def iterate(network: Network, infections, play_infections,
             if wards_day_foi[ito] > 0:
                 # daytime infection of link j
                 if SELFISOLATE:
-                    frac = is_dangerous_array[ito] / <float>(
+                    frac = is_dangerous_array[ito] / <double>(
                                             wards_denominator_d[ito] +
                                             wards_denominator_p[ito])
 
                     if frac > thresh:
                         inf_prob = 0.0
                     else:
-                        rate = <float>(length_day *
+                        rate = <double>(length_day *
                                        wards_day_foi[ito]) /   \
-                               <float>(wards_denominator_d[ito] +
+                               <double>(wards_denominator_d[ito] +
                                        wards_denominator_pd[ito])
 
                         inf_prob = rate_to_prob(rate)
                 else:
-                    rate = <float>(length_day *
+                    rate = <double>(length_day *
                                    wards_day_foi[ito]) /   \
-                           <float>(wards_denominator_d[ito] +
+                           <double>(wards_denominator_d[ito] +
                                    wards_denominator_pd[ito])
 
                     inf_prob = rate_to_prob(rate)
@@ -347,9 +347,9 @@ def iterate(network: Network, infections, play_infections,
         # end of if distance < cutoff
         elif wards_day_foi[ifrom] > 0:
             # if distance is too large then infect in home ward with day FOI
-            rate = <float>(length_day * wards_day_foi[ifrom]) /  \
-                   <float>(wards_denominator_d[ifrom] +
-                           wards_denominator_pd[ifrom])
+            rate = <double>(length_day * wards_day_foi[ifrom]) /  \
+                   <double>(wards_denominator_d[ifrom] +
+                            wards_denominator_pd[ifrom])
 
             inf_prob = rate_to_prob(rate)
 
@@ -366,8 +366,8 @@ def iterate(network: Network, infections, play_infections,
         if wards_night_foi[ifrom] > 0:
             # nighttime infection of workers
             rate = (1.0 - length_day) * (wards_night_foi[ifrom]) /  \
-                   <float>(wards_denominator_n[ifrom] +
-                           wards_denominator_p[ifrom])
+                   <double>(wards_denominator_n[ifrom] +
+                            wards_denominator_p[ifrom])
 
             inf_prob = rate_to_prob(rate)
 
@@ -412,11 +412,11 @@ def iterate(network: Network, infections, play_infections,
 
                 if wards_day_foi[ito] > 0.0:
                     weight = plinks_weight[k]
-                    prob_scaled = <float>weight / (1.0-cumulative_prob)
+                    prob_scaled = weight / (1.0-cumulative_prob)
                     cumulative_prob += weight
 
                     if SELFISOLATE:
-                        frac = <float>(is_dangerous_array[ito]) / <float>(
+                        frac = <double>(is_dangerous_array[ito]) / <double>(
                                         wards_denominator_p[ito] +
                                         wards_denominator_d[ito])
 
@@ -425,16 +425,16 @@ def iterate(network: Network, infections, play_infections,
                             play_move = 0
                         else:
                             play_move = _ran_binomial(r, prob_scaled, moving)
-                            frac = <float>(length_day *
-                                           wards_day_foi[ito]) / <float>(
+                            frac = <double>(length_day *
+                                           wards_day_foi[ito]) / <double>(
                                              wards_denominator_pd[ito] +
                                              wards_denominator_d[ito])
 
                             inf_prob = rate_to_prob(frac)
                     else:
                         play_move = _ran_binomial(r, prob_scaled, moving)
-                        frac = <float>(length_day *
-                                        wards_day_foi[ito]) / <float>(
+                        frac = <double>(length_day *
+                                        wards_day_foi[ito]) / <double>(
                                             wards_denominator_pd[ito] +
                                             wards_denominator_d[ito])
 
@@ -458,7 +458,7 @@ def iterate(network: Network, infections, play_infections,
 
         if (staying + moving) > 0:
             # infect people staying at home
-            frac = <float>(length_day * wards_day_foi[j]) / <float>(
+            frac = <double>(length_day * wards_day_foi[j]) / <double>(
                            wards_denominator_pd[j] +
                            wards_denominator_d[j])
 
@@ -475,7 +475,7 @@ def iterate(network: Network, infections, play_infections,
         # nighttime infections of play movements
         night_foi = wards_night_foi[j]
         if night_foi > 0.0:
-            frac = <float>((1.0 - length_day) * night_foi) / <float>(
+            frac = <double>((1.0 - length_day) * night_foi) / <double>(
                             wards_denominator_n[j] + wards_denominator_p[j])
 
             inf_prob = rate_to_prob(frac)

@@ -199,6 +199,7 @@ class Network:
                   seed: int = None,
                   output_dir: str = "tmp",
                   nsteps: int = None,
+                  profile: bool = True,
                   s: int = None):
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
@@ -229,7 +230,7 @@ class Network:
                                infections=infections,
                                play_infections=play_infections,
                                rng=rng, s=s, output_dir=output_dir,
-                               nsteps=nsteps)
+                               nsteps=nsteps, profile=profile)
 
         # do we want to save infections and play_infections for inspection?
 

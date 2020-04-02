@@ -248,7 +248,8 @@ def run_model(network: Network,
         # end of "IF VACCINATE"
         p2 = p2.stop()
 
-        print(f"\n{p2}\n")
+        if not p2.is_null():
+            print(f"\n{p2}\n")
 
     # end of while loop
 
