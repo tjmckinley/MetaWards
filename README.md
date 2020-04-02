@@ -1,5 +1,7 @@
 # MetaWards
 
+![](https://github.com/chryswoods/MetaWards/workflows/Build.svg)
+
 This is a Python port of the [MetaWards](https://github.com/ldanon/MetaWards)
 package originally written by Leon Danon. This is currently a work in progress
 and is not intended yet for production use. The port is kept in sync with
