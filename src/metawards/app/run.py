@@ -58,6 +58,12 @@ def cli():
                         help="Path to the directory in which to place all "
                              "output files (default 'output')")
 
+    parser.add_argument('--profile', action="store_true",
+                        default=True, help="Enable profiling of the code")
+
+    parser.add_argument('--no-profile', action="store_true",
+                        default=False, help="Disable profiling of the code")
+
     args = parser.parse_args()
 
     if args.input is None:
@@ -77,6 +83,12 @@ def cli():
               f"local directory containing the repository, e.g. the "
               f"default is $HOME/GitHub/MetaWardsData")
         raise e
+
+    # should we profile the code? (default yes, as it doesn't cost anything)
+    profile = args.profile
+
+    if args.no_profile:
+        profile = False
 
     # load the disease and starting-point input files
     params.set_disease(args.disease)
@@ -99,12 +111,15 @@ def cli():
     population = Population(initial=args.population)
 
     print("Building the network...")
-    network = Network.build(params=params, calculate_distances=True)
+    network = Network.build(params=params, calculate_distances=True,
+                            profile=profile)
 
     print("Run the model...")
     population = network.run(population=population, seed=args.seed,
                              s=-1, nsteps=args.nsteps,
-                             output_dir=args.output)
+                             output_dir=args.output,
+                             profile=profile
+                             )
 
     print("End of the run")
 
