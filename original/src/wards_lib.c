@@ -194,8 +194,6 @@ network *BuildWardsNetworkDistance(parameters *par)
 	}
 
 	double total_distance = 0;
-	double distance, distance2;
-	int nwrong = 0;
 
 	for(i=0;i<net->nlinks;i++){
 		x1=wards[links[i].ifrom].x;
@@ -204,30 +202,9 @@ network *BuildWardsNetworkDistance(parameters *par)
 		x2=wards[links[i].ito].x;
 		y2=wards[links[i].ito].y;
 
-		distance = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 		total_distance += sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 
 		links[i].distance=plinks[i].distance=sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
-
-		if (i >= 0 && i < net->plinks){
-			if (plinks[i].ifrom != links[i].ifrom || plinks[i].ito != links[i].ito)
-			{
-				x1 = wards[plinks[i].ifrom].x;
-				y1 = wards[plinks[i].ifrom].y;
-				x2 = wards[plinks[i].ito].x;
-				y2 = wards[plinks[i].ito].y;
-
-				distance2 = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
-
-				if (nwrong < 10){
-					printf("%d %d %d %d %d\n", i, links[i].ifrom, plinks[i].ifrom,
-												links[i].ito, plinks[i].ito);
-					printf("%f  %f\n", distance, distance2);
-					nwrong += 1;
-				}
-			}
-		}
-
 #ifdef WEEKENDS
 		welinks[i].distance=links[i].distance;
 #endif
@@ -1647,33 +1624,33 @@ parameters *InitialiseParameters(){
 	json_object_object_get_ex(parsed_json, "initial_inf", &initial_inf_json); /* e.g. 5 */
 	par->initial_inf = json_object_get_int(initial_inf_json);
 	json_object_object_get_ex(parsed_json, "length_day", &length_day); /* e.g. 0.7 */
-	par->LengthDay = json_object_get_int(length_day);
+	par->LengthDay = json_object_get_double(length_day);
 	json_object_object_get_ex(parsed_json, "plength_day", &plength_day); /* e.g. 0.5 */
-	par->PLengthDay= json_object_get_int(plength_day);
+	par->PLengthDay= json_object_get_double(plength_day);
 	json_object_object_get_ex(parsed_json, "dyn_dist_cutoff", &dyn_dist_cutoff); /* e.g. 10000000 */
-	par->DynDistCutoff = json_object_get_int(dyn_dist_cutoff);
+	par->DynDistCutoff = json_object_get_double(dyn_dist_cutoff);
 	json_object_object_get_ex(parsed_json, "data_dist_cutoff", &data_dist_cutoff); /* e.g. 10000000 */
-	par->DataDistCutoff = json_object_get_int(data_dist_cutoff);
+	par->DataDistCutoff = json_object_get_double(data_dist_cutoff);
 	json_object_object_get_ex(parsed_json, "work_to_play", &work_to_play); /* e.g. 0.0 */
-	par->WorkToPlay = json_object_get_int(work_to_play);
+	par->WorkToPlay = json_object_get_double(work_to_play);
 	json_object_object_get_ex(parsed_json, "play_to_work", &play_to_work); /* e.g. 0.0 */
-	par->PlayToWork = json_object_get_int(play_to_work);
+	par->PlayToWork = json_object_get_double(play_to_work);
 	json_object_object_get_ex(parsed_json, "static_play_at_home", &static_play_at_home); /* e.g. 0 */
-	par->StaticPlayAtHome = json_object_get_int(static_play_at_home);
+	par->StaticPlayAtHome = json_object_get_double(static_play_at_home);
 	json_object_object_get_ex(parsed_json, "dyn_play_at_home", &dyn_play_at_home); /* e.g. 0 */
-	par->DynPlayAtHome = json_object_get_int(dyn_play_at_home);
+	par->DynPlayAtHome = json_object_get_double(dyn_play_at_home);
 	json_object_object_get_ex(parsed_json, "local_vaccination_threshold", &local_vaccination_threshold); /* e.g. 4 */
 	par->LocalVaccinationThresh = json_object_get_int(local_vaccination_threshold);
 	json_object_object_get_ex(parsed_json, "global_detection_threshold", &global_detection_threshold); /* e.g. 4 */
 	par->GlobalDetectionThresh = json_object_get_int(global_detection_threshold);
 	json_object_object_get_ex(parsed_json, "neighbour_weight_threshold", &neighbour_weight_threshold); /* e.g. 0.0 */
-	par->NeighbourWeightThreshold = json_object_get_int(neighbour_weight_threshold);
+	par->NeighbourWeightThreshold = json_object_get_double(neighbour_weight_threshold);
 	json_object_object_get_ex(parsed_json, "daily_ward_vaccination_capacity", &daily_ward_vaccination_capacity); /* e.g. 5 */
 	par->DailyWardVaccinationCapacity = json_object_get_int(daily_ward_vaccination_capacity);
 	json_object_object_get_ex(parsed_json, "daily_imports", &daily_imports); /* e.g.  */
-	par->DailyImports = json_object_get_int(daily_imports);
+	par->DailyImports = json_object_get_double(daily_imports);
 	json_object_object_get_ex(parsed_json, "UV", &UV); /* e.g. 0.0 */
-	par->UV = json_object_get_int(UV);
+	par->UV = json_object_get_double(UV);
 
 	for(i=0;i<N_INF_CLASSES;i++){
 		par->beta[i]=beta[i];
