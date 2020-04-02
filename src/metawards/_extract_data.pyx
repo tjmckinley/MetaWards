@@ -32,8 +32,8 @@ def extract_data(network: Network, infections, play_infections,
     links = network.to_links
     wards = network.nodes
 
-    N_INF_CLASSES = len(infections)
-    MAXSIZE = network.nnodes + 1
+    cdef int N_INF_CLASSES = len(infections)
+    cdef int MAXSIZE = network.nnodes + 1
 
     assert len(infections) == len(play_infections)
 
@@ -60,6 +60,7 @@ def extract_data(network: Network, infections, play_infections,
     cdef int susceptibles = 0
     cdef int latent = 0
 
+    cdef double x, y
     cdef double sum_x = 0.0
     cdef double sum_y = 0.0
     cdef double sum_x2 = 0.0
@@ -85,8 +86,11 @@ def extract_data(network: Network, infections, play_infections,
 
     cdef int pinf = 0
 
+    cdef int cSELFISOLATE = 0
+
     if SELFISOLATE:
         is_dangerous_array = is_dangerous
+        cSELFISOLATE = 1
 
     p = p.start("loop_over_classes")
 
@@ -106,9 +110,9 @@ def extract_data(network: Network, infections, play_infections,
                 total_new_inf_ward[links_ifrom[j]] += infections_i[j]
 
             if infections_i[j] != 0:
-                if SELFISOLATE:
+                if cSELFISOLATE:
                     if (i > 4) and (i < 10):
-                        is_dangerous[links_ito[j]] += infections_i[j]
+                        is_dangerous_array[links_ito[j]] += infections_i[j]
 
                 inf_tot[i] += infections_i[j]
                 total_inf_ward[links_ifrom[j]] += infections_i[j]
@@ -134,7 +138,7 @@ def extract_data(network: Network, infections, play_infections,
                 pinf_tot[i] += pinf
                 total_inf_ward[j] += pinf
 
-                if SELFISOLATE:
+                if cSELFISOLATE:
                     if (i > 4) and (i < 10):
                         is_dangerous_array[i] += pinf
 
@@ -156,11 +160,11 @@ def extract_data(network: Network, infections, play_infections,
 
     p = p.start("write_to_files")
     if total_new > 1:  # CHECK - this should be > 1 rather than > 0
-        mean_x = <double>sum_x / <double>total_new
-        mean_y = <double>sum_y / <double>total_new
+        mean_x = sum_x / total_new
+        mean_y = sum_y / total_new
 
-        var_x = <double>(sum_x2 - sum_x*mean_x) / <double>(total_new - 1)
-        var_y = <double>(sum_y2 - sum_y*mean_y) / <double>(total_new - 1)
+        var_x = (sum_x2 - sum_x*mean_x) / (total_new - 1)
+        var_y = (sum_y2 - sum_y*mean_y) / (total_new - 1)
 
         dispersal = sqrt(var_x + var_y)
         files[2].write("%d %f %f\n" % (timestep, mean_x, mean_y))
