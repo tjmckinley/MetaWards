@@ -44,11 +44,16 @@ extensions = [
     Extension("metawards._fill_in_gaps", ["src/metawards/_fill_in_gaps.pyx"]),
     Extension("metawards._build_play_matrix", ["src/metawards/_build_play_matrix.pyx"]),
     Extension("metawards._array", ["src/metawards/_array.pyx"]),
+    Extension("metawards._iterate", ["src/metawards/_iterate.pyx"]),
+    Extension("metawards._iterate_weekend", ["src/metawards/_iterate_weekend.pyx"]),
+    Extension("metawards._extract_data", ["src/metawards/_extract_data.pyx"]),
+    Extension("metawards._extract_data_for_graphics", ["src/metawards/_extract_data_for_graphics.pyx"]),
+    Extension("metawards._import_infection", ["src/metawards/_import_infection.pyx"]),
 ]
 
 # disable bounds checking and wraparound globally as the code already
 # checks for this and doesn't use negative indexing. It can be 
-# turned on as needed in the modules
+# turned on as needed in the modules
 for e in extensions:
     e.cython_directives = {"boundscheck": False, "wraparound": False}
 

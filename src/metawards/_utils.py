@@ -8,6 +8,7 @@ top-level functions and classes
 
 from ._initialise_infections import *
 from ._read_done_file import *
+from ._ran_binomial import *
 
 # pyx imports
 from ._build_wards_network import *
@@ -22,3 +23,6 @@ from ._build_play_matrix import *
 from ._workspace import *
 from ._run_model import *
 from ._array import *
+from ._iterate import *
+from ._iterate_weekend import *
+from ._import_infection import *

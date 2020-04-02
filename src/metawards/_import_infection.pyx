@@ -1,0 +1,37 @@
+
+from ._network import Network
+from ._parameters import Parameters
+from ._ran_binomial import ran_binomial
+
+__all__ = ["import_infection"]
+
+
+def import_infection(network: Network, infections, play_infections,
+                     params: Parameters, rng,
+                     population: int):
+
+    links = network.to_links
+    wards = network.nodes
+
+    frac = float(params.daily_imports) / float(population)
+
+    total = 0
+
+    for i in range(0, network.nnodes+1):
+        to_seed = ran_binomial(rng, frac, int(wards.play_suscept[i]))
+
+        if to_seed > 0:
+            wards.play_suscept[i] -= to_seed
+            play_infections[0][i] += to_seed
+            total += to_seed
+
+    for i in range(0, network.nlinks+1):
+        # workers
+        to_seed = ran_binomial(rng, frac, int(links.suscept[i]))
+
+        if to_seed > 0:
+            links.suscept[i] -= to_seed
+            infections[0][i] += to_seed
+            total += to_seed
+
+    return total

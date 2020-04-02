@@ -42,8 +42,8 @@ def get_config():
     cfg.VCS = "git"
     cfg.style = "pep440"
     cfg.tag_prefix = ""
-    cfg.parentdir_prefix = "BioSimSpace-"
-    cfg.versionfile_source = "BioSimSpace/_version.py"
+    cfg.parentdir_prefix = "metawards-"
+    cfg.versionfile_source = "metawards/_version.py"
     cfg.verbose = False
     return cfg
 

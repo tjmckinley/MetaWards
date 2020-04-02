@@ -6,6 +6,7 @@ from ._parameters import Parameters
 from ._nodes import Nodes
 from ._links import Links
 from ._population import Population
+from ._ran_binomial import seed_ran_binomial
 
 __all__ = ["Network"]
 
@@ -212,16 +213,8 @@ class Network:
            s is used to select the 'to_seed' entry to seed
            the nodes
         """
-        from pygsl import rng as gsl_rng
-
-        rng = gsl_rng.rng()
-
-        if seed is None:
-            import random
-            seed = random.randint(10000, 99999999)
-
-        print(f"Using random number seed: {seed}")
-        rng.set(seed)
+        # Create the random number generator
+        rng = seed_ran_binomial(seed=seed)
 
         # Create space to hold the results of the simulation
         print("Initialise infections...")
@@ -229,13 +222,6 @@ class Network:
 
         print("Initialise play infections...")
         play_infections = self.initialise_play_infections()
-
-        # test seeding of the random number generator by drawing and printing
-        # 5 random numbers - this is temporary, and only used to
-        # facilitate comparison to the original C code
-        for i in range(1,6):
-            r = rng.binomial(0.5, 100)
-            print(f"random number {i} equals {r}")
 
         from ._utils import run_model
         population = run_model(network=self,
