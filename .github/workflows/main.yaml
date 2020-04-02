@@ -2,9 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [master, devel]
-  pull_request:
-    branches: [master, devel]
+    branches: [feature-actions]
 
 jobs:
   build:
@@ -36,7 +34,7 @@ jobs:
         if: matrix.python-version == 3.8
       - name: Build documentation
         working-directory: ./doc
-        run: sphinx-build make html
+        run: make html
         if: matrix.python-version == 3.8
       - name: Checkout gh-pages branch
         uses: actions/checkout@v2
@@ -46,13 +44,14 @@ jobs:
         if: matrix.python-version == 3.8
       - name: Update website files
         working-directory: ./gh-pages/docs
-        run: cp ${{ github.workspace }}/doc/build/html/* .
+        run: cp -r ${{ github.workspace }}/doc/build/html/* .
         if: matrix.python-version == 3.8
       - name: Commit website changes
         working-directory: ./gh-pages
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git add docs
           git commit -a -m "Update webstite."
         if: matrix.python-version == 3.8
       - name: Push changes
