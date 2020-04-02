@@ -83,6 +83,8 @@ def extract_data(network: Network, infections, play_infections,
 
     cdef int [::1] is_dangerous_array
 
+    cdef int pinf = 0
+
     if SELFISOLATE:
         is_dangerous_array = is_dangerous
 
@@ -91,6 +93,9 @@ def extract_data(network: Network, infections, play_infections,
     for i in range(0, N_INF_CLASSES):
         # do we need to initialise total_new_inf_wards and
         # total_inf_wards to 0?
+        n_inf_wards[i] = 0
+        inf_tot[i] = 0
+        pinf_tot[i] = 0
 
         infections_i = infections[i]
         play_infections_i = play_infections[i]
@@ -125,7 +130,6 @@ def extract_data(network: Network, infections, play_infections,
                     total_new += newinf
 
             if play_infections_i[j] > 0:
-                #print(f"pinf[{i}][{j}] > 0: {play_infections[i][j]}")
                 pinf = play_infections_i[j]
                 pinf_tot[i] += pinf
                 total_inf_ward[j] += pinf
