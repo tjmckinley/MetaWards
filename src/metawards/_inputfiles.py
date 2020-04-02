@@ -35,6 +35,8 @@ class InputFiles:
     _authors: str = None             # Author(s) of this data
     _contacts: str = None            # Contact(s) for this data
     _references: str = None          # References for this data
+    _repository: str = None          # GitHub repository for this data
+    _repository_version: str = None  # Git version of the data
 
     def model_name(self):
         """Return the name of this model"""
@@ -54,7 +56,9 @@ class InputFiles:
                f"root directory {self._model_path}\n" \
                f"author(s): {self._authors}\n" \
                f"contact(s): {self._contacts}\n" \
-               f"references(s): {self._references}\n\n" \
+               f"references(s): {self._references}\n" \
+               f"repository: {self._repository}\n" \
+               f"repository_version: {self._repository_version}\n\n" \
                f"work = {self.work}\n" \
                f"play = {self.play}\n" \
                f"identifier = {self.identifier}\n" \
@@ -105,6 +109,7 @@ class InputFiles:
            for using the directory that contains that file
            as a base
         """
+        repository_version = None
 
         if filename is None:
             if repository is None:
@@ -112,6 +117,8 @@ class InputFiles:
                 if repository is None:
                     repository = _default_model_path
 
+            from ._parameters import get_repository_version
+            repository_version = get_repository_version(repository)
             filename = os.path.join(repository, folder,
                                     model, description)
 
@@ -151,7 +158,9 @@ class InputFiles:
                            _model_version=files["version"],
                            _references=files["reference(s)"],
                            _authors=files["author(s)"],
-                           _contacts=files["contact(s)"])
+                           _contacts=files["contact(s)"],
+                           _repository=repository,
+                           _repository_version=repository_version)
 
         model._localise()
 
