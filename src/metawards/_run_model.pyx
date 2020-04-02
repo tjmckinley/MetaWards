@@ -265,6 +265,7 @@ def run_model(network: Network,
         FILE.close()
 
     p = p.stop()
+    p.stop()
 
     if not p.is_null():
         print(f"\nOVERALL MODEL TIMING\n{p}")
