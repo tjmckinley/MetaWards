@@ -193,9 +193,9 @@ def extract_data(network: Network, infections, play_infections,
         population.latent = latent
         population.n_inf_wards = n_inf_wards[0]
 
-        if population.population != population.initial:
-            print(f"DISAGREEMENT WITH POPULATION COUNT! {population.initial} "
-                  f"versus {population.population}!")
+        #if population.population != population.initial:
+        #    print(f"DISAGREEMENT WITH POPULATION COUNT! {population.initial} "
+        #          f"versus {population.population}!")
 
     p.stop()
 

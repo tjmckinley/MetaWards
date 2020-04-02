@@ -91,7 +91,7 @@ def iterate(network: Network, infections, play_infections,
     cdef int [::1] links_ito = links.ito
     cdef int ifrom = 0
     cdef int ito = 0
-    cdef int staying, moving, play_move
+    cdef int staying, moving, play_move, end_p
     cdef double [::1] links_distance = links.distance
     cdef double frac = 0.0
     cdef double cumulative_prob, prob_scaled
@@ -150,15 +150,15 @@ def iterate(network: Network, infections, play_infections,
                     ifrom = links_ifrom[j]
                     ito = links_ito[j]
 
-                    if inf_ij > <int>(weight):
+                    if inf_ij > weight:
                         print(f"inf[{i}][{j}] {inf_ij} > links[j].weight "
                               f"{weight}")
 
                     if links_distance[j] < cutoff:
                         if cSELFISOLATE:
-                            frac = <double>(is_dangerous_array[ito]) / <double>(
-                                     wards_denominator_d[ito] +
-                                     wards_denominator_p[ito])
+                            frac = is_dangerous_array[ito] / (
+                                                wards_denominator_d[ito] +
+                                                wards_denominator_p[ito])
 
                             if frac > thresh:
                                 staying = infections_i[j]
@@ -237,7 +237,7 @@ def iterate(network: Network, infections, play_infections,
                             play_move = _ran_binomial(r, prob_scaled, moving)
 
                             if cSELFISOLATE:
-                                frac = is_dangerous_array[ito] / <double>(
+                                frac = is_dangerous_array[ito] / (
                                                 wards_denominator_d[ito] +
                                                 wards_denominator_p[ito])
 
@@ -428,18 +428,16 @@ def iterate(network: Network, infections, play_infections,
                             play_move = 0
                         else:
                             play_move = _ran_binomial(r, prob_scaled, moving)
-                            frac = <double>(length_day *
-                                           wards_day_foi[ito]) / <double>(
-                                             wards_denominator_pd[ito] +
-                                             wards_denominator_d[ito])
+                            frac = (length_day * wards_day_foi[ito]) / (
+                                                 wards_denominator_pd[ito] +
+                                                 wards_denominator_d[ito])
 
                             inf_prob = rate_to_prob(frac)
                     else:
                         play_move = _ran_binomial(r, prob_scaled, moving)
-                        frac = <double>(length_day *
-                                        wards_day_foi[ito]) / <double>(
-                                            wards_denominator_pd[ito] +
-                                            wards_denominator_d[ito])
+                        frac = (length_day * wards_day_foi[ito]) / (
+                                                 wards_denominator_pd[ito] +
+                                                 wards_denominator_d[ito])
 
                         inf_prob = rate_to_prob(frac)
 
@@ -461,9 +459,9 @@ def iterate(network: Network, infections, play_infections,
 
         if (staying + moving) > 0:
             # infect people staying at home
-            frac = <double>(length_day * wards_day_foi[j]) / <double>(
-                           wards_denominator_pd[j] +
-                           wards_denominator_d[j])
+            frac = (length_day * wards_day_foi[j]) / (
+                                        wards_denominator_pd[j] +
+                                        wards_denominator_d[j])
 
             inf_prob = rate_to_prob(frac)
 
@@ -478,7 +476,7 @@ def iterate(network: Network, infections, play_infections,
         # nighttime infections of play movements
         night_foi = wards_night_foi[j]
         if night_foi > 0.0:
-            frac = <double>((1.0 - length_day) * night_foi) / <double>(
+            frac = ((1.0 - length_day) * night_foi) / (
                             wards_denominator_n[j] + wards_denominator_p[j])
 
             inf_prob = rate_to_prob(frac)
