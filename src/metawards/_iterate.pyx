@@ -6,8 +6,9 @@ from  ._rate_to_prob cimport rate_to_prob
 from ._network import Network
 from ._parameters import Parameters
 from ._profiler import Profiler, NullProfiler
-from ._ran_binomial import ran_binomial
 from ._import_infection import import_infection
+
+from ._ran_binomial cimport _ran_binomial, _get_gsl_ptr, gsl_rng
 
 __all__ = ["iterate"]
 
@@ -34,6 +35,8 @@ def iterate(network: Network, infections, play_infections,
         profiler = NullProfiler()
 
     p = profiler.start("iterate")
+
+    cdef gsl_rng* r = _get_gsl_ptr(rng)
 
     cdef double uv = params.UV
     cdef int ts = timestep
@@ -156,14 +159,14 @@ def iterate(network: Network, infections, play_infections,
                                 staying = infections_i[j]
                             else:
                                 # number staying - this is G_ij
-                                staying = ran_binomial(rng,
-                                                       too_ill_to_move,
-                                                       inf_ij)
+                                staying = _ran_binomial(r,
+                                                        too_ill_to_move,
+                                                        inf_ij)
                         else:
                             # number staying - this is G_ij
-                            staying = ran_binomial(rng,
-                                                   too_ill_to_move,
-                                                   inf_ij)
+                            staying = _ran_binomial(r,
+                                                    too_ill_to_move,
+                                                    inf_ij)
 
                         if staying < 0:
                             print(f"staying < 0")
@@ -204,7 +207,7 @@ def iterate(network: Network, infections, play_infections,
                 if inf_ij > 0:
                     wards_night_foi[j] += inf_ij * scl_foi_uv
 
-                    staying = ran_binomial(rng, play_at_home_scl, inf_ij)
+                    staying = _ran_binomial(r, play_at_home_scl, inf_ij)
 
                     if staying < 0:
                         print(f"staying < 0")
@@ -226,7 +229,7 @@ def iterate(network: Network, infections, play_infections,
                             prob_scaled = weight / (1.0 - cumulative_prob)
                             cumulative_prob += weight
 
-                            playmove = ran_binomial(rng, prob_scaled, moving)
+                            playmove = _ran_binomial(r, prob_scaled, moving)
 
                             if SELFISOLATE:
                                 frac = is_dangerous_array[ito] / <float>(
@@ -271,7 +274,7 @@ def iterate(network: Network, infections, play_infections,
             inf_ij = infections_i[j]
 
             if inf_ij > 0:
-                l = ran_binomial(rng, disease_progress, inf_ij)
+                l = _ran_binomial(r, disease_progress, inf_ij)
 
                 if l > 0:
                     infections_i_plus_one[j] += l
@@ -284,7 +287,7 @@ def iterate(network: Network, infections, play_infections,
             inf_ij = play_infections_i[j]
 
             if inf_ij > 0:
-                l = ran_binomial(rng, disease_progress, inf_ij)
+                l = _ran_binomial(r, disease_progress, inf_ij)
 
                 if l > 0:
                     play_infections_i_plus_one[j] += l
@@ -352,7 +355,7 @@ def iterate(network: Network, infections, play_infections,
 
         if inf_prob > 0.0:
             # daytime infection of workers
-            l = ran_binomial(rng, inf_prob, <int>(links_suscept[j]))
+            l = _ran_binomial(r, inf_prob, <int>(links_suscept[j]))
 
             if l > 0:
                 # actual infection
@@ -368,7 +371,7 @@ def iterate(network: Network, infections, play_infections,
 
             inf_prob = rate_to_prob(rate)
 
-            l = ran_binomial(rng, inf_prob, <int>(links_suscept[j]))
+            l = _ran_binomial(r, inf_prob, <int>(links_suscept[j]))
 
             if l > links_suscept[j]:
                 print(f"l > links[{j}].suscept {links_suscept[j]} nighttime")
@@ -396,7 +399,7 @@ def iterate(network: Network, infections, play_infections,
             print(f"play_suscept is less than 0 ({suscept}) "
                   f"problem {j}, {wards_label[j]}")
 
-        staying = ran_binomial(rng, dyn_play_at_home, suscept)
+        staying = _ran_binomial(r, dyn_play_at_home, suscept)
 
         moving = suscept - staying
 
@@ -421,7 +424,7 @@ def iterate(network: Network, infections, play_infections,
                             inf_prob = 0.0
                             play_move = 0
                         else:
-                            play_move = ran_binomial(rng, prob_scaled, moving)
+                            play_move = _ran_binomial(r, prob_scaled, moving)
                             frac = <float>(length_day *
                                            wards_day_foi[ito]) / <float>(
                                              wards_denominator_pd[ito] +
@@ -429,7 +432,7 @@ def iterate(network: Network, infections, play_infections,
 
                             inf_prob = rate_to_prob(frac)
                     else:
-                        play_move = ran_binomial(rng, prob_scaled, moving)
+                        play_move = _ran_binomial(r, prob_scaled, moving)
                         frac = <float>(length_day *
                                         wards_day_foi[ito]) / <float>(
                                             wards_denominator_pd[ito] +
@@ -437,7 +440,7 @@ def iterate(network: Network, infections, play_infections,
 
                         inf_prob = rate_to_prob(frac)
 
-                    l = ran_binomial(rng, inf_prob, play_move)
+                    l = _ran_binomial(r, inf_prob, play_move)
 
                     moving -= play_move
 
@@ -461,7 +464,7 @@ def iterate(network: Network, infections, play_infections,
 
             inf_prob = rate_to_prob(frac)
 
-            l = ran_binomial(rng, inf_prob, staying+moving)
+            l = _ran_binomial(r, inf_prob, staying+moving)
 
             if l > 0:
                 # another infections, this time from home
@@ -477,7 +480,7 @@ def iterate(network: Network, infections, play_infections,
 
             inf_prob = rate_to_prob(frac)
 
-            l = ran_binomial(rng, inf_prob, <int>(wards_play_suscept[j]))
+            l = _ran_binomial(r, inf_prob, <int>(wards_play_suscept[j]))
 
             if l > 0:
                 # another infection

@@ -1,5 +1,5 @@
 
-
+cimport cython
 from libc.stdint cimport uintptr_t
 
 cdef extern from "gsl/gsl_rng.h":
@@ -59,10 +59,10 @@ cdef inline uintptr_t _seed_ran_binomial(uintptr_t rng,
     gsl_rng_set(r, seed)
 
 
-cdef inline int _ran_binomial(uintptr_t rng, double p, int n) nogil:
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef inline int _ran_binomial(gsl_rng *rng, double p, int n) nogil:
     """Generate a random number from the binomial distribution
        described by p and n
     """
-    cdef gsl_rng *r = _get_gsl_ptr(rng)
-
-    return gsl_ran_binomial(r, p, n)
+    return gsl_ran_binomial(rng, p, n)

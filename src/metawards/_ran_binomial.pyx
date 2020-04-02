@@ -1,10 +1,11 @@
 
 
-from ._ran_binomial cimport _construct_gsl_rng
-from ._ran_binomial cimport _ran_binomial
-from ._ran_binomial cimport _seed_ran_binomial
+from ._ran_binomial cimport _construct_gsl_rng, _ran_binomial, \
+                            _seed_ran_binomial, _delete_gsl_rng, \
+                            _get_gsl_ptr
 
-__all__ = ["ran_binomial", "seed_ran_binomial"]
+
+__all__ = ["ran_binomial", "seed_ran_binomial", "delete_ran_binomial"]
 
 
 # The plan with this file is to move to an inline cdef that just
@@ -29,12 +30,14 @@ def seed_ran_binomial(seed: int = None):
     _seed_ran_binomial(rng, seed)
     print(f"Seeded...")
 
+    cdef gsl_rng* r = _get_gsl_ptr(rng)
+
     # test seeding of the random number generator by drawing and printing
     # 5 random numbers - this is temporary, and only used to
     # facilitate comparison to the original C code
     for i in range(1,6):
-        r = _ran_binomial(rng, 0.5, 100)
-        print(f"random number {i} equals {r}")
+        x = _ran_binomial(r, 0.5, 100)
+        print(f"random number {i} equals {x}")
 
     return rng
 
@@ -43,4 +46,14 @@ def ran_binomial(rng, p: float, n: int):
     """Return a random number drawn from the binomial distribution
        [p,n] (see gsl_ran_binomial for documentation)
     """
-    return _ran_binomial(rng, p, n)
+    cdef gsl_rng *r = _get_gsl_ptr(rng)
+    return _ran_binomial(r, p, n)
+
+
+def delete_ran_binomial(rng):
+    """Delete the passed random number generator.
+
+       WARNING: It will not be safe to use this generator after
+                you have deleted it!
+    """
+    _delete_gsl_rng(rng)
