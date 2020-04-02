@@ -5,7 +5,6 @@
 def cli():
     import sys
     import argparse
-    from metawards import Parameters, Network, Population
 
     parser = argparse.ArgumentParser(
                     description="MetaWards epidemic modelling - see "
@@ -64,6 +63,9 @@ def cli():
     if args.input is None:
         parser.print_help(sys.stdout)
         sys.exit(0)
+
+    # import the parameters here to speed up the display of help
+    from metawards import Parameters, Network, Population
 
     # load all of the parameters
     try:

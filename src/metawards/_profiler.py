@@ -50,8 +50,12 @@ class Profiler:
 
         if t:
             if len(self._children) > 0:
-                lines.append("%s: %.3f ms (%.3f ms)" % (self._name, t,
-                                                        self.child_total()))
+                ct = self.child_total()
+
+                if ct:
+                    lines.append("%s: %.3f ms (%.3f ms)" % (self._name, t, ct))
+                else:
+                    lines.append("%s: %.3f ms (???) ms" % (self._name, t))
             else:
                 lines.append("%s: %.3f ms" % (self._name, t))
 

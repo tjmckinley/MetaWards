@@ -1,4 +1,5 @@
 
+cimport cython
 from libc.stdio cimport FILE, fopen, fscanf, fclose, feof
 
 from ._parameters import Parameters
@@ -10,7 +11,8 @@ from ._profiler import Profiler, NullProfiler
 
 __all__ = ["build_wards_network"]
 
-
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def build_wards_network(params: Parameters,
                         profiler: Profiler = None,
                         max_nodes:int = 10050,
@@ -49,18 +51,18 @@ def build_wards_network(params: Parameters,
     cdef double weight = 0.0
     cdef int iweight = 0
 
-    cdef int [:] nodes_label = nodes.label
-    cdef int [:] nodes_begin_to = nodes.begin_to
-    cdef int [:] nodes_end_to = nodes.end_to
-    cdef int [:] nodes_self_w = nodes.self_w
+    cdef int [::1] nodes_label = nodes.label
+    cdef int [::1] nodes_begin_to = nodes.begin_to
+    cdef int [::1] nodes_end_to = nodes.end_to
+    cdef int [::1] nodes_self_w = nodes.self_w
 
-    cdef int [:] links_ito = links.ito
-    cdef int [:] links_ifrom = links.ifrom
-    cdef double [:] links_weight = links.weight
-    cdef double [:] links_suscept = links.suscept
+    cdef int [::1] links_ito = links.ito
+    cdef int [::1] links_ifrom = links.ifrom
+    cdef double [::1] links_weight = links.weight
+    cdef double [::1] links_suscept = links.suscept
 
-    cdef double [:] nodes_denominator_d = nodes.denominator_d
-    cdef double [:] nodes_denominator_n = nodes.denominator_n
+    cdef double [::1] nodes_denominator_d = nodes.denominator_d
+    cdef double [::1] nodes_denominator_n = nodes.denominator_n
 
     p = p.start("read_work_file")
 
@@ -76,7 +78,7 @@ def build_wards_network(params: Parameters,
 
     try:
         while not feof(cfile):
-            fscanf(cfile,"%d %d %lf\n",&from_id,&to_id,&weight)
+            fscanf(cfile, "%d %d %lf\n", &from_id, &to_id, &weight)
 
             iweight = <int>weight
 
@@ -140,7 +142,7 @@ def build_wards_network(params: Parameters,
 
     from ._utils import build_play_matrix
     p = p.start("build_play_matrix")
-    build_play_matrix(network)
+    build_play_matrix(network=network, profiler=p)
     p = p.stop()
 
     print(f"Number of nodes after build play equals {network.nnodes}")

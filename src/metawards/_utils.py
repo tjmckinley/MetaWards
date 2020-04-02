@@ -21,3 +21,8 @@ from ._fill_in_gaps import *
 from ._build_play_matrix import *
 from ._workspace import *
 from ._run_model import *
+from ._array import *
+from ._iterate import *
+from ._iterate_weekend import *
+from ._import_infection import *
+from ._ran_binomial import *

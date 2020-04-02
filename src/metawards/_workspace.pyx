@@ -1,5 +1,7 @@
 
-from array import array
+cimport cython
+
+from ._array import create_int_array
 
 from ._network import Network
 from ._parameters import Parameters
@@ -19,37 +21,33 @@ class Workspace:
         N_INF_CLASSES = params.disease_params.N_INF_CLASSES()
         MAXSIZE = network.nnodes + 1  # 1-indexed
 
-        int_t = "i"
-        float_t = "d"
-
-        null_int_N_INF_CLASSES = N_INF_CLASSES * [0]
-        null_int_MAXSIZE = MAXSIZE * [0]
-
         self.N_INF_CLASSES = N_INF_CLASSES
         self.MAXSIZE = MAXSIZE
 
-        self.inf_tot = array(int_t, null_int_N_INF_CLASSES)
-        self.pinf_tot = array(int_t, null_int_N_INF_CLASSES)
-        self.n_inf_wards = array(int_t, null_int_N_INF_CLASSES)
+        self.inf_tot = create_int_array(N_INF_CLASSES, 0)
+        self.pinf_tot = create_int_array(N_INF_CLASSES, 0)
+        self.n_inf_wards = create_int_array(N_INF_CLASSES, 0)
 
-        self.total_inf_ward = array(int_t, null_int_MAXSIZE)
-        self.total_new_inf_ward = array(int_t, null_int_MAXSIZE)
+        self.total_inf_ward = create_int_array(MAXSIZE, 0)
+        self.total_new_inf_ward = create_int_array(MAXSIZE, 0)
 
-        self.total_infections = array(int_t, null_int_MAXSIZE)
-        self.prevalence = array(int_t, null_int_MAXSIZE)
+        self.total_infections = create_int_array(MAXSIZE, 0)
+        self.prevalence = create_int_array(MAXSIZE, 0)
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def zero_all(self):
         """Reset the values of all of the arrays to zero"""
         cdef int i = 0
 
-        cdef int [:] inf_tot = self.inf_tot
-        cdef int [:] pinf_tot = self.pinf_tot
-        cdef int [:] n_inf_wards = self.n_inf_wards
+        cdef int [::1] inf_tot = self.inf_tot
+        cdef int [::1] pinf_tot = self.pinf_tot
+        cdef int [::1] n_inf_wards = self.n_inf_wards
 
-        cdef int [:] total_inf_ward = self.total_inf_ward
-        cdef int [:] total_new_inf_ward = self.total_new_inf_ward
-        cdef int [:] total_infections = self.total_infections
-        cdef int [:] prevalence = self.prevalence
+        cdef int [::1] total_inf_ward = self.total_inf_ward
+        cdef int [::1] total_new_inf_ward = self.total_new_inf_ward
+        cdef int [::1] total_infections = self.total_infections
+        cdef int [::1] prevalence = self.prevalence
 
         for i in range(0, self.N_INF_CLASSES):
             inf_tot[i] = 0

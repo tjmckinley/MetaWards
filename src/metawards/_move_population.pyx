@@ -1,4 +1,5 @@
 
+cimport cython
 from libc.math cimport floor, ceil
 
 from ._network import Network
@@ -17,6 +18,8 @@ def move_population_from_work_to_play(network: Network):
     raise AssertionError("Code has not been written")
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def move_population_from_play_to_work(network: Network):
     """And Vice Versa From Work to Play
        The relevant parameters are network.params.play_to_work and
@@ -37,9 +40,9 @@ def move_population_from_play_to_work(network: Network):
     play = network.play        # links of players
 
     cdef int i = 0
-    cdef double [:] links_suscept = links.suscept
-    cdef double [:] wards_play_suscept = wards.play_suscept
-    cdef int [:] links_ifrom = links.ifrom
+    cdef double [::1] links_suscept = links.suscept
+    cdef double [::1] wards_play_suscept = wards.play_suscept
+    cdef int [::1] links_ifrom = links.ifrom
     cdef double to_move = 0.0
     cdef double work_to_play = params.work_to_play
     cdef double play_to_work = params.play_to_work
@@ -56,9 +59,9 @@ def move_population_from_play_to_work(network: Network):
             wards_play_suscept[links_ifrom[i]] += to_move
 
     cdef int ifrom = 0
-    cdef int [:] play_ifrom = play.ifrom
-    cdef double [:] play_weight = play.weight
-    cdef double [:] wards_save_play_suscept = wards.save_play_suscept
+    cdef int [::1] play_ifrom = play.ifrom
+    cdef double [::1] play_weight = play.weight
+    cdef double [::1] wards_save_play_suscept = wards.save_play_suscept
     cdef double countrem = 0.0
     cdef temp, p
 

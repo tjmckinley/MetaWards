@@ -29,8 +29,8 @@ def add_wards_network_distance(network: Network):
     cdef double x = 0.0
     cdef double y = 0.0
 
-    cdef double [:] wards_x = wards.x
-    cdef double [:] wards_y = wards.y
+    cdef double [::1] wards_x = wards.x
+    cdef double [::1] wards_y = wards.y
 
     try:
         with open(params.input_files.position, "r") as FILE:
@@ -57,14 +57,14 @@ def add_wards_network_distance(network: Network):
     cdef double distance, distance2
     cdef int n_invalid = 0
 
-    cdef int [:] links_ifrom = links.ifrom
-    cdef int [:] links_ito = links.ito
+    cdef int [::1] links_ifrom = links.ifrom
+    cdef int [::1] links_ito = links.ito
 
-    cdef int [:] plinks_ifrom = plinks.ifrom
-    cdef int [:] plinks_ito = plinks.ito
+    cdef int [::1] plinks_ifrom = plinks.ifrom
+    cdef int [::1] plinks_ito = plinks.ito
 
-    cdef double [:] links_distance = links.distance
-    cdef double [:] plinks_distance = plinks.distance
+    cdef double [::1] links_distance = links.distance
+    cdef double [::1] plinks_distance = plinks.distance
 
     cdef double dx = 0.0
     cdef double dy = 0.0
