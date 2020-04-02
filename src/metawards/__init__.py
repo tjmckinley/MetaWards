@@ -5,8 +5,6 @@ Details of authorship / license etc to be written here
 
 """
 
-__version__ = "0.2.0"
-
 from ._parameters import *
 from ._disease import *
 from ._inputfiles import *
@@ -22,3 +20,7 @@ from . import _utils as utils
 # import the pyx cython-compiled modules
 from ._nodes import *
 from ._links import *
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions

@@ -3,6 +3,7 @@
 # Thanks - this was really helpful :-)
 
 import os
+import versioneer
 from setuptools import setup, find_packages, Extension
 from Cython.Build import cythonize
 
@@ -68,6 +69,8 @@ with open("requirements-dev.txt") as fp:
     dev_requires = fp.read().strip().split("\n")
 
 setup(
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     ext_modules=extensions,
     install_requires=install_requires,
     extras_require={
