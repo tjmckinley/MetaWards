@@ -45,7 +45,7 @@ jobs:
           path: gh-pages
         if: matrix.python-version == 3.8
       - name: Update website files
-        working-directory: ./gh-pages/docs
+        working-directory: ./gh-pages
         run: cp -r ${{ github.workspace }}/doc/build/html/* .
         if: matrix.python-version == 3.8
       - name: Commit website changes
@@ -53,7 +53,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add docs
+          git add .
           git commit -a -m "Update webstite."
         if: matrix.python-version == 3.8
       - name: Push changes
