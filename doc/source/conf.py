@@ -23,7 +23,7 @@ extensions = [
 ]
 
 # Github repo
-issues_github_path = 'chryswoods/MetaWards'
+issues_github_path = 'metawards/MetaWards'
 
 # Add any paths that contain templates here, relative to this directory.
 #templates_path = ['_templates']

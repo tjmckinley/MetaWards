@@ -135,7 +135,7 @@ class InputFiles:
             print(f"Either it does not exist of was corrupted.")
             print(f"Error was {e.__class__} {e}")
             print(f"To download the model data type the command:")
-            print(f"  git clone https://github.com/chryswoods/MetaWardsData")
+            print(f"  git clone https://github.com/metawards/MetaWardsData")
             print(f"and then re-run this function passing in the full")
             print(f"path to where you downloaded this directory")
             raise FileNotFoundError(f"Could not find or read {json_file}: "

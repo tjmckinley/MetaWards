@@ -1,6 +1,6 @@
 # MetaWards
 
-[![Build status](https://github.com/chryswoods/MetaWards/workflows/Build/badge.svg)](https://github.com/chryswoods/MetaWards/actions?query=workflow%3ABuild)
+[![Build status](https://github.com/metawards/MetaWards/workflows/Build/badge.svg)](https://github.com/metawards/MetaWards/actions?query=workflow%3ABuild)
 [![PyPI version](https://badge.fury.io/py/metawards.svg)](https://pypi.python.org/pypi/metawards)
 
 This is a Python port of the [MetaWards](https://github.com/ldanon/MetaWards)
@@ -30,7 +30,7 @@ professional [Research Software Engineers](https://www.bristol.ac.uk/acrc/resear
 ## Data
 
 The data and input parameters needed to use this package are stored in
-the [MetaWardsData](https://github.com/chryswoods/MetaWardsData)
+the [MetaWardsData](https://github.com/metawards/MetaWardsData)
 repository. Please make sure that you clone this repository to your
 computer and supply the full path to that repository to the program
 when it runs. There are three ways to do this;
@@ -39,7 +39,7 @@ when it runs. There are three ways to do this;
    e.g. `export METAWARDSDATA=$HOME/GitHub/MetaWards`
 
 2. Pass the `repository` variable to the input data classes
-   [Disease](https://github.com/chryswoods/MetaWards/blob/devel/src/metawards/_disease.py), [InputFiles](https://github.com/chryswoods/MetaWards/blob/devel/src/metawards/_inputfiles.py) and [Parameters](https://github.com/chryswoods/MetaWards/blob/devel/src/metawards/_parameters.py)
+   [Disease](https://github.com/metawards/MetaWards/blob/devel/src/metawards/_disease.py), [InputFiles](https://github.com/metawards/MetaWards/blob/devel/src/metawards/_inputfiles.py) and [Parameters](https://github.com/metawards/MetaWards/blob/devel/src/metawards/_parameters.py)
 
 3. Or simply make sure you clone into the directory `$HOME/GitHub/MetaWardsData`
    as this is the default path.
@@ -89,7 +89,7 @@ code is distributed.
 You can install the code from source by typing;
 
 ```
-git clone https://github.com/chryswoods/MetaWards
+git clone https://github.com/metawards/MetaWards
 cd MetaWards
 CYTHONIZE=1 python setup.py install
 ```
@@ -131,7 +131,7 @@ in this repository that was run using;
 ```
 
 The original C code, command line and expected output are in the
-[original](https://github.com/chryswoods/MetaWards/tree/devel/original)
+[original](https://github.com/metawards/MetaWards/tree/devel/original)
 directory that is bundled in this repo.
 
 ### Running an ensemble

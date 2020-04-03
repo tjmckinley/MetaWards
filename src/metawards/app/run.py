@@ -8,7 +8,7 @@ def cli():
 
     parser = argparse.ArgumentParser(
                     description="MetaWards epidemic modelling - see "
-                                "https://github.com/chryswoods/metawards "
+                                "https://github.com/metawards/metawards "
                                 "for more information",
                     prog="metawards")
 
