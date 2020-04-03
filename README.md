@@ -1,6 +1,7 @@
 # MetaWards
 
 [![Build status](https://github.com/chryswoods/MetaWards/workflows/Build/badge.svg)](https://github.com/chryswoods/MetaWards/actions?query=workflow%3ABuild)
+[![PyPI version](https://badge.fury.io/py/metawards.svg)](https://pypi.python.org/pypi/metawards)
 
 This is a Python port of the [MetaWards](https://github.com/ldanon/MetaWards)
 package originally written by Leon Danon. This is currently a work in progress
