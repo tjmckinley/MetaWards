@@ -1,6 +1,6 @@
 # MetaWards
 
-![](https://github.com/chryswoods/MetaWards/workflows/Build/badge.svg)
+[![Build status](https://github.com/chryswoods/MetaWards/workflows/Build/badge.svg)](https://github.com/chryswoods/MetaWards/actions?query=workflow%3ABuild)
 
 This is a Python port of the [MetaWards](https://github.com/ldanon/MetaWards)
 package originally written by Leon Danon. This is currently a work in progress
@@ -93,7 +93,7 @@ pip install metawards
 
 ## Running
 
-You can either load and use the Python classes directly, or you can 
+You can either load and use the Python classes directly, or you can
 run the `metawards` front-end command line program that is automatically installed.
 
 ```
