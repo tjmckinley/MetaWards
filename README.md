@@ -61,6 +61,22 @@ medRxiv 2020.02.12.20022566; doi: [10.1101/2020.02.12.20022566](https://doi.org/
 The code requires Python 3.7 or above and depends on
 [pygsl](http://pygsl.sourceforge.net) and [cython](https://cython.org).
 
+You will also need to install the [GNU Scientific Library](https://www.gnu.org/software/gsl/doc/html)
+(GSL). On macOS this can be installed using [Homebrew](https://brew.sh):
+
+```sh
+brew install gsl
+```
+
+On Linux, you can install the `libgsl` package, e.g. for Ubuntu:
+
+```sh
+apt-get install libgsl-dev
+```
+
+The `pygsl` Python package also requires `numpy`, which isn't installed
+automatically as a dependency if you install `pygsl` using [pip](https://pypi.org/project/pip).
+
 Only the `gsl_rng.binomial` function is used from GSL, so it is likely
 that this requirement will soon be dropped. The link to GSL forces us
 to use a GPL3 license for this Python package. Once we have replaced
