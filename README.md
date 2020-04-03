@@ -74,7 +74,7 @@ You can install the code from source by typing;
 ```
 git clone https://github.com/chryswoods/MetaWards
 cd MetaWards
-python setup.py install
+CYTHONIZE=1 python setup.py install
 ```
 
 (assuming that `python` is version 3.7 or above)

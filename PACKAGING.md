@@ -34,7 +34,7 @@ python3 -m pip install --user --upgrade setuptools wheel
 Now run this command from the same directory where setup.py is located
 
 ```
-python3 setup.py sdist bdist_wheel
+CYTHONIZE=1 python3 setup.py sdist bdist_wheel
 ```
 
 Now ensure you have the latest version of twine installed
