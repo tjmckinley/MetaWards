@@ -1,3 +1,3 @@
 # GitHub Pages
 
-Files for the static website: [https://chryswoods.github.io/MetaWards](https://chryswoods.github.io/MetaWards)
+Files for the static website: [https://metawards.github.io/MetaWards](https://metawards.github.io/MetaWards)
