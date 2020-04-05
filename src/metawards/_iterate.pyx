@@ -18,6 +18,7 @@ __all__ = ["iterate"]
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+@cython.nonecheck(False)
 def iterate(network: Network, infections, play_infections,
             params: Parameters, rngs, timestep: int,
             population: int, nthreads: int = None,
@@ -58,6 +59,7 @@ def iterate(network: Network, infections, play_infections,
     cdef int i = 0
     cdef double [::1] wards_day_foi = wards.day_foi
     cdef double [::1] wards_night_foi = wards.night_foi
+    cdef double night_foi
 
     p = p.start("setup")
     for i in range(1, network.nnodes+1):
@@ -101,7 +103,8 @@ def iterate(network: Network, infections, play_infections,
     cdef int staying, moving, play_move, end_p
     cdef double [::1] links_distance = links.distance
     cdef double frac = 0.0
-    cdef double cumulative_prob, prob_scaled
+    cdef double cumulative_prob = 0
+    cdef double prob_scaled
     cdef double too_ill_to_move
 
     cdef int [::1] wards_begin_p = wards.begin_p
@@ -409,103 +412,108 @@ def iterate(network: Network, infections, play_infections,
     cdef double dyn_play_at_home = params.dyn_play_at_home
 
     p = p.start("play")
-    for j in range(1, network.nnodes+1):
-        # playmatrix loop
-        inf_prob = 0.0
+    with nogil, parallel(num_threads=num_threads):
+        thread_id = cython.parallel.threadid()
+        pr = _get_binomial_ptr(rngs_view[thread_id])
 
-        suscept = <int>wards_play_suscept[j]
+        for j in prange(1, nnodes_plus_one, schedule="static"):
+            # playmatrix loop
+            inf_prob = 0.0
 
-        if suscept < 0:
-            print(f"play_suscept is less than 0 ({suscept}) "
-                  f"problem {j}, {wards_label[j]}")
+            suscept = <int>wards_play_suscept[j]
 
-        staying = _ran_binomial(r, dyn_play_at_home, suscept)
+            #if suscept < 0:
+            #    print(f"play_suscept is less than 0 ({suscept}) "
+            #        f"problem {j}, {wards_label[j]}")
 
-        moving = suscept - staying
+            staying = _ran_binomial(pr, dyn_play_at_home, suscept)
 
-        cumulative_prob = 0.0
+            moving = suscept - staying
 
-        # daytime infection of play matrix moves
-        for k in range(wards_begin_p[j], wards_end_p[j]):
-            if plinks_distance[k] < cutoff:
-                ito = plinks_ito[k]
+            cumulative_prob = 0.0
 
-                if wards_day_foi[ito] > 0.0:
-                    weight = plinks_weight[k]
-                    prob_scaled = weight / (1.0-cumulative_prob)
-                    cumulative_prob += weight
+            # daytime infection of play matrix moves
+            for k in range(wards_begin_p[j], wards_end_p[j]):
+                if plinks_distance[k] < cutoff:
+                    ito = plinks_ito[k]
 
-                    if cSELFISOLATE:
-                        frac = is_dangerous_array[ito] / (
-                                                wards_denominator_p[ito] +
-                                                wards_denominator_d[ito])
+                    if wards_day_foi[ito] > 0.0:
+                        weight = plinks_weight[k]
+                        prob_scaled = weight / (1.0-cumulative_prob)
+                        cumulative_prob = cumulative_prob + weight
 
-                        if frac > thresh:
-                            inf_prob = 0.0
-                            play_move = 0
+                        if cSELFISOLATE:
+                            frac = is_dangerous_array[ito] / (
+                                                    wards_denominator_p[ito] +
+                                                    wards_denominator_d[ito])
+
+                            if frac > thresh:
+                                inf_prob = 0.0
+                                play_move = 0
+                            else:
+                                play_move = _ran_binomial(pr, prob_scaled, moving)
+                                frac = (length_day * wards_day_foi[ito]) / (
+                                                    wards_denominator_pd[ito] +
+                                                    wards_denominator_d[ito])
+
+                                inf_prob = rate_to_prob(frac)
                         else:
-                            play_move = _ran_binomial(r, prob_scaled, moving)
+                            play_move = _ran_binomial(pr, prob_scaled, moving)
                             frac = (length_day * wards_day_foi[ito]) / (
-                                                 wards_denominator_pd[ito] +
-                                                 wards_denominator_d[ito])
+                                                    wards_denominator_pd[ito] +
+                                                    wards_denominator_d[ito])
 
                             inf_prob = rate_to_prob(frac)
-                    else:
-                        play_move = _ran_binomial(r, prob_scaled, moving)
-                        frac = (length_day * wards_day_foi[ito]) / (
-                                                 wards_denominator_pd[ito] +
-                                                 wards_denominator_d[ito])
 
-                        inf_prob = rate_to_prob(frac)
+                        l = _ran_binomial(pr, inf_prob, play_move)
 
-                    l = _ran_binomial(r, inf_prob, play_move)
+                        moving = moving - play_move
 
-                    moving -= play_move
+                        if l > 0:
+                            # infection
+                            #print(f"PLAY: InfProb {inf_prob}, susc {play_move}, "
+                            #      f"l {l}")
+                            #print(f"daytime play_infections[{i}][{j}] += {l}")
+                            play_infections_i[j] += l
+                            wards_play_suscept[j] -= l
 
-                    if l > 0:
-                        # infection
-                        #print(f"PLAY: InfProb {inf_prob}, susc {play_move}, "
-                        #      f"l {l}")
-                        #print(f"daytime play_infections[{i}][{j}] += {l}")
-                        play_infections_i[j] += l
-                        wards_play_suscept[j] -= l
+                    # end of DayFOI if statement
+                # end of Dynamics Distance if statement
+            # end of loop over links of wards[j]
 
-                # end of DayFOI if statement
-            # end of Dynamics Distance if statement
-        # end of loop over links of wards[j]
+            if (staying + moving) > 0:
+                # infect people staying at home
+                frac = (length_day * wards_day_foi[j]) / (
+                                            wards_denominator_pd[j] +
+                                            wards_denominator_d[j])
 
-        if (staying + moving) > 0:
-            # infect people staying at home
-            frac = (length_day * wards_day_foi[j]) / (
-                                        wards_denominator_pd[j] +
-                                        wards_denominator_d[j])
+                inf_prob = rate_to_prob(frac)
 
-            inf_prob = rate_to_prob(frac)
+                l = _ran_binomial(pr, inf_prob, staying+moving)
 
-            l = _ran_binomial(r, inf_prob, staying+moving)
+                if l > 0:
+                    # another infections, this time from home
+                    #print(f"staying home play_infections[{i}][{j}] += {l}")
+                    play_infections_i[j] += l
+                    wards_play_suscept[j] -= l
 
-            if l > 0:
-                # another infections, this time from home
-                #print(f"staying home play_infections[{i}][{j}] += {l}")
-                play_infections_i[j] += l
-                wards_play_suscept[j] -= l
+            # nighttime infections of play movements
+            night_foi = wards_night_foi[j]
+            if night_foi > 0.0:
+                frac = ((1.0 - length_day) * night_foi) / (
+                                wards_denominator_n[j] + wards_denominator_p[j])
 
-        # nighttime infections of play movements
-        night_foi = wards_night_foi[j]
-        if night_foi > 0.0:
-            frac = ((1.0 - length_day) * night_foi) / (
-                            wards_denominator_n[j] + wards_denominator_p[j])
+                inf_prob = rate_to_prob(frac)
 
-            inf_prob = rate_to_prob(frac)
+                l = _ran_binomial(pr, inf_prob, <int>(wards_play_suscept[j]))
 
-            l = _ran_binomial(r, inf_prob, <int>(wards_play_suscept[j]))
-
-            if l > 0:
-                # another infection
-                #print(f"nighttime play_infections[{i}][{j}] += {l}")
-                play_infections_i[j] += l
-                wards_play_suscept[j] -= l
-    # end of loop over wards (nodes)
+                if l > 0:
+                    # another infection
+                    #print(f"nighttime play_infections[{i}][{j}] += {l}")
+                    play_infections_i[j] += l
+                    wards_play_suscept[j] -= l
+        # end of loop over wards (nodes)
+    # end of parallel
     p = p.stop()
 
     p.stop()
