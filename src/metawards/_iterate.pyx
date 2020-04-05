@@ -284,12 +284,8 @@ def iterate(network: Network, infections, play_infections,
         play_infections_i_plus_one = play_infections[i+1]
         disease_progress = params.disease_params.progress[i]
 
-        with nogil, parallel():
-            with gil:
-                print(f"Number of threads equals "
-                      f"{openmp.omp_get_num_threads()}")
-
-            for j in prange(1, nlinks_plus_one, schedule="dynamic"):
+        with nogil, parallel(num_threads=num_threads):
+            for j in prange(1, nlinks_plus_one, schedule="static"):
                 inf_ij = infections_i[j]
 
                 if inf_ij > 0:
@@ -299,11 +295,7 @@ def iterate(network: Network, infections, play_infections,
                         infections_i_plus_one[j] += l
                         infections_i[j] -= l
 
-                elif inf_ij != 0:
-                    with gil:
-                        print(f"inf_ij problem {i} {j} {inf_ij}")
-
-            for j in prange(1, nnodes_plus_one):
+            for j in prange(1, nnodes_plus_one, schedule="static"):
                 inf_ij = play_infections_i[j]
 
                 if inf_ij > 0:
@@ -312,10 +304,6 @@ def iterate(network: Network, infections, play_infections,
                     if l > 0:
                         play_infections_i_plus_one[j] += l
                         play_infections_i[j] -= l
-
-                elif inf_ij != 0:
-                    with gil:
-                        print(f"play_inf_ij problem {i} {j} {inf_ij}")
 
         # end of parallel section
     # end of recovery loop

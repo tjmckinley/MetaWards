@@ -54,7 +54,7 @@ def test_integration():
     print("Run the model...")
     population = network.run(population=population, seed=seed,
                              s=-1, nsteps=28, profile=True,
-                             nthreads=4)
+                             nthreads=1)
 
     print("End of the run")
 
