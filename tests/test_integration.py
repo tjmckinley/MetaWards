@@ -48,23 +48,24 @@ def test_integration():
     population = Population(initial=57104043)
 
     print("Building the network...")
-    network = Network.build(params=params, calculate_distances=True)
+    network = Network.build(params=params, calculate_distances=True,
+                            profile=False)
 
     print("Run the model...")
     population = network.run(population=population, seed=seed,
-                             s=-1, nsteps=20)
+                             s=-1, nsteps=28, profile=False)
 
     print("End of the run")
 
     print(f"Model output:  {population}")
 
-    # The original C code has this expected population after 20 steps
+    # The original C code has this expected population after 47 steps
     expected = Population(initial=57104043,
-                          susceptibles=56081923,
-                          latent=61,
-                          total=17,
-                          recovereds=76,
-                          n_inf_wards=24)
+                          susceptibles=56081764,
+                          latent=122,
+                          total=43,
+                          recovereds=148,
+                          n_inf_wards=34)
 
     print(f"Expect output: {expected}")
 

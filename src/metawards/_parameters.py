@@ -8,12 +8,37 @@ import os
 from ._inputfiles import InputFiles
 from ._disease import Disease
 
-__all__ = ["Parameters"]
+__all__ = ["Parameters", "get_repository_version"]
 
 _default_parameters_path = os.path.join(pathlib.Path.home(),
                                         "GitHub", "MetaWardsData")
 
 _default_folder_name = "parameters"
+
+
+_repositories = {}
+
+def get_repository_version(repository):
+    """Read and return the Git version of the passed repository"""
+    global _repositories
+
+    if repository in _repositories:
+        return _repositories[repository]
+
+    filename = os.path.join(repository, "version.txt")
+
+    try:
+        with open(filename) as FILE:
+            version = FILE.readline().strip()
+            _repositories[repository] = version
+            return version
+    except Exception:
+        print(f"Could not find the repository version info in {filename}."
+              f"Please make sure that you have run './version' in that "
+              f"repository to generate the version info.")
+        _repositories[repository] = "unknown"
+        return _repositories[repository]
+
 
 @dataclass
 class Parameters:
@@ -49,6 +74,7 @@ class Parameters:
     _references: str = None
     _filename: str = None
     _repository: str = None
+    _repository_version: str = None
 
     def __str__(self):
         return f"Parameters {self._name}\n" \
@@ -56,7 +82,9 @@ class Parameters:
                f"version: {self._version}\n" \
                f"author(s): {self._authors}\n" \
                f"contact(s): {self._contacts}\n" \
-               f"references(s): {self._references}\n\n" \
+               f"references(s): {self._references}\n" \
+               f"repository: {self._repository}\n" \
+               f"repository_version: {self._repository_version}\n\n" \
                f"length_day = {self.length_day}\n" \
                f"plength_day = {self.plength_day}\n" \
                f"initial_inf = {self.initial_inf}\n" \
@@ -88,6 +116,7 @@ class Parameters:
             Alternatively, you can provide the exact path to the
             filename via the 'filename' argument
         """
+        repository_version = None
 
         if filename is None:
             if repository is None:
@@ -95,6 +124,7 @@ class Parameters:
                 if repository is None:
                     repository = _default_parameters_path
 
+            repository_version = get_repository_version(repository)
             filename = os.path.join(repository, folder, f"{parameters}.json")
 
         json_file = filename
@@ -109,7 +139,7 @@ class Parameters:
             print(f"Either it does not exist of was corrupted.")
             print(f"Error was {e.__class__} {e}")
             print(f"To download the parameters type the command:")
-            print(f"  git clone https://github.com/chryswoods/MetaWardsData")
+            print(f"  git clone https://github.com/metawards/MetaWardsData")
             print(f"and then re-run this function passing in the full")
             print(f"path to where you downloaded this directory")
             raise FileNotFoundError(f"Could not find or read {json_file}: "
@@ -137,7 +167,8 @@ class Parameters:
                          _contacts=data["contact(s)"],
                          _references=data["reference(s)"],
                          _filename=json_file,
-                         _repository=repository
+                         _repository=repository,
+                         _repository_version=repository_version
                          )
 
         print("Using parameters:")

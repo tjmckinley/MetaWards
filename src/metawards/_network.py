@@ -6,6 +6,7 @@ from ._parameters import Parameters
 from ._nodes import Nodes
 from ._links import Links
 from ._population import Population
+from ._ran_binomial import seed_ran_binomial, ran_binomial
 
 __all__ = ["Network"]
 
@@ -46,11 +47,12 @@ class Network:
 
     @staticmethod
     def build(params: Parameters,
-              calculate_distances: bool=True,
+              calculate_distances: bool = True,
               build_function=None,
               distance_function=None,
-              max_nodes:int = 10050,
-              max_links:int = 2414000):
+              max_nodes: int = 10050,
+              max_links: int = 2414000,
+              profile: bool = True):
         """Builds and returns a new Network that is described by the
            passed parameters. If 'calculate_distances' is True, then
            this will also read in the ward positions and add
@@ -68,37 +70,63 @@ class Network:
            the maximum possible number of nodes and links. The memory buffers
            will be shrunk back after building.
         """
+        if profile:
+            from metawards import Profiler
+            p = Profiler()
+        else:
+            from metawards import NullProfiler
+            p = NullProfiler()
+
+        p = p.start("Network.build")
+
         if build_function is None:
             from ._utils import build_wards_network
             build_function = build_wards_network
 
+        p = p.start("build_function")
         network = build_function(params=params,
+                                 profiler=p,
                                  max_nodes=max_nodes,
                                  max_links=max_links)
+        p = p.stop()
 
         if calculate_distances:
+            p = p.start("add_distances")
             network.add_distances(distance_function=distance_function)
+            p = p.stop()
 
         if params.input_files.seed:
             from ._utils import read_done_file
+            p = p.start("read_done_file")
             to_seed = read_done_file(params.input_files.seed)
             nseeds = len(to_seed)
 
             print(to_seed)
             print(f"Number of seeds equals {nseeds}")
             network.to_seed = to_seed
+            p = p.stop()
 
         # By default, we initialise the network ready for a run,
         # namely make sure everything is reset and the population
         # is at work
         print("Reset everything...")
+        p = p.start("reset_everything")
         network.reset_everything()
+        p = p.stop()
 
         print("Rescale play matrix...")
+        p = p.start("rescale_play_matrix")
         network.rescale_play_matrix()
+        p = p.stop()
 
         print("Move population from play to work...")
+        p = p.start("move_from_play_to_work")
         network.move_from_play_to_work()
+        p = p.stop()
+
+        if not p.is_null():
+            p = p.stop()
+            print(p)
 
         return network
 
@@ -118,7 +146,7 @@ class Network:
         distance_function(self)
 
         # now need to update the dynamic distance cutoff based on the
-        # maximum distance between nodes
+        # maximum distance between nodes
         print("Get min/max distances...")
         (_mindist, maxdist) = self.get_min_max_distances()
 
@@ -168,10 +196,11 @@ class Network:
         move_population_from_play_to_work(self)
 
     def run(self, population: Population,
-                  seed: int = None,
-                  output_dir: str = "tmp",
-                  nsteps: int = None,
-                  s: int = None):
+            seed: int = None,
+            output_dir: str = "tmp",
+            nsteps: int = None,
+            profile: bool = True,
+            s: int = None):
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
            is None, then a random seed is used.
@@ -185,16 +214,18 @@ class Network:
            s is used to select the 'to_seed' entry to seed
            the nodes
         """
-        from pygsl import rng as gsl_rng
+        # Create the random number generator
+        rng = seed_ran_binomial(seed=seed)
 
-        rng = gsl_rng.rng()
+        # Print the first five random numbers so that we can
+        # compare to other codes/runs, and be sure that we are
+        # generating the same random sequence
+        randnums = []
+        for i in range(0, 5):
+            randnums.append(str(ran_binomial(rng, 0.5, 100)))
 
-        if seed is None:
-            import random
-            seed = random.randint(10000, 99999999)
-
-        print(f"Using random number seed: {seed}")
-        rng.set(seed)
+        print(f"First five random numbers equal {', '.join(randnums)}")
+        randnums = None
 
         # Create space to hold the results of the simulation
         print("Initialise infections...")
@@ -203,20 +234,13 @@ class Network:
         print("Initialise play infections...")
         play_infections = self.initialise_play_infections()
 
-        # test seeding of the random number generator by drawing and printing
-        # 5 random numbers - this is temporary, and only used to
-        # facilitate comparison to the original C code
-        for i in range(1,6):
-            r = rng.binomial(0.5, 100)
-            print(f"random number {i} equals {r}")
-
         from ._utils import run_model
         population = run_model(network=self,
                                population=population.initial,
                                infections=infections,
                                play_infections=play_infections,
                                rng=rng, s=s, output_dir=output_dir,
-                               nsteps=nsteps)
+                               nsteps=nsteps, profile=profile)
 
         # do we want to save infections and play_infections for inspection?
 

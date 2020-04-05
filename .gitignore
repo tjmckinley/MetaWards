@@ -8,4 +8,5 @@ __pycache__
 /dist
 /src/metawards.egg-info
 /2011Data
-
+/.pytest_cache
+/.env

@@ -1,20 +1,11 @@
 
-from array import array   # timing shows quicker for random access
-                          # than numpy
-
+cimport cython
 from ._link import Link
 
+from ._array import create_double_array, create_int_array, \
+                    create_string_array, resize_array
+
 __all__ = ["Links"]
-
-
-def _resize(a, N, default_value):
-    """Resize the passed array to size N, adding 'default_value'
-       if this will grow the array
-    """
-    if N < len(a):
-        return a[0:N]
-    else:
-        return a + array(a.typecode, N*[default_value])
 
 
 class Links:
@@ -22,6 +13,8 @@ class Links:
        to store a list of Link objects as a "struct of arrays".
        This should improve speed of loading and access.
     """
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def __init__(self, N: int=0):
         """Create a container for up to "N" Links"""
         if N <= 0:
@@ -29,23 +22,17 @@ class Links:
         else:
             self._is_null = False
 
-            int_t = "i"        # all data should fit into an int32
-            float_t = "d"      # original code uses doubles
-
-            null_int = N * [-1]
-            null_float = N * [0.0]
-
             # Struct of arrays for each piece of data. See the
             # Link class for information about what each variable
             # holds. Code uses "-1" to represent a null value
-            self.ifrom = array(int_t, null_int)
-            self.ito = array(int_t, null_int)
+            self.ifrom = create_int_array(N, -1)
+            self.ito = create_int_array(N, -1)
 
-            self.weight = array(float_t, null_float)
-            self.suscept = array(float_t, null_float)
-            self.distance = array(float_t, null_float)
+            self.weight = create_double_array(N, 0.0)
+            self.suscept = create_double_array(N, 0.0)
+            self.distance = create_double_array(N, 0.0)
 
-            self.A = array(int_t, null_int)
+            self.A = create_int_array(N, -1)
 
     def is_null(self):
         return self._is_null
@@ -124,9 +111,9 @@ class Links:
         if N == size:
             return
 
-        self.ifrom = _resize(self.ifrom, N, -1)
-        self.ito = _resize(self.ito, N, -1)
-        self.weight = _resize(self.weight, N, 0.0)
-        self.suscept = _resize(self.suscept, N, 0.0)
-        self.distance = _resize(self.distance, N, 0.0)
-        self.A = _resize(self.A, N, -1)
+        self.ifrom = resize_array(self.ifrom, N, -1)
+        self.ito = resize_array(self.ito, N, -1)
+        self.weight = resize_array(self.weight, N, 0.0)
+        self.suscept = resize_array(self.suscept, N, 0.0)
+        self.distance = resize_array(self.distance, N, 0.0)
+        self.A = resize_array(self.A, N, -1)

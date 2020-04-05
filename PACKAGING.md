@@ -1,23 +1,15 @@
 # Instructions for packaging MetaWards
 
-First, remember to update the version of MetaWards in the
-code. We will automate this later, but for now you need to
-update
-
-* `setup.cfg` : Update the third line, `version = {VERSION}`
-* `Makefile`  : Update the rule for `install-from-source`
-* `src/metawards/__init__.py` : Update `__version__ = "{VERSION}"
-
-Next (after committing these changes) create a Git tag using;
+First create a Git tag using;
 
 ```
-git tag -a v{VERSION} -m "Message"
+git tag -a {VERSION} -m "Message"
 ```
 
 e.g.
 
 ```
-git tag -a v0.2.0b -m "Beta release of 0.2.0"
+git tag -a 0.3.0b -m "Beta release of 0.3.0"
 ```
 
 then push your tag to GitHub
@@ -25,6 +17,11 @@ then push your tag to GitHub
 ```
 git push --tags
 ```
+
+The tag will be used by automatic versioning script to generate
+the version numbers of the code. Building the package
+(as happens below) will automatically update the _version.py
+that is included in the package to tag versions.
 
 ## Creating the pip package
 
@@ -37,7 +34,7 @@ python3 -m pip install --user --upgrade setuptools wheel
 Now run this command from the same directory where setup.py is located
 
 ```
-python3 setup.py sdist bdist_wheel
+CYTHONIZE=1 python3 setup.py sdist bdist_wheel
 ```
 
 Now ensure you have the latest version of twine installed

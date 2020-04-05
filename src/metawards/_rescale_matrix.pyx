@@ -1,9 +1,13 @@
 
+cimport cython
+
 from ._network import Network
 
 __all__ = ["rescale_play_matrix"]
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def rescale_play_matrix(network: Network):
     """ Static Play At Home rescaling.
 	    for 1, everyone stays at home.
@@ -22,10 +26,10 @@ def rescale_play_matrix(network: Network):
     cdef int j = 0
     cdef int ifrom = 0
     cdef int ito = 0
-    cdef int [:] links_ito = links.ito
-    cdef int [:] links_ifrom = links.ifrom
-    cdef double [:] links_weight = links.weight
-    cdef double [:] links_suscept = links.suscept
+    cdef int [::1] links_ito = links.ito
+    cdef int [::1] links_ifrom = links.ifrom
+    cdef double [::1] links_weight = links.weight
+    cdef double [::1] links_suscept = links.suscept
 
     if static_play_at_home > 0:
         # if we are making people stay at home, then do this loop through nodes

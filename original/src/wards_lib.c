@@ -4,6 +4,7 @@
 //#include <crtdbg.h>
 //#include <string.h>
 
+#include <json.h>
 #include "wards_lib.h"
 #include "globals.h"
 
@@ -193,8 +194,6 @@ network *BuildWardsNetworkDistance(parameters *par)
 	}
 
 	double total_distance = 0;
-	double distance, distance2;
-	int nwrong = 0;
 
 	for(i=0;i<net->nlinks;i++){
 		x1=wards[links[i].ifrom].x;
@@ -203,30 +202,9 @@ network *BuildWardsNetworkDistance(parameters *par)
 		x2=wards[links[i].ito].x;
 		y2=wards[links[i].ito].y;
 
-		distance = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 		total_distance += sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 
 		links[i].distance=plinks[i].distance=sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
-
-		if (i >= 0 && i < net->plinks){
-			if (plinks[i].ifrom != links[i].ifrom || plinks[i].ito != links[i].ito)
-			{
-				x1 = wards[plinks[i].ifrom].x;
-				y1 = wards[plinks[i].ifrom].y;
-				x2 = wards[plinks[i].ito].x;
-				y2 = wards[plinks[i].ito].y;
-
-				distance2 = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
-
-				if (nwrong < 10){
-					printf("%d %d %d %d %d\n", i, links[i].ifrom, plinks[i].ifrom,
-												links[i].ito, plinks[i].ito);
-					printf("%f  %f\n", distance, distance2);
-					nwrong += 1;
-				}
-			}
-		}
-
 #ifdef WEEKENDS
 		welinks[i].distance=links[i].distance;
 #endif
@@ -1609,15 +1587,70 @@ parameters *InitialiseParameters(){
 
 	int i;
 	parameters *par;
+	char parameters_path[1024];
+	FILE* parameters_file;
+	char buffer[1024];
+	struct json_object* parsed_json;
 
+	struct json_object* name;
+	struct json_object* initial_inf_json;
+	struct json_object* length_day;
+	struct json_object* plength_day;
+	struct json_object* dyn_dist_cutoff;
+	struct json_object* data_dist_cutoff;
+	struct json_object* work_to_play;
+	struct json_object* play_to_work;
+	struct json_object* static_play_at_home;
+	struct json_object* dyn_play_at_home;
+	struct json_object* local_vaccination_threshold;
+	struct json_object* global_detection_threshold;
+	struct json_object* neighbour_weight_threshold;
+	struct json_object* daily_ward_vaccination_capacity;
+	struct json_object* daily_imports;
+	struct json_object* UV;
 
 	par=(parameters *)malloc(sizeof(parameters));
 
-	par->initial_inf=5;
+	memset(parameters_path, '\0', sizeof(parameters_path));
+	strcpy(parameters_path, getenv("HOME")); // home directory
+	strcat(parameters_path,"/GitHub/MetaWardsData/parameters/march29.json"); // hardcoded for now
+	printf("Using parameters in %s \n", parameters_path);
+	parameters_file = fopen(parameters_path, "r");
+	fread(buffer, 1024, 1, parameters_file);
+	fclose(parameters_file);
 
-	par->LengthDay=0.7;
-
-	par->PLengthDay=0.5;
+	parsed_json = json_tokener_parse(buffer);
+	json_object_object_get_ex(parsed_json, "name", &name); // unused for now
+	json_object_object_get_ex(parsed_json, "initial_inf", &initial_inf_json); /* e.g. 5 */
+	par->initial_inf = json_object_get_int(initial_inf_json);
+	json_object_object_get_ex(parsed_json, "length_day", &length_day); /* e.g. 0.7 */
+	par->LengthDay = json_object_get_double(length_day);
+	json_object_object_get_ex(parsed_json, "plength_day", &plength_day); /* e.g. 0.5 */
+	par->PLengthDay= json_object_get_double(plength_day);
+	json_object_object_get_ex(parsed_json, "dyn_dist_cutoff", &dyn_dist_cutoff); /* e.g. 10000000 */
+	par->DynDistCutoff = json_object_get_double(dyn_dist_cutoff);
+	json_object_object_get_ex(parsed_json, "data_dist_cutoff", &data_dist_cutoff); /* e.g. 10000000 */
+	par->DataDistCutoff = json_object_get_double(data_dist_cutoff);
+	json_object_object_get_ex(parsed_json, "work_to_play", &work_to_play); /* e.g. 0.0 */
+	par->WorkToPlay = json_object_get_double(work_to_play);
+	json_object_object_get_ex(parsed_json, "play_to_work", &play_to_work); /* e.g. 0.0 */
+	par->PlayToWork = json_object_get_double(play_to_work);
+	json_object_object_get_ex(parsed_json, "static_play_at_home", &static_play_at_home); /* e.g. 0 */
+	par->StaticPlayAtHome = json_object_get_double(static_play_at_home);
+	json_object_object_get_ex(parsed_json, "dyn_play_at_home", &dyn_play_at_home); /* e.g. 0 */
+	par->DynPlayAtHome = json_object_get_double(dyn_play_at_home);
+	json_object_object_get_ex(parsed_json, "local_vaccination_threshold", &local_vaccination_threshold); /* e.g. 4 */
+	par->LocalVaccinationThresh = json_object_get_int(local_vaccination_threshold);
+	json_object_object_get_ex(parsed_json, "global_detection_threshold", &global_detection_threshold); /* e.g. 4 */
+	par->GlobalDetectionThresh = json_object_get_int(global_detection_threshold);
+	json_object_object_get_ex(parsed_json, "neighbour_weight_threshold", &neighbour_weight_threshold); /* e.g. 0.0 */
+	par->NeighbourWeightThreshold = json_object_get_double(neighbour_weight_threshold);
+	json_object_object_get_ex(parsed_json, "daily_ward_vaccination_capacity", &daily_ward_vaccination_capacity); /* e.g. 5 */
+	par->DailyWardVaccinationCapacity = json_object_get_int(daily_ward_vaccination_capacity);
+	json_object_object_get_ex(parsed_json, "daily_imports", &daily_imports); /* e.g.  */
+	par->DailyImports = json_object_get_double(daily_imports);
+	json_object_object_get_ex(parsed_json, "UV", &UV); /* e.g. 0.0 */
+	par->UV = json_object_get_double(UV);
 
 	for(i=0;i<N_INF_CLASSES;i++){
 		par->beta[i]=beta[i];
@@ -1625,19 +1658,6 @@ parameters *InitialiseParameters(){
 		par->TooIllToMove[i]=TooIllToMove[i];
 		par->ContribFOI[i]=ContribFOI[i];
 	}
-
-	par->DynDistCutoff = 10000000;
-	par->DataDistCutoff = 10000000;
-	par->WorkToPlay=0.0;
-	par->PlayToWork=0.0;
-	par->StaticPlayAtHome=0;
-	par->DynPlayAtHome=0;
-
-	par->LocalVaccinationThresh = 4;
-	par->GlobalDetectionThresh = 4;
-	par->NeighbourWeightThreshold = 0.0;
-	par->DailyWardVaccinationCapacity = 5;
-	par->UV=0.0;
 
 	return par;
 }
@@ -1757,7 +1777,7 @@ void SetInputFileNames(int choice,parameters *par){
   case 4:
 
     dirstring=getenv("HOME"); // home directory strin
-    strcat(dirstring,"/GitHub/MetaWards/2011Data/"); // add to that the directory for 2011 data
+    strcat(dirstring,"/GitHub/MetaWardsData/model_data/2011Data/"); // add to that the directory for 2011 data
     printf("Using files in %s \n", dirstring); //
 
     strcat(strcpy(par->WorkName, dirstring), "EW1.dat");

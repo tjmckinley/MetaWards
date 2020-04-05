@@ -1,5 +1,8 @@
 # MetaWards
 
+[![Build status](https://github.com/metawards/MetaWards/workflows/Build/badge.svg)](https://github.com/metawards/MetaWards/actions?query=workflow%3ABuild)
+[![PyPI version](https://badge.fury.io/py/metawards.svg)](https://pypi.python.org/pypi/metawards)
+
 This is a Python port of the [MetaWards](https://github.com/ldanon/MetaWards)
 package originally written by Leon Danon. This is currently a work in progress
 and is not intended yet for production use. The port is kept in sync with
@@ -27,7 +30,7 @@ professional [Research Software Engineers](https://www.bristol.ac.uk/acrc/resear
 ## Data
 
 The data and input parameters needed to use this package are stored in
-the [MetaWardsData](https://github.com/chryswoods/MetaWardsData)
+the [MetaWardsData](https://github.com/metawards/MetaWardsData)
 repository. Please make sure that you clone this repository to your
 computer and supply the full path to that repository to the program
 when it runs. There are three ways to do this;
@@ -36,7 +39,7 @@ when it runs. There are three ways to do this;
    e.g. `export METAWARDSDATA=$HOME/GitHub/MetaWards`
 
 2. Pass the `repository` variable to the input data classes
-   [Disease](https://github.com/chryswoods/MetaWards/blob/devel/src/metawards/_disease.py), [InputFiles](https://github.com/chryswoods/MetaWards/blob/devel/src/metawards/_inputfiles.py) and [Parameters](https://github.com/chryswoods/MetaWards/blob/devel/src/metawards/_parameters.py)
+   [Disease](https://github.com/metawards/MetaWards/blob/devel/src/metawards/_disease.py), [InputFiles](https://github.com/metawards/MetaWards/blob/devel/src/metawards/_inputfiles.py) and [Parameters](https://github.com/metawards/MetaWards/blob/devel/src/metawards/_parameters.py)
 
 3. Or simply make sure you clone into the directory `$HOME/GitHub/MetaWardsData`
    as this is the default path.
@@ -54,10 +57,26 @@ Proceedings of the National Academy of Sciences May 2010, 107 (19) 8866-8870; DO
 Leon Danon, Ellen Brooks-Pollock, Mick Bailey, Matt J Keeling
 medRxiv 2020.02.12.20022566; doi: [10.1101/2020.02.12.20022566](https://doi.org/10.1101/2020.02.12.20022566)
 
-## Dependancies
+## Dependencies
 
 The code requires Python 3.7 or above and depends on
 [pygsl](http://pygsl.sourceforge.net) and [cython](https://cython.org).
+
+You will also need to install the [GNU Scientific Library](https://www.gnu.org/software/gsl/doc/html)
+(GSL). On macOS this can be installed using [Homebrew](https://brew.sh):
+
+```sh
+brew install gsl
+```
+
+On Linux, you can install the `libgsl` package, e.g. for Ubuntu:
+
+```sh
+apt-get install libgsl-dev
+```
+
+The `pygsl` Python package also requires `numpy`, which isn't installed
+automatically as a dependency if you install `pygsl` using [pip](https://pypi.org/project/pip).
 
 Only the `gsl_rng.binomial` function is used from GSL, so it is likely
 that this requirement will soon be dropped. The link to GSL forces us
@@ -70,9 +89,9 @@ code is distributed.
 You can install the code from source by typing;
 
 ```
-git clone https://github.com/chryswoods/MetaWards
+git clone https://github.com/metawards/MetaWards
 cd MetaWards
-python setup.py install
+CYTHONIZE=1 python setup.py install
 ```
 
 (assuming that `python` is version 3.7 or above)
@@ -91,7 +110,7 @@ pip install metawards
 
 ## Running
 
-You can either load and use the Python classes directly, or you can 
+You can either load and use the Python classes directly, or you can
 run the `metawards` front-end command line program that is automatically installed.
 
 ```
@@ -112,13 +131,13 @@ in this repository that was run using;
 ```
 
 The original C code, command line and expected output are in the
-[original](https://github.com/chryswoods/MetaWards/tree/devel/original)
+[original](https://github.com/metawards/MetaWards/tree/devel/original)
 directory that is bundled in this repo.
 
 ### Running an ensemble
 
 We will be integrating this Python port with
-[https://docs.python.org/3.7/library/multiprocessing.html?highlight=process](multiprocessing) and
+[multiprocessing](https://docs.python.org/3.7/library/multiprocessing.html) and
 [dask](https://dask.org) to enable multiple models and seeds
 to be run in parallel over distributed resources. The aim is to have
 this parallel code working by the beginning of Easter.

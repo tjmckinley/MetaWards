@@ -25,6 +25,8 @@ class Disease:
     _contacts: str = None
     _references: str = None
     _filename: str = None
+    _repository: str = None
+    _repository_version: str = None
 
     def __str__(self):
         return f"Disease {self._name}\n" \
@@ -32,7 +34,9 @@ class Disease:
                f"version: {self._version}\n" \
                f"author(s): {self._authors}\n" \
                f"contact(s): {self._contacts}\n" \
-               f"references(s): {self._references}\n\n" \
+               f"references(s): {self._references}\n" \
+               f"repository: {self._repository}\n" \
+               f"repository_version: {self._repository_version}\n\n" \
                f"beta = {self.beta}\n" \
                f"progress = {self.progress}\n" \
                f"too_ill_to_move = {self.too_ill_to_move}\n" \
@@ -75,6 +79,7 @@ class Disease:
            Alternatively you can provide the full path to the
            json file via the "filename" argument
         """
+        repository_version = None
 
         if filename is None:
             if repository is None:
@@ -82,6 +87,8 @@ class Disease:
                 if repository is None:
                     repository = _default_disease_path
 
+            from ._parameters import get_repository_version
+            repository_version = get_repository_version(repository)
             filename = os.path.join(repository, folder,
                                     f"{disease}.json")
 
@@ -97,7 +104,7 @@ class Disease:
             print(f"Either it does not exist of was corrupted.")
             print(f"Error was {e.__class__} {e}")
             print(f"To download the disease data type the command:")
-            print(f"  git clone https://github.com/chryswoods/MetaWardsData")
+            print(f"  git clone https://github.com/metawards/MetaWardsData")
             print(f"and then re-run this function passing in the full")
             print(f"path to where you downloaded this directory")
             raise FileNotFoundError(f"Could not find or read {json_file}: "
@@ -111,7 +118,9 @@ class Disease:
                           _authors=data["author(s)"],
                           _contacts=data["contact(s)"],
                           _references=data["reference(s)"],
-                          _filename=json_file)
+                          _filename=json_file,
+                          _repository=repository,
+                          _repository_version=repository_version)
 
         disease._validate()
 
