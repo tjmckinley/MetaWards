@@ -21,13 +21,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Python dependencies
-        run: pip install cython pytest
+        run: pip install cython pytest numpy
       - name: Install MetaWards package
         run: CYTHONIZE=1 python setup.py install
       - name: Clone MetaWards data
         run: git clone https://github.com/metawards/MetaWardsData
       - name: Run tests
-        run: pip install numpy
         run: METAWARDSDATA=./MetaWardsData pytest tests
       - name: Install Sphinx
         run: pip install sphinx sphinx_issues sphinx_rtd_theme
