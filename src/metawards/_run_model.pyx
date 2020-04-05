@@ -1,3 +1,13 @@
+#!/bin/env/python3
+#cython: boundscheck=False
+#cython: cdivision=True
+#cython: initializedcheck=False
+#cython: cdivision_warnings=False
+#cython: wraparound=False
+#cython: binding=False
+#cython: initializedcheck=False
+#cython: nonecheck=False
+#cython: overflowcheck=False
 
 cimport cython
 import os
@@ -22,8 +32,6 @@ from ._extract_data_for_graphics import extract_data_for_graphics
 __all__ = ["run_model"]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def run_model(network: Network,
               infections, play_infections,
               rngs, s: int,
