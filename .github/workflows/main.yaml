@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Python dependencies
-        run: pip install cython pytest
+        run: pip install cython pytest numpy
       - name: Install MetaWards package
         run: CYTHONIZE=1 python setup.py install
       - name: Clone MetaWards data
