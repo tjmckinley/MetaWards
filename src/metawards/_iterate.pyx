@@ -1,3 +1,14 @@
+#!/bin/env/python3
+#cython: boundscheck=False
+#cython: cdivision=True
+#cython: initializedcheck=False
+#cython: cdivision_warnings=False
+#cython: wraparound=False
+#cython: binding=False
+#cython: initializedcheck=False
+#cython: nonecheck=False
+#cython: overflowcheck=False
+
 
 from libc.stdlib cimport malloc, free
 
@@ -25,9 +36,6 @@ cdef struct foi_buffer:
     double *foi
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.nonecheck(False)
 cdef foi_buffer* allocate_foi_buffers(int nthreads, int buffer_size=1024) nogil:
     cdef int size = buffer_size
     cdef int n = nthreads
@@ -42,9 +50,6 @@ cdef foi_buffer* allocate_foi_buffers(int nthreads, int buffer_size=1024) nogil:
     return buffers
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.nonecheck(False)
 cdef void free_foi_buffers(foi_buffer *buffers, int nthreads) nogil:
     cdef int n = nthreads
 
@@ -55,9 +60,6 @@ cdef void free_foi_buffers(foi_buffer *buffers, int nthreads) nogil:
     free(buffers)
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.nonecheck(False)
 cdef void add_from_buffer(foi_buffer *buffer, double *wards_foi) nogil:
     cdef int i = 0
     cdef int count = buffer[0].count
@@ -66,9 +68,6 @@ cdef void add_from_buffer(foi_buffer *buffer, double *wards_foi) nogil:
         wards_foi[buffer[0].index[i]] += buffer[0].foi[i]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.nonecheck(False)
 cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
                                double *wards_foi,
                                openmp.omp_lock_t *lock) nogil:
@@ -85,25 +84,16 @@ cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
         buffer[0].count = 0
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.nonecheck(False)
 cdef double * _get_double_array_ptr(double_array):
     cdef double [::1] a = double_array
     return &(a[0])
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.nonecheck(False)
 cdef int * _get_int_array_ptr(int_array):
     cdef int [::1] a = int_array
     return &(a[0])
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.nonecheck(False)
 def iterate(network: Network, infections, play_infections,
             params: Parameters, rngs, timestep: int,
             population: int, nthreads: int = None,
@@ -297,9 +287,10 @@ def iterate(network: Network, infections, play_infections,
                             # number moving, this is I_ij - G_ij
                             moving = inf_ij - staying
 
-                            add_to_buffer(day_buffer, ifrom,
-                                          staying * scl_foi_uv,
-                                          &(wards_day_foi[0]), &lock)
+                            if staying > 0:
+                                add_to_buffer(day_buffer, ifrom,
+                                              staying * scl_foi_uv,
+                                              &(wards_day_foi[0]), &lock)
                             #wards_day_foi[ifrom] += staying * scl_foi_uv
 
                             # Daytime Force of
@@ -307,22 +298,25 @@ def iterate(network: Network, infections, play_infections,
                             # number of people staying
                             # in the ward (too ill to work)
                             # this is the sum for all G_ij (including g_ii
-                            add_to_buffer(day_buffer, ito,
-                                          moving * scl_foi_uv,
-                                          &(wards_day_foi[0]), &lock)
+                            if moving > 0:
+                                add_to_buffer(day_buffer, ito,
+                                              moving * scl_foi_uv,
+                                              &(wards_day_foi[0]), &lock)
                             #wards_day_foi[ito] += moving * scl_foi_uv
 
                             # Daytime FOI for destination is incremented (including self links, I_ii)
                         else:
                             # outside cutoff
-                            add_to_buffer(day_buffer, ifrom,
-                                          inf_ij * scl_foi_uv,
-                                          &(wards_day_foi[0]), &lock)
+                            if inf_ij > 0:
+                                add_to_buffer(day_buffer, ifrom,
+                                              inf_ij * scl_foi_uv,
+                                              &(wards_day_foi[0]), &lock)
                             #wards_day_foi[ifrom] += inf_ij * scl_foi_uv
 
-                        add_to_buffer(night_buffer, ifrom,
-                                      inf_ij * scl_foi_uv,
-                                      &(wards_night_foi[0]), &lock)
+                        if inf_ij > 0:
+                            add_to_buffer(night_buffer, ifrom,
+                                          inf_ij * scl_foi_uv,
+                                          &(wards_night_foi[0]), &lock)
                         #wards_night_foi[ifrom] += inf_ij * scl_foi_uv
 
                         # Nighttime Force of Infection is
