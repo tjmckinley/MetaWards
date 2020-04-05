@@ -393,7 +393,7 @@ def iterate(network: Network, infections, play_infections,
 
                 inf_prob = rate_to_prob(rate)
 
-                l = _ran_binomial(r, inf_prob, <int>(links_suscept[j]))
+                l = _ran_binomial(pr, inf_prob, <int>(links_suscept[j]))
 
                 #if l > links_suscept[j]:
                 #    print(f"l > links[{j}].suscept {links_suscept[j]} nighttime")
