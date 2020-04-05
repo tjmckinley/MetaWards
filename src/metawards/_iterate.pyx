@@ -325,80 +325,84 @@ def iterate(network: Network, infections, play_infections,
     play_infections_i = play_infections[i]
 
     p = p.start("fixed")
-    for j in range(1, network.nlinks+1):
-        # actual new infections for fixed movements
-        inf_prob = 0
+    with nogil, parallel(num_threads=num_threads):
+        thread_id = cython.parallel.threadid()
+        pr = _get_binomial_ptr(rngs_view[thread_id])
 
-        distance = links_distance[j]
+        for j in prange(1, nlinks_plus_one, schedule="static"):
+            # actual new infections for fixed movements
+            inf_prob = 0
 
-        if distance < cutoff:
-            # distance is below cutoff (reasonable distance)
-            # infect in work ward
             ifrom = links_ifrom[j]
             ito = links_ito[j]
+            distance = links_distance[j]
 
-            if wards_day_foi[ito] > 0:
-                # daytime infection of link j
-                if cSELFISOLATE:
-                    frac = is_dangerous_array[ito] / (
-                                            wards_denominator_d[ito] +
-                                            wards_denominator_p[ito])
+            if distance < cutoff:
+                # distance is below cutoff (reasonable distance)
+                # infect in work ward
+                if wards_day_foi[ito] > 0:
+                    # daytime infection of link j
+                    if cSELFISOLATE:
+                        frac = is_dangerous_array[ito] / (
+                                                wards_denominator_d[ito] +
+                                                wards_denominator_p[ito])
 
-                    if frac > thresh:
-                        inf_prob = 0.0
+                        if frac > thresh:
+                            inf_prob = 0.0
+                        else:
+                            rate = (length_day * wards_day_foi[ito]) / (
+                                                wards_denominator_d[ito] +
+                                                wards_denominator_pd[ito])
+
+                            inf_prob = rate_to_prob(rate)
                     else:
                         rate = (length_day * wards_day_foi[ito]) / (
-                                            wards_denominator_d[ito] +
-                                            wards_denominator_pd[ito])
+                                                wards_denominator_d[ito] +
+                                                wards_denominator_pd[ito])
 
                         inf_prob = rate_to_prob(rate)
-                else:
-                    rate = (length_day * wards_day_foi[ito]) / (
-                                            wards_denominator_d[ito] +
-                                            wards_denominator_pd[ito])
 
-                    inf_prob = rate_to_prob(rate)
+                # end of if wards.day_foi[ito] > 0
+            # end of if distance < cutoff
+            elif wards_day_foi[ifrom] > 0:
+                # if distance is too large then infect in home ward with day FOI
+                rate = (length_day * wards_day_foi[ifrom]) / (
+                                                wards_denominator_d[ifrom] +
+                                                wards_denominator_pd[ifrom])
 
-            # end of if wards.day_foi[ito] > 0
-        # end of if distance < cutoff
-        elif wards_day_foi[ifrom] > 0:
-            # if distance is too large then infect in home ward with day FOI
-            rate = (length_day * wards_day_foi[ifrom]) / (
-                                            wards_denominator_d[ifrom] +
-                                            wards_denominator_pd[ifrom])
+                inf_prob = rate_to_prob(rate)
 
-            inf_prob = rate_to_prob(rate)
+            if inf_prob > 0.0:
+                # daytime infection of workers
+                l = _ran_binomial(pr, inf_prob, <int>(links_suscept[j]))
 
-        if inf_prob > 0.0:
-            # daytime infection of workers
-            l = _ran_binomial(r, inf_prob, <int>(links_suscept[j]))
+                if l > 0:
+                    # actual infection
+                    #print(f"InfProb {inf_prob}, susc {links.suscept[j]}, l {l}")
+                    infections_i[j] += l
+                    links_suscept[j] -= l
 
-            if l > 0:
-                # actual infection
-                #print(f"InfProb {inf_prob}, susc {links.suscept[j]}, l {l}")
-                infections_i[j] += l
-                links_suscept[j] -= l
+            if wards_night_foi[ifrom] > 0:
+                # nighttime infection of workers
+                rate = (1.0 - length_day) * (wards_night_foi[ifrom]) / (
+                                                wards_denominator_n[ifrom] +
+                                                wards_denominator_p[ifrom])
 
-        if wards_night_foi[ifrom] > 0:
-            # nighttime infection of workers
-            rate = (1.0 - length_day) * (wards_night_foi[ifrom]) / (
-                                            wards_denominator_n[ifrom] +
-                                            wards_denominator_p[ifrom])
+                inf_prob = rate_to_prob(rate)
 
-            inf_prob = rate_to_prob(rate)
+                l = _ran_binomial(r, inf_prob, <int>(links_suscept[j]))
 
-            l = _ran_binomial(r, inf_prob, <int>(links_suscept[j]))
+                #if l > links_suscept[j]:
+                #    print(f"l > links[{j}].suscept {links_suscept[j]} nighttime")
 
-            if l > links_suscept[j]:
-                print(f"l > links[{j}].suscept {links_suscept[j]} nighttime")
-
-            if l > 0:
-                # actual infection
-                # print(f"NIGHT InfProb {inf_prob}, susc {links.suscept[j]}, {l}")
-                infections_i[j] += l
-                links_suscept[j] -= l
-        # end of wards.night_foi[ifrom] > 0  (nighttime infections)
-    # end of loop over all network links
+                if l > 0:
+                    # actual infection
+                    # print(f"NIGHT InfProb {inf_prob}, susc {links.suscept[j]}, {l}")
+                    infections_i[j] += l
+                    links_suscept[j] -= l
+            # end of wards.night_foi[ifrom] > 0  (nighttime infections)
+        # end of loop over all network links
+    # end of parallel section
     p = p.stop()
 
     cdef int suscept = 0
