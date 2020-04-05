@@ -19,7 +19,7 @@ __all__ = ["iterate"]
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def iterate(network: Network, infections, play_infections,
-            params: Parameters, rng, timestep: int,
+            params: Parameters, rngs, timestep: int,
             population: int, nthreads: int = None,
             profiler: Profiler=None,
             is_dangerous=None,
@@ -27,8 +27,9 @@ def iterate(network: Network, infections, play_infections,
             IMPORTS: bool = False):
     """Iterate the model forward one timestep (day) using the supplied
        network and parameters, advancing the supplied infections,
-       and using the supplied random number generator (rng)
-       to generate random numbers. This iterates for a normal
+       and using the supplied random number generators (rngs)
+       to generate random numbers (this is an array with one generator
+       per thread). This iterates for a normal
        (working) day (with predictable movements, mixed
        with random movements)
 
@@ -39,8 +40,6 @@ def iterate(network: Network, infections, play_infections,
         profiler = NullProfiler()
 
     p = profiler.start("iterate")
-
-    cdef binomial_rng* r = _get_binomial_ptr(rng)
 
     cdef double uv = params.UV
     cdef int ts = timestep
@@ -71,7 +70,7 @@ def iterate(network: Network, infections, play_infections,
         p = p.start("imports")
         imported = import_infection(network=network, infections=infections,
                                     play_infections=play_infections,
-                                    params=params, rng=rng,
+                                    params=params, rng=rngs[0],
                                     population=population)
 
         print(f"Day: {timestep} Imports: expected {params.daily_imports} "
@@ -85,6 +84,8 @@ def iterate(network: Network, infections, play_infections,
     cdef play_at_home_scl = 0.0
 
     cdef int num_threads = nthreads
+    cdef unsigned long [::1] rngs_view = rngs
+    cdef binomial_rng* r = _get_binomial_ptr(rngs[0])
 
     cdef int j = 0
     cdef int k = 0
@@ -275,6 +276,9 @@ def iterate(network: Network, infections, play_infections,
     cdef int nnodes_plus_one = network.nnodes + 1
     cdef int nlinks_plus_one = network.nlinks + 1
 
+    cdef binomial_rng* pr   # pointer to parallel rng
+    cdef int thread_id
+
     p = p.start("recovery")
     for i in range(N_INF_CLASSES-2, -1, -1):
         # recovery, move through classes backwards (loop down to 0)
@@ -285,11 +289,14 @@ def iterate(network: Network, infections, play_infections,
         disease_progress = params.disease_params.progress[i]
 
         with nogil, parallel(num_threads=num_threads):
+            thread_id = cython.parallel.threadid()
+            pr = _get_binomial_ptr(rngs_view[thread_id])
+
             for j in prange(1, nlinks_plus_one, schedule="static"):
                 inf_ij = infections_i[j]
 
                 if inf_ij > 0:
-                    l = _ran_binomial(r, disease_progress, inf_ij)
+                    l = _ran_binomial(pr, disease_progress, inf_ij)
 
                     if l > 0:
                         infections_i_plus_one[j] += l
@@ -299,7 +306,7 @@ def iterate(network: Network, infections, play_infections,
                 inf_ij = play_infections_i[j]
 
                 if inf_ij > 0:
-                    l = _ran_binomial(r, disease_progress, inf_ij)
+                    l = _ran_binomial(pr, disease_progress, inf_ij)
 
                     if l > 0:
                         play_infections_i_plus_one[j] += l

@@ -2,10 +2,11 @@
 
 from ._ran_binomial cimport _construct_binomial_rng, _ran_binomial, \
                             _seed_ran_binomial, _delete_binomial_rng, \
-                            _get_binomial_ptr
+                            _get_binomial_ptr, _ran_uniform
 
 
-__all__ = ["ran_binomial", "seed_ran_binomial", "delete_ran_binomial"]
+__all__ = ["ran_binomial", "ran_uniform", "ran_int",
+           "seed_ran_binomial", "delete_ran_binomial"]
 
 
 # The plan with this file is to move to an inline cdef that just
@@ -41,6 +42,19 @@ def ran_binomial(rng, p: float, n: int):
     """
     cdef binomial_rng *r = _get_binomial_ptr(rng)
     return _ran_binomial(r, p, n)
+
+
+def ran_uniform(rng):
+    """Return a random double drawn from a uniform distribution between
+       zero and one
+    """
+    cdef binomial_rng *r = _get_binomial_ptr(rng)
+    return _ran_uniform(r)
+
+
+def ran_int(rng, lower=0, upper=(2**32)-1):
+    """Draw a random integer from [0,upper] inclusive"""
+    return lower + int(ran_uniform(rng) * (upper-lower))
 
 
 def delete_ran_binomial(rng):

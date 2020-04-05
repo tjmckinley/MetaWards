@@ -26,7 +26,7 @@ __all__ = ["run_model"]
 @cython.wraparound(False)
 def run_model(network: Network,
               infections, play_infections,
-              rng, s: int,
+              rngs, s: int,
               output_dir: str=".",
               population: int=57104043,
               nsteps: int=None,
@@ -162,7 +162,7 @@ def run_model(network: Network,
                 p2 = p2.start("iterate_weekend")
                 iterate_weekend(network=network, infections=infections,
                                 play_infections=play_infections,
-                                params=params, rng=rng, timestep=timestep,
+                                params=params, rngs=rngs, timestep=timestep,
                                 population=population.initial,
                                 profiler=p2, nthreads=nthreads)
                 p2 = p2.stop()
@@ -171,7 +171,7 @@ def run_model(network: Network,
                 p2 = p2.start("iterate")
                 iterate(network=network, infections=infections,
                         play_infections=play_infections,
-                        params=params, rng=rng, timestep=timestep,
+                        params=params, rngs=rngs, timestep=timestep,
                         population=population.initial,
                         profiler=p2, nthreads=nthreads)
                 p2 = p2.stop()
@@ -185,7 +185,7 @@ def run_model(network: Network,
             p2 = p2.start("iterate")
             iterate(network=network, infections=infections,
                     play_infections=play_infections,
-                    params=params, rng=rng, timestep=timestep,
+                    params=params, rngs=rngs, timestep=timestep,
                     population=population.initial,
                     profiler=p2, nthreads=nthreads)
             p2 = p2.stop()
