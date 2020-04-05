@@ -1,4 +1,6 @@
 
+from libc.stdlib cimport malloc, free
+
 cimport cython
 from libc.math cimport cos, pi
 from  ._rate_to_prob cimport rate_to_prob
@@ -10,10 +12,93 @@ from ._network import Network
 from ._parameters import Parameters
 from ._profiler import Profiler, NullProfiler
 from ._import_infection import import_infection
+from ._array import create_int_array, create_double_array
 
 from ._ran_binomial cimport _ran_binomial, _get_binomial_ptr, binomial_rng
 
 __all__ = ["iterate"]
+
+
+cdef struct foi_buffer:
+    int count
+    int *index
+    double *foi
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
+cdef foi_buffer* allocate_foi_buffers(int nthreads, int buffer_size=1024) nogil:
+    cdef int size = buffer_size
+    cdef int n = nthreads
+
+    cdef foi_buffer *buffers = <foi_buffer *> malloc(n * sizeof(foi_buffer))
+
+    for i in range(0, nthreads):
+        buffers[i].count = 0
+        buffers[i].index = <int *> malloc(size * sizeof(int))
+        buffers[i].foi = <double *> malloc(size * sizeof(double))
+
+    return buffers
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
+cdef void free_foi_buffers(foi_buffer *buffers, int nthreads) nogil:
+    cdef int n = nthreads
+
+    for i in range(0, nthreads):
+        free(buffers[i].index)
+        free(buffers[i].foi)
+
+    free(buffers)
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
+cdef void add_from_buffer(foi_buffer *buffer, double *wards_foi) nogil:
+    cdef int i = 0
+    cdef int count = buffer[0].count
+
+    for i in range(0, count):
+        wards_foi[buffer[0].index[i]] += buffer[0].foi[i]
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
+cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
+                               double *wards_foi,
+                               openmp.omp_lock_t *lock) nogil:
+    cdef int count = buffer[0].count
+
+    buffer[0].index[count] = index
+    buffer[0].foi[count] = value
+    buffer[0].count = count + 1
+
+    if buffer[0].count >= 1024:
+        openmp.omp_set_lock(lock)
+        add_from_buffer(buffer, wards_foi)
+        openmp.omp_unset_lock(lock)
+        buffer[0].count = 0
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
+cdef double * _get_double_array_ptr(double_array):
+    cdef double [::1] a = double_array
+    return &(a[0])
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
+cdef int * _get_int_array_ptr(int_array):
+    cdef int [::1] a = int_array
+    return &(a[0])
 
 
 @cython.boundscheck(False)
@@ -57,8 +142,8 @@ def iterate(network: Network, infections, play_infections,
     plinks = network.play
 
     cdef int i = 0
-    cdef double [::1] wards_day_foi = wards.day_foi
-    cdef double [::1] wards_night_foi = wards.night_foi
+    cdef double * wards_day_foi = _get_double_array_ptr(wards.day_foi)
+    cdef double * wards_night_foi = _get_double_array_ptr(wards.night_foi)
     cdef double night_foi
 
     p = p.start("setup")
@@ -95,45 +180,60 @@ def iterate(network: Network, infections, play_infections,
     cdef int inf_ij = 0
     cdef double weight = 0.0
     cdef double distance = 0.0
-    cdef double [::1] links_weight = links.weight
-    cdef int [::1] links_ifrom = links.ifrom
-    cdef int [::1] links_ito = links.ito
+    cdef double * links_weight = _get_double_array_ptr(links.weight)
+    cdef int * links_ifrom = _get_int_array_ptr(links.ifrom)
+    cdef int * links_ito = _get_int_array_ptr(links.ito)
     cdef int ifrom = 0
     cdef int ito = 0
     cdef int staying, moving, play_move, end_p
-    cdef double [::1] links_distance = links.distance
+    cdef double * links_distance = _get_double_array_ptr(links.distance)
     cdef double frac = 0.0
     cdef double cumulative_prob = 0
     cdef double prob_scaled
     cdef double too_ill_to_move
 
-    cdef int [::1] wards_begin_p = wards.begin_p
-    cdef int [::1] wards_end_p = wards.end_p
+    cdef int * wards_begin_p = _get_int_array_ptr(wards.begin_p)
+    cdef int * wards_end_p = _get_int_array_ptr(wards.end_p)
 
-    cdef double [::1] plinks_distance = plinks.distance
-    cdef double [::1] plinks_weight = plinks.weight
-    cdef int [::1] plinks_ifrom = plinks.ifrom
-    cdef int [::1] plinks_ito = plinks.ito
+    cdef double * plinks_distance = _get_double_array_ptr(plinks.distance)
+    cdef double * plinks_weight = _get_double_array_ptr(plinks.weight)
+    cdef int * plinks_ifrom = _get_int_array_ptr(plinks.ifrom)
+    cdef int * plinks_ito = _get_int_array_ptr(plinks.ito)
 
-    cdef double [::1] wards_denominator_d = wards.denominator_d
-    cdef double [::1] wards_denominator_n = wards.denominator_n
-    cdef double [::1] wards_denominator_p = wards.denominator_p
-    cdef double [::1] wards_denominator_pd = wards.denominator_pd
+    cdef double * wards_denominator_d = _get_double_array_ptr(wards.denominator_d)
+    cdef double * wards_denominator_n = _get_double_array_ptr(wards.denominator_n)
+    cdef double * wards_denominator_p = _get_double_array_ptr(wards.denominator_p)
+    cdef double * wards_denominator_pd = _get_double_array_ptr(wards.denominator_pd)
 
-    cdef double [::1] links_suscept = links.suscept
-    cdef double [::1] wards_play_suscept = wards.play_suscept
+    cdef double * links_suscept = _get_double_array_ptr(links.suscept)
+    cdef double * wards_play_suscept = _get_double_array_ptr(wards.play_suscept)
 
-    cdef int [::1] wards_label = wards.label
+    cdef int * wards_label = _get_int_array_ptr(wards.label)
 
-    cdef int [::1] infections_i, play_infections_i
+    cdef int * infections_i
+    cdef int * play_infections_i
 
-    cdef int [::1] is_dangerous_array
+    cdef int * is_dangerous_array
+
+    cdef int nnodes_plus_one = network.nnodes + 1
+    cdef int nlinks_plus_one = network.nlinks + 1
+
+    cdef binomial_rng* pr   # pointer to parallel rng
+    cdef int thread_id
+
+    cdef foi_buffer * day_buffers = allocate_foi_buffers(num_threads)
+    cdef foi_buffer * day_buffer
+    cdef foi_buffer * night_buffers = allocate_foi_buffers(num_threads)
+    cdef foi_buffer * night_buffer
 
     cdef int cSELFISOLATE = 0
 
     if SELFISOLATE:
         cSELFISOLATE = 1
-        is_dangerous_array = is_dangerous
+        is_dangerous_array = _get_int_array_ptr(is_dangerous)
+
+    cdef openmp.omp_lock_t lock
+    openmp.omp_init_lock(&lock)
 
     p = p.start("loop_over_classes")
     for i in range(0, N_INF_CLASSES):
@@ -147,72 +247,97 @@ def iterate(network: Network, infections, play_infections,
         play_at_home_scl = <double>(params.dyn_play_at_home *
                                     too_ill_to_move)
 
-        infections_i = infections[i]
-        play_infections_i = play_infections[i]
+        infections_i = _get_int_array_ptr(infections[i])
+        play_infections_i = _get_int_array_ptr(play_infections[i])
 
         if contrib_foi > 0:
             p = p.start(f"work_{i}")
-            for j in range(1, network.nlinks+1):
-                # deterministic movements (e.g. to work)
-                inf_ij = infections_i[j]
-                if inf_ij > 0:
-                    weight = links_weight[j]
-                    ifrom = links_ifrom[j]
-                    ito = links_ito[j]
+            with nogil, parallel(num_threads=num_threads):
+                thread_id = cython.parallel.threadid()
+                pr = _get_binomial_ptr(rngs_view[thread_id])
+                day_buffer = &(day_buffers[thread_id])
+                night_buffer = &(night_buffers[thread_id])
+                day_buffer[0].count = 0
+                night_buffer[0].count = 0
 
-                    if inf_ij > weight:
-                        print(f"inf[{i}][{j}] {inf_ij} > links[j].weight "
-                              f"{weight}")
+                for j in prange(1, nlinks_plus_one, schedule="static"):
+                    # deterministic movements (e.g. to work)
+                    inf_ij = infections_i[j]
+                    if inf_ij > 0:
+                        weight = links_weight[j]
+                        ifrom = links_ifrom[j]
+                        ito = links_ito[j]
 
-                    if links_distance[j] < cutoff:
-                        if cSELFISOLATE:
-                            frac = is_dangerous_array[ito] / (
-                                                wards_denominator_d[ito] +
-                                                wards_denominator_p[ito])
+                        #if inf_ij > weight:
+                        #    print(f"inf[{i}][{j}] {inf_ij} > links[j].weight "
+                        #        f"{weight}")
 
-                            if frac > thresh:
-                                staying = infections_i[j]
+                        if links_distance[j] < cutoff:
+                            if cSELFISOLATE:
+                                frac = is_dangerous_array[ito] / (
+                                                    wards_denominator_d[ito] +
+                                                    wards_denominator_p[ito])
+
+                                if frac > thresh:
+                                    staying = infections_i[j]
+                                else:
+                                    # number staying - this is G_ij
+                                    staying = _ran_binomial(pr,
+                                                            too_ill_to_move,
+                                                            inf_ij)
                             else:
                                 # number staying - this is G_ij
-                                staying = _ran_binomial(r,
+                                staying = _ran_binomial(pr,
                                                         too_ill_to_move,
                                                         inf_ij)
+
+                            #if staying < 0:
+                            #    print(f"staying < 0")
+
+                            # number moving, this is I_ij - G_ij
+                            moving = inf_ij - staying
+
+                            add_to_buffer(day_buffer, ifrom,
+                                          staying * scl_foi_uv,
+                                          &(wards_day_foi[0]), &lock)
+                            #wards_day_foi[ifrom] += staying * scl_foi_uv
+
+                            # Daytime Force of
+                            # Infection is proportional to
+                            # number of people staying
+                            # in the ward (too ill to work)
+                            # this is the sum for all G_ij (including g_ii
+                            add_to_buffer(day_buffer, ito,
+                                          moving * scl_foi_uv,
+                                          &(wards_day_foi[0]), &lock)
+                            #wards_day_foi[ito] += moving * scl_foi_uv
+
+                            # Daytime FOI for destination is incremented (including self links, I_ii)
                         else:
-                            # number staying - this is G_ij
-                            staying = _ran_binomial(r,
-                                                    too_ill_to_move,
-                                                    inf_ij)
+                            # outside cutoff
+                            add_to_buffer(day_buffer, ifrom,
+                                          inf_ij * scl_foi_uv,
+                                          &(wards_day_foi[0]), &lock)
+                            #wards_day_foi[ifrom] += inf_ij * scl_foi_uv
 
-                        if staying < 0:
-                            print(f"staying < 0")
+                        add_to_buffer(night_buffer, ifrom,
+                                      inf_ij * scl_foi_uv,
+                                      &(wards_night_foi[0]), &lock)
+                        #wards_night_foi[ifrom] += inf_ij * scl_foi_uv
 
-                        # number moving, this is I_ij - G_ij
-                        moving = inf_ij - staying
+                        # Nighttime Force of Infection is
+                        # prop. to the number of Infected individuals
+                        # in the ward
+                        # This I_ii in Lambda^N
 
-                        wards_day_foi[ifrom] += staying * scl_foi_uv
+                    # end of if inf_ij (are there any new infections)
+                # end of infectious class loop
 
-                        # Daytime Force of
-                        # Infection is proportional to
-                        # number of people staying
-                        # in the ward (too ill to work)
-                        # this is the sum for all G_ij (including g_ii
-
-                        wards_day_foi[ito] += moving * scl_foi_uv
-
-                        # Daytime FOI for destination is incremented (including self links, I_ii)
-                    else:
-                        # outside cutoff
-                        wards_day_foi[ifrom] += inf_ij * scl_foi_uv
-
-                    wards_night_foi[ifrom] += inf_ij * scl_foi_uv
-
-                    # Nighttime Force of Infection is
-                    # prop. to the number of Infected individuals
-                    # in the ward
-                    # This I_ii in Lambda^N
-
-                # end of if inf_ij (are there any new infections)
-            # end of infectious class loop
+                openmp.omp_set_lock(&lock)
+                add_from_buffer(day_buffer, &(wards_day_foi[0]))
+                add_from_buffer(night_buffer, &(wards_night_foi[0]))
+                openmp.omp_unset_lock(&lock)
+            # end of parallel section
             p = p.stop()
 
             p = p.start(f"play_{i}")
@@ -273,22 +398,20 @@ def iterate(network: Network, infections, play_infections,
     p = p.stop()
     # end of loop over all disease classes
 
-    cdef int [::1] infections_i_plus_one, play_infections_i_plus_one
+    free_foi_buffers(&(day_buffers[0]), num_threads)
+    free_foi_buffers(&(night_buffers[0]), num_threads)
+
+    cdef int * infections_i_plus_one
+    cdef int * play_infections_i_plus_one
     cdef double disease_progress = 0.0
-
-    cdef int nnodes_plus_one = network.nnodes + 1
-    cdef int nlinks_plus_one = network.nlinks + 1
-
-    cdef binomial_rng* pr   # pointer to parallel rng
-    cdef int thread_id
 
     p = p.start("recovery")
     for i in range(N_INF_CLASSES-2, -1, -1):
         # recovery, move through classes backwards (loop down to 0)
-        infections_i = infections[i]
-        infections_i_plus_one = infections[i+1]
-        play_infections_i = play_infections[i]
-        play_infections_i_plus_one = play_infections[i+1]
+        infections_i = _get_int_array_ptr(infections[i])
+        infections_i_plus_one = _get_int_array_ptr(infections[i+1])
+        play_infections_i = _get_int_array_ptr(play_infections[i])
+        play_infections_i_plus_one = _get_int_array_ptr(play_infections[i+1])
         disease_progress = params.disease_params.progress[i]
 
         with nogil, parallel(num_threads=num_threads):
@@ -324,8 +447,8 @@ def iterate(network: Network, infections, play_infections,
 
     # i is set to 0 now as we are only dealing now with new infections
     i = 0
-    infections_i = infections[i]
-    play_infections_i = play_infections[i]
+    infections_i = _get_int_array_ptr(infections[i])
+    play_infections_i = _get_int_array_ptr(play_infections[i])
 
     p = p.start("fixed")
     with nogil, parallel(num_threads=num_threads):

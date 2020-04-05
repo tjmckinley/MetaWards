@@ -1,4 +1,6 @@
 
+from libc.stdlib cimport malloc, free
+
 from array import array
 
 from cython.parallel cimport parallel
