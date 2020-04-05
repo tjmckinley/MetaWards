@@ -7,6 +7,8 @@ import versioneer
 from setuptools import setup, find_packages, Extension
 from Cython.Build import cythonize
 
+cflags = '-O3 -march=native -Wall -openmp'
+
 random_sources = ["src/metawards/ran_binomial/mt19937.c", 
                   "src/metawards/ran_binomial/distributions.c"]
 
@@ -63,7 +65,7 @@ for e in extensions:
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
 
-os.environ['CFLAGS'] = '-O3 -march=native -Wall'
+os.environ['CFLAGS'] = cflags
 
 if CYTHONIZE:
     compiler_directives = {"language_level": 3, "embedsignature": True}

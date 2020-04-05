@@ -8,7 +8,8 @@ __all__ = ["iterate_weekend"]
 
 def iterate_weekend(network: Network, infections, play_infections,
                     params: Parameters, rng, timestep: int,
-                    population: int, profiler: Profiler = None,
+                    population: int, nthreads: int = None,
+                    profiler: Profiler = None,
                     is_dangerous = None, SELFISOLATE: bool = False,
                    ):
     """Iterate the model forward one timestep (day) using the supplied

@@ -31,6 +31,7 @@ def run_model(network: Network,
               population: int=57104043,
               nsteps: int=None,
               profile: bool=True,
+              nthreads: int=None,
               MAXSIZE: int=10050,
               VACCINATE: bool = False,
               IMPORTS: bool = False,
@@ -163,7 +164,7 @@ def run_model(network: Network,
                                 play_infections=play_infections,
                                 params=params, rng=rng, timestep=timestep,
                                 population=population.initial,
-                                profiler=p2)
+                                profiler=p2, nthreads=nthreads)
                 p2 = p2.stop()
                 print("weekend")
             else:
@@ -172,7 +173,7 @@ def run_model(network: Network,
                         play_infections=play_infections,
                         params=params, rng=rng, timestep=timestep,
                         population=population.initial,
-                        profiler=p2)
+                        profiler=p2, nthreads=nthreads)
                 p2 = p2.stop()
                 print("normal day")
 
@@ -186,7 +187,7 @@ def run_model(network: Network,
                     play_infections=play_infections,
                     params=params, rng=rng, timestep=timestep,
                     population=population.initial,
-                    profiler=p2)
+                    profiler=p2, nthreads=nthreads)
             p2 = p2.stop()
 
         print(f"\n {timestep} {infecteds}")

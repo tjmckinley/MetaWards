@@ -3,6 +3,9 @@ cimport cython
 from libc.math cimport cos, pi
 from  ._rate_to_prob cimport rate_to_prob
 
+from cython.parallel import parallel, prange
+cimport openmp
+
 from ._network import Network
 from ._parameters import Parameters
 from ._profiler import Profiler, NullProfiler
@@ -17,7 +20,8 @@ __all__ = ["iterate"]
 @cython.wraparound(False)
 def iterate(network: Network, infections, play_infections,
             params: Parameters, rng, timestep: int,
-            population: int, profiler: Profiler=None,
+            population: int, nthreads: int = None,
+            profiler: Profiler=None,
             is_dangerous=None,
             SELFISOLATE: bool = False,
             IMPORTS: bool = False):
@@ -79,6 +83,8 @@ def iterate(network: Network, infections, play_infections,
     cdef double contrib_foi = 0.0
     cdef double beta = 0.0
     cdef play_at_home_scl = 0.0
+
+    cdef int num_threads = nthreads
 
     cdef int j = 0
     cdef int k = 0
@@ -266,40 +272,52 @@ def iterate(network: Network, infections, play_infections,
     cdef int [::1] infections_i_plus_one, play_infections_i_plus_one
     cdef double disease_progress = 0.0
 
+    cdef int nnodes_plus_one = network.nnodes + 1
+    cdef int nlinks_plus_one = network.nlinks + 1
+
     p = p.start("recovery")
-    for i in range(N_INF_CLASSES-2, -1, -1):  # loop down to 0
-        # recovery, move through classes backwards
+    for i in range(N_INF_CLASSES-2, -1, -1):
+        # recovery, move through classes backwards (loop down to 0)
         infections_i = infections[i]
         infections_i_plus_one = infections[i+1]
         play_infections_i = play_infections[i]
         play_infections_i_plus_one = play_infections[i+1]
         disease_progress = params.disease_params.progress[i]
 
-        for j in range(1, network.nlinks+1):
-            inf_ij = infections_i[j]
+        with nogil, parallel():
+            with gil:
+                print(f"Number of threads equals "
+                      f"{openmp.omp_get_num_threads()}")
 
-            if inf_ij > 0:
-                l = _ran_binomial(r, disease_progress, inf_ij)
+            for j in prange(1, nlinks_plus_one, schedule="dynamic"):
+                inf_ij = infections_i[j]
 
-                if l > 0:
-                    infections_i_plus_one[j] += l
-                    infections_i[j] -= l
+                if inf_ij > 0:
+                    l = _ran_binomial(r, disease_progress, inf_ij)
 
-            elif inf_ij != 0:
-                print(f"inf_ij problem {i} {j} {inf_ij}")
+                    if l > 0:
+                        infections_i_plus_one[j] += l
+                        infections_i[j] -= l
 
-        for j in range(1, network.nnodes+1):
-            inf_ij = play_infections_i[j]
+                elif inf_ij != 0:
+                    with gil:
+                        print(f"inf_ij problem {i} {j} {inf_ij}")
 
-            if inf_ij > 0:
-                l = _ran_binomial(r, disease_progress, inf_ij)
+            for j in prange(1, nnodes_plus_one):
+                inf_ij = play_infections_i[j]
 
-                if l > 0:
-                    play_infections_i_plus_one[j] += l
-                    play_infections_i[j] -= l
+                if inf_ij > 0:
+                    l = _ran_binomial(r, disease_progress, inf_ij)
 
-            elif inf_ij != 0:
-                print(f"play_inf_ij problem {i} {j} {inf_ij}")
+                    if l > 0:
+                        play_infections_i_plus_one[j] += l
+                        play_infections_i[j] -= l
+
+                elif inf_ij != 0:
+                    with gil:
+                        print(f"play_inf_ij problem {i} {j} {inf_ij}")
+
+        # end of parallel section
     # end of recovery loop
     p = p.stop()
 
