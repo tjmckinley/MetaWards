@@ -20,12 +20,8 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install libgsl-dev
-        run: sudo apt-get install libgsl-dev
       - name: Install Python dependencies
-        run: pip install cython numpy pytest
-      - name: Install pygsl
-        run: pip install pygsl
+        run: pip install cython pytest
       - name: Install MetaWards package
         run: CYTHONIZE=1 python setup.py install
       - name: Clone MetaWards data
