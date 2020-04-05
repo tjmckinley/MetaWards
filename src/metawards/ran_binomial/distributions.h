@@ -60,6 +60,8 @@ typedef struct s_binomial_rng_t {
 
 DECLDIR void seed_ran_binomial(binomial_rng *rng, uint32_t seed);
 
+DECLDIR double binomial_rng_uniform(binomial_rng *rng);
+
 DECLDIR int64_t ran_binomial(binomial_rng *rng, double p, int64_t n);
 
 DECLDIR binomial_rng * binomial_rng_alloc(void);

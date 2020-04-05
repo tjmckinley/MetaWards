@@ -32,6 +32,10 @@ double next_double(bitgen_t *bitgen_state){
   return mt19937_next_double(bitgen_state);
 }
 
+double binomial_rng_uniform(binomial_rng *rng){
+  return next_double(&(rng->state));
+}
+
 float next_float(bitgen_t *bitgen_state){
   return mt19937_next_double(bitgen_state);
 }

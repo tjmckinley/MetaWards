@@ -6,11 +6,11 @@ import metawards
 
 def test_ran_binomial():
     # I've packaged the numpy random binomial generator
-    # (mt19937 generator) into metawards so that we now
-    # don't have any major dependencies
+    # (mt19937 generator) into metawards so that we now
+    # don't have any major dependencies
 
     # the random number sequence should be identical
-    # for both
+    # for both
 
     seed = 15324
 
@@ -30,6 +30,7 @@ def test_ran_binomial():
 
     # if they agree, then I have the numpy ran_binomial, which
     # I think we can trust is correct
+
 
 if __name__ == "__main__":
     test_ran_binomial()
