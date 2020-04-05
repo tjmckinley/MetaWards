@@ -7,7 +7,7 @@ import versioneer
 from setuptools import setup, find_packages, Extension
 from Cython.Build import cythonize
 
-cflags = '-O3 -march=native -Wall -openmp'
+cflags = '-O3 -march=native -Wall -fopenmp'
 
 random_sources = ["src/metawards/ran_binomial/mt19937.c", 
                   "src/metawards/ran_binomial/distributions.c"]
