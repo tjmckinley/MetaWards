@@ -158,7 +158,7 @@ def iterate(network: Network, infections, play_infections,
     cdef double scl_foi_uv = 0.0
     cdef double contrib_foi = 0.0
     cdef double beta = 0.0
-    cdef play_at_home_scl = 0.0
+    cdef double play_at_home_scl = 0.0
 
     cdef int num_threads = nthreads
     cdef unsigned long [::1] rngs_view = rngs
@@ -335,58 +335,76 @@ def iterate(network: Network, infections, play_infections,
             p = p.stop()
 
             p = p.start(f"play_{i}")
-            for j in range(1, network.nnodes+1):
-                # playmatrix loop FOI loop (random/unpredictable movements)
-                inf_ij = play_infections_i[j]
-                if inf_ij > 0:
-                    wards_night_foi[j] += inf_ij * scl_foi_uv
+            with nogil, parallel(num_threads=num_threads):
+                thread_id = cython.parallel.threadid()
+                pr = _get_binomial_ptr(rngs_view[thread_id])
+                day_buffer = &(day_buffers[thread_id])
+                day_buffer[0].count = 0
 
-                    staying = _ran_binomial(r, play_at_home_scl, inf_ij)
+                for j in prange(1, nnodes_plus_one, schedule="static"):
+                    # playmatrix loop FOI loop (random/unpredictable movements)
+                    inf_ij = play_infections_i[j]
+                    if inf_ij > 0:
+                        wards_night_foi[j] += inf_ij * scl_foi_uv
 
-                    if staying < 0:
-                        print(f"staying < 0")
+                        staying = _ran_binomial(pr, play_at_home_scl, inf_ij)
 
-                    moving = inf_ij - staying
+                        #if staying < 0:
+                        #    print(f"staying < 0")
 
-                    cumulative_prob = 0.0
-                    k = wards_begin_p[j]
+                        moving = inf_ij - staying
 
-                    end_p = wards_end_p[j]
+                        cumulative_prob = 0.0
+                        k = wards_begin_p[j]
 
-                    while (moving > 0) and (k < end_p):
-                        # distributing people across play wards
-                        if plinks_distance[k] < cutoff:
-                            weight = plinks_weight[k]
-                            ifrom = plinks_ifrom[k]
-                            ito = plinks_ito[k]
+                        end_p = wards_end_p[j]
 
-                            prob_scaled = weight / (1.0 - cumulative_prob)
-                            cumulative_prob += weight
+                        while (moving > 0) and (k < end_p):
+                            # distributing people across play wards
+                            if plinks_distance[k] < cutoff:
+                                weight = plinks_weight[k]
+                                ifrom = plinks_ifrom[k]
+                                ito = plinks_ito[k]
 
-                            play_move = _ran_binomial(r, prob_scaled, moving)
+                                prob_scaled = weight / (1.0 - cumulative_prob)
+                                cumulative_prob = cumulative_prob + weight
 
-                            if cSELFISOLATE:
-                                frac = is_dangerous_array[ito] / (
-                                                wards_denominator_d[ito] +
-                                                wards_denominator_p[ito])
+                                play_move = _ran_binomial(pr, prob_scaled, moving)
 
-                                if frac > thresh:
-                                    staying += play_move
+                                if cSELFISOLATE:
+                                    frac = is_dangerous_array[ito] / (
+                                                    wards_denominator_d[ito] +
+                                                    wards_denominator_p[ito])
+
+                                    if frac > thresh:
+                                        staying = staying + play_move
+                                    else:
+                                        add_to_buffer(day_buffer, ito,
+                                                      play_move * scl_foi_uv,
+                                                      &(wards_day_foi[0]),
+                                                      &lock)
+                                        #wards_day_foi[ito] += play_move * scl_foi_uv
                                 else:
-                                    wards_day_foi[ito] += play_move * scl_foi_uv
-                            else:
-                                wards_day_foi[ito] += play_move * scl_foi_uv
+                                    add_to_buffer(day_buffer, ito,
+                                                  play_move * scl_foi_uv,
+                                                  &(wards_day_foi[0]),
+                                                  &lock)
+                                    #wards_day_foi[ito] += play_move * scl_foi_uv
 
-                            moving -= play_move
-                        # end of if within cutoff
+                                moving = moving - play_move
+                            # end of if within cutoff
 
-                        k += 1
-                    # end of while loop
+                            k = k + 1
+                        # end of while loop
 
-                    wards_day_foi[j] += (moving + staying) * scl_foi_uv
-                # end of if inf_ij (there are new infections)
+                        wards_day_foi[j] += (moving + staying) * scl_foi_uv
+                    # end of if inf_ij (there are new infections)
 
-            # end of loop over all nodes
+                # end of loop over all nodes
+                openmp.omp_set_lock(&lock)
+                add_from_buffer(day_buffer, &(wards_day_foi[0]))
+                openmp.omp_unset_lock(&lock)
+            # end of parallel
             p = p.stop()
         # end of params.disease_params.contrib_foi[i] > 0:
     p = p.stop()
