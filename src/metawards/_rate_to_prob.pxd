@@ -2,7 +2,7 @@
 
 from libc.math cimport exp
 
-cdef inline double rate_to_prob(double rate):
+cdef inline double rate_to_prob(double rate) nogil:
     """Convert the return the probability associated with the passed
        infection rate
     """

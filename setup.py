@@ -7,6 +7,8 @@ import versioneer
 from setuptools import setup, find_packages, Extension
 from Cython.Build import cythonize
 
+cflags = '-O3 -march=native -Wall -fopenmp'
+
 random_sources = ["src/metawards/ran_binomial/mt19937.c", 
                   "src/metawards/ran_binomial/distributions.c"]
 
@@ -53,6 +55,7 @@ extensions = [
     Extension("metawards._extract_data_for_graphics", ["src/metawards/_extract_data_for_graphics.pyx"]),
     Extension("metawards._import_infection", ["src/metawards/_import_infection.pyx"]+random_sources),
     Extension("metawards._ran_binomial", ["src/metawards/_ran_binomial.pyx"]+random_sources),
+    Extension("metawards._parallel", ["src/metawards/_parallel.pyx"]),
 ]
 
 # disable bounds checking and wraparound globally as the code already
@@ -63,7 +66,7 @@ for e in extensions:
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
 
-os.environ['CFLAGS'] = '-O3 -march=native -Wall'
+os.environ['CFLAGS'] = cflags
 
 if CYTHONIZE:
     compiler_directives = {"language_level": 3, "embedsignature": True}

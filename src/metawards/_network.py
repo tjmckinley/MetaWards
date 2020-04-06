@@ -200,7 +200,8 @@ class Network:
             output_dir: str = "tmp",
             nsteps: int = None,
             profile: bool = True,
-            s: int = None):
+            s: int = None,
+            nthreads: int = None):
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
            is None, then a random seed is used.
@@ -227,6 +228,15 @@ class Network:
         print(f"First five random numbers equal {', '.join(randnums)}")
         randnums = None
 
+        if nthreads is None:
+            from ._parallel import get_available_num_threads
+            nthreads = get_available_num_threads()
+
+        print(f"Number of threads used equals {nthreads}")
+
+        from ._parallel import create_thread_generators
+        rngs = create_thread_generators(rng, nthreads)
+
         # Create space to hold the results of the simulation
         print("Initialise infections...")
         infections = self.initialise_infections()
@@ -239,8 +249,9 @@ class Network:
                                population=population.initial,
                                infections=infections,
                                play_infections=play_infections,
-                               rng=rng, s=s, output_dir=output_dir,
-                               nsteps=nsteps, profile=profile)
+                               rngs=rngs, s=s, output_dir=output_dir,
+                               nsteps=nsteps, profile=profile,
+                               nthreads=nthreads)
 
         # do we want to save infections and play_infections for inspection?
 
