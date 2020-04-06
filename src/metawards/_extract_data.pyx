@@ -1,6 +1,19 @@
+#!/bin/env/python3
+#cython: boundscheck=False
+#cython: cdivision=True
+#cython: initializedcheck=False
+#cython: cdivision_warnings=False
+#cython: wraparound=False
+#cython: binding=False
+#cython: initializedcheck=False
+#cython: nonecheck=False
+#cython: overflowcheck=False
 
 cimport cython
 from libc.math cimport sqrt
+
+from cython.parallel import parallel, prange
+cimport openmp
 
 from ._network import Network
 from ._parameters import Parameters
@@ -9,11 +22,83 @@ from ._population import Population
 from ._workspace import Workspace
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
+cdef double * get_double_array_ptr(double_array):
+    """Return the raw C pointer to the passed double array which was
+       created using create_double_array
+    """
+    cdef double [::1] a = double_array
+    return &(a[0])
+
+
+cdef int * get_int_array_ptr(int_array):
+    """Return the raw C pointer to the passed int array which was
+       created using create_int_array
+    """
+    cdef int [::1] a = int_array
+    return &(a[0])
+
+
+cdef struct inf_buffer:
+    int count
+    int *index
+    int *infected
+
+
+cdef int buffer_size = 128  # the number of ints to hold in each thread buffer
+
+
+cdef inf_buffer* allocate_inf_buffers(int nthreads) nogil:
+    cdef int size = buffer_size
+    cdef int n = nthreads
+
+    cdef inf_buffer *buffers = <inf_buffer *> malloc(n * sizeof(inf_buffer))
+
+    for i in range(0, nthreads):
+        buffers[i].count = 0
+        buffers[i].index = <int *> malloc(size * sizeof(int))
+        buffers[i].infected = <int *> malloc(size * sizeof(int))
+
+    return buffers
+
+
+cdef void free_inf_buffers(inf_buffer *buffers, int nthreads) nogil:
+    cdef int n = nthreads
+
+    for i in range(0, nthreads):
+        free(buffers[i].index)
+        free(buffers[i].infected)
+
+    free(buffers)
+
+
+cdef void add_from_buffer(inf_buffer *buffer, int *wards_infected) nogil:
+    cdef int i = 0
+    cdef int count = buffer[0].count
+
+    for i in range(0, count):
+        wards_infected[buffer[0].index[i]] += buffer[0].infected[i]
+
+
+cdef inline void add_to_buffer(inf_buffer *buffer, int index, int value,
+                               int *wards_infected,
+                               openmp.omp_lock_t *lock) nogil:
+    cdef int count = buffer[0].count
+
+    buffer[0].index[count] = index
+    buffer[0].infected[count] = value
+    buffer[0].count = count + 1
+
+    if buffer[0].count >= buffer_size:
+        openmp.omp_set_lock(lock)
+        add_from_buffer(buffer, wards_infected)
+        openmp.omp_unset_lock(lock)
+        buffer[0].count = 0
+
+
 def extract_data(network: Network, infections, play_infections,
                  timestep: int, files, workspace: Workspace,
                  population: Population, is_dangerous=None,
+                 nthreads: int=None,
                  profiler: Profiler=None, SELFISOLATE: bool = False):
     """Extract data for timestep 'timestep' from the network and
        infections and write this to the output files in 'files'
@@ -47,11 +132,11 @@ def extract_data(network: Network, infections, play_infections,
     files[1].write("%d " % timestep)
     files[3].write("%d " % timestep)
 
-    cdef int [::1] inf_tot = workspace.inf_tot
-    cdef int [::1] pinf_tot = workspace.pinf_tot
-    cdef int [::1] total_inf_ward = workspace.total_inf_ward
-    cdef int [::1] total_new_inf_ward = workspace.total_new_inf_ward
-    cdef int [::1] n_inf_wards = workspace.n_inf_wards
+    cdef int * inf_tot = get_int_array_ptr(workspace.inf_tot)
+    cdef int * pinf_tot = get_int_array_ptr(workspace.pinf_tot)
+    cdef int * total_inf_ward = get_int_array_ptr(workspace.total_inf_ward)
+    cdef int * total_new_inf_ward = get_int_array_ptr(workspace.total_new_inf_ward)
+    cdef int * n_inf_wards = get_int_array_ptr(workspace.n_inf_wards)
 
     cdef int total = 0
     cdef int total_new = 0
@@ -72,24 +157,33 @@ def extract_data(network: Network, infections, play_infections,
     cdef double dispersal = 0.0
 
     cdef int i, j
-    cdef double [::1] links_suscept = links.suscept
-    cdef int [::1] links_ifrom = links.ifrom
-    cdef int [::1] links_ito = links.ito
+    cdef double * links_suscept = get_double_array_ptr(links.suscept)
+    cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
+    cdef int * links_ito = get_int_array_ptr(links.ito)
 
-    cdef int [::1] infections_i, play_infections_i
+    cdef int * infections_i
+    cdef int * play_infections_i
 
-    cdef double [::1] wards_play_suscept = wards.play_suscept
-    cdef double [::1] wards_x = wards.x
-    cdef double [::1] wards_y = wards.y
+    cdef double * wards_play_suscept = get_double_array_ptr(wards.play_suscept)
+    cdef double * wards_x = get_double_array_ptr(wards.x)
+    cdef double * wards_y = get_double_array_ptr(wards.y)
 
-    cdef int [::1] is_dangerous_array
+    cdef int * is_dangerous_array
 
     cdef int pinf = 0
 
     cdef int cSELFISOLATE = 0
 
+    cdef int num_threads = nthreads
+    cdef int nlinks_plus_one = network.nlinks + 1
+    cdef int nnodes_plus_one = network.nnodes + 1
+
+    cdef openmp.omp_lock_t lock
+    openmp.omp_init_lock(&lock)
+
+
     if SELFISOLATE:
-        is_dangerous_array = is_dangerous
+        is_dangerous_array = get_int_array_ptr(is_dangerous)
         cSELFISOLATE = 1
 
     p = p.start("loop_over_classes")
@@ -101,21 +195,22 @@ def extract_data(network: Network, infections, play_infections,
         inf_tot[i] = 0
         pinf_tot[i] = 0
 
-        infections_i = infections[i]
-        play_infections_i = play_infections[i]
+        infections_i = get_int_array_ptr(infections[i])
+        play_infections_i = get_int_array_ptr(play_infections[i])
 
-        for j in range(1, network.nlinks+1):
-            if i == 0:
-                susceptibles += <int>(links_suscept[j])
-                total_new_inf_ward[links_ifrom[j]] += infections_i[j]
+        with nogil, parallel(num_threads=num_threads):
+            for j in prange(1, nlinks_plus_one, schedule="static"):
+                if i == 0:
+                    susceptibles += <int>(links_suscept[j])
+                    total_new_inf_ward[links_ifrom[j]] += infections_i[j]
 
-            if infections_i[j] != 0:
-                if cSELFISOLATE:
-                    if (i > 4) and (i < 10):
-                        is_dangerous_array[links_ito[j]] += infections_i[j]
+                if infections_i[j] != 0:
+                    if cSELFISOLATE:
+                        if (i > 4) and (i < 10):
+                            is_dangerous_array[links_ito[j]] += infections_i[j]
 
-                inf_tot[i] += infections_i[j]
-                total_inf_ward[links_ifrom[j]] += infections_i[j]
+                    inf_tot[i] += infections_i[j]
+                    total_inf_ward[links_ifrom[j]] += infections_i[j]
 
         for j in range(1, network.nnodes+1):
             if i == 0:
