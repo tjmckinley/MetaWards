@@ -11,6 +11,7 @@
 
 cimport cython
 from libc.math cimport sqrt
+from libc.stdlib cimport malloc, free
 
 from cython.parallel import parallel, prange
 cimport openmp
@@ -44,16 +45,13 @@ cdef struct inf_buffer:
     int *infected
 
 
-cdef int buffer_size = 128  # the number of ints to hold in each thread buffer
-
-
-cdef inf_buffer* allocate_inf_buffers(int nthreads) nogil:
+cdef inf_buffer* allocate_inf_buffers(int nthreads, int buffer_size=128) nogil:
     cdef int size = buffer_size
     cdef int n = nthreads
 
     cdef inf_buffer *buffers = <inf_buffer *> malloc(n * sizeof(inf_buffer))
 
-    for i in range(0, nthreads):
+    for i in range(0, n):
         buffers[i].count = 0
         buffers[i].index = <int *> malloc(size * sizeof(int))
         buffers[i].infected = <int *> malloc(size * sizeof(int))
@@ -64,7 +62,7 @@ cdef inf_buffer* allocate_inf_buffers(int nthreads) nogil:
 cdef void free_inf_buffers(inf_buffer *buffers, int nthreads) nogil:
     cdef int n = nthreads
 
-    for i in range(0, nthreads):
+    for i in range(0, n):
         free(buffers[i].index)
         free(buffers[i].infected)
 
@@ -81,7 +79,8 @@ cdef void add_from_buffer(inf_buffer *buffer, int *wards_infected) nogil:
 
 cdef inline void add_to_buffer(inf_buffer *buffer, int index, int value,
                                int *wards_infected,
-                               openmp.omp_lock_t *lock) nogil:
+                               openmp.omp_lock_t *lock,
+                               int buffer_size=128) nogil:
     cdef int count = buffer[0].count
 
     buffer[0].index[count] = index
@@ -93,6 +92,80 @@ cdef inline void add_to_buffer(inf_buffer *buffer, int index, int value,
         add_from_buffer(buffer, wards_infected)
         openmp.omp_unset_lock(lock)
         buffer[0].count = 0
+
+
+# struct to hold all of the variables that will be reduced across threads
+cdef struct red_variables:
+    double sum_x
+    double sum_y
+    double sum_x2
+    double sum_y2
+    int n_inf_wards
+    int total_new
+    int inf_tot
+    int pinf_tot
+    int is_dangerous
+    int susceptibles
+
+
+cdef void reset_reduce_variables(red_variables * variables,
+                                 int nthreads) nogil:
+    cdef int i = 0
+    cdef int n = nthreads
+
+    for i in range(0, n):
+        variables.sum_x = 0
+        variables.sum_y = 0
+        variables.sum_x2 = 0
+        variables.sum_y2 = 0
+        variables.n_inf_wards = 0
+        variables.total_new = 0
+        variables.inf_tot = 0
+        variables.pinf_tot = 0
+        variables.is_dangerous = 0
+        variables.susceptibles = 0
+
+
+cdef red_variables* allocate_red_variables(int nthreads) nogil:
+    """Allocate space for thread-local reduction variables for each
+       of the 'nthreads' threads. Note that we need this as
+       cython won't allow reduction in parallel blocks (only loops)
+    """
+    cdef int n = nthreads
+
+    cdef red_variables *variables = <red_variables *> malloc(
+                                                n * sizeof(red_variables))
+
+
+    reset_reduce_variables(variables, n)
+
+    return variables
+
+
+cdef void free_red_variables(red_variables *variables) nogil:
+    """Free the memory held by the reduction variables"""
+    free(variables)
+
+
+cdef void reduce_variables(red_variables *variables, int nthreads) nogil:
+    """Reduce all of the thread-local totals in 'variables' for
+       the 'nthreads' threads into the values in variables[0]
+    """
+    cdef int i = 0
+    cdef int n = nthreads
+
+    if n > 1:
+        for i in range(1, n):
+            variables[0].sum_x += variables[i].sum_x
+            variables[0].sum_y += variables[i].sum_y
+            variables[0].sum_x2 += variables[i].sum_x2
+            variables[0].sum_y2 += variables[i].sum_y2
+            variables[0].n_inf_wards += variables[i].n_inf_wards
+            variables[0].total_new += variables[i].total_new
+            variables[0].inf_tot += variables[i].inf_tot
+            variables[0].pinf_tot += variables[i].pinf_tot
+            variables[0].is_dangerous += variables[i].is_dangerous
+            variables[0].susceptibles += variables[i].susceptibles
 
 
 def extract_data(network: Network, infections, play_infections,
@@ -140,12 +213,13 @@ def extract_data(network: Network, infections, play_infections,
 
     cdef int total = 0
     cdef int total_new = 0
-
     cdef int recovereds = 0
     cdef int susceptibles = 0
     cdef int latent = 0
 
-    cdef double x, y
+    cdef double x = 0.0
+    cdef double y = 0.0
+
     cdef double sum_x = 0.0
     cdef double sum_y = 0.0
     cdef double sum_x2 = 0.0
@@ -175,70 +249,136 @@ def extract_data(network: Network, infections, play_infections,
     cdef int cSELFISOLATE = 0
 
     cdef int num_threads = nthreads
+    cdef int thread_id = 0
+    cdef int ifrom = 0
+    cdef int newinf = 0
     cdef int nlinks_plus_one = network.nlinks + 1
     cdef int nnodes_plus_one = network.nnodes + 1
 
     cdef openmp.omp_lock_t lock
     openmp.omp_init_lock(&lock)
 
+    cdef inf_buffer * total_new_inf_ward_buffers = allocate_inf_buffers(num_threads)
+    cdef inf_buffer * total_new_inf_ward_buffer
+
+    cdef inf_buffer * total_inf_ward_buffers = allocate_inf_buffers(num_threads)
+    cdef inf_buffer * total_inf_ward_buffer
+
+    cdef inf_buffer * is_dangerous_buffers = <inf_buffer*>0
+    cdef inf_buffer * is_dangerous_buffer
+
+    cdef red_variables * redvars = allocate_red_variables(num_threads)
+    cdef red_variables * redvar
 
     if SELFISOLATE:
         is_dangerous_array = get_int_array_ptr(is_dangerous)
+        is_dangerous_buffers = allocate_inf_buffers(num_threads)
         cSELFISOLATE = 1
 
     p = p.start("loop_over_classes")
 
     for i in range(0, N_INF_CLASSES):
-        # do we need to initialise total_new_inf_wards and
-        # total_inf_wards to 0?
         n_inf_wards[i] = 0
         inf_tot[i] = 0
         pinf_tot[i] = 0
-
         infections_i = get_int_array_ptr(infections[i])
         play_infections_i = get_int_array_ptr(play_infections[i])
 
         with nogil, parallel(num_threads=num_threads):
+            thread_id = cython.parallel.threadid()
+            total_inf_ward_buffer = &(total_inf_ward_buffers[thread_id])
+            total_new_inf_ward_buffer = &(total_new_inf_ward_buffers[thread_id])
+            redvar = &(redvars[thread_id])
+
+            if cSELFISOLATE:
+                is_dangerous_buffer = &(is_dangerous_buffers[thread_id])
+
             for j in prange(1, nlinks_plus_one, schedule="static"):
+                ifrom = links_ifrom[j]
+
                 if i == 0:
-                    susceptibles += <int>(links_suscept[j])
-                    total_new_inf_ward[links_ifrom[j]] += infections_i[j]
+                    redvar[0].susceptibles += <int>(links_suscept[j])
+
+                    add_to_buffer(total_new_inf_ward_buffer,
+                                  ifrom, infections_i[j],
+                                  &(total_new_inf_ward[0]), &lock)
+                    #total_new_inf_ward[links_ifrom[j]] += infections_i[j]
 
                 if infections_i[j] != 0:
                     if cSELFISOLATE:
                         if (i > 4) and (i < 10):
-                            is_dangerous_array[links_ito[j]] += infections_i[j]
+                            add_to_buffer(is_dangerous_buffer,
+                                          links_ito[j], infections_i[j],
+                                          &(is_dangerous_array[0]), &lock)
+                            #is_dangerous_array[links_ito[j]] += infections_i[j]
 
-                    inf_tot[i] += infections_i[j]
-                    total_inf_ward[links_ifrom[j]] += infections_i[j]
+                    redvar[0].inf_tot += infections_i[j]
+                    add_to_buffer(total_inf_ward_buffer,
+                                  ifrom, infections_i[j],
+                                  &(total_inf_ward[0]), &lock)
+                    #total_inf_ward[links_ifrom[j]] += infections_i[j]
+            # end of loop over links
 
-        for j in range(1, network.nnodes+1):
-            if i == 0:
-                susceptibles += <int>(wards_play_suscept[j])
+            # cannot reduce in parallel, so manual reduction
+            openmp.omp_set_lock(&lock)
+            add_from_buffer(total_new_inf_ward_buffer,
+                            &(total_new_inf_ward[0]))
+            add_from_buffer(total_inf_ward_buffer,
+                            &(total_inf_ward[0]))
+            openmp.omp_unset_lock(&lock)
+
+            # loop over wards (nodes)
+            for j in prange(1, nnodes_plus_one, schedule="static"):
+                if i == 0:
+                    redvar[0].susceptibles += <int>(wards_play_suscept[j])
+
+                    if play_infections_i[j] > 0:
+                        total_new_inf_ward[j] += play_infections_i[j]
+
+                    if total_new_inf_ward[j] != 0:
+                        newinf = total_new_inf_ward[j]
+                        x = wards_x[j]
+                        y = wards_y[j]
+                        redvar[0].sum_x += newinf * x
+                        redvar[0].sum_y += newinf * y
+                        redvar[0].sum_x2 += newinf * x * x
+                        redvar[0].sum_y2 += newinf * y * y
+                        redvar[0].total_new += newinf
+
                 if play_infections_i[j] > 0:
-                    total_new_inf_ward[j] += play_infections_i[j]
+                    pinf = play_infections_i[j]
+                    redvar[0].pinf_tot += pinf
+                    total_inf_ward[j] += pinf
 
-                if total_new_inf_ward[j] != 0:
-                    newinf = total_new_inf_ward[j]
-                    x = wards_x[j]
-                    y = wards_y[j]
-                    sum_x += newinf * x
-                    sum_y += newinf * y
-                    sum_x2 += newinf * x * x
-                    sum_y2 += newinf * y * y
-                    total_new += newinf
+                    if cSELFISOLATE:
+                        if (i > 4) and (i < 10):
+                            redvar[0].is_dangerous += pinf
 
-            if play_infections_i[j] > 0:
-                pinf = play_infections_i[j]
-                pinf_tot[i] += pinf
-                total_inf_ward[j] += pinf
+                if (i < N_INF_CLASSES-1) and total_inf_ward[j] > 0:
+                    redvar[0].n_inf_wards += 1
+            # end of loop over nodes
+        # end of parallel
 
-                if cSELFISOLATE:
-                    if (i > 4) and (i < 10):
-                        is_dangerous_array[i] += pinf
+        # can now reduce across all threads (don't need to lock as each
+        # thread maintained its own running total)
+        reduce_variables(redvars, num_threads)
 
-            if (i < N_INF_CLASSES-1) and total_inf_ward[j] > 0:
-                n_inf_wards[i] += 1
+        inf_tot[i] = redvars[0].inf_tot
+        pinf_tot[i] = redvars[0].pinf_tot
+        n_inf_wards[i] = redvars[0].n_inf_wards
+
+        if cSELFISOLATE:
+            is_dangerous_array[i] += redvars[0].is_dangerous
+
+        total_new += redvars[0].total_new
+        susceptibles += redvars[0].susceptibles
+
+        sum_x += redvars[0].sum_x
+        sum_y += redvars[0].sum_y
+        sum_x2 += redvars[0].sum_x2
+        sum_y2 += redvars[0].sum_y2
+
+        reset_reduce_variables(redvars, num_threads)
 
         files[0].write("%d " % inf_tot[i])
         files[1].write("%d " % n_inf_wards[i])
@@ -250,6 +390,14 @@ def extract_data(network: Network, infections, play_infections,
             total += inf_tot[i] + pinf_tot[i]
         else:
             recovereds += inf_tot[i] + pinf_tot[i]
+    # end of loop over i
+
+    free_red_variables(redvars)
+    free_inf_buffers(total_new_inf_ward_buffers, num_threads)
+    free_inf_buffers(total_inf_ward_buffers, num_threads)
+
+    if is_dangerous_buffers:
+        free_inf_buffers(is_dangerous_buffers, num_threads)
 
     p = p.stop()
 

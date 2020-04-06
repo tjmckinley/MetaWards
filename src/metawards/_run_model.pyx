@@ -133,6 +133,7 @@ def run_model(network: Network,
                                       play_infections=play_infections,
                                       timestep=timestep, files=files,
                                       workspace=workspace,
+                                      nthreads=nthreads,
                                       population=population)
     p = p.stop()
 
@@ -206,6 +207,7 @@ def run_model(network: Network,
                                  timestep=timestep, files=files,
                                  workspace=workspace,
                                  population=population,
+                                 nthreads=nthreads,
                                  profiler=p2)
         p2 = p2.stop()
 
