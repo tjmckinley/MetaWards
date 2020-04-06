@@ -30,6 +30,22 @@ from ._ran_binomial cimport _ran_binomial, _get_binomial_ptr, binomial_rng
 __all__ = ["iterate"]
 
 
+cdef double * get_double_array_ptr(double_array):
+    """Return the raw C pointer to the passed double array which was
+       created using create_double_array
+    """
+    cdef double [::1] a = double_array
+    return &(a[0])
+
+
+cdef int * get_int_array_ptr(int_array):
+    """Return the raw C pointer to the passed int array which was
+       created using create_int_array
+    """
+    cdef int [::1] a = int_array
+    return &(a[0])
+
+
 cdef struct foi_buffer:
     int count
     int *index
@@ -84,16 +100,6 @@ cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
         buffer[0].count = 0
 
 
-cdef double * _get_double_array_ptr(double_array):
-    cdef double [::1] a = double_array
-    return &(a[0])
-
-
-cdef int * _get_int_array_ptr(int_array):
-    cdef int [::1] a = int_array
-    return &(a[0])
-
-
 def iterate(network: Network, infections, play_infections,
             params: Parameters, rngs, timestep: int,
             population: int, nthreads: int = None,
@@ -132,8 +138,8 @@ def iterate(network: Network, infections, play_infections,
     plinks = network.play
 
     cdef int i = 0
-    cdef double * wards_day_foi = _get_double_array_ptr(wards.day_foi)
-    cdef double * wards_night_foi = _get_double_array_ptr(wards.night_foi)
+    cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
+    cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
     cdef double night_foi
 
     p = p.start("setup")
@@ -170,35 +176,35 @@ def iterate(network: Network, infections, play_infections,
     cdef int inf_ij = 0
     cdef double weight = 0.0
     cdef double distance = 0.0
-    cdef double * links_weight = _get_double_array_ptr(links.weight)
-    cdef int * links_ifrom = _get_int_array_ptr(links.ifrom)
-    cdef int * links_ito = _get_int_array_ptr(links.ito)
+    cdef double * links_weight = get_double_array_ptr(links.weight)
+    cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
+    cdef int * links_ito = get_int_array_ptr(links.ito)
     cdef int ifrom = 0
     cdef int ito = 0
     cdef int staying, moving, play_move, end_p
-    cdef double * links_distance = _get_double_array_ptr(links.distance)
+    cdef double * links_distance = get_double_array_ptr(links.distance)
     cdef double frac = 0.0
     cdef double cumulative_prob = 0
     cdef double prob_scaled
     cdef double too_ill_to_move
 
-    cdef int * wards_begin_p = _get_int_array_ptr(wards.begin_p)
-    cdef int * wards_end_p = _get_int_array_ptr(wards.end_p)
+    cdef int * wards_begin_p = get_int_array_ptr(wards.begin_p)
+    cdef int * wards_end_p = get_int_array_ptr(wards.end_p)
 
-    cdef double * plinks_distance = _get_double_array_ptr(plinks.distance)
-    cdef double * plinks_weight = _get_double_array_ptr(plinks.weight)
-    cdef int * plinks_ifrom = _get_int_array_ptr(plinks.ifrom)
-    cdef int * plinks_ito = _get_int_array_ptr(plinks.ito)
+    cdef double * plinks_distance = get_double_array_ptr(plinks.distance)
+    cdef double * plinks_weight = get_double_array_ptr(plinks.weight)
+    cdef int * plinks_ifrom = get_int_array_ptr(plinks.ifrom)
+    cdef int * plinks_ito = get_int_array_ptr(plinks.ito)
 
-    cdef double * wards_denominator_d = _get_double_array_ptr(wards.denominator_d)
-    cdef double * wards_denominator_n = _get_double_array_ptr(wards.denominator_n)
-    cdef double * wards_denominator_p = _get_double_array_ptr(wards.denominator_p)
-    cdef double * wards_denominator_pd = _get_double_array_ptr(wards.denominator_pd)
+    cdef double * wards_denominator_d = get_double_array_ptr(wards.denominator_d)
+    cdef double * wards_denominator_n = get_double_array_ptr(wards.denominator_n)
+    cdef double * wards_denominator_p = get_double_array_ptr(wards.denominator_p)
+    cdef double * wards_denominator_pd = get_double_array_ptr(wards.denominator_pd)
 
-    cdef double * links_suscept = _get_double_array_ptr(links.suscept)
-    cdef double * wards_play_suscept = _get_double_array_ptr(wards.play_suscept)
+    cdef double * links_suscept = get_double_array_ptr(links.suscept)
+    cdef double * wards_play_suscept = get_double_array_ptr(wards.play_suscept)
 
-    cdef int * wards_label = _get_int_array_ptr(wards.label)
+    cdef int * wards_label = get_int_array_ptr(wards.label)
 
     cdef int * infections_i
     cdef int * play_infections_i
@@ -220,7 +226,7 @@ def iterate(network: Network, infections, play_infections,
 
     if SELFISOLATE:
         cSELFISOLATE = 1
-        is_dangerous_array = _get_int_array_ptr(is_dangerous)
+        is_dangerous_array = get_int_array_ptr(is_dangerous)
 
     cdef openmp.omp_lock_t lock
     openmp.omp_init_lock(&lock)
@@ -237,8 +243,8 @@ def iterate(network: Network, infections, play_infections,
         play_at_home_scl = <double>(params.dyn_play_at_home *
                                     too_ill_to_move)
 
-        infections_i = _get_int_array_ptr(infections[i])
-        play_infections_i = _get_int_array_ptr(play_infections[i])
+        infections_i = get_int_array_ptr(infections[i])
+        play_infections_i = get_int_array_ptr(play_infections[i])
 
         if contrib_foi > 0:
             p = p.start(f"work_{i}")
@@ -420,10 +426,10 @@ def iterate(network: Network, infections, play_infections,
     p = p.start("recovery")
     for i in range(N_INF_CLASSES-2, -1, -1):
         # recovery, move through classes backwards (loop down to 0)
-        infections_i = _get_int_array_ptr(infections[i])
-        infections_i_plus_one = _get_int_array_ptr(infections[i+1])
-        play_infections_i = _get_int_array_ptr(play_infections[i])
-        play_infections_i_plus_one = _get_int_array_ptr(play_infections[i+1])
+        infections_i = get_int_array_ptr(infections[i])
+        infections_i_plus_one = get_int_array_ptr(infections[i+1])
+        play_infections_i = get_int_array_ptr(play_infections[i])
+        play_infections_i_plus_one = get_int_array_ptr(play_infections[i+1])
         disease_progress = params.disease_params.progress[i]
 
         with nogil, parallel(num_threads=num_threads):
@@ -459,8 +465,8 @@ def iterate(network: Network, infections, play_infections,
 
     # i is set to 0 now as we are only dealing now with new infections
     i = 0
-    infections_i = _get_int_array_ptr(infections[i])
-    play_infections_i = _get_int_array_ptr(play_infections[i])
+    infections_i = get_int_array_ptr(infections[i])
+    play_infections_i = get_int_array_ptr(play_infections[i])
 
     p = p.start("fixed")
     with nogil, parallel(num_threads=num_threads):

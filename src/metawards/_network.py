@@ -90,6 +90,10 @@ class Network:
                                  max_links=max_links)
         p = p.stop()
 
+        # sanity-check that the network makes sense - there are specific
+        # requirements for the data layout
+        network.assert_sane()
+
         if calculate_distances:
             p = p.start("add_distances")
             network.add_distances(distance_function=distance_function)
@@ -129,6 +133,15 @@ class Network:
             print(p)
 
         return network
+
+    def assert_sane(self):
+        """Assert that this network is sane. This checks that the network
+           is laid out correctly in memory and that it doesn't have
+           anything unexpected. Checking here will prevent us from having
+           to check every time the network is accessed
+        """
+        from ._utils import assert_sane_network
+        assert_sane_network(self)
 
     def add_distances(self, distance_function=None):
         """Read in the positions of all of the nodes (wards) and calculate
