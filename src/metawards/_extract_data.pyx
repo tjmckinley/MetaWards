@@ -168,6 +168,13 @@ cdef void reduce_variables(red_variables *variables, int nthreads) nogil:
             variables[0].susceptibles += variables[i].susceptibles
 
 
+cdef int buffer_nthreads = 0
+cdef inf_buffer * total_new_inf_ward_buffers = <inf_buffer*>0
+cdef inf_buffer * total_inf_ward_buffers = <inf_buffer*>0
+cdef inf_buffer * is_dangerous_buffers = <inf_buffer*>0
+cdef red_variables * redvars = <red_variables*>0
+
+
 def extract_data(network: Network, infections, play_infections,
                  timestep: int, files, workspace: Workspace,
                  population: Population, is_dangerous=None,
@@ -258,22 +265,38 @@ def extract_data(network: Network, infections, play_infections,
     cdef openmp.omp_lock_t lock
     openmp.omp_init_lock(&lock)
 
-    cdef inf_buffer * total_new_inf_ward_buffers = allocate_inf_buffers(num_threads)
-    cdef inf_buffer * total_new_inf_ward_buffer
-
-    cdef inf_buffer * total_inf_ward_buffers = allocate_inf_buffers(num_threads)
-    cdef inf_buffer * total_inf_ward_buffer
-
-    cdef inf_buffer * is_dangerous_buffers = <inf_buffer*>0
-    cdef inf_buffer * is_dangerous_buffer
-
-    cdef red_variables * redvars = allocate_red_variables(num_threads)
-    cdef red_variables * redvar
-
     if SELFISOLATE:
         is_dangerous_array = get_int_array_ptr(is_dangerous)
-        is_dangerous_buffers = allocate_inf_buffers(num_threads)
         cSELFISOLATE = 1
+
+    global buffer_nthreads
+    global total_inf_ward_buffers
+    global total_new_inf_ward_buffers
+    global is_dangerous_buffers
+    global redvars
+
+    if buffer_nthreads != num_threads:
+        if buffer_nthreads != 0:
+            free_red_variables(redvars)
+            free_inf_buffers(total_new_inf_ward_buffers, num_threads)
+            free_inf_buffers(total_inf_ward_buffers, num_threads)
+
+        redvars = allocate_red_variables(num_threads)
+        total_new_inf_ward_buffers = allocate_inf_buffers(num_threads)
+        total_inf_ward_buffers = allocate_inf_buffers(num_threads)
+
+        if cSELFISOLATE:
+            if buffer_nthreads != 0:
+                free_inf_buffers(is_dangerous_buffers, num_threads)
+
+            is_dangerous_buffers = allocate_inf_buffers(num_threads)
+
+        buffer_nthreads = num_threads
+
+    cdef inf_buffer * total_new_inf_ward_buffer
+    cdef inf_buffer * total_inf_ward_buffer
+    cdef inf_buffer * is_dangerous_buffer
+    cdef red_variables * redvar
 
     p = p.start("loop_over_classes")
 
@@ -281,6 +304,7 @@ def extract_data(network: Network, infections, play_infections,
         n_inf_wards[i] = 0
         inf_tot[i] = 0
         pinf_tot[i] = 0
+        reset_reduce_variables(redvars, num_threads)
         infections_i = get_int_array_ptr(infections[i])
         play_infections_i = get_int_array_ptr(play_infections[i])
 
@@ -391,14 +415,6 @@ def extract_data(network: Network, infections, play_infections,
         else:
             recovereds += inf_tot[i] + pinf_tot[i]
     # end of loop over i
-
-    free_red_variables(redvars)
-    free_inf_buffers(total_new_inf_ward_buffers, num_threads)
-    free_inf_buffers(total_inf_ward_buffers, num_threads)
-
-    if is_dangerous_buffers:
-        free_inf_buffers(is_dangerous_buffers, num_threads)
-
     p = p.stop()
 
     p = p.start("write_to_files")
