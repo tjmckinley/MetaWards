@@ -69,6 +69,14 @@ cdef void free_inf_buffers(inf_buffer *buffers, int nthreads) nogil:
     free(buffers)
 
 
+cdef void reset_inf_buffer(inf_buffer *buffers, int nthreads) nogil:
+    cdef int n = nthreads
+    cdef int i = 0
+
+    for i in range(0, n):
+        buffers[i].count = 0
+
+
 cdef void add_from_buffer(inf_buffer *buffer, int *wards_infected) nogil:
     cdef int i = 0
     cdef int count = buffer[0].count
@@ -307,6 +315,11 @@ def extract_data(network: Network, infections, play_infections,
         inf_tot[i] = 0
         pinf_tot[i] = 0
         reset_reduce_variables(redvars, num_threads)
+        reset_inf_buffer(total_inf_ward_buffers, num_threads)
+        reset_inf_buffer(total_new_inf_ward_buffers, num_threads)
+        if cSELFISOLATE:
+            reset_inf_buffer(is_dangerous_buffers, num_threads)
+
         infections_i = get_int_array_ptr(infections[i])
         play_infections_i = get_int_array_ptr(play_infections[i])
 
