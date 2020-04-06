@@ -52,7 +52,7 @@ cdef struct foi_buffer:
     double *foi
 
 
-cdef foi_buffer* allocate_foi_buffers(int nthreads, int buffer_size=1024) nogil:
+cdef foi_buffer* allocate_foi_buffers(int nthreads, int buffer_size=4096) nogil:
     cdef int size = buffer_size
     cdef int n = nthreads
 
@@ -86,14 +86,15 @@ cdef void add_from_buffer(foi_buffer *buffer, double *wards_foi) nogil:
 
 cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
                                double *wards_foi,
-                               openmp.omp_lock_t *lock) nogil:
+                               openmp.omp_lock_t *lock,
+                               int buffer_size=4096) nogil:
     cdef int count = buffer[0].count
 
     buffer[0].index[count] = index
     buffer[0].foi[count] = value
     buffer[0].count = count + 1
 
-    if buffer[0].count >= 1024:
+    if buffer[0].count >= buffer_size:
         openmp.omp_set_lock(lock)
         add_from_buffer(buffer, wards_foi)
         openmp.omp_unset_lock(lock)

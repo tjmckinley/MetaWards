@@ -124,16 +124,16 @@ cdef void reset_reduce_variables(red_variables * variables,
     cdef int n = nthreads
 
     for i in range(0, n):
-        variables.sum_x = 0
-        variables.sum_y = 0
-        variables.sum_x2 = 0
-        variables.sum_y2 = 0
-        variables.n_inf_wards = 0
-        variables.total_new = 0
-        variables.inf_tot = 0
-        variables.pinf_tot = 0
-        variables.is_dangerous = 0
-        variables.susceptibles = 0
+        variables[i].sum_x = 0
+        variables[i].sum_y = 0
+        variables[i].sum_x2 = 0
+        variables[i].sum_y2 = 0
+        variables[i].n_inf_wards = 0
+        variables[i].total_new = 0
+        variables[i].inf_tot = 0
+        variables[i].pinf_tot = 0
+        variables[i].is_dangerous = 0
+        variables[i].susceptibles = 0
 
 
 cdef red_variables* allocate_red_variables(int nthreads) nogil:
