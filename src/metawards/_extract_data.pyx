@@ -45,7 +45,7 @@ cdef struct inf_buffer:
     int *infected
 
 
-cdef inf_buffer* allocate_inf_buffers(int nthreads, int buffer_size=128) nogil:
+cdef inf_buffer* allocate_inf_buffers(int nthreads, int buffer_size=1024) nogil:
     cdef int size = buffer_size
     cdef int n = nthreads
 
@@ -76,11 +76,13 @@ cdef void add_from_buffer(inf_buffer *buffer, int *wards_infected) nogil:
     for i in range(0, count):
         wards_infected[buffer[0].index[i]] += buffer[0].infected[i]
 
+    buffer[0].count = 0
+
 
 cdef inline void add_to_buffer(inf_buffer *buffer, int index, int value,
                                int *wards_infected,
                                openmp.omp_lock_t *lock,
-                               int buffer_size=128) nogil:
+                               int buffer_size=1024) nogil:
     cdef int count = buffer[0].count
 
     buffer[0].index[count] = index
@@ -323,18 +325,19 @@ def extract_data(network: Network, infections, play_infections,
                 if i == 0:
                     redvar[0].susceptibles += <int>(links_suscept[j])
 
-                    add_to_buffer(total_new_inf_ward_buffer,
-                                  ifrom, infections_i[j],
-                                  &(total_new_inf_ward[0]), &lock)
-                    #total_new_inf_ward[links_ifrom[j]] += infections_i[j]
+                    if infections_i[j] != 0:
+                        add_to_buffer(total_new_inf_ward_buffer,
+                                      ifrom, infections_i[j],
+                                      &(total_new_inf_ward[0]), &lock)
+                        #total_new_inf_ward[links_ifrom[j]] += infections_i[j]
 
                 if infections_i[j] != 0:
                     if cSELFISOLATE:
                         if (i > 4) and (i < 10):
-                            add_to_buffer(is_dangerous_buffer,
-                                          links_ito[j], infections_i[j],
-                                          &(is_dangerous_array[0]), &lock)
-                            #is_dangerous_array[links_ito[j]] += infections_i[j]
+                                add_to_buffer(is_dangerous_buffer,
+                                              links_ito[j], infections_i[j],
+                                              &(is_dangerous_array[0]), &lock)
+                                #is_dangerous_array[links_ito[j]] += infections_i[j]
 
                     redvar[0].inf_tot += infections_i[j]
                     add_to_buffer(total_inf_ward_buffer,
