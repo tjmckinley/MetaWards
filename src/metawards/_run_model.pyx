@@ -26,7 +26,6 @@ from ._clear_all_infections import clear_all_infections
 from ._seeding import seed_all_wards, seed_infection_at_node,  \
                       load_additional_seeds, infect_additional_seeds
 from ._extract_data import extract_data
-from ._extract_data_for_graphics import extract_data_for_graphics
 
 
 __all__ = ["run_model"]
@@ -211,12 +210,13 @@ def run_model(network: Network,
                                  profiler=p2)
         p2 = p2.stop()
 
-        p2 = p2.start("extract_data_for_graphics")
-        extract_data_for_graphics(network=network, infections=infections,
-                                  play_infections=play_infections,
-                                  workspace=workspace, FILE=EXPORT,
-                                  profiler=p2)
-        p2 = p2.stop()
+        # Disabling, as Leon says he doesn't need this anymore
+        #p2 = p2.start("extract_data_for_graphics")
+        #extract_data_for_graphics(network=network, infections=infections,
+        #                          play_infections=play_infections,
+        #                          workspace=workspace, FILE=EXPORT,
+        #                          profiler=p2)
+        #p2 = p2.stop()
 
         timestep += 1
 
