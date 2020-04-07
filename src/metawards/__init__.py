@@ -14,10 +14,6 @@ from ._node import *
 from ._link import *
 from ._population import *
 from ._network import *
-from ._profiler import *
-
-# All of the functions are now hidden in the 'utils' submodule
-from . import _utils as utils
 
 # import the pyx cython-compiled modules
 from ._nodes import *

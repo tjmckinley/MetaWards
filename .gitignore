@@ -10,3 +10,4 @@ __pycache__
 /2011Data
 /.pytest_cache
 /.env
+/*.pyc

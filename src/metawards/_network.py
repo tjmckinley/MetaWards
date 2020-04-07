@@ -6,7 +6,6 @@ from ._parameters import Parameters
 from ._nodes import Nodes
 from ._links import Links
 from ._population import Population
-from ._ran_binomial import seed_ran_binomial, ran_binomial
 
 __all__ = ["Network"]
 
@@ -71,10 +70,10 @@ class Network:
            will be shrunk back after building.
         """
         if profile:
-            from metawards import Profiler
+            from metawards.utils import Profiler
             p = Profiler()
         else:
-            from metawards import NullProfiler
+            from metawards.utils import NullProfiler
             p = NullProfiler()
 
         p = p.start("Network.build")
@@ -229,6 +228,8 @@ class Network:
            the nodes
         """
         # Create the random number generator
+        from .utils._ran_binomial import seed_ran_binomial, ran_binomial
+
         rng = seed_ran_binomial(seed=seed)
 
         # Print the first five random numbers so that we can
