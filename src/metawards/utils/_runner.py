@@ -125,6 +125,7 @@ def run_models(network: Network, variables, population: Population,
     # (for testing, we will use the same seed so that I can check
     #  that they are all working)
     seeds = []
+    print("WARNING*** NEED TO GENERATE DIFFERENT SEEDS FOR JOBS")
 
     for i in range(0, len(variables)):
         seeds.append(seed)
