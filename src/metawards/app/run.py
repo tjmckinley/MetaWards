@@ -237,7 +237,7 @@ def cli():
 
     if nprocs is None or nprocs < 1:
         from metawards.utils import get_number_of_processes
-        nprocs = get_number_of_processes(parallel_scheme)
+        nprocs = get_number_of_processes(parallel_scheme, nprocs)
 
     print(f"Number of processes used to parallelise model runs is {nprocs}")
 

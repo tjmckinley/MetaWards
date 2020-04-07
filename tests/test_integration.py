@@ -35,7 +35,7 @@ def test_integration():
     params.add_seeds("ExtraSeedsBrighton.dat")
 
     # start from the parameters in the specified line number of the
-    # provided input file
+    # provided input file
     variables = params.read_variables(inputfile, line_num)
 
     # extra parameters that are set
