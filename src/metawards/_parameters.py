@@ -260,6 +260,26 @@ class Parameters:
 
         self.disease_params = deepcopy(disease)
 
+    def set_variables(self, variables):
+        """This function sets the adjustable variable values to those
+           specified in 'variables' in A COPY OF THIS PARAMETERS OBJECT.
+           This returns the copy. It does not change this object
+        """
+        params = deepcopy(self)
+
+        try:
+            params.disease_params.beta[2] = variables["beta2"]
+            params.disease_params.beta[3] = variables["beta3"]
+            params.disease_params.progress[1] = variables["progress1"]
+            params.disease_params.progress[2] = variables["progress2"]
+            params.disease_params.progress[3] = variables["progress3"]
+        except Exception as e:
+            raise ValueError(
+                f"Unable to set parameters from {variables}. Error "
+                f"equals {e.__class__}: {e}")
+
+        return params
+
     @staticmethod
     def read_variables(filename: str, line_numbers: List[int]):
         """Read in extra variable parameters from the specified line number(s)

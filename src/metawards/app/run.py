@@ -225,7 +225,24 @@ def cli():
 
     print(variables)
 
-    sys.exit(0)
+    nthreads = args.nthreads
+
+    if nthreads is None or nthreads < 1:
+        from metawards.utils import get_available_num_threads
+        nthreads = get_available_num_threads()
+
+    print(f"Number of threads to use for each model run is {nthreads}")
+
+    nprocs = args.nprocs
+
+    if nprocs is None or nprocs < 1:
+        from metawards.utils import get_number_of_processes
+        nprocs = get_number_of_processes(parallel_scheme)
+
+    print(f"Number of processes used to parallelise model runs is {nprocs}")
+
+    if nprocs > 1:
+        print(f"Parallelisation will be achieved using {parallel_scheme}")
 
     # extra parameters that are set
     params.UV = args.UV
@@ -244,16 +261,17 @@ def cli():
                             profile=profile)
 
     print("Run the model...")
-    population = network.run(population=population, seed=args.seed,
-                             s=-1, nsteps=args.nsteps,
-                             output_dir=args.output,
-                             profile=profile,
-                             nthreads=args.nthreads
-                             )
+    from metawards.utils import run_models
+
+    result = run_models(network=network, variables=variables,
+                        population=population, nprocs=nprocs,
+                        nthreads=nthreads, seed=args.seed,
+                        nsteps=args.nsteps, output_dir=args.output,
+                        profile=profile, parallel_scheme=parallel_scheme)
 
     print("End of the run")
 
-    print(f"Model output:  {population}")
+    print(f"Model output:  {result}")
 
 
 if __name__ == "__main__":

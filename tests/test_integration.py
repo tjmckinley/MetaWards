@@ -36,7 +36,7 @@ def test_integration():
 
     # start from the parameters in the specified line number of the
     # provided input file
-    params.read_file(inputfile, line_num)
+    variables = params.read_variables(inputfile, line_num)
 
     # extra parameters that are set
     params.UV = UV
@@ -51,6 +51,9 @@ def test_integration():
     print("Building the network...")
     network = Network.build(params=params, calculate_distances=True,
                             profile=True)
+
+    params = params.set_variables(variables[0])
+    network.update(params, profile=True)
 
     print("Run the model...")
     population = network.run(population=population, seed=seed,

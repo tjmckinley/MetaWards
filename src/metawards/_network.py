@@ -42,7 +42,8 @@ class Network:
     """To seed provides additional seeding information"""
     to_seed: List[int] = None
 
-    params: Parameters = None  # The parameters used to generate this network
+    """The parameters used to generate this network"""
+    params: Parameters = None
 
     @staticmethod
     def build(params: Parameters,
@@ -51,6 +52,7 @@ class Network:
               distance_function=None,
               max_nodes: int = 10050,
               max_links: int = 2414000,
+              nthreads: int = 1,
               profile: bool = True):
         """Builds and returns a new Network that is described by the
            passed parameters. If 'calculate_distances' is True, then
@@ -196,6 +198,41 @@ class Network:
         """Resets the network ready for a new run of the model"""
         from .utils import reset_everything
         reset_everything(self)
+
+    def update(self, params: Parameters,
+               nthreads:int = 1, profile: bool = False):
+        """Update this network with a new set of parameters.
+           This is used to update the parameters for the network
+           for a new run. The network will be reset
+           and ready for a new run.
+        """
+        if profile:
+            from .utils import Profiler
+            p = Profiler()
+        else:
+            from .utils import NullProfiler
+            p = NullProfiler()
+
+        p = p.start("Network.update")
+
+        self.params = params
+
+        p = p.start("reset_everything")
+        self.reset_everything()
+        p = p.stop()
+
+        p = p.start("rescale_play_matrix")
+        self.rescale_play_matrix()
+        p = p.stop()
+
+        p = p.start("move_from_play_to_work")
+        self.move_from_play_to_work()
+        p = p.stop()
+
+        p = p.stop()
+
+        if profile:
+            print(p)
 
     def rescale_play_matrix(self):
         """Rescale the play matrix"""
