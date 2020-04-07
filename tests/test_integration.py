@@ -49,11 +49,12 @@ def test_integration():
 
     print("Building the network...")
     network = Network.build(params=params, calculate_distances=True,
-                            profile=False)
+                            profile=True)
 
     print("Run the model...")
     population = network.run(population=population, seed=seed,
-                             s=-1, nsteps=28, profile=False)
+                             s=-1, nsteps=28, profile=True,
+                             nthreads=1)
 
     print("End of the run")
 

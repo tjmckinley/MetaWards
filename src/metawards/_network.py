@@ -90,6 +90,10 @@ class Network:
                                  max_links=max_links)
         p = p.stop()
 
+        # sanity-check that the network makes sense - there are specific
+        # requirements for the data layout
+        network.assert_sane()
+
         if calculate_distances:
             p = p.start("add_distances")
             network.add_distances(distance_function=distance_function)
@@ -129,6 +133,15 @@ class Network:
             print(p)
 
         return network
+
+    def assert_sane(self):
+        """Assert that this network is sane. This checks that the network
+           is laid out correctly in memory and that it doesn't have
+           anything unexpected. Checking here will prevent us from having
+           to check every time the network is accessed
+        """
+        from ._utils import assert_sane_network
+        assert_sane_network(self)
 
     def add_distances(self, distance_function=None):
         """Read in the positions of all of the nodes (wards) and calculate
@@ -200,7 +213,8 @@ class Network:
             output_dir: str = "tmp",
             nsteps: int = None,
             profile: bool = True,
-            s: int = None):
+            s: int = None,
+            nthreads: int = None):
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
            is None, then a random seed is used.
@@ -227,6 +241,15 @@ class Network:
         print(f"First five random numbers equal {', '.join(randnums)}")
         randnums = None
 
+        if nthreads is None:
+            from ._parallel import get_available_num_threads
+            nthreads = get_available_num_threads()
+
+        print(f"Number of threads used equals {nthreads}")
+
+        from ._parallel import create_thread_generators
+        rngs = create_thread_generators(rng, nthreads)
+
         # Create space to hold the results of the simulation
         print("Initialise infections...")
         infections = self.initialise_infections()
@@ -239,8 +262,9 @@ class Network:
                                population=population.initial,
                                infections=infections,
                                play_infections=play_infections,
-                               rng=rng, s=s, output_dir=output_dir,
-                               nsteps=nsteps, profile=profile)
+                               rngs=rngs, s=s, output_dir=output_dir,
+                               nsteps=nsteps, profile=profile,
+                               nthreads=nthreads)
 
         # do we want to save infections and play_infections for inspection?
 

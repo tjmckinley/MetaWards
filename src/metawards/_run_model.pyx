@@ -1,3 +1,13 @@
+#!/bin/env/python3
+#cython: boundscheck=False
+#cython: cdivision=True
+#cython: initializedcheck=False
+#cython: cdivision_warnings=False
+#cython: wraparound=False
+#cython: binding=False
+#cython: initializedcheck=False
+#cython: nonecheck=False
+#cython: overflowcheck=False
 
 cimport cython
 import os
@@ -16,21 +26,19 @@ from ._clear_all_infections import clear_all_infections
 from ._seeding import seed_all_wards, seed_infection_at_node,  \
                       load_additional_seeds, infect_additional_seeds
 from ._extract_data import extract_data
-from ._extract_data_for_graphics import extract_data_for_graphics
 
 
 __all__ = ["run_model"]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def run_model(network: Network,
               infections, play_infections,
-              rng, s: int,
+              rngs, s: int,
               output_dir: str=".",
               population: int=57104043,
               nsteps: int=None,
               profile: bool=True,
+              nthreads: int=None,
               MAXSIZE: int=10050,
               VACCINATE: bool = False,
               IMPORTS: bool = False,
@@ -124,6 +132,7 @@ def run_model(network: Network,
                                       play_infections=play_infections,
                                       timestep=timestep, files=files,
                                       workspace=workspace,
+                                      nthreads=nthreads,
                                       population=population)
     p = p.stop()
 
@@ -161,18 +170,18 @@ def run_model(network: Network,
                 p2 = p2.start("iterate_weekend")
                 iterate_weekend(network=network, infections=infections,
                                 play_infections=play_infections,
-                                params=params, rng=rng, timestep=timestep,
+                                params=params, rngs=rngs, timestep=timestep,
                                 population=population.initial,
-                                profiler=p2)
+                                profiler=p2, nthreads=nthreads)
                 p2 = p2.stop()
                 print("weekend")
             else:
                 p2 = p2.start("iterate")
                 iterate(network=network, infections=infections,
                         play_infections=play_infections,
-                        params=params, rng=rng, timestep=timestep,
+                        params=params, rngs=rngs, timestep=timestep,
                         population=population.initial,
-                        profiler=p2)
+                        profiler=p2, nthreads=nthreads)
                 p2 = p2.stop()
                 print("normal day")
 
@@ -184,9 +193,9 @@ def run_model(network: Network,
             p2 = p2.start("iterate")
             iterate(network=network, infections=infections,
                     play_infections=play_infections,
-                    params=params, rng=rng, timestep=timestep,
+                    params=params, rngs=rngs, timestep=timestep,
                     population=population.initial,
-                    profiler=p2)
+                    profiler=p2, nthreads=nthreads)
             p2 = p2.stop()
 
         print(f"\n {timestep} {infecteds}")
@@ -197,15 +206,17 @@ def run_model(network: Network,
                                  timestep=timestep, files=files,
                                  workspace=workspace,
                                  population=population,
+                                 nthreads=nthreads,
                                  profiler=p2)
         p2 = p2.stop()
 
-        p2 = p2.start("extract_data_for_graphics")
-        extract_data_for_graphics(network=network, infections=infections,
-                                  play_infections=play_infections,
-                                  workspace=workspace, FILE=EXPORT,
-                                  profiler=p2)
-        p2 = p2.stop()
+        # Disabling, as Leon says he doesn't need this anymore
+        #p2 = p2.start("extract_data_for_graphics")
+        #extract_data_for_graphics(network=network, infections=infections,
+        #                          play_infections=play_infections,
+        #                          workspace=workspace, FILE=EXPORT,
+        #                          profiler=p2)
+        #p2 = p2.stop()
 
         timestep += 1
 

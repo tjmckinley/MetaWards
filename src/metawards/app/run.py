@@ -54,6 +54,10 @@ def cli():
                              "simulation (default is to run until the "
                              "epidemic has finished)")
 
+    parser.add_argument('--nthreads', type=int, default=None,
+                        help="Number of threads over which to run the "
+                             "model.")
+
     parser.add_argument('-o', '--output', type=str, default="output",
                         help="Path to the directory in which to place all "
                              "output files (default 'output')")
@@ -118,7 +122,8 @@ def cli():
     population = network.run(population=population, seed=args.seed,
                              s=-1, nsteps=args.nsteps,
                              output_dir=args.output,
-                             profile=profile
+                             profile=profile,
+                             nthreads=args.nthreads
                              )
 
     print("End of the run")

@@ -7,13 +7,15 @@ __all__ = ["iterate_weekend"]
 
 
 def iterate_weekend(network: Network, infections, play_infections,
-                    params: Parameters, rng, timestep: int,
-                    population: int, profiler: Profiler = None,
+                    params: Parameters, rngs, timestep: int,
+                    population: int, nthreads: int = None,
+                    profiler: Profiler = None,
                     is_dangerous = None, SELFISOLATE: bool = False,
                    ):
     """Iterate the model forward one timestep (day) using the supplied
        network and parameters, advancing the supplied infections,
-       and using the supplied random number generator (rng)
+       and using the supplied random number generator (rngs)
+       (array, with one generator per thread)
        to generate random numbers. This iterates for a non-working
        (weekend) day (with only random movements)
 

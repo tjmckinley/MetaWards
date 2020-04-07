@@ -10,6 +10,7 @@ cdef extern from "ran_binomial/distributions.h":
 
     void seed_ran_binomial ( binomial_rng * rng, int seed) nogil
     unsigned int ran_binomial(binomial_rng * rng, double p, unsigned int n) nogil
+    double binomial_rng_uniform(binomial_rng * rng) nogil
 
 
 cdef inline uintptr_t _construct_binomial_rng() nogil:
@@ -57,3 +58,9 @@ cdef inline int _ran_binomial(binomial_rng *rng, double p, int n) nogil:
        described by p and n
     """
     return ran_binomial(rng, p, n)
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef inline double _ran_uniform(binomial_rng *rng) nogil:
+    """Generate the next random-distributed uniform [0,1] random number"""
+    return binomial_rng_uniform(rng)
