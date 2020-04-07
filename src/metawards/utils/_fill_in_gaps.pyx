@@ -1,6 +1,6 @@
 
 cimport cython
-from ._network import Network
+from .._network import Network
 
 __all__ = ["fill_in_gaps"]
 

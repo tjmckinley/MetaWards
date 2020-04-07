@@ -32,6 +32,7 @@ def test_integration():
     # load the disease and starting-point input files
     params.set_disease("ncov")
     params.set_input_files("2011Data")
+    params.add_seeds("ExtraSeedsBrighton.dat")
 
     # start from the parameters in the specified line number of the
     # provided input file

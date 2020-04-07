@@ -1,5 +1,6 @@
 
 from dataclasses import dataclass
+from typing import List
 from copy import deepcopy
 import pathlib
 import os
@@ -71,6 +72,8 @@ class Parameters:
     uv_filename: str = None
     disease_params: Disease = None
 
+    additional_seeds: List[str] = None
+
     length_day: float = 0.7
     plength_day: float = 0.5
     initial_inf: int = 5
@@ -101,6 +104,7 @@ class Parameters:
     _repository: str = None
     _repository_version: str = None
     _repository_branch: str = None
+    _repository_dir: str = None
 
     def __str__(self):
         return f"Parameters {self._name}\n" \
@@ -126,7 +130,8 @@ class Parameters:
                f"daily_ward_vaccination_capacity = {self.daily_ward_vaccination_capacity}\n" \
                f"neighbour_weight_threshold = {self.neighbour_weight_threshold}\n" \
                f"daily_imports = {self.daily_imports}\n" \
-               f"UV = {self.UV}\n\n"
+               f"UV = {self.UV}\n" \
+               f"additional_seeds = {self.additional_seeds}\n\n"
 
     @staticmethod
     def load(parameters: str = "march29",
@@ -145,6 +150,7 @@ class Parameters:
         """
         repository_version = None
         repository_branch = None
+        repository_dir = None
 
         if filename is None:
             if repository is None:
@@ -154,7 +160,8 @@ class Parameters:
 
             filename = os.path.join(repository, folder, f"{parameters}.json")
             v = get_repository_version(repository)
-            repository_branch = v["repository"]
+            repository_dir = repository
+            repository = v["repository"]
             repository_branch = v["branch"]
             repository_version = v["version"]
 
@@ -198,6 +205,7 @@ class Parameters:
                          _references=data["reference(s)"],
                          _filename=json_file,
                          _repository=repository,
+                         _repository_dir=repository_dir,
                          _repository_branch=repository_branch,
                          _repository_version=repository_version
                          )
@@ -207,13 +215,34 @@ class Parameters:
 
         return par
 
+    def add_seeds(self, filename: str):
+        """Add an 'additional seeds' file that can be used to
+           seed wards with new infections at different times and
+           locations. Several additional_seed files can be added
+        """
+        # resolve the filename to the GitHub repo if possible...
+        if self.additional_seeds is None:
+            self.additional_seeds = []
+
+        if not os.path.exists(filename):
+            f = os.path.join(self._repository_dir, "extra_seeds", filename)
+
+            if os.path.exists(f):
+                filename = f
+            else:
+                raise FileExistsError(
+                        f"Unable to find extra seeds file {filename} in "
+                        f"the current directory or in {f}")
+
+        self.additional_seeds.append(filename)
+
     def set_input_files(self, input_files: InputFiles):
         """Set the input files that are used to initialise the
            simulation
         """
         if isinstance(input_files, str):
             input_files = InputFiles.load(input_files,
-                                          repository=self._repository)
+                                          repository=self._repository_dir)
 
         print("Using input files:")
         print(input_files)
@@ -224,7 +253,7 @@ class Parameters:
         """"Set the disease that will be modelled"""
         if isinstance(disease, str):
             disease = Disease.load(disease,
-                                   repository=self._repository)
+                                   repository=self._repository_dir)
 
         print("Using disease")
         print(disease)

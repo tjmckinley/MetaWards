@@ -3,7 +3,7 @@ cimport cython
 
 from libc.math cimport floor
 
-from ._network import Network
+from .._network import Network
 
 __all__ = ["recalculate_work_denominator_day",
            "recalculate_play_denominator_day"]

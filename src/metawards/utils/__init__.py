@@ -12,6 +12,7 @@ from .. import _network
 from ._initialise_infections import *
 from ._read_done_file import *
 from ._string_to_ints import *
+from ._profiler import *
 
 # pyx imports
 from ._build_wards_network import *

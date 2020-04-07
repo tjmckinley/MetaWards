@@ -16,10 +16,10 @@ from libc.stdlib cimport malloc, free
 from cython.parallel import parallel, prange
 cimport openmp
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 from ._profiler import Profiler, NullProfiler
-from ._population import Population
+from .._population import Population
 from ._workspace import Workspace
 
 

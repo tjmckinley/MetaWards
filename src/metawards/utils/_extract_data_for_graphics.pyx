@@ -2,10 +2,10 @@
 cimport cython
 from libc.math cimport sqrt
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 from ._profiler import Profiler, NullProfiler
-from ._population import Population
+from .._population import Population
 from ._workspace import Workspace
 
 

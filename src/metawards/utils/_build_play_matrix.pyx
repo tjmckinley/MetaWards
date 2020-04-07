@@ -3,8 +3,8 @@ cimport cython
 
 from libc.stdio cimport FILE, fopen, fscanf, fclose, feof
 
-from ._network import Network
-from ._links import Links
+from .._network import Network
+from .._links import Links
 from ._profiler import Profiler, NullProfiler
 
 __all__ = ["build_play_matrix"]
@@ -112,7 +112,7 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
         links_suscept[j] = links_weight[j]
     p = p.stop()
 
-    from ._utils import fill_in_gaps
+    from . import fill_in_gaps
     p = p.start("fill_in_gaps")
     fill_in_gaps(network)
     p = p.stop()

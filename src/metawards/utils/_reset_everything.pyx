@@ -1,8 +1,8 @@
 
 cimport cython
 
-from ._network import Network
-from ._node import Node
+from .._network import Network
+from .._node import Node
 
 __all__ = ["reset_work_matrix", "reset_play_matrix",
            "reset_play_susceptibles", "reset_everything"]

@@ -1,8 +1,8 @@
 
 from libc.math cimport sqrt
 
-from ._parameters import Parameters
-from ._network import Network
+from .._parameters import Parameters
+from .._network import Network
 
 __all__ = ["add_wards_network_distance"]
 
