@@ -48,13 +48,18 @@ def cli():
                              "the adjustable parameters to change for each "
                              "run of the model.")
 
-    parser.add_argument('-l', '--line', type=int, default=None,
+    parser.add_argument('-l', '--line', type=str, default=None, nargs="*",
                         help="Line number (or line numbers) containing the "
                              "values of adjustable parameters to run for this "
                              "run (or runs) of the model If this isn't "
                              "specified then model runs will be performed "
                              "for adjustable parameters given on all lines "
-                             "from the input file ")
+                             "from the input file. You can specify many "
+                             "numbers, and ranges are also accepted, e.g. "
+                             "'-l 5 6-10 12,13,14' etc. Note that the line "
+                             "numbers are 0-indexed, e.g. the first line of "
+                             "the file is line 0. Ranges are inclusive, "
+                             "so 3-5 is the same as 3 4 5")
 
     parser.add_argument("-r", '--repeats', type=int, default=1,
                         help="The number of repeat runs of the model to "
@@ -175,6 +180,24 @@ def cli():
         profile = False
     elif profile is None:
         profile = False
+
+    # get the line numbers of the input file to read
+    if args.line is None or len(args.line) == 0:
+        linenums = None
+        print(f"Using parameters from all lines of {args.input}")
+    else:
+        from metawards.utils import string_to_ints
+        linenums = string_to_ints(args.line)
+
+        if len(linenums) == 0:
+            print(f"You cannot read no lines from {args.input}?")
+            sys.exit(-1)
+        elif len(linenums) == 1:
+            print(f"Using parameters from line {linenums[0]} of {args.input}")
+        else:
+            print(f"Using parameters from lines {linenums} of {args.input}")
+
+    sys.exit(0)
 
     # load the disease and starting-point input files
     params.set_disease(args.disease)
