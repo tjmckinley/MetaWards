@@ -34,6 +34,18 @@ def cli():
     # has been imported via the required "-m module" syntax
     parallel_scheme = get_parallel_scheme()
 
+    if parallel_scheme == "mpi4py":
+        from mpi4py import MPI
+        comm = MPI.COMM_WORLD
+        nprocs = comm.Get_size()
+        rank = comm.Get_rank()
+        print(f"Starting MPI process {rank+1} of {nprocs}")
+
+        if rank != 0:
+            # this is a worker process, so should not do anything
+            # more until it is given work in the pool
+            return
+
     import sys
     import argparse
 
@@ -223,8 +235,6 @@ def cli():
 
     variables = nrepeats * variables
 
-    print(variables)
-
     nthreads = args.nthreads
 
     if nthreads is None or nthreads < 1:
@@ -276,3 +286,8 @@ def cli():
 
 if __name__ == "__main__":
     cli()
+
+else:
+    # this is one of the worker processes - make sure that they
+    # have imported metawards
+    from metawards.utils import run_worker

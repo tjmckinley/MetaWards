@@ -14,6 +14,7 @@ from ._read_done_file import *
 from ._string_to_ints import *
 from ._profiler import *
 from ._runner import *
+from ._worker import *
 
 # pyx imports
 from ._build_wards_network import *

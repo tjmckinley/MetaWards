@@ -4,10 +4,12 @@ from .._network import Network
 from .._population import Population
 from ._profiler import Profiler
 
+from contextlib import contextmanager
+
 import os
 import sys
 
-__all__ = ["get_number_of_processes", "run_models"]
+__all__ = ["get_number_of_processes", "run_models", "redirect_output"]
 
 
 def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
@@ -17,17 +19,29 @@ def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
     if nprocs is None:
         if parallel_scheme == "multiprocessing":
             return 1
+        elif parallel_scheme == "mpi4py":
+            from mpi4py import MPI
+            comm = MPI.COMM_WORLD
+            nprocs = comm.Get_size()
+            return nprocs
         else:
             raise ValueError(
                     f"You must specify the number of processes to "
                     f"use for parallel scheme '{parallel_scheme}'")
 
     if parallel_scheme == "mpi4py":
-        return 4
+        from mpi4py import MPI
+        comm = MPI.COMM_WORLD
+        n = comm.Get_size()
+
+        if n < nprocs:
+            return n
+        else:
+            return nprocs
     elif parallel_scheme == "scoop":
         return 4
     elif parallel_scheme == "multiprocessing":
-        return 4
+        return nprocs
     else:
         raise ValueError(
             f"Unrecognised parallelisation scheme {parallel_scheme}")
@@ -58,6 +72,29 @@ def fingerprint(i, l):
             v = v[1:]
         s += "_" + v
     return s
+
+
+@contextmanager
+def redirect_output(outdir):
+    """Nice way to redirect stdout and stderr - thanks to
+       Emil Stenström in
+       https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python
+    """
+    new_out = open(os.path.join(outdir, "output.txt"), "w")
+    old_out = sys.stdout
+    sys.stdout = new_out
+
+    new_err = open(os.path.join(outdir, "output.err"), "w")
+    old_err = sys.stderr
+    sys.stderr = new_err
+
+    try:
+        yield new_out
+    finally:
+        sys.stdout = old_out
+        sys.stderr = old_err
+        new_out.close()
+        new_err.close()
 
 
 def run_models(network: Network, variables, population: Population,
@@ -107,10 +144,6 @@ def run_models(network: Network, variables, population: Population,
 
         outdirs.append(d)
 
-    # save the old stdout and stderr
-    stdout = sys.stdout
-    stderr = sys.stderr
-
     outputs = []
 
     print(f"Running {len(variables)} jobs using {nprocs} process(es)")
@@ -126,13 +159,7 @@ def run_models(network: Network, variables, population: Population,
                   f"using seed {seed}")
             print(f"All output written to {outdir}...")
 
-            outfile = open(os.path.join(outdir, "output.txt"), "w")
-            errfile = open(os.path.join(outdir, "output.err"), "w")
-
-            sys.stdout = outfile
-            sys.stderr = errfile
-
-            try:
+            with redirect_output(outdir):
                 print(f"Running variable set {i+1}")
                 print(f"Variables: {variable}")
                 print(f"Random seed: {seed}")
@@ -149,28 +176,52 @@ def run_models(network: Network, variables, population: Population,
                                      profile=profile,
                                      nthreads=nthreads)
 
-                sys.stdout = stdout
-                sys.stderr = stderr
-
-                outfile.close()
-                errfile.close()
-
                 outputs.append(output)
-            except Exception as e:
-                # restore stdout and stderr
-                sys.stdout = stdout
-                sys.stderr = stderr
-                outfile.close()
-                errfile.close()
-                raise e
         # end of loop over variable sets
     else:
-        # build a pool...
+        from ._worker import run_worker
 
-        # get all members of the pool to load the parameters and network
+        # create all of the parameters and options to run
+        arguments = []
 
-        # now get them all to run through the work...
+        for i, variable in enumerate(variables):
+            seed = seeds[i]
+            outdir = outdirs[i]
 
-        print("Even more to do...")
+            arguments.append({
+                "params": network.params.set_variables(variable),
+                "options": {"seed": seed,
+                            "output_dir": outdir,
+                            "population": population,
+                            "s": s,
+                            "nsteps": nsteps,
+                            "profile": profile,
+                            "nthreads": nthreads}
+            })
+
+        if parallel_scheme == "multiprocessing":
+            # run jobs using a multiprocessing pool
+            print("Running jobs in parallel using a multiprocessing pool...")
+            from multiprocessing import Pool
+            with Pool(processes=nprocs) as pool:
+                outputs = pool.map(run_worker, arguments)
+
+                for i, outputs in enumerate(outputs):
+                    print(f"Completed job {i+1} of {len(variables)}")
+
+        elif parallel_scheme == "mpi4py":
+            # run jobs using a mpi4py pool
+            print("Running jobs in parallel using a mpi4py pool...")
+            from mpi4py import futures
+            with futures.MPIPoolExecutor(max_workers=nprocs) as pool:
+                results = pool.map(run_worker, arguments)
+
+                for i, result in enumerate(results):
+                    print(f"Completed job {i+1} of {len(variables)}")
+                    outputs.append(result)
+
+        else:
+            raise ValueError(f"Unrecognised parallelisation scheme "
+                             f"{parallel_scheme}.")
 
     return outputs
