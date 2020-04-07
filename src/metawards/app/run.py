@@ -83,6 +83,7 @@ def cli():
                              "(default is to use a random seed)")
 
     parser.add_argument('-a', '--additional', type=str, default=None,
+                        nargs="*",
                         help="File (or files) containing additional "
                              "seed of outbreak for the model. These are "
                              "used to seed additional infections on "
@@ -181,6 +182,10 @@ def cli():
     elif profile is None:
         profile = False
 
+    # load the disease and starting-point input files
+    params.set_disease(args.disease)
+    params.set_input_files(args.input_data)
+
     # get the line numbers of the input file to read
     if args.line is None or len(args.line) == 0:
         linenums = None
@@ -197,15 +202,30 @@ def cli():
         else:
             print(f"Using parameters from lines {linenums} of {args.input}")
 
+    variables = params.read_variables(args.input, linenums)
+
+    if args.additional is None or len(args.additional) == 0:
+        print("Not using any additional seeds...")
+    else:
+        for additional in args.additional:
+            print(f"Loading additional seeds from {additional}")
+            params.add_seeds(additional)
+
+    nrepeats = args.repeats
+
+    if nrepeats is None or nrepeats < 1:
+        nrepeats = 1
+
+    if nrepeats == 1:
+        print("Performing a single run of each set of parameters")
+    else:
+        print(f"Performing {nrepeats} runs of each set of parameters")
+
+    variables = nrepeats * variables
+
+    print(variables)
+
     sys.exit(0)
-
-    # load the disease and starting-point input files
-    params.set_disease(args.disease)
-    params.set_input_files(args.input_data)
-
-    # start from the parameters in the specified line number of the
-    # provided input file
-    params.read_file(args.input, args.line)
 
     # extra parameters that are set
     params.UV = args.UV

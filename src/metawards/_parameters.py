@@ -260,47 +260,61 @@ class Parameters:
 
         self.disease_params = deepcopy(disease)
 
-    def read_file(self, filename: str, line_number: int):
-        """Read in extra parameters from the specified line number
-           of the specified file
+    @staticmethod
+    def read_variables(filename: str, line_numbers: List[int]):
+        """Read in extra variable parameters from the specified line number(s)
+           of the specified file, returning the list
+           of the dictionaries of variables that have been
+           read. You can then apply those variable parameters
+           using the 'set_variables' function
         """
-        print(f"Reading in parameters from line {line_number} of {filename}")
+        params = []
 
-        i = 0
+        if not isinstance(line_numbers, list):
+            if line_numbers is not None:
+                line_numbers = [line_numbers]
+
+        i = -1
         with open(filename, "r") as FILE:
             line = FILE.readline()
-
-            if i == line_number:
-                words = line.split(",")
-
-                if len(words) != 5:
-                    raise ValueError(
-                        f"Corrupted input file. Expecting 5 values. "
-                        f"Received {line}")
-
-                vals = []
-
-                try:
-                    for word in words:
-                        vals.append(float(word))
-                except Exception:
-                    raise ValueError(
-                            f"Corrupted input file. Expected 5 numbers. "
-                            f"Received {line}")
-
-                self.disease_params.beta[2] = vals[0]
-                self.disease_params.beta[3] = vals[1]
-                self.disease_params.progress[1] = vals[2]
-                self.disease_params.progress[2] = vals[3]
-                self.disease_params.progress[3] = vals[4]
-
-                print(f"Updated beta = {self.disease_params.beta}")
-                print(f"Updated progress = {self.disease_params.progress}")
-
-                return
-            else:
+            while line:
                 i += 1
 
-        # get here if we can't find this line in the file
-        raise ValueError(f"Cannot read parameters from line {line_number} "
-                         f"as the file contains just {i} lines")
+                if line_numbers is None or i in line_numbers:
+                    words = line.split(",")
+
+                    if len(words) != 5:
+                        raise ValueError(
+                            f"Corrupted input file. Expecting 5 values. "
+                            f"Received {line}")
+
+                    vals = []
+
+                    try:
+                        for word in words:
+                            vals.append(float(word))
+                    except Exception:
+                        raise ValueError(
+                                f"Corrupted input file. Expected 5 numbers. "
+                                f"Received {line}")
+
+                    params.append({"beta2": vals[0],
+                                   "beta3": vals[1],
+                                   "progress1": vals[2],
+                                   "progress2": vals[3],
+                                   "progress3": vals[4]})
+
+                    if line_numbers is not None:
+                        if len(params) == len(line_numbers):
+                            return params
+
+                line = FILE.readline()
+
+        # get here if we can't find this line in the file (or if we
+        # are supposed to read all lines)
+        if line_numbers is None:
+            return params
+        else:
+            raise ValueError(
+                    f"Cannot read parameters from line {line_numbers} "
+                    f"as the number of lines in the file is {i+1}")
