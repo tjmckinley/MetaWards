@@ -55,6 +55,7 @@ extensions = [
     Extension("metawards._extract_data_for_graphics", ["src/metawards/_extract_data_for_graphics.pyx"]),
     Extension("metawards._import_infection", ["src/metawards/_import_infection.pyx"]+random_sources),
     Extension("metawards._ran_binomial", ["src/metawards/_ran_binomial.pyx"]+random_sources),
+    Extension("metawards._assert_sane_network", ["src/metawards/_assert_sane_network.pyx"]),
     Extension("metawards._parallel", ["src/metawards/_parallel.pyx"]),
 ]
 

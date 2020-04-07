@@ -30,13 +30,29 @@ from ._ran_binomial cimport _ran_binomial, _get_binomial_ptr, binomial_rng
 __all__ = ["iterate"]
 
 
+cdef double * get_double_array_ptr(double_array):
+    """Return the raw C pointer to the passed double array which was
+       created using create_double_array
+    """
+    cdef double [::1] a = double_array
+    return &(a[0])
+
+
+cdef int * get_int_array_ptr(int_array):
+    """Return the raw C pointer to the passed int array which was
+       created using create_int_array
+    """
+    cdef int [::1] a = int_array
+    return &(a[0])
+
+
 cdef struct foi_buffer:
     int count
     int *index
     double *foi
 
 
-cdef foi_buffer* allocate_foi_buffers(int nthreads, int buffer_size=1024) nogil:
+cdef foi_buffer* allocate_foi_buffers(int nthreads, int buffer_size=4096) nogil:
     cdef int size = buffer_size
     cdef int n = nthreads
 
@@ -70,28 +86,19 @@ cdef void add_from_buffer(foi_buffer *buffer, double *wards_foi) nogil:
 
 cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
                                double *wards_foi,
-                               openmp.omp_lock_t *lock) nogil:
+                               openmp.omp_lock_t *lock,
+                               int buffer_size=4096) nogil:
     cdef int count = buffer[0].count
 
     buffer[0].index[count] = index
     buffer[0].foi[count] = value
     buffer[0].count = count + 1
 
-    if buffer[0].count >= 1024:
+    if buffer[0].count >= buffer_size:
         openmp.omp_set_lock(lock)
         add_from_buffer(buffer, wards_foi)
         openmp.omp_unset_lock(lock)
         buffer[0].count = 0
-
-
-cdef double * _get_double_array_ptr(double_array):
-    cdef double [::1] a = double_array
-    return &(a[0])
-
-
-cdef int * _get_int_array_ptr(int_array):
-    cdef int [::1] a = int_array
-    return &(a[0])
 
 
 def iterate(network: Network, infections, play_infections,
@@ -132,8 +139,8 @@ def iterate(network: Network, infections, play_infections,
     plinks = network.play
 
     cdef int i = 0
-    cdef double * wards_day_foi = _get_double_array_ptr(wards.day_foi)
-    cdef double * wards_night_foi = _get_double_array_ptr(wards.night_foi)
+    cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
+    cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
     cdef double night_foi
 
     p = p.start("setup")
@@ -170,35 +177,38 @@ def iterate(network: Network, infections, play_infections,
     cdef int inf_ij = 0
     cdef double weight = 0.0
     cdef double distance = 0.0
-    cdef double * links_weight = _get_double_array_ptr(links.weight)
-    cdef int * links_ifrom = _get_int_array_ptr(links.ifrom)
-    cdef int * links_ito = _get_int_array_ptr(links.ito)
+    cdef double * links_weight = get_double_array_ptr(links.weight)
+    cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
+    cdef int * links_ito = get_int_array_ptr(links.ito)
     cdef int ifrom = 0
     cdef int ito = 0
     cdef int staying, moving, play_move, end_p
-    cdef double * links_distance = _get_double_array_ptr(links.distance)
+    cdef double * links_distance = get_double_array_ptr(links.distance)
     cdef double frac = 0.0
     cdef double cumulative_prob = 0
     cdef double prob_scaled
     cdef double too_ill_to_move
 
-    cdef int * wards_begin_p = _get_int_array_ptr(wards.begin_p)
-    cdef int * wards_end_p = _get_int_array_ptr(wards.end_p)
+    cdef int * wards_begin_p = get_int_array_ptr(wards.begin_p)
+    cdef int * wards_end_p = get_int_array_ptr(wards.end_p)
 
-    cdef double * plinks_distance = _get_double_array_ptr(plinks.distance)
-    cdef double * plinks_weight = _get_double_array_ptr(plinks.weight)
-    cdef int * plinks_ifrom = _get_int_array_ptr(plinks.ifrom)
-    cdef int * plinks_ito = _get_int_array_ptr(plinks.ito)
+    cdef double * plinks_distance = get_double_array_ptr(plinks.distance)
+    cdef double * plinks_weight = get_double_array_ptr(plinks.weight)
+    cdef int * plinks_ifrom = get_int_array_ptr(plinks.ifrom)
+    cdef int * plinks_ito = get_int_array_ptr(plinks.ito)
 
-    cdef double * wards_denominator_d = _get_double_array_ptr(wards.denominator_d)
-    cdef double * wards_denominator_n = _get_double_array_ptr(wards.denominator_n)
-    cdef double * wards_denominator_p = _get_double_array_ptr(wards.denominator_p)
-    cdef double * wards_denominator_pd = _get_double_array_ptr(wards.denominator_pd)
+    cdef double * wards_denominator_d = get_double_array_ptr(wards.denominator_d)
+    cdef double * wards_denominator_n = get_double_array_ptr(wards.denominator_n)
+    cdef double * wards_denominator_p = get_double_array_ptr(wards.denominator_p)
+    cdef double * wards_denominator_pd = get_double_array_ptr(wards.denominator_pd)
 
-    cdef double * links_suscept = _get_double_array_ptr(links.suscept)
-    cdef double * wards_play_suscept = _get_double_array_ptr(wards.play_suscept)
+    cdef double * links_suscept = get_double_array_ptr(links.suscept)
+    cdef double * wards_play_suscept = get_double_array_ptr(wards.play_suscept)
 
-    cdef int * wards_label = _get_int_array_ptr(wards.label)
+    cdef double * wards_day_inf_prob = get_double_array_ptr(wards.day_inf_prob)
+    cdef double * wards_night_inf_prob = get_double_array_ptr(wards.night_inf_prob)
+
+    cdef int * wards_label = get_int_array_ptr(wards.label)
 
     cdef int * infections_i
     cdef int * play_infections_i
@@ -220,7 +230,7 @@ def iterate(network: Network, infections, play_infections,
 
     if SELFISOLATE:
         cSELFISOLATE = 1
-        is_dangerous_array = _get_int_array_ptr(is_dangerous)
+        is_dangerous_array = get_int_array_ptr(is_dangerous)
 
     cdef openmp.omp_lock_t lock
     openmp.omp_init_lock(&lock)
@@ -237,8 +247,8 @@ def iterate(network: Network, infections, play_infections,
         play_at_home_scl = <double>(params.dyn_play_at_home *
                                     too_ill_to_move)
 
-        infections_i = _get_int_array_ptr(infections[i])
-        play_infections_i = _get_int_array_ptr(play_infections[i])
+        infections_i = get_int_array_ptr(infections[i])
+        play_infections_i = get_int_array_ptr(play_infections[i])
 
         if contrib_foi > 0:
             p = p.start(f"work_{i}")
@@ -420,10 +430,10 @@ def iterate(network: Network, infections, play_infections,
     p = p.start("recovery")
     for i in range(N_INF_CLASSES-2, -1, -1):
         # recovery, move through classes backwards (loop down to 0)
-        infections_i = _get_int_array_ptr(infections[i])
-        infections_i_plus_one = _get_int_array_ptr(infections[i+1])
-        play_infections_i = _get_int_array_ptr(play_infections[i])
-        play_infections_i_plus_one = _get_int_array_ptr(play_infections[i+1])
+        infections_i = get_int_array_ptr(infections[i])
+        infections_i_plus_one = get_int_array_ptr(infections[i+1])
+        play_infections_i = get_int_array_ptr(play_infections[i])
+        play_infections_i_plus_one = get_int_array_ptr(play_infections[i+1])
         disease_progress = params.disease_params.progress[i]
 
         with nogil, parallel(num_threads=num_threads):
@@ -455,12 +465,34 @@ def iterate(network: Network, infections, play_infections,
     p = p.stop()
 
     cdef double length_day = params.length_day
-    cdef double rate, inf_prob
+    cdef double rate, inf_prob, denom
 
     # i is set to 0 now as we are only dealing now with new infections
     i = 0
-    infections_i = _get_int_array_ptr(infections[i])
-    play_infections_i = _get_int_array_ptr(play_infections[i])
+    infections_i = get_int_array_ptr(infections[i])
+    play_infections_i = get_int_array_ptr(play_infections[i])
+
+    p = p.start("infprob")
+    with nogil, parallel(num_threads=num_threads):
+        for j in prange(1, nnodes_plus_one, schedule="static"):
+            # pre-calculate the day and night infection probability
+            # for each ward
+            denom = wards_denominator_d[j] + wards_denominator_pd[j]
+
+            if denom != 0.0:
+                rate = (length_day * wards_day_foi[j]) / denom
+                wards_day_inf_prob[j] = rate_to_prob(rate)
+            else:
+                wards_day_inf_prob[j] = 0.0
+
+            denom = wards_denominator_n[j] + wards_denominator_p[j]
+
+            if denom != 0.0:
+                rate = (1.0 - length_day) * (wards_night_foi[j]) / denom
+                wards_night_inf_prob[j] = rate_to_prob(rate)
+        # end of loop over wards
+    # end of parallel
+    p = p.stop()
 
     p = p.start("fixed")
     with nogil, parallel(num_threads=num_threads):
@@ -488,27 +520,15 @@ def iterate(network: Network, infections, play_infections,
                         if frac > thresh:
                             inf_prob = 0.0
                         else:
-                            rate = (length_day * wards_day_foi[ito]) / (
-                                                wards_denominator_d[ito] +
-                                                wards_denominator_pd[ito])
-
-                            inf_prob = rate_to_prob(rate)
+                            inf_prob = wards_day_inf_prob[ito]
                     else:
-                        rate = (length_day * wards_day_foi[ito]) / (
-                                                wards_denominator_d[ito] +
-                                                wards_denominator_pd[ito])
-
-                        inf_prob = rate_to_prob(rate)
+                        inf_prob = wards_day_inf_prob[ito]
 
                 # end of if wards.day_foi[ito] > 0
             # end of if distance < cutoff
             elif wards_day_foi[ifrom] > 0:
                 # if distance is too large then infect in home ward with day FOI
-                rate = (length_day * wards_day_foi[ifrom]) / (
-                                                wards_denominator_d[ifrom] +
-                                                wards_denominator_pd[ifrom])
-
-                inf_prob = rate_to_prob(rate)
+                inf_prob = wards_day_inf_prob[ifrom]
 
             if inf_prob > 0.0:
                 # daytime infection of workers
@@ -520,14 +540,10 @@ def iterate(network: Network, infections, play_infections,
                     infections_i[j] += l
                     links_suscept[j] -= l
 
-            if wards_night_foi[ifrom] > 0:
-                # nighttime infection of workers
-                rate = (1.0 - length_day) * (wards_night_foi[ifrom]) / (
-                                                wards_denominator_n[ifrom] +
-                                                wards_denominator_p[ifrom])
+            # nighttime infection of workers
+            inf_prob = wards_night_inf_prob[ifrom]
 
-                inf_prob = rate_to_prob(rate)
-
+            if inf_prob > 0.0:
                 l = _ran_binomial(pr, inf_prob, <int>(links_suscept[j]))
 
                 #if l > links_suscept[j]:
@@ -587,18 +603,10 @@ def iterate(network: Network, infections, play_infections,
                                 play_move = 0
                             else:
                                 play_move = _ran_binomial(pr, prob_scaled, moving)
-                                frac = (length_day * wards_day_foi[ito]) / (
-                                                    wards_denominator_pd[ito] +
-                                                    wards_denominator_d[ito])
-
-                                inf_prob = rate_to_prob(frac)
+                                inf_prob = wards_day_inf_prob[ito]
                         else:
                             play_move = _ran_binomial(pr, prob_scaled, moving)
-                            frac = (length_day * wards_day_foi[ito]) / (
-                                                    wards_denominator_pd[ito] +
-                                                    wards_denominator_d[ito])
-
-                            inf_prob = rate_to_prob(frac)
+                            inf_prob = wards_day_inf_prob[ito]
 
                         l = _ran_binomial(pr, inf_prob, play_move)
 
@@ -618,12 +626,7 @@ def iterate(network: Network, infections, play_infections,
 
             if (staying + moving) > 0:
                 # infect people staying at home
-                frac = (length_day * wards_day_foi[j]) / (
-                                            wards_denominator_pd[j] +
-                                            wards_denominator_d[j])
-
-                inf_prob = rate_to_prob(frac)
-
+                inf_prob = wards_day_inf_prob[j]
                 l = _ran_binomial(pr, inf_prob, staying+moving)
 
                 if l > 0:
@@ -633,13 +636,8 @@ def iterate(network: Network, infections, play_infections,
                     wards_play_suscept[j] -= l
 
             # nighttime infections of play movements
-            night_foi = wards_night_foi[j]
-            if night_foi > 0.0:
-                frac = ((1.0 - length_day) * night_foi) / (
-                                wards_denominator_n[j] + wards_denominator_p[j])
-
-                inf_prob = rate_to_prob(frac)
-
+            inf_prob = wards_night_inf_prob[j]
+            if inf_prob > 0.0:
                 l = _ran_binomial(pr, inf_prob, <int>(wards_play_suscept[j]))
 
                 if l > 0:

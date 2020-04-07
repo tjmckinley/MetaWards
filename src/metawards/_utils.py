@@ -27,3 +27,4 @@ from ._iterate_weekend import *
 from ._import_infection import *
 from ._ran_binomial import *
 from ._parallel import *
+from ._assert_sane_network import *

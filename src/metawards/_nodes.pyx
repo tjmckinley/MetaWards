@@ -51,6 +51,9 @@ class Nodes:
             self.denominator_p = create_double_array(N, 0.0)
             self.denominator_pd = create_double_array(N, 0.0)
 
+            self.day_inf_prob = create_double_array(N, 0.0)
+            self.night_inf_prob = create_double_array(N, 0.0)
+
             self.x = create_double_array(N, 0.0)  # no good initialiser for x
             self.y = create_double_array(N, 0.0)  # no good initialiser for y
 
