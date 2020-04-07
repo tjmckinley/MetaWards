@@ -1,8 +1,39 @@
 #!/bin/env python3
 
-# This is the command-line version of metawards
+"""
+The metawards command line program.
+
+Usage:
+    To get the help for this program and the list of all of the
+    arguments (with defaults) use;
+
+    metawards --help
+"""
+
+
+def get_parallel_scheme():
+    """This function tries to work out which of the different parallel
+       methods we should use to distribute work between multiple processes.
+
+       Detected schemes are "mpi4py", "scoop", and if none of these
+       are found, then "multiprocessing"
+    """
+    import sys
+
+    if "mpi4py" in sys.modules:
+        return "mpi4py"
+    elif "scoop" in sys.modules:
+        return "scoop"
+    else:
+        return "multiprocessing"
+
 
 def cli():
+    # get the parallel scheme now before we import any other modules
+    # so that it is clear if mpi4py or scoop (or another parallel module)
+    # has been imported via the required "-m module" syntax
+    parallel_scheme = get_parallel_scheme()
+
     import sys
     import argparse
 
@@ -13,15 +44,45 @@ def cli():
                     prog="metawards")
 
     parser.add_argument('-i', '--input', type=str,
-                        help="Input file for the simulation")
+                        help="Input file for the simulation that specifies "
+                             "the adjustable parameters to change for each "
+                             "run of the model.")
 
-    parser.add_argument('-l', '--line', type=int, default=0,
-                        help="Line number from the inputfile to run "
-                             "(default 0 as 0-indexed line number)")
+    parser.add_argument('-l', '--line', type=int, default=None,
+                        help="Line number (or line numbers) containing the "
+                             "values of adjustable parameters to run for this "
+                             "run (or runs) of the model If this isn't "
+                             "specified then model runs will be performed "
+                             "for adjustable parameters given on all lines "
+                             "from the input file ")
+
+    parser.add_argument("-r", '--repeats', type=int, default=1,
+                        help="The number of repeat runs of the model to "
+                             "perform for each value of the adjustable "
+                             "parameters. By default only a single "
+                             "run will be performed for each set of "
+                             "adjustable parameters")
+
+    parser.add_argument("--nprocs", type=int, default=None,
+                        help="The number of processes over which to "
+                             "parallelise the different model runs for "
+                             "different adjustable parameter sets and "
+                             "repeats. By default this will automatically "
+                             "work out the number of processes based on "
+                             "the way metawards is launched. Use this "
+                             "option if you want to specify the number "
+                             "or processes manually.")
 
     parser.add_argument('-s', '--seed', type=int, default=None,
                         help="Random number seed for this run "
                              "(default is to use a random seed)")
+
+    parser.add_argument('-a', '--additional', type=str, default=None,
+                        help="File (or files) containing additional "
+                             "seed of outbreak for the model. These are "
+                             "used to seed additional infections on "
+                             "specific days at different locations "
+                             "during a model run")
 
     parser.add_argument('-u', '--UV', type=float, default=1.0,
                         help="Value for the UV parameter for the model "
@@ -39,7 +100,7 @@ def cli():
                         help="Name of the input parameter set used to "
                              "control the simulation (default 'march29')")
 
-    parser.add_argument('-r', '--repository', type=str, default=None,
+    parser.add_argument('-R', '--repository', type=str, default=None,
                         help="Path to the MetaWardsData repository. If "
                              "unspecified this defaults to the value "
                              "in the environment variable METAWARDSDATA "
@@ -50,25 +111,40 @@ def cli():
                         help="Initial population (default 57104043)")
 
     parser.add_argument('-n', '--nsteps', type=int, default=None,
-                        help="Maximum number of steps to run for the "
-                             "simulation (default is to run until the "
-                             "epidemic has finished)")
+                        help="Maximum number of steps (days) to run for the "
+                             "simulation. Each step represents one day in the "
+                             "outbreak (default is to run until the "
+                             "outbreak has finished).")
 
     parser.add_argument('--nthreads', type=int, default=None,
-                        help="Number of threads over which to run the "
-                             "model.")
+                        help="Number of threads over which parallelise an "
+                             "individual model run. The total number of "
+                             "cores used by metawards will be "
+                             "nprocesses x nthreads")
 
     parser.add_argument('-o', '--output', type=str, default="output",
                         help="Path to the directory in which to place all "
-                             "output files (default 'output')")
+                             "output files (default 'output'). This "
+                             "directory will be subdivided if multiple "
+                             "adjustable parameter sets or repeats "
+                             "are used.")
 
     parser.add_argument('--profile', action="store_true",
-                        default=True, help="Enable profiling of the code")
+                        default=None, help="Enable profiling of the code")
 
     parser.add_argument('--no-profile', action="store_true",
-                        default=False, help="Disable profiling of the code")
+                        default=None, help="Disable profiling of the code")
+
+    parser.add_argument('--version', action="store_true",
+                        default=None,
+                        help="Print the version information about metawards")
 
     args = parser.parse_args()
+
+    if args.version:
+        from metawards import get_version_string
+        print(get_version_string())
+        sys.exit(0)
 
     if args.input is None:
         parser.print_help(sys.stdout)
@@ -93,13 +169,15 @@ def cli():
 
     if args.no_profile:
         profile = False
+    elif profile is None:
+        profile = False
 
     # load the disease and starting-point input files
     params.set_disease(args.disease)
     params.set_input_files(args.input_data)
 
     # start from the parameters in the specified line number of the
-    # provided input file
+    # provided input file
     params.read_file(args.input, args.line)
 
     # extra parameters that are set
@@ -111,7 +189,7 @@ def cli():
     params.work_to_play = 0
     params.daily_imports = 0.0
 
-    # the size of the starting population
+    # the size of the starting population
     population = Population(initial=args.population)
 
     print("Building the network...")
