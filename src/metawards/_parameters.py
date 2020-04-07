@@ -1,9 +1,9 @@
 
 from dataclasses import dataclass
-from typing import List
 from copy import deepcopy
 import pathlib
 import os
+import json
 
 from ._inputfiles import InputFiles
 from ._disease import Disease
@@ -18,6 +18,17 @@ _default_folder_name = "parameters"
 
 _repositories = {}
 
+
+def generate_repository_version(repository):
+    """Try to run the './version' script within the passed repository,
+       to generate the required 'version.txt' file
+    """
+    import subprocess
+    script = os.path.join(repository, "version")
+    print(f"Regenerating version information using {script}")
+    subprocess.run(script, cwd=repository)
+
+
 def get_repository_version(repository):
     """Read and return the Git version of the passed repository"""
     global _repositories
@@ -29,14 +40,28 @@ def get_repository_version(repository):
 
     try:
         with open(filename) as FILE:
-            version = FILE.readline().strip()
+            version = json.load(FILE)
+            _repositories[repository] = version
+            return version
+    except Exception:
+        pass
+
+    # could not get the version, so see if we have permission
+    # to run the 'version' program
+    try:
+        generate_repository_version(repository)
+
+        with open(filename) as FILE:
+            version = json.load(FILE)
             _repositories[repository] = version
             return version
     except Exception:
         print(f"Could not find the repository version info in {filename}."
               f"Please make sure that you have run './version' in that "
               f"repository to generate the version info.")
-        _repositories[repository] = "unknown"
+        _repositories[repository] = {"repository": "unknown",
+                                     "version": "unknown",
+                                     "branch": "unknown"}
         return _repositories[repository]
 
 
@@ -64,7 +89,7 @@ class Parameters:
     daily_ward_vaccination_capacity: int = 5
     neighbour_weight_threshold: float = 0.0
 
-    daily_imports: float = 0.0 # proportion of daily imports
+    daily_imports: float = 0.0  # proportion of daily imports
     UV: float = 0.0
 
     _name: str = None
@@ -75,6 +100,7 @@ class Parameters:
     _filename: str = None
     _repository: str = None
     _repository_version: str = None
+    _repository_branch: str = None
 
     def __str__(self):
         return f"Parameters {self._name}\n" \
@@ -84,6 +110,7 @@ class Parameters:
                f"contact(s): {self._contacts}\n" \
                f"references(s): {self._references}\n" \
                f"repository: {self._repository}\n" \
+               f"repository_branch: {self._repository_branch}\n" \
                f"repository_version: {self._repository_version}\n\n" \
                f"length_day = {self.length_day}\n" \
                f"plength_day = {self.plength_day}\n" \
@@ -104,7 +131,7 @@ class Parameters:
     @staticmethod
     def load(parameters: str = "march29",
              repository: str = None,
-             folder: str=_default_folder_name,
+             folder: str = _default_folder_name,
              filename: str = None):
         """ This will return a Parameters object containing all of the
             parameters loaded from the parameters found in file
@@ -117,6 +144,7 @@ class Parameters:
             filename via the 'filename' argument
         """
         repository_version = None
+        repository_branch = None
 
         if filename is None:
             if repository is None:
@@ -124,8 +152,11 @@ class Parameters:
                 if repository is None:
                     repository = _default_parameters_path
 
-            repository_version = get_repository_version(repository)
             filename = os.path.join(repository, folder, f"{parameters}.json")
+            v = get_repository_version(repository)
+            repository_branch = v["repository"]
+            repository_branch = v["branch"]
+            repository_version = v["version"]
 
         json_file = filename
 
@@ -144,7 +175,6 @@ class Parameters:
             print(f"path to where you downloaded this directory")
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
-
 
         par = Parameters(length_day=data["length_day"],
                          plength_day=data["plength_day"],
@@ -168,6 +198,7 @@ class Parameters:
                          _references=data["reference(s)"],
                          _filename=json_file,
                          _repository=repository,
+                         _repository_branch=repository_branch,
                          _repository_version=repository_version
                          )
 

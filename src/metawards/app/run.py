@@ -151,7 +151,11 @@ def cli():
         sys.exit(0)
 
     # import the parameters here to speed up the display of help
-    from metawards import Parameters, Network, Population
+    from metawards import Parameters, Network, Population, get_version_string
+
+    # print the version information first, so that there is enough
+    # information to enable someone to reproduce this run
+    print(get_version_string())
 
     # load all of the parameters
     try:

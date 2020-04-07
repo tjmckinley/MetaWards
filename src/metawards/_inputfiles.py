@@ -25,18 +25,18 @@ class InputFiles:
     position: str = None            # CENTRE of BOUNDING BOXES
     seed: str = None                # LIST OF SEED NODES
     nodes_to_track: str = None      # LIST OF NODES TO TRACK
-    additional_seeding: str = None  # LIST OF EXTRA SEED WARDS...
-    uv: str = None                  # UV file
+    uv: str = None                  # UV file
 
     _filename: str = None            # Full path of the description.json file
-    _model_name: str = None          # Name of the model
+    _model_name: str = None          # Name of the model
     _model_path: str = None          # Directory containing the input files
     _model_version: str = None       # Version loaded from the data
     _authors: str = None             # Author(s) of this data
-    _contacts: str = None            # Contact(s) for this data
+    _contacts: str = None            # Contact(s) for this data
     _references: str = None          # References for this data
     _repository: str = None          # GitHub repository for this data
     _repository_version: str = None  # Git version of the data
+    _repository_branch: str = None   # Git branch for the data
 
     def model_name(self):
         """Return the name of this model"""
@@ -58,6 +58,7 @@ class InputFiles:
                f"contact(s): {self._contacts}\n" \
                f"references(s): {self._references}\n" \
                f"repository: {self._repository}\n" \
+               f"repository_branch: {self._repository_branch}\n" \
                f"repository_version: {self._repository_version}\n\n" \
                f"work = {self.work}\n" \
                f"play = {self.play}\n" \
@@ -67,8 +68,7 @@ class InputFiles:
                f"play_size = {self.play_size}\n" \
                f"position = {self.position}\n" \
                f"seed = {self.seed}\n" \
-               f"nodes_to_track = {self.nodes_to_track}\n" \
-               f"additional_seeding = {self.additional_seeding}\n\n"
+               f"nodes_to_track = {self.nodes_to_track}\n\n"
 
     def _localise(self):
         """Localise the filenames in this input files set. This will
@@ -76,8 +76,8 @@ class InputFiles:
            double-check that all files exist and are readable
         """
         members = [attr for attr in dir(self)
-                    if not callable(getattr(self, attr))
-                        and not attr.startswith("_")]
+                   if not callable(getattr(self, attr))
+                      and not attr.startswith("_")]
 
         for member in members:
             filename = getattr(self, member)
@@ -92,9 +92,9 @@ class InputFiles:
 
     @staticmethod
     def load(model: str = "2011Data",
-             repository: str=_default_model_path,
-             folder: str=_default_folder_name,
-             description: str="description.json",
+             repository: str = _default_model_path,
+             folder: str = _default_folder_name,
+             description: str = "description.json",
              filename: str = None):
         """Load the parameters associated with the passed model.
            This will look for the parameters specified in
@@ -110,6 +110,7 @@ class InputFiles:
            as a base
         """
         repository_version = None
+        repository_branch = None
 
         if filename is None:
             if repository is None:
@@ -117,10 +118,14 @@ class InputFiles:
                 if repository is None:
                     repository = _default_model_path
 
-            from ._parameters import get_repository_version
-            repository_version = get_repository_version(repository)
             filename = os.path.join(repository, folder,
                                     model, description)
+
+            from ._parameters import get_repository_version
+            v = get_repository_version(repository)
+            repository = v["repository"]
+            repository_version = v["version"]
+            repository_branch = v["branch"]
 
         json_file = filename
         model_path = os.path.dirname(filename)
@@ -150,7 +155,6 @@ class InputFiles:
                            position=files["position"],
                            seed=files["seed"],
                            nodes_to_track=files["nodes_to_track"],
-                           additional_seeding=files["additional_seeding"],
                            uv=files["uv"],
                            _filename=json_file,
                            _model_path=model_path,
@@ -160,7 +164,8 @@ class InputFiles:
                            _authors=files["author(s)"],
                            _contacts=files["contact(s)"],
                            _repository=repository,
-                           _repository_version=repository_version)
+                           _repository_version=repository_version,
+                           _repository_branch=repository_branch)
 
         model._localise()
 
