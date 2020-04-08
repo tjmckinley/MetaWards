@@ -160,6 +160,11 @@ def parse_args():
     parser.add_argument('--no-profile', action="store_true",
                         default=None, help="Disable profiling of the code")
 
+    # this hidden option is used to tell the main process started using
+    # mpi that it shouldn't try to become a supervisor
+    parser.add_argument('--already-supervised', action="store_true",
+                        default=None, help=argparse.SUPPRESS)
+
     args = parser.parse_args()
 
     if args.version:
@@ -167,7 +172,7 @@ def parse_args():
         print(get_version_string())
         sys.exit(0)
 
-    return args
+    return (args, parser)
 
 
 def get_hostfile(args):
@@ -255,22 +260,35 @@ def mpi_supervisor(hostfile, args):
 
     cores_per_node = get_cores_per_node(args)
 
+    print(f"Will run jobs assuming {cores_per_node} cores per compute node")
+
     # based on the number of threads requested and the number of cores
-    # per node, we can work out the number of mpi processes to start,
+    # per node, we can work out the number of mpi processes to start,
     # and can write a hostfile that will create the right layout
     nthreads = get_threads_per_task(args)
 
+    print(f"Will use {nthreads} OpenMP threads per model run...")
+
     tasks_per_node = int(cores_per_node / nthreads)
+
+    print(f"...meaning that the number of model runs per node will be "
+          f"{tasks_per_node}")
 
     # Next, read the hostfile to get a unique list of hostnames
     hostnames = {}
 
     with open(hostfile, "r") as FILE:
-        hostname = FILE.read().strip()
-        hostnames[hostname] = 1
+        line = FILE.readline()
+        while line:
+            hostname = line.strip()
+            hostnames[hostname] = 1
+            line = FILE.readline()
 
     hostnames = list(hostnames.keys())
     hostnames.sort()
+
+    print(f"Number of compute nodes equals {len(hostnames)}")
+    print(", ".join(hostnames))
 
     # how many tasks can we perform in parallel?
     nprocs = tasks_per_node * len(hostnames)
@@ -282,10 +300,13 @@ def mpi_supervisor(hostfile, args):
 
         nprocs = args.nprocs
 
+    print(f"Total number of parallel processes to run will be {nprocs}")
+    print(f"Total number of cores in use will be {nprocs*nthreads}")
+
     # Now write a new hostfile that round-robins the MPI tasks over
     # the nodes for 'tasks_per_node' runs
     hostfile = os.path.join(outdir, "hostfile")
-    print("Writing hostfile to {hostfile}")
+    print(f"Writing hostfile to {hostfile}")
 
     with open(hostfile, "w") as FILE:
         i = 0
@@ -298,19 +319,33 @@ def mpi_supervisor(hostfile, args):
                     break
 
     # now craft the mpiexec command that will use this hostfile to
-    # run the job - but first make sure to set an environment variable
-    # so that the main process knows that it is already being supervised
-    os.environ["METAWARDS_SUPERVISOR_PID"] = str(os.getpid())
+    # run the job - remember to pass the option to stop the main process
+    # attempt to become a supervisor itself...
+    mpiexec = os.getenv("MPIEXEC")
 
-    mpiexec = "mpiexec"
+    if mpiexec is None:
+        mpiexec = "mpiexec"
+
     pyexe = sys.executable
-    script = sys.argv[0]
+    script = os.path.abspath(sys.argv[0])
     args = " ".join(sys.argv[1:])
 
     cmd = f"{mpiexec} -np {nprocs} -hostfile {hostfile} " \
-          f"{pyexe} -m mpi4py {script} {args}"
+          f"{pyexe} -m mpi4py {script} --already-supervised {args}"
 
     print(f"Executing MPI job using '{cmd}'")
+    import subprocess
+    import shlex
+
+    try:
+        args = shlex.split(cmd)
+        subprocess.run(args).check_returncode()
+    except Exception as e:
+        print("ERROR: Something went wrong!")
+        print(f"{e.__class__}: {e}")
+        sys.exit(-1)
+
+    print("MPI processes completed successfully")
 
 
 def cli():
@@ -342,18 +377,18 @@ def cli():
         if rank != 0:
             # this is a worker process, so should not do anything
             # more until it is given work in the pool
-            print(f"Starting worker process {rank}...")
+            print(f"Starting worker process {rank+1} of {nprocs-1}...")
             return
+        else:
+            print("Starting main process...")
 
     import sys
     import bz2
     import os
 
-    args = parse_args()
+    args, parser = parse_args()
 
-    supervisor_pid = os.getenv("METAWARDS_SUPERVISOR_PID")
-
-    if supervisor_pid is None:
+    if not args.already_supervised:
         hostfile = get_hostfile(args)
         if hostfile:
             # The user has asked to run an mpi job - this means that this
@@ -464,11 +499,11 @@ def cli():
     # the size of the starting population
     population = Population(initial=args.population)
 
-    print("Building the network...")
+    print("\nBuilding the network...")
     network = Network.build(params=params, calculate_distances=True,
                             profile=profile)
 
-    print("Run the model...")
+    print("\nRun the model...")
     from metawards.utils import run_models
 
     result = run_models(network=network, variables=variables,
@@ -479,7 +514,12 @@ def cli():
 
     # write the result to a csv file that can be easily read by R or
     # pandas - this will be written compressed to save space
-    with bz2.open(os.path.join(args.output, "results.csv.bz2"), "wt") as FILE:
+    results_file = os.path.join(args.output, "results.csv.bz2")
+    print(f"\nWriting a summary of all results into the compressed\n"
+          f"csv file {results_file}. You can use this to quickly\n"
+          f"look at statistics across all runs using e.g. R or pandas")
+
+    with bz2.open(results_file, "wt") as FILE:
         FILE.write("variables,repeat,step,susceptibles,latent,"
                    "total,n_inf_wards\n")
         for varset, trajectory in result:

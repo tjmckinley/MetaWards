@@ -115,7 +115,7 @@ def run_models(network: Network, variables, population: Population,
 
     outputs = []
 
-    print(f"Running {len(variables)} jobs using {nprocs} process(es)")
+    print(f"\nRunning {len(variables)} jobs using {nprocs} process(es)")
 
     if nprocs == 1:
         # no need to use a pool, as we will repeat this calculation
@@ -127,7 +127,7 @@ def run_models(network: Network, variables, population: Population,
             if not os.path.exists(outdir):
                 os.mkdir(outdir)
 
-            print(f"Running parameter set {i+1} of {len(variables)} "
+            print(f"\nRunning parameter set {i+1} of {len(variables)} "
                   f"using seed {seed}")
             print(f"All output written to {outdir}...")
 
@@ -177,26 +177,26 @@ def run_models(network: Network, variables, population: Population,
 
         if parallel_scheme == "multiprocessing":
             # run jobs using a multiprocessing pool
-            print("Running jobs in parallel using a multiprocessing pool...")
+            print("\nRunning jobs in parallel using a multiprocessing pool...")
             from multiprocessing import Pool
             with Pool(processes=nprocs) as pool:
                 results = pool.map(run_worker, arguments)
 
                 for i, result in enumerate(results):
-                    print(f"Completed job {i+1} of {len(variables)}")
+                    print(f"\nCompleted job {i+1} of {len(variables)}")
                     print(variables[i])
                     print(result[-1])
                     outputs.append((variables[i], result))
 
         elif parallel_scheme == "mpi4py":
             # run jobs using a mpi4py pool
-            print("Running jobs in parallel using a mpi4py pool...")
+            print("\nRunning jobs in parallel using a mpi4py pool...")
             from mpi4py import futures
             with futures.MPIPoolExecutor(max_workers=nprocs) as pool:
                 results = pool.map(run_worker, arguments)
 
                 for i, result in enumerate(results):
-                    print(f"Completed job {i+1} of {len(variables)}")
+                    print(f"\nCompleted job {i+1} of {len(variables)}")
                     print(variables[i])
                     print(result[-1])
                     outputs.append((variables[i], result))
