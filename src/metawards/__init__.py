@@ -14,6 +14,7 @@ from ._node import *
 from ._link import *
 from ._population import *
 from ._network import *
+from ._variableset import *
 
 # import the pyx cython-compiled modules
 from ._nodes import *

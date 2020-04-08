@@ -233,7 +233,7 @@ def cli():
     else:
         print(f"Performing {nrepeats} runs of each set of parameters")
 
-    variables = nrepeats * variables
+    variables = variables.repeat(nrepeats)
 
     nthreads = args.nthreads
 

@@ -47,33 +47,6 @@ def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
             f"Unrecognised parallelisation scheme {parallel_scheme}")
 
 
-def fingerprint(i, l):
-    """Create a fingerprint for the output directory for the ith set
-       of parameters that are contained in the passed dictionary 'l'.
-
-       The format will be;
-
-       AAAAAA_B_C_D_E_F
-
-       where A is the set number 'i', and B, C, D, E and F are the
-       values of the parameters in input order. To save space, this
-       are rounded where possible and any "0." is removed, e.g.
-
-       000001:9:93:18:92:9
-
-       will be set 1, with parameters 0.90, 0.93, 0.18, 0.92, 0.90
-    """
-    s = "%06d" % (i+1)
-    for val in l.values():
-        v = str(val)
-        if v.startswith("0"):
-            v = v[1:]
-        if v.startswith("."):
-            v = v[1:]
-        s += "_" + v
-    return s
-
-
 @contextmanager
 def redirect_output(outdir):
     """Nice way to redirect stdout and stderr - thanks to
@@ -126,23 +99,18 @@ def run_models(network: Network, variables, population: Population,
     #  that they are all working)
     seeds = []
     print("WARNING*** NEED TO GENERATE DIFFERENT SEEDS FOR JOBS")
+    print("WARNING*** THIS CODE SHOULD NOT BE USED IN PRODUCTION")
 
     for i in range(0, len(variables)):
         seeds.append(seed)
 
-    # create the output directories for all of the jobs, and also create
-    # the output text files
+    # set the output directories for all of the jobs - this is based
+    # on the fingerprint, so should be unique for each job
     outdirs = []
 
-    for i in range(0, len(variables)):
-        f = fingerprint(i, variables[i])
-
+    for v in variables:
+        f = v.fingerprint(include_index=True)
         d = os.path.join(output_dir, f)
-
-        # create the directory now to make sure none of the jobs will fail
-        if not os.path.exists(d):
-            os.mkdir(d)
-
         outdirs.append(d)
 
     outputs = []
@@ -156,6 +124,9 @@ def run_models(network: Network, variables, population: Population,
             seed = seeds[i]
             outdir = outdirs[i]
 
+            if not os.path.exists(outdir):
+                os.mkdir(outdir)
+
             print(f"Running parameter set {i+1} of {len(variables)} "
                   f"using seed {seed}")
             print(f"All output written to {outdir}...")
@@ -167,7 +138,7 @@ def run_models(network: Network, variables, population: Population,
                 print(f"nthreads: {nthreads}")
 
                 # no need to do anything complex - just a single run
-                params = network.params.set_variables(variables[0])
+                params = network.params.set_variables(variable)
 
                 network.update(params, profile=profile)
 
@@ -177,7 +148,11 @@ def run_models(network: Network, variables, population: Population,
                                      profile=profile,
                                      nthreads=nthreads)
 
-                outputs.append(output)
+                outputs.append((variable, output))
+
+            print(f"Completed job {i+1} of {len(variables)}")
+            print(variable)
+            print(output[-1])
         # end of loop over variable sets
     else:
         from ._worker import run_worker
@@ -205,10 +180,13 @@ def run_models(network: Network, variables, population: Population,
             print("Running jobs in parallel using a multiprocessing pool...")
             from multiprocessing import Pool
             with Pool(processes=nprocs) as pool:
-                outputs = pool.map(run_worker, arguments)
+                results = pool.map(run_worker, arguments)
 
-                for i, outputs in enumerate(outputs):
+                for i, result in enumerate(results):
                     print(f"Completed job {i+1} of {len(variables)}")
+                    print(variables[i])
+                    print(result[-1])
+                    outputs.append((variables[i], result))
 
         elif parallel_scheme == "mpi4py":
             # run jobs using a mpi4py pool
@@ -219,7 +197,9 @@ def run_models(network: Network, variables, population: Population,
 
                 for i, result in enumerate(results):
                     print(f"Completed job {i+1} of {len(variables)}")
-                    outputs.append(result)
+                    print(variables[i])
+                    print(result[-1])
+                    outputs.append((variables[i], result))
 
         else:
             raise ValueError(f"Unrecognised parallelisation scheme "
