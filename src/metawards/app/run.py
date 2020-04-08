@@ -326,16 +326,37 @@ def mpi_supervisor(hostfile, args):
     if mpiexec is None:
         mpiexec = "mpiexec"
 
+    # check for weird mpiexecs...
+    import subprocess
+    import shlex
+
+    is_hpe_mpiexec = False
+
+    try:
+        args = shlex.split("mpiexec -v")
+        p = subprocess.run(args, capture_output=True)
+        v = p.stdout.decode("utf-8").strip()
+
+        if v.find("HPE HMPT") != -1:
+            print("Using the HPE mpiexec")
+            is_hpe_mpiexec = True
+    except Exception as e:
+        print(f"[ERROR] {e.__class__} {e}")
+
     pyexe = sys.executable
     script = os.path.abspath(sys.argv[0])
     args = " ".join(sys.argv[1:])
 
-    cmd = f"{mpiexec} -ppn {nthreads} -n {nprocs} -hostfile {hostfile} " \
-          f"{pyexe} -m mpi4py {script} --already-supervised {args}"
+    if is_hpe_mpiexec:
+        # this can't set a hostfile! Will need to rely on right
+        # options from the job scheduler
+        cmd = f"{mpiexec} -ppn {nthreads} -p {nprocs} " \
+              f"{pyexe} -m mpi4py {script} --already-supervised {args}"
+    else:
+        cmd = f"{mpiexec} -np {nprocs} -hostfile {hostfile} " \
+              f"{pyexe} -m mpi4py {script} --already-supervised {args}"
 
     print(f"Executing MPI job using '{cmd}'")
-    import subprocess
-    import shlex
 
     try:
         args = shlex.split(cmd)
