@@ -24,6 +24,10 @@ def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
             comm = MPI.COMM_WORLD
             nprocs = comm.Get_size()
             return nprocs
+        elif parallel_scheme == "scoop":
+            raise ValueError(
+                    f"You must specify the number of processes for "
+                    f"scoop to parallelise over")
         else:
             raise ValueError(
                     f"You must specify the number of processes to "
@@ -201,6 +205,19 @@ def run_models(network: Network, variables, population: Population,
                     print(variables[i])
                     print(result[-1])
                     outputs.append((variables[i], result))
+
+        elif parallel_scheme == "scoop":
+            # run jobs using a scoop pool
+            print("\nRunning jobs in parallel using a scoop pool...")
+            from scoop import futures
+
+            results = futures.map(run_worker, arguments)
+
+            for i, result in enumerate(results):
+                print(f"\nCompleted job {i+1} of {len(variables)}")
+                print(variables[i])
+                print(result[-1])
+                outputs.append((variables[i], result))
 
         else:
             raise ValueError(f"Unrecognised parallelisation scheme "

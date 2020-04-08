@@ -160,6 +160,12 @@ def parse_args():
     parser.add_argument('--no-profile', action="store_true",
                         default=None, help="Disable profiling of the code")
 
+    parser.add_argument('--mpi', action="store_true", default=None,
+                        help="Force use of MPI to parallelise across runs")
+
+    parser.add_argument('--scoop', action="store_true", default=None,
+                        help="Force use of scoop to parallelise across runs")
+
     # this hidden option is used to tell the main process started using
     # mpi that it shouldn't try to become a supervisor
     parser.add_argument('--already-supervised', action="store_true",
@@ -243,6 +249,106 @@ def get_threads_per_task(args):
                      "using --nthreads or by setting the "
                      "environment variables METAWARDS_THREADS_PER_TASK "
                      "or OMP_NUM_THREADS")
+
+
+def scoop_supervisor(hostfile, args):
+    """Function used by the scoop supervisor to get the information needed to
+       form the scoop call to run a scoop version of the program
+    """
+    import os
+    import sys
+    print("RUNNING A SCOOP PROGRAM")
+
+    outdir = args.output
+
+    if not os.path.exists(outdir):
+        os.mkdir(outdir)
+
+    cores_per_node = get_cores_per_node(args)
+
+    print(f"Will run jobs assuming {cores_per_node} cores per compute node")
+
+    # based on the number of threads requested and the number of cores
+    # per node, we can work out the number of scoop processes to start,
+    # and can write a hostfile that will create the right layout
+    nthreads = get_threads_per_task(args)
+
+    print(f"Will use {nthreads} OpenMP threads per model run...")
+
+    tasks_per_node = int(cores_per_node / nthreads)
+
+    print(f"...meaning that the number of model runs per node will be "
+          f"{tasks_per_node}")
+
+    # Next, read the hostfile to get a unique list of hostnames
+    hostnames = {}
+
+    with open(hostfile, "r") as FILE:
+        line = FILE.readline()
+        while line:
+            hostname = line.strip()
+            hostnames[hostname] = 1
+            line = FILE.readline()
+
+    hostnames = list(hostnames.keys())
+    hostnames.sort()
+
+    print(f"Number of compute nodes equals {len(hostnames)}")
+    print(", ".join(hostnames))
+
+    # how many tasks can we perform in parallel?
+    nprocs = tasks_per_node * len(hostnames)
+
+    if args.nprocs:
+        if nprocs != args.nprocs:
+            print(f"WARNING: You are using a not-recommended number of "
+                  f"processes {args.nprocs} for the cluster {nprocs}.")
+
+        nprocs = args.nprocs
+
+    print(f"Total number of parallel processes to run will be {nprocs}")
+    print(f"Total number of cores in use will be {nprocs*nthreads}")
+
+    # Now write a new hostfile that round-robins the MPI tasks over
+    # the nodes for 'tasks_per_node' runs
+    hostfile = os.path.join(outdir, "hostfile")
+    print(f"Writing hostfile to {hostfile}")
+
+    with open(hostfile, "w") as FILE:
+        i = 0
+        while i < nprocs:
+            for hostname in hostnames:
+                FILE.write(hostname + "\n")
+                i += 1
+
+                if i == nprocs:
+                    break
+
+    # now craft the scoop command that will use this hostfile to
+    # run the job - remember to pass the option to stop the main process
+    # attempting to become a supervisor itself...
+
+    import subprocess
+    import shlex
+
+    pyexe = sys.executable
+    script = os.path.abspath(sys.argv[0])
+    args = " ".join(sys.argv[1:])
+
+    cmd = f"{pyexe} -m scoop --hostfile {hostfile} -n {nprocs} " \
+          f"{script} --already-supervised {args}"
+
+    print(f"Executing scoop job using '{cmd}'")
+
+    try:
+        args = shlex.split(cmd)
+        subprocess.run(args).check_returncode()
+    except Exception as e:
+        print("ERROR: Something went wrong!")
+        print(f"{e.__class__}: {e}")
+        sys.exit(-1)
+
+    print("Scoop processes completed successfully")
 
 
 def mpi_supervisor(hostfile, args):
@@ -398,6 +504,9 @@ def cli():
         else:
             print("Starting main process...")
 
+    elif parallel_scheme == "scoop":
+        print("STARTING SCOOP PROCESS")
+
     import sys
     import bz2
     import os
@@ -407,10 +516,40 @@ def cli():
     if not args.already_supervised:
         hostfile = get_hostfile(args)
         if hostfile:
-            # The user has asked to run an mpi job - this means that this
-            # process is the mpi supervisor
-            mpi_supervisor(hostfile, args)
-            return
+            # The user has asked to run a parallel job - this means that this
+            # process is the parallel supervisor
+            if args.mpi:
+                mpi_supervisor(hostfile, args)
+                return
+            elif args.scoop:
+                scoop_supervisor(hostfile, args)
+                return
+
+            # neither is preferred - if scoop is installed then use that
+            try:
+                import scoop
+                have_scoop = True
+            except Exception:
+                have_scoop = False
+
+            if have_scoop:
+                scoop_supervisor(hostfile, args)
+                return
+
+            # do we have MPI?
+            try:
+                import mpi4py
+                have_mpi4py = True
+            except Exception:
+                have_mpi4py = False
+
+            if have_mpi4py:
+                mpi_supervisor(hostfile, args)
+                return
+
+            # we don't have any other option, just keep going and
+            # use multiprocessing - in this case we don't need a
+            # supervisor and this is the main process
 
     # This is now the code for the main process
     if args.input is None:
