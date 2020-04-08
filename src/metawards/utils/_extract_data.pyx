@@ -323,7 +323,7 @@ def extract_data(network: Network, infections, play_infections,
         infections_i = get_int_array_ptr(infections[i])
         play_infections_i = get_int_array_ptr(play_infections[i])
 
-        with nogil, parallel(num_threads=1):
+        with nogil, parallel(num_threads=num_threads):
             thread_id = cython.parallel.threadid()
             total_inf_ward_buffer = &(total_inf_ward_buffers[thread_id])
             total_new_inf_ward_buffer = &(total_new_inf_ward_buffers[thread_id])
