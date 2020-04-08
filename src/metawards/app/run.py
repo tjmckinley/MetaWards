@@ -330,7 +330,7 @@ def mpi_supervisor(hostfile, args):
     script = os.path.abspath(sys.argv[0])
     args = " ".join(sys.argv[1:])
 
-    cmd = f"{mpiexec} -np {nprocs} -hostfile {hostfile} " \
+    cmd = f"{mpiexec} -ppn {nthreads} -n {nprocs} -hostfile {hostfile} " \
           f"{pyexe} -m mpi4py {script} --already-supervised {args}"
 
     print(f"Executing MPI job using '{cmd}'")
