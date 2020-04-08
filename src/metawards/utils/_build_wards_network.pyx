@@ -2,10 +2,10 @@
 cimport cython
 from libc.stdio cimport FILE, fopen, fscanf, fclose, feof
 
-from ._parameters import Parameters
-from ._network import Network
-from ._nodes import Nodes
-from ._links import Links
+from .._parameters import Parameters
+from .._network import Network
+from .._nodes import Nodes
+from .._links import Links
 
 from ._profiler import Profiler, NullProfiler
 
@@ -133,14 +133,14 @@ def build_wards_network(params: Parameters,
     network.max_links = max_links
     network.max_nodes = max_nodes
 
-    from ._utils import fill_in_gaps
+    from . import fill_in_gaps
     p = p.start("fill_in_gaps")
     fill_in_gaps(network)
     p = p.stop()
 
     print(f"Number of nodes after filling equals {network.nnodes}")
 
-    from ._utils import build_play_matrix
+    from . import build_play_matrix
     p = p.start("build_play_matrix")
     build_play_matrix(network=network, profiler=p)
     p = p.stop()

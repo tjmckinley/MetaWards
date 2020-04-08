@@ -6,7 +6,6 @@ from ._parameters import Parameters
 from ._nodes import Nodes
 from ._links import Links
 from ._population import Population
-from ._ran_binomial import seed_ran_binomial, ran_binomial
 
 __all__ = ["Network"]
 
@@ -43,7 +42,8 @@ class Network:
     """To seed provides additional seeding information"""
     to_seed: List[int] = None
 
-    params: Parameters = None  # The parameters used to generate this network
+    """The parameters used to generate this network"""
+    params: Parameters = None
 
     @staticmethod
     def build(params: Parameters,
@@ -52,6 +52,7 @@ class Network:
               distance_function=None,
               max_nodes: int = 10050,
               max_links: int = 2414000,
+              nthreads: int = 1,
               profile: bool = True):
         """Builds and returns a new Network that is described by the
            passed parameters. If 'calculate_distances' is True, then
@@ -71,16 +72,16 @@ class Network:
            will be shrunk back after building.
         """
         if profile:
-            from metawards import Profiler
+            from .utils import Profiler
             p = Profiler()
         else:
-            from metawards import NullProfiler
+            from .utils import NullProfiler
             p = NullProfiler()
 
         p = p.start("Network.build")
 
         if build_function is None:
-            from ._utils import build_wards_network
+            from .utils import build_wards_network
             build_function = build_wards_network
 
         p = p.start("build_function")
@@ -100,7 +101,7 @@ class Network:
             p = p.stop()
 
         if params.input_files.seed:
-            from ._utils import read_done_file
+            from .utils import read_done_file
             p = p.start("read_done_file")
             to_seed = read_done_file(params.input_files.seed)
             nseeds = len(to_seed)
@@ -140,7 +141,7 @@ class Network:
            anything unexpected. Checking here will prevent us from having
            to check every time the network is accessed
         """
-        from ._utils import assert_sane_network
+        from .utils import assert_sane_network
         assert_sane_network(self)
 
     def add_distances(self, distance_function=None):
@@ -153,7 +154,7 @@ class Network:
         """
 
         if distance_function is None:
-            from ._utils import add_wards_network_distance
+            from .utils import add_wards_network_distance
             distance_function = add_wards_network_distance
 
         distance_function(self)
@@ -169,14 +170,14 @@ class Network:
         """Initialise and return the space that will be used
            to track infections
         """
-        from ._utils import initialise_infections
+        from .utils import initialise_infections
         return initialise_infections(self)
 
     def initialise_play_infections(self):
         """Initialise and return the space that will be used
            to track play infections
         """
-        from ._utils import initialise_play_infections
+        from .utils import initialise_play_infections
         return initialise_play_infections(self)
 
     def get_min_max_distances(self):
@@ -188,24 +189,59 @@ class Network:
         except Exception:
             pass
 
-        from ._utils import get_min_max_distances
+        from .utils import get_min_max_distances
         self._min_max_distances = get_min_max_distances(self)
 
         return self._min_max_distances
 
     def reset_everything(self):
         """Resets the network ready for a new run of the model"""
-        from ._utils import reset_everything
+        from .utils import reset_everything
         reset_everything(self)
+
+    def update(self, params: Parameters,
+               nthreads:int = 1, profile: bool = False):
+        """Update this network with a new set of parameters.
+           This is used to update the parameters for the network
+           for a new run. The network will be reset
+           and ready for a new run.
+        """
+        if profile:
+            from .utils import Profiler
+            p = Profiler()
+        else:
+            from .utils import NullProfiler
+            p = NullProfiler()
+
+        p = p.start("Network.update")
+
+        self.params = params
+
+        p = p.start("reset_everything")
+        self.reset_everything()
+        p = p.stop()
+
+        p = p.start("rescale_play_matrix")
+        self.rescale_play_matrix()
+        p = p.stop()
+
+        p = p.start("move_from_play_to_work")
+        self.move_from_play_to_work()
+        p = p.stop()
+
+        p = p.stop()
+
+        if profile:
+            print(p)
 
     def rescale_play_matrix(self):
         """Rescale the play matrix"""
-        from ._utils import rescale_play_matrix
+        from .utils import rescale_play_matrix
         rescale_play_matrix(self)
 
     def move_from_play_to_work(self):
         """Move the population from play to work"""
-        from ._utils import move_population_from_play_to_work
+        from .utils import move_population_from_play_to_work
         move_population_from_play_to_work(self)
 
     def run(self, population: Population,
@@ -229,6 +265,8 @@ class Network:
            the nodes
         """
         # Create the random number generator
+        from .utils._ran_binomial import seed_ran_binomial, ran_binomial
+
         rng = seed_ran_binomial(seed=seed)
 
         # Print the first five random numbers so that we can
@@ -242,12 +280,12 @@ class Network:
         randnums = None
 
         if nthreads is None:
-            from ._parallel import get_available_num_threads
+            from .utils._parallel import get_available_num_threads
             nthreads = get_available_num_threads()
 
         print(f"Number of threads used equals {nthreads}")
 
-        from ._parallel import create_thread_generators
+        from .utils._parallel import create_thread_generators
         rngs = create_thread_generators(rng, nthreads)
 
         # Create space to hold the results of the simulation
@@ -257,7 +295,7 @@ class Network:
         print("Initialise play infections...")
         play_infections = self.initialise_play_infections()
 
-        from ._utils import run_model
+        from .utils import run_model
         population = run_model(network=self,
                                population=population.initial,
                                infections=infections,

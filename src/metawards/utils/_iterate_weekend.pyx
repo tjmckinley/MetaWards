@@ -1,6 +1,6 @@
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 from ._profiler import Profiler, NullProfiler
 
 __all__ = ["iterate_weekend"]

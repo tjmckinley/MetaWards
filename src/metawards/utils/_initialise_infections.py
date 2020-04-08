@@ -1,6 +1,6 @@
 
 
-from ._network import Network
+from .._network import Network
 from ._array import create_int_array
 
 __all__ = ["initialise_infections",

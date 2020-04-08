@@ -1,6 +1,6 @@
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 
 __all__ = ["infect_additional_seeds", "load_additional_seeds",
            "seed_infection_at_node", "seed_all_wards"]

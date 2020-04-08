@@ -19,8 +19,8 @@ from  ._rate_to_prob cimport rate_to_prob
 from cython.parallel import parallel, prange
 cimport openmp
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 from ._profiler import Profiler, NullProfiler
 from ._import_infection import import_infection
 from ._array import create_int_array, create_double_array

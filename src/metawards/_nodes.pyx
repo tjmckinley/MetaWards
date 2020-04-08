@@ -2,8 +2,6 @@
 cimport cython
 
 from ._node import Node
-from ._array import create_double_array, create_int_array, \
-                    create_string_array, resize_array
 
 __all__ = ["Nodes"]
 
@@ -21,6 +19,9 @@ class Nodes:
             self._is_null = True
         else:
             self._is_null = False
+
+            from .utils._array import create_double_array, create_int_array, \
+                                      create_string_array
 
             # Struct of arrays for each piece of data. See the
             # Node class for information about what each variable
@@ -199,6 +200,8 @@ class Nodes:
 
         if N == size:
             return
+
+        from .utils._array import resize_array
 
         self.label = resize_array(self.label, N, -1)
         self.begin_to = resize_array(self.begin_to, N, -1)

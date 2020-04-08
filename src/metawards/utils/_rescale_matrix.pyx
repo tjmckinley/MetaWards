@@ -1,7 +1,7 @@
 
 cimport cython
 
-from ._network import Network
+from .._network import Network
 
 __all__ = ["rescale_play_matrix"]
 
@@ -50,5 +50,5 @@ def rescale_play_matrix(network: Network):
                 links_weight[j] = ((1.0 - suscept) * static_play_at_home) + \
                                    suscept
 
-    from ._utils import recalculate_play_denominator_day
+    from . import recalculate_play_denominator_day
     recalculate_play_denominator_day(network)

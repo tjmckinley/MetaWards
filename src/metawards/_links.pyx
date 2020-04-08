@@ -2,9 +2,6 @@
 cimport cython
 from ._link import Link
 
-from ._array import create_double_array, create_int_array, \
-                    create_string_array, resize_array
-
 __all__ = ["Links"]
 
 
@@ -21,6 +18,8 @@ class Links:
             self._is_null = True
         else:
             self._is_null = False
+
+            from .utils._array import create_double_array, create_int_array
 
             # Struct of arrays for each piece of data. See the
             # Link class for information about what each variable
@@ -110,6 +109,8 @@ class Links:
 
         if N == size:
             return
+
+        from .utils._array import resize_array
 
         self.ifrom = resize_array(self.ifrom, N, -1)
         self.ito = resize_array(self.ito, N, -1)

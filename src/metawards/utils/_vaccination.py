@@ -2,7 +2,7 @@
 from array import array
 import os
 
-from ._network import Network
+from .._network import Network
 
 __all__ = ["allocate_vaccination",
            "how_many_vaccinated", "vaccinate_same_id"]

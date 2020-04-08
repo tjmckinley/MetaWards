@@ -12,10 +12,10 @@
 cimport cython
 import os
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 from ._workspace import Workspace
-from ._population import Population
+from .._population import Population
 from ._profiler import Profiler, NullProfiler
 from ._iterate import iterate
 from ._iterate_weekend import iterate_weekend
@@ -143,8 +143,11 @@ def run_model(network: Network,
 
     if EXTRASEEDS:
         p = p.start("load_additional_seeds")
-        additional_seeds = load_additional_seeds(
-                                params.input_files.additional_seeding)
+        additional_seeds = []
+
+        if params.additional_seeds is not None:
+            for additional in params.additional_seeds:
+                additional_seeds += load_additional_seeds(additional)
         p = p.stop()
 
     p = p.start("run_model_loop")

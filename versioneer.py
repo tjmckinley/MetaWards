@@ -722,6 +722,17 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
                        cwd=root)[0].strip()
     pieces["date"] = date.strip().replace(" ", "T", 1).replace(" ", "", 1)
 
+    # repository URL
+    url = run_command(GITS, ["config", "--get", "remote.origin.url"],
+                      cwd=root)[0].strip()
+
+    # branch
+    branch = run_command(GITS, ["branch", "--show-current"],
+                         cwd=root)[0].strip()
+
+    pieces["repository"] = url
+    pieces["branch"] = branch
+
     return pieces
 
 
@@ -1114,6 +1125,17 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
                        cwd=root)[0].strip()
     pieces["date"] = date.strip().replace(" ", "T", 1).replace(" ", "", 1)
 
+    # repository URL
+    url = run_command(GITS, ["config", "--get", "remote.origin.url"],
+                      cwd=root)[0].strip()
+
+    # branch
+    branch = run_command(GITS, ["branch", "--show-current"],
+                         cwd=root)[0].strip()
+
+    pieces["repository"] = url
+    pieces["branch"] = branch
+
     return pieces
 
 
@@ -1370,7 +1392,9 @@ def render(pieces, style):
                 "full-revisionid": pieces.get("long"),
                 "dirty": None,
                 "error": pieces["error"],
-                "date": None}
+                "date": None,
+                "repository": None,
+                "branch": None}
 
     if not style or style == "default":
         style = "pep440"  # the default
@@ -1392,7 +1416,9 @@ def render(pieces, style):
 
     return {"version": rendered, "full-revisionid": pieces["long"],
             "dirty": pieces["dirty"], "error": None,
-            "date": pieces.get("date")}
+            "date": pieces.get("date"),
+            "repository": pieces["repository"],
+            "branch": pieces["branch"]}
 
 
 class VersioneerBadRootError(Exception):
