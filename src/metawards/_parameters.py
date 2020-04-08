@@ -8,6 +8,8 @@ import json
 
 from ._inputfiles import InputFiles
 from ._disease import Disease
+from ._variableset import VariableSets, VariableSet
+
 
 __all__ = ["Parameters", "get_repository_version"]
 
@@ -125,10 +127,13 @@ class Parameters:
                f"dyn_dist_cutoff = {self.dyn_dist_cutoff}\n" \
                f"play_to_work = {self.play_to_work}\n" \
                f"work_to_play = {self.work_to_play}\n" \
-               f"local_vaccination_thresh = {self.local_vaccination_thresh}\n" \
+               f"local_vaccination_thresh = " \
+               f"{self.local_vaccination_thresh}\n" \
                f"global_detection_thresh = {self.global_detection_thresh}\n" \
-               f"daily_ward_vaccination_capacity = {self.daily_ward_vaccination_capacity}\n" \
-               f"neighbour_weight_threshold = {self.neighbour_weight_threshold}\n" \
+               f"daily_ward_vaccination_capacity = " \
+               f"{self.daily_ward_vaccination_capacity}\n" \
+               f"neighbour_weight_threshold = " \
+               f"{self.neighbour_weight_threshold}\n" \
                f"daily_imports = {self.daily_imports}\n" \
                f"UV = {self.UV}\n" \
                f"additional_seeds = {self.additional_seeds}\n\n"
@@ -183,32 +188,34 @@ class Parameters:
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 
-        par = Parameters(length_day=data["length_day"],
-                         plength_day=data["plength_day"],
-                         initial_inf=data["initial_inf"],
-                         static_play_at_home=data["static_play_at_home"],
-                         dyn_play_at_home=data["dyn_play_at_home"],
-                         data_dist_cutoff=data["data_dist_cutoff"],
-                         dyn_dist_cutoff=data["dyn_dist_cutoff"],
-                         play_to_work=data["play_to_work"],
-                         work_to_play=data["work_to_play"],
-                         local_vaccination_thresh=data["local_vaccination_threshold"],
-                         global_detection_thresh=data["global_detection_threshold"],
-                         daily_ward_vaccination_capacity=data["daily_ward_vaccination_capacity"],
-                         neighbour_weight_threshold=data["neighbour_weight_threshold"],
-                         daily_imports=data["daily_imports"],
-                         UV=data["UV"],
-                         _name=data["name"],
-                         _authors=data["author(s)"],
-                         _version=data["version"],
-                         _contacts=data["contact(s)"],
-                         _references=data["reference(s)"],
-                         _filename=json_file,
-                         _repository=repository,
-                         _repository_dir=repository_dir,
-                         _repository_branch=repository_branch,
-                         _repository_version=repository_version
-                         )
+        par = Parameters(
+                length_day=data["length_day"],
+                plength_day=data["plength_day"],
+                initial_inf=data["initial_inf"],
+                static_play_at_home=data["static_play_at_home"],
+                dyn_play_at_home=data["dyn_play_at_home"],
+                data_dist_cutoff=data["data_dist_cutoff"],
+                dyn_dist_cutoff=data["dyn_dist_cutoff"],
+                play_to_work=data["play_to_work"],
+                work_to_play=data["work_to_play"],
+                local_vaccination_thresh=data["local_vaccination_threshold"],
+                global_detection_thresh=data["global_detection_threshold"],
+                daily_ward_vaccination_capacity=data[
+                                "daily_ward_vaccination_capacity"],
+                neighbour_weight_threshold=data["neighbour_weight_threshold"],
+                daily_imports=data["daily_imports"],
+                UV=data["UV"],
+                _name=data["name"],
+                _authors=data["author(s)"],
+                _version=data["version"],
+                _contacts=data["contact(s)"],
+                _references=data["reference(s)"],
+                _filename=json_file,
+                _repository=repository,
+                _repository_dir=repository_dir,
+                _repository_branch=repository_branch,
+                _repository_version=repository_version
+                )
 
         print("Using parameters:")
         print(par)
@@ -260,23 +267,17 @@ class Parameters:
 
         self.disease_params = deepcopy(disease)
 
-    def set_variables(self, variables):
+    def set_variables(self, variables: VariableSet):
         """This function sets the adjustable variable values to those
            specified in 'variables' in A COPY OF THIS PARAMETERS OBJECT.
            This returns the copy. It does not change this object
         """
         params = deepcopy(self)
 
-        try:
-            params.disease_params.beta[2] = variables["beta2"]
-            params.disease_params.beta[3] = variables["beta3"]
-            params.disease_params.progress[1] = variables["progress1"]
-            params.disease_params.progress[2] = variables["progress2"]
-            params.disease_params.progress[3] = variables["progress3"]
-        except Exception as e:
-            raise ValueError(
-                f"Unable to set parameters from {variables}. Error "
-                f"equals {e.__class__}: {e}")
+        if isinstance(variables, dict):
+            variables = VariableSet(variables)
+
+        variables.adjust(params)
 
         return params
 
@@ -288,7 +289,7 @@ class Parameters:
            read. You can then apply those variable parameters
            using the 'set_variables' function
         """
-        params = []
+        variables = VariableSets()
 
         if not isinstance(line_numbers, list):
             if line_numbers is not None:
@@ -318,22 +319,22 @@ class Parameters:
                                 f"Corrupted input file. Expected 5 numbers. "
                                 f"Received {line}")
 
-                    params.append({"beta2": vals[0],
-                                   "beta3": vals[1],
-                                   "progress1": vals[2],
-                                   "progress2": vals[3],
-                                   "progress3": vals[4]})
+                    variables.append({"beta2": vals[0],
+                                      "beta3": vals[1],
+                                      "progress1": vals[2],
+                                      "progress2": vals[3],
+                                      "progress3": vals[4]})
 
                     if line_numbers is not None:
-                        if len(params) == len(line_numbers):
-                            return params
+                        if len(variables) == len(line_numbers):
+                            return variables
 
                 line = FILE.readline()
 
         # get here if we can't find this line in the file (or if we
         # are supposed to read all lines)
         if line_numbers is None:
-            return params
+            return variables
         else:
             raise ValueError(
                     f"Cannot read parameters from line {line_numbers} "

@@ -69,6 +69,9 @@ def run_worker(arguments):
 
     outdir = options["output_dir"]
 
+    if not os.path.exists(outdir):
+        os.mkdir(outdir)
+
     with redirect_output(outdir):
         global global_network
         output = global_network.run(**options)

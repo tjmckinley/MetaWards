@@ -56,13 +56,13 @@ def test_integration():
     network.update(params, profile=True)
 
     print("Run the model...")
-    population = network.run(population=population, seed=seed,
+    trajectory = network.run(population=population, seed=seed,
                              s=-1, nsteps=28, profile=True,
                              nthreads=1)
 
     print("End of the run")
 
-    print(f"Model output:  {population}")
+    print(f"Model output: {trajectory}")
 
     # The original C code has this expected population after 47 steps
     expected = Population(initial=57104043,
@@ -74,7 +74,7 @@ def test_integration():
 
     print(f"Expect output: {expected}")
 
-    assert population == expected
+    assert trajectory[-1] == expected
 
 
 if __name__ == "__main__":
