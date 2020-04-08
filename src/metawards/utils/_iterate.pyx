@@ -252,7 +252,7 @@ def iterate(network: Network, infections, play_infections,
 
         if contrib_foi > 0:
             p = p.start(f"work_{i}")
-            with nogil, parallel(num_threads=num_threads):
+            with nogil, parallel(num_threads=1):
                 thread_id = cython.parallel.threadid()
                 pr = _get_binomial_ptr(rngs_view[thread_id])
                 day_buffer = &(day_buffers[thread_id])
@@ -345,7 +345,7 @@ def iterate(network: Network, infections, play_infections,
             p = p.stop()
 
             p = p.start(f"play_{i}")
-            with nogil, parallel(num_threads=num_threads):
+            with nogil, parallel(num_threads=1):
                 thread_id = cython.parallel.threadid()
                 pr = _get_binomial_ptr(rngs_view[thread_id])
                 day_buffer = &(day_buffers[thread_id])
