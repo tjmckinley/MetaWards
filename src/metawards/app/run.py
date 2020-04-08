@@ -335,8 +335,10 @@ def scoop_supervisor(hostfile, args):
     script = os.path.abspath(sys.argv[0])
     args = " ".join(sys.argv[1:])
 
+    # also need to tell the main program the number of processes
+    # as it can't work it out itself
     cmd = f"{pyexe} -m scoop --hostfile {hostfile} -n {nprocs} " \
-          f"{script} --already-supervised {args}"
+          f"{script} --already-supervised {args} --nprocs {nprocs}"
 
     print(f"Executing scoop job using '{cmd}'")
 
