@@ -32,10 +32,11 @@ def test_integration():
     # load the disease and starting-point input files
     params.set_disease("ncov")
     params.set_input_files("2011Data")
+    params.add_seeds("ExtraSeedsBrighton.dat")
 
     # start from the parameters in the specified line number of the
-    # provided input file
-    params.read_file(inputfile, line_num)
+    # provided input file
+    variables = params.read_variables(inputfile, line_num)
 
     # extra parameters that are set
     params.UV = UV
@@ -51,14 +52,17 @@ def test_integration():
     network = Network.build(params=params, calculate_distances=True,
                             profile=True)
 
+    params = params.set_variables(variables[0])
+    network.update(params, profile=True)
+
     print("Run the model...")
-    population = network.run(population=population, seed=seed,
+    trajectory = network.run(population=population, seed=seed,
                              s=-1, nsteps=28, profile=True,
                              nthreads=1)
 
     print("End of the run")
 
-    print(f"Model output:  {population}")
+    print(f"Model output: {trajectory}")
 
     # The original C code has this expected population after 47 steps
     expected = Population(initial=57104043,
@@ -70,7 +74,7 @@ def test_integration():
 
     print(f"Expect output: {expected}")
 
-    assert population == expected
+    assert trajectory[-1] == expected
 
 
 if __name__ == "__main__":

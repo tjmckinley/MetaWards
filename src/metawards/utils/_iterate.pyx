@@ -19,8 +19,8 @@ from  ._rate_to_prob cimport rate_to_prob
 from cython.parallel import parallel, prange
 cimport openmp
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 from ._profiler import Profiler, NullProfiler
 from ._import_infection import import_infection
 from ._array import create_int_array, create_double_array
@@ -252,7 +252,7 @@ def iterate(network: Network, infections, play_infections,
 
         if contrib_foi > 0:
             p = p.start(f"work_{i}")
-            with nogil, parallel(num_threads=num_threads):
+            with nogil, parallel(num_threads=1):
                 thread_id = cython.parallel.threadid()
                 pr = _get_binomial_ptr(rngs_view[thread_id])
                 day_buffer = &(day_buffers[thread_id])
@@ -345,7 +345,7 @@ def iterate(network: Network, infections, play_infections,
             p = p.stop()
 
             p = p.start(f"play_{i}")
-            with nogil, parallel(num_threads=num_threads):
+            with nogil, parallel(num_threads=1):
                 thread_id = cython.parallel.threadid()
                 pr = _get_binomial_ptr(rngs_view[thread_id])
                 day_buffer = &(day_buffers[thread_id])

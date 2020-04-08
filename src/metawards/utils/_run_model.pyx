@@ -12,10 +12,10 @@
 cimport cython
 import os
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 from ._workspace import Workspace
-from ._population import Population
+from .._population import Population, Populations
 from ._profiler import Profiler, NullProfiler
 from ._iterate import iterate
 from ._iterate_weekend import iterate_weekend
@@ -70,6 +70,9 @@ def run_model(network: Network,
 
     # create a population object to monitor the outbreak
     population = Population(initial=population)
+
+    # create space to hold the population trajectory
+    trajectory = Populations()
 
     int_t = "i"    # signed int64
     float_t = "d"  # double (float64)
@@ -136,6 +139,9 @@ def run_model(network: Network,
                                       population=population)
     p = p.stop()
 
+    # save the initial population
+    trajectory.append(population)
+
     cdef int day = 0
 
     if WEEKENDS:
@@ -143,8 +149,11 @@ def run_model(network: Network,
 
     if EXTRASEEDS:
         p = p.start("load_additional_seeds")
-        additional_seeds = load_additional_seeds(
-                                params.input_files.additional_seeding)
+        additional_seeds = []
+
+        if params.additional_seeds is not None:
+            for additional in params.additional_seeds:
+                additional_seeds += load_additional_seeds(additional)
         p = p.stop()
 
     p = p.start("run_model_loop")
@@ -222,6 +231,7 @@ def run_model(network: Network,
 
         if nsteps is not None:
             if timestep > nsteps:
+                trajectory.append(population)
                 print(f"Exiting model run early at nsteps = {nsteps}")
                 break
 
@@ -254,6 +264,7 @@ def run_model(network: Network,
                         params.disease_params.contrib_foi[j] = 0.2
 
             VACF.write("%d %d\n" % (timestep, how_many_vaccinated(vac)))
+
             p2 = p2.stop()
 
         # end of "IF VACCINATE"
@@ -261,6 +272,9 @@ def run_model(network: Network,
 
         if not p2.is_null():
             print(f"\n{p2}\n")
+
+        # save the population trajectory
+        trajectory.append(population)
 
     # end of while loop
 
@@ -283,4 +297,4 @@ def run_model(network: Network,
 
     print(f"Infection died ... Ending at time {timestep}")
 
-    return population
+    return trajectory

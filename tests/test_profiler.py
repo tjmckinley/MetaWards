@@ -1,5 +1,5 @@
 
-from metawards import Profiler
+from metawards.utils import Profiler
 
 
 def test_profiler():

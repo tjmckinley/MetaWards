@@ -1,7 +1,7 @@
 
 cimport cython
 
-from ._network import Network
+from .._network import Network
 
 
 @cython.boundscheck(False)

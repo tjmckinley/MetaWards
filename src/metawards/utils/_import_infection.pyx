@@ -1,8 +1,8 @@
 
 cimport cython
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 
 from ._ran_binomial cimport _ran_binomial, _get_binomial_ptr, binomial_rng
 

@@ -2,10 +2,10 @@
 cimport cython
 from libc.math cimport floor, ceil
 
-from ._network import Network
+from .._network import Network
 
-from ._utils import recalculate_play_denominator_day, \
-                    recalculate_work_denominator_day
+from . import recalculate_play_denominator_day, \
+              recalculate_work_denominator_day
 
 __all__ = ["move_population_from_work_to_play",
            "move_population_from_play_to_work"]

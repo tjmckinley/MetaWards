@@ -27,6 +27,7 @@ class Disease:
     _filename: str = None
     _repository: str = None
     _repository_version: str = None
+    _repository_branch: str = None
 
     def __str__(self):
         return f"Disease {self._name}\n" \
@@ -36,6 +37,7 @@ class Disease:
                f"contact(s): {self._contacts}\n" \
                f"references(s): {self._references}\n" \
                f"repository: {self._repository}\n" \
+               f"repository_branch: {self._repository_branch}\n" \
                f"repository_version: {self._repository_version}\n\n" \
                f"beta = {self.beta}\n" \
                f"progress = {self.progress}\n" \
@@ -65,8 +67,8 @@ class Disease:
 
     @staticmethod
     def load(disease: str = "ncov",
-             repository: str=None,
-             folder: str=_default_folder_name,
+             repository: str = None,
+             folder: str = _default_folder_name,
              filename: str = None):
         """Load the disease parameters for the specified disease.
            This will look for a file called f"{disease}.json"
@@ -80,6 +82,7 @@ class Disease:
            json file via the "filename" argument
         """
         repository_version = None
+        repository_branch = None
 
         if filename is None:
             if repository is None:
@@ -87,10 +90,14 @@ class Disease:
                 if repository is None:
                     repository = _default_disease_path
 
-            from ._parameters import get_repository_version
-            repository_version = get_repository_version(repository)
             filename = os.path.join(repository, folder,
                                     f"{disease}.json")
+
+            from ._parameters import get_repository_version
+            v = get_repository_version(repository)
+            repository = v["repository"]
+            repository_version = v["version"]
+            repository_branch = v["branch"]
 
         json_file = filename
 
@@ -120,6 +127,7 @@ class Disease:
                           _references=data["reference(s)"],
                           _filename=json_file,
                           _repository=repository,
+                          _repository_branch=repository_branch,
                           _repository_version=repository_version)
 
         disease._validate()

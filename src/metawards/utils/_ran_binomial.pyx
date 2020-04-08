@@ -27,9 +27,7 @@ def seed_ran_binomial(seed: int = None):
 
     print(f"Using random number seed: {seed}")
     rng = _construct_binomial_rng()
-    print(f"Constructed {rng}")
     _seed_ran_binomial(rng, seed)
-    print(f"Seeded...")
 
     cdef binomial_rng* r = _get_binomial_ptr(rng)
 

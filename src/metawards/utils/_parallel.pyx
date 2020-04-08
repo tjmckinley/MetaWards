@@ -25,7 +25,6 @@ def get_available_num_threads():
 
     num_threads = a[0]
 
-    print(f"Recommended to use nthreads = {num_threads}")
     return num_threads
 
 

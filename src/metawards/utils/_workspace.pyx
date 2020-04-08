@@ -3,8 +3,8 @@ cimport cython
 
 from ._array import create_int_array
 
-from ._network import Network
-from ._parameters import Parameters
+from .._network import Network
+from .._parameters import Parameters
 
 __all__ = ["Workspace"]
 
