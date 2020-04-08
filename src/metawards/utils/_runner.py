@@ -87,12 +87,12 @@ def run_models(network: Network, variables, population: Population,
 
         network.update(params, profile=profile)
 
-        population = network.run(population=population, seed=seed,
+        trajectory = network.run(population=population, seed=seed,
                                  s=s, nsteps=nsteps,
                                  output_dir=output_dir,
                                  profile=profile,
                                  nthreads=nthreads)
-        return population
+        return (variables[0], trajectory)
 
     # generate the random number seeds for all of the jobs
     # (for testing, we will use the same seed so that I can check

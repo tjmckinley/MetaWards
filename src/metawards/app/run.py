@@ -48,6 +48,8 @@ def cli():
 
     import sys
     import argparse
+    import bz2
+    import os
 
     parser = argparse.ArgumentParser(
                     description="MetaWards epidemic modelling - see "
@@ -279,9 +281,19 @@ def cli():
                         nsteps=args.nsteps, output_dir=args.output,
                         profile=profile, parallel_scheme=parallel_scheme)
 
-    print("End of the run")
+    # write the result to a csv file that can be easily read by R or
+    # pandas - this will be written compressed to save space
+    with bz2.open(os.path.join(args.output, "results.csv.bz2"), "wt") as FILE:
+        FILE.write("variables,repeat,step,susceptibles,latent,"
+                   "total,n_inf_wards\n")
+        for varset, trajectory in result:
+            start = f"{varset.fingerprint()},{varset.repeat_index()},"
 
-    print(f"Model output:  {result}")
+            for i, pop in enumerate(trajectory):
+                FILE.write(f"{start}{i},{pop.susceptibles},"
+                           f"{pop.latent},{pop.total},{pop.n_inf_wards}\n")
+
+    print("End of the run")
 
 
 if __name__ == "__main__":

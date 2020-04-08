@@ -231,6 +231,7 @@ def run_model(network: Network,
 
         if nsteps is not None:
             if timestep > nsteps:
+                trajectory.append(population)
                 print(f"Exiting model run early at nsteps = {nsteps}")
                 break
 
