@@ -103,11 +103,25 @@ def run_models(network: Network, variables, population: Population,
     # (for testing, we will use the same seed so that I can check
     #  that they are all working)
     seeds = []
-    print("WARNING*** NEED TO GENERATE DIFFERENT SEEDS FOR JOBS")
-    print("WARNING*** THIS CODE SHOULD NOT BE USED IN PRODUCTION")
 
-    for i in range(0, len(variables)):
-        seeds.append(seed)
+    if seed == 0:
+        # this is a special mode that a developer can use to force
+        # all jobs to use the same random number seed (15324) that
+        # is used for comparing outputs. This should NEVER be used
+        # for production code
+        print("** WARNING: Using special mode to fix all random number")
+        print("** WARNING: seeds to 15324. DO NOT USE IN PRODUCTION!!!")
+
+        for i in range(0, len(variables)):
+            seeds.append(15324)
+
+    else:
+        from ._ran_binomial import seed_ran_binomial, ran_int
+        rng = seed_ran_binomial(seed)
+
+        # seed the rngs used for the sub-processes using this rng
+        for i in range(0, len(variables)):
+            seeds.append(ran_int(rng, 10000, 99999999))
 
     # set the output directories for all of the jobs - this is based
     # on the fingerprint, so should be unique for each job
