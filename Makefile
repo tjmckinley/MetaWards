@@ -9,10 +9,10 @@ dist:
 redist: clean dist
 
 install:
-	CYTHONIZE=1 pip install --user .
+	CYTHONIZE=1 pip install .
 
 install-from-source: dist
-	pip install --user dist/metawards-0.2.0.tar.gz
+	pip install dist/metawards-0.2.0.tar.gz
 
 clean:
 	$(RM) -r build dist
