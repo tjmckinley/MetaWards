@@ -727,8 +727,12 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
                       cwd=root)[0].strip()
 
     # branch
-    branch = run_command(GITS, ["branch", "--show-current"],
-                         cwd=root)[0].strip()
+    branch = "unknown"
+    for line in run_command(GITS, ["branch"], cwd=root)[0].split("\n"):
+        line = line.strip()
+        if line.startswith("*"):
+            branch = line.split(" ")[-1]
+            break
 
     pieces["repository"] = url
     pieces["branch"] = branch
@@ -1130,8 +1134,12 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
                       cwd=root)[0].strip()
 
     # branch
-    branch = run_command(GITS, ["branch", "--show-current"],
-                         cwd=root)[0].strip()
+    branch = "unknown"
+    for line in run_command(GITS, ["branch"], cwd=root)[0].split("\n"):
+        line = line.strip()
+        if line.startswith("*"):
+            branch = line.split(" ")[-1]
+            break
 
     pieces["repository"] = url
     pieces["branch"] = branch
