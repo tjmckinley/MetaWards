@@ -3,6 +3,8 @@ cimport cython
 
 from .._network import Network
 
+__all__ = ["get_min_max_distances"]
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)

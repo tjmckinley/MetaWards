@@ -200,7 +200,7 @@ class Network:
         reset_everything(self)
 
     def update(self, params: Parameters,
-               nthreads:int = 1, profile: bool = False):
+               nthreads: int = 1, profile: bool = False):
         """Update this network with a new set of parameters.
            This is used to update the parameters for the network
            for a new run. The network will be reset

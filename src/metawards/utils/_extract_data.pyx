@@ -22,6 +22,8 @@ from ._profiler import Profiler, NullProfiler
 from .._population import Population
 from ._workspace import Workspace
 
+__all__ = ["extract_data"]
+
 
 cdef double * get_double_array_ptr(double_array):
     """Return the raw C pointer to the passed double array which was

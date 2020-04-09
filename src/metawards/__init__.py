@@ -1,7 +1,32 @@
 """
-Python version of the MetaWards program
+.. currentmodule:: metawards
 
-Details of authorship / license etc to be written here
+Functions
+=========
+
+.. autosummary::
+    :toctree: generated/
+
+    get_version_string
+
+Classes
+=======
+
+.. autosummary::
+    :toctree: generated/
+
+    Disease
+    InputFiles
+    Link
+    Links
+    Network
+    Node
+    Nodes
+    Parameters
+    Population
+    Populations
+    VariableSet
+    VariableSets
 
 """
 

@@ -1,3 +1,12 @@
+"""
+.. currentmodule:: metawards
+
+Functions
+=========
+
+.. autosummary::
+    :toctree: generated/
+"""
 
 from dataclasses import dataclass
 from typing import List

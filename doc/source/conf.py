@@ -6,9 +6,49 @@
 # serve to show the default.
 from __future__ import print_function
 
+import sys
+
 import metawards
+from metawards.app import parse_args as _parse_args
+
 print("Generating doc for MetaWards version {version} installed in {path}"
       .format(version=metawards.__version__, path=metawards.__path__))
+
+# Write the metawards --help documentation to a file
+
+# Need to remove argv as parse_args will attempt to parse
+# the arguments for sphinx, which causes SystemExit to be
+# raised, and thus me now being able to get the argparse
+# object from metawards...
+old_argv = sys.argv
+sys.argv = [old_argv[0]]
+
+_args, _parser = _parse_args()
+
+with open("metawards_help.rst", "w") as FILE:
+    _parser.print_help(FILE)
+
+help_lines = open("metawards_help.rst", "r").readlines()
+
+sys.argv = old_argv
+
+with open("metawards_help.rst", "w") as FILE:
+    FILE.write("""
+====================
+Command line options
+====================
+
+.. toctree::
+   :maxdepth: 2
+
+The full set of command line options for metawards is below;
+
+::
+
+    """)
+
+    for line in help_lines:
+        FILE.write(f"  {line}")
 
 # -- General configuration -----------------------------------------------
 # Add any Sphinx extension module names here, as strings. They can be extensions
@@ -39,7 +79,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'MetaWards'
-copyright = u'2020 Leon Danon & Christopher Woods'
+copyright = u'2020 University of Bristol'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -77,7 +117,7 @@ add_function_parentheses = True
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-show_authors = True
+show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -225,7 +265,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'MetaWards', u'MetaWards Documentation',
-     [u'Leon Danon & Christopher Woods'], 1)
+     [u'University of Bristol'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -239,7 +279,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'MetaWards', u'MetaWards Documentation',
-     u'Leon Danon & Christopher Woods', 'MetaWards',
+     u'University of Bristol', 'MetaWards',
      'Individual identity and movement networks for disease metapopulations.',
      'Miscellaneous'),
 ]

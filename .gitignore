@@ -5,6 +5,8 @@ notebooks/.ipynb_checkpoints
 /build
 src/metawards/*.c
 src/metawards/utils/*.c
+src/metawards/*.so
+src/metawards/utils/*.so
 __pycache__
 /dist
 /src/metawards.egg-info
@@ -13,3 +15,7 @@ __pycache__
 /.env
 /*.pyc
 /output
+/doc/build
+/doc/source/api/generated
+/.coverage
+/doc/source/metawards_help.rst
