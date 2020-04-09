@@ -39,7 +39,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'MetaWards'
-copyright = u'2020 Leon Danon & Christopher Woods'
+copyright = u'2020 University of Bristol'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -77,7 +77,7 @@ add_function_parentheses = True
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-show_authors = True
+show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -225,7 +225,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'MetaWards', u'MetaWards Documentation',
-     [u'Leon Danon & Christopher Woods'], 1)
+     [u'University of Bristol'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -239,7 +239,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'MetaWards', u'MetaWards Documentation',
-     u'Leon Danon & Christopher Woods', 'MetaWards',
+     u'University of Bristol', 'MetaWards',
      'Individual identity and movement networks for disease metapopulations.',
      'Miscellaneous'),
 ]

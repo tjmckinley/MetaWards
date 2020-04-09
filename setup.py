@@ -4,13 +4,14 @@
 
 import os
 import versioneer
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, Extension
 from Cython.Build import cythonize
 
 cflags = '-O3 -march=native -Wall -fopenmp'
 
-random_sources = ["src/metawards/ran_binomial/mt19937.c", 
+random_sources = ["src/metawards/ran_binomial/mt19937.c",
                   "src/metawards/ran_binomial/distributions.c"]
+
 
 # https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#distributing-cython-modules
 def no_cythonize(extensions, **_ignore):
@@ -34,33 +35,53 @@ def no_cythonize(extensions, **_ignore):
 # init function" and the answers on stackoverflow didn't work.
 # If anyone can help please do :-)
 
+
 extensions = [
     Extension("metawards._nodes", ["src/metawards/_nodes.pyx"]),
     Extension("metawards._links", ["src/metawards/_links.pyx"]),
-    Extension("metawards.utils._run_model", ["src/metawards/utils/_run_model.pyx"]),
-    Extension("metawards.utils._workspace", ["src/metawards/utils/_workspace.pyx"]),
-    Extension("metawards.utils._build_wards_network", ["src/metawards/utils/_build_wards_network.pyx"]),
-    Extension("metawards.utils._add_wards_network_distance", ["src/metawards/utils/_add_wards_network_distance.pyx"]),
-    Extension("metawards.utils._get_min_max_distances", ["src/metawards/utils/_get_min_max_distances.pyx"]),
-    Extension("metawards.utils._reset_everything", ["src/metawards/utils/_reset_everything.pyx"]),
-    Extension("metawards.utils._rescale_matrix", ["src/metawards/utils/_rescale_matrix.pyx"]),
-    Extension("metawards.utils._recalculate_denominators", ["src/metawards/utils/_recalculate_denominators.pyx"]),
-    Extension("metawards.utils._move_population", ["src/metawards/utils/_move_population.pyx"]),
-    Extension("metawards.utils._fill_in_gaps", ["src/metawards/utils/_fill_in_gaps.pyx"]),
-    Extension("metawards.utils._build_play_matrix", ["src/metawards/utils/_build_play_matrix.pyx"]),
+    Extension("metawards.utils._run_model",
+              ["src/metawards/utils/_run_model.pyx"]),
+    Extension("metawards.utils._workspace",
+              ["src/metawards/utils/_workspace.pyx"]),
+    Extension("metawards.utils._build_wards_network",
+              ["src/metawards/utils/_build_wards_network.pyx"]),
+    Extension("metawards.utils._add_wards_network_distance",
+              ["src/metawards/utils/_add_wards_network_distance.pyx"]),
+    Extension("metawards.utils._get_min_max_distances",
+              ["src/metawards/utils/_get_min_max_distances.pyx"]),
+    Extension("metawards.utils._reset_everything",
+              ["src/metawards/utils/_reset_everything.pyx"]),
+    Extension("metawards.utils._rescale_matrix",
+              ["src/metawards/utils/_rescale_matrix.pyx"]),
+    Extension("metawards.utils._recalculate_denominators",
+              ["src/metawards/utils/_recalculate_denominators.pyx"]),
+    Extension("metawards.utils._move_population",
+              ["src/metawards/utils/_move_population.pyx"]),
+    Extension("metawards.utils._fill_in_gaps",
+              ["src/metawards/utils/_fill_in_gaps.pyx"]),
+    Extension("metawards.utils._build_play_matrix",
+              ["src/metawards/utils/_build_play_matrix.pyx"]),
     Extension("metawards.utils._array", ["src/metawards/utils/_array.pyx"]),
-    Extension("metawards.utils._iterate", ["src/metawards/utils/_iterate.pyx"]+random_sources),
-    Extension("metawards.utils._iterate_weekend", ["src/metawards/utils/_iterate_weekend.pyx"]),
-    Extension("metawards.utils._extract_data", ["src/metawards/utils/_extract_data.pyx"]),
-    Extension("metawards.utils._extract_data_for_graphics", ["src/metawards/utils/_extract_data_for_graphics.pyx"]),
-    Extension("metawards.utils._import_infection", ["src/metawards/utils/_import_infection.pyx"]+random_sources),
-    Extension("metawards.utils._ran_binomial", ["src/metawards/utils/_ran_binomial.pyx"]+random_sources),
-    Extension("metawards.utils._assert_sane_network", ["src/metawards/utils/_assert_sane_network.pyx"]),
-    Extension("metawards.utils._parallel", ["src/metawards/utils/_parallel.pyx"]),
+    Extension("metawards.utils._iterate",
+              ["src/metawards/utils/_iterate.pyx"]+random_sources),
+    Extension("metawards.utils._iterate_weekend",
+              ["src/metawards/utils/_iterate_weekend.pyx"]),
+    Extension("metawards.utils._extract_data",
+              ["src/metawards/utils/_extract_data.pyx"]),
+    Extension("metawards.utils._extract_data_for_graphics",
+              ["src/metawards/utils/_extract_data_for_graphics.pyx"]),
+    Extension("metawards.utils._import_infection",
+              ["src/metawards/utils/_import_infection.pyx"]+random_sources),
+    Extension("metawards.utils._ran_binomial",
+              ["src/metawards/utils/_ran_binomial.pyx"]+random_sources),
+    Extension("metawards.utils._assert_sane_network",
+              ["src/metawards/utils/_assert_sane_network.pyx"]),
+    Extension("metawards.utils._parallel",
+              ["src/metawards/utils/_parallel.pyx"]),
 ]
 
 # disable bounds checking and wraparound globally as the code already
-# checks for this and doesn't use negative indexing. It can be 
+# checks for this and doesn't use negative indexing. It can be
 # turned on as needed in the modules
 for e in extensions:
     e.cython_directives = {"boundscheck": False, "wraparound": False}
