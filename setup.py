@@ -5,7 +5,12 @@
 import os
 import versioneer
 from setuptools import setup, Extension
-from Cython.Build import cythonize
+
+try:
+    from Cython.Build import cythonize
+    have_cython = True
+except Exception:
+    have_cython = False
 
 cflags = '-O3 -march=native -Wall -fopenmp'
 
@@ -87,6 +92,9 @@ for e in extensions:
     e.cython_directives = {"boundscheck": False, "wraparound": False}
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
+
+if not have_cython:
+    CYTHONIZE = False
 
 os.environ['CFLAGS'] = cflags
 
