@@ -98,6 +98,12 @@ Development
    :maxdepth: 2
 
    development
+
+Changelog
+=========
+.. toctree::
+   :maxdepth: 2
+
    changelog
 
 Indices and tables
