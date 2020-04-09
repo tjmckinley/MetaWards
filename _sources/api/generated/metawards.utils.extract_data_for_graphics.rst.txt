@@ -1,0 +1,6 @@
+metawards.utils.extract\_data\_for\_graphics
+============================================
+
+.. currentmodule:: metawards.utils
+
+.. autofunction:: extract_data_for_graphics

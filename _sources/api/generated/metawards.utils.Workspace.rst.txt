@@ -1,0 +1,52 @@
+metawards.utils.Workspace
+=========================
+
+.. currentmodule:: metawards.utils
+
+.. autoclass:: Workspace
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Workspace.__delattr__
+      ~Workspace.__dir__
+      ~Workspace.__eq__
+      ~Workspace.__format__
+      ~Workspace.__ge__
+      ~Workspace.__getattribute__
+      ~Workspace.__gt__
+      ~Workspace.__hash__
+      ~Workspace.__init__
+      ~Workspace.__init_subclass__
+      ~Workspace.__le__
+      ~Workspace.__lt__
+      ~Workspace.__ne__
+      ~Workspace.__new__
+      ~Workspace.__reduce__
+      ~Workspace.__reduce_ex__
+      ~Workspace.__repr__
+      ~Workspace.__setattr__
+      ~Workspace.__sizeof__
+      ~Workspace.__str__
+      ~Workspace.__subclasshook__
+      ~Workspace.zero_all
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Workspace.__dict__
+      ~Workspace.__doc__
+      ~Workspace.__module__
+      ~Workspace.__weakref__
+   
+   

@@ -1,0 +1,6 @@
+metawards.utils.open\_files
+===========================
+
+.. currentmodule:: metawards.utils
+
+.. autofunction:: open_files

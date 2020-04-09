@@ -1,0 +1,6 @@
+metawards.utils.infect\_additional\_seeds
+=========================================
+
+.. currentmodule:: metawards.utils
+
+.. autofunction:: infect_additional_seeds

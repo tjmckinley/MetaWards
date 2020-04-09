@@ -1,0 +1,6 @@
+metawards.utils.import\_infection
+=================================
+
+.. currentmodule:: metawards.utils
+
+.. autofunction:: import_infection

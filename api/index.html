@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Documentation &mdash; MetaWards 0+untagged.1.ga8602db documentation</title>
+  <title>Documentation &mdash; MetaWards 0+untagged.1.gbcd2792 documentation</title>
   
 
   
@@ -35,7 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="MetaWards" href="../index.html" /> 
+    <link rel="next" title="MetaWards" href="index_MetaWards.html" />
+    <link rel="prev" title="Running on a cluster" href="../cluster_usage.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,10 +84,26 @@
               
             
             
-              <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul class="simple">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation instructions</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../model_data.html">Model data</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster_usage.html">Running on a cluster</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards.html">MetaWards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_app.html">MetaWards.app</a></li>
 </ul>
 </li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Developer’s guide</a></li>
 </ul>
 
             
@@ -153,9 +170,28 @@
             
   <div class="section" id="documentation">
 <span id="ref-api"></span><h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
-<p>The API (Application Programming Interface) is divided into a collection
-of packages.</p>
+<p>The metawards program and associated Python module is composed
+of three main units;</p>
+<ul class="simple">
+<li><p>The <a class="reference external" href="index_MetaWards.html">metawards</a> top-level Python module, which is
+what you should use if you want to write new Python programs that
+integrate metawards functionality. These could include plugging
+metawards as a model into a higher-level statictical
+analysis package.</p></li>
+<li><p>The <a class="reference external" href="index_MetaWards_app.html">metawards</a> command line program, which is
+what most people would use to run metawards. This program comes with
+full help that is provided by typing <code class="docutils literal notranslate"><span class="pre">metawards</span> <span class="pre">--help</span></code>.</p></li>
+<li><p>The <a class="reference external" href="index_MetaWards_utils.html">metawards.utils</a> utility Python module which
+contains lots of functions that are used by metawards to build and
+perform model runs. These functions are internal to metawards and are
+not designed to be used outside of this program.</p></li>
+</ul>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index_MetaWards.html">MetaWards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_MetaWards_app.html">MetaWards.app</a></li>
+</ul>
 </div>
 </div>
 
@@ -167,8 +203,10 @@ of packages.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="index_MetaWards.html" class="btn btn-neutral float-right" title="MetaWards" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="../index.html" class="btn btn-neutral float-left" title="MetaWards" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="../cluster_usage.html" class="btn btn-neutral float-left" title="Running on a cluster" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -177,7 +215,7 @@ of packages.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 Leon Danon &amp; Christopher Woods
+        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 09, 2020.
       </span>

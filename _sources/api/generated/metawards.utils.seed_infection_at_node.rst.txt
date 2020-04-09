@@ -1,0 +1,6 @@
+metawards.utils.seed\_infection\_at\_node
+=========================================
+
+.. currentmodule:: metawards.utils
+
+.. autofunction:: seed_infection_at_node

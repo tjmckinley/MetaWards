@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MetaWards &mdash; MetaWards 0+untagged.1.gbcd2792 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="MetaWards API Detail" href="index_api_MetaWards.html" />
+    <link rel="prev" title="Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #161e3c" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MetaWards
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation instructions</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../model_data.html">Model data</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster_usage.html">Running on a cluster</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">MetaWards</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index_api_MetaWards.html">MetaWards API Detail</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_app.html">MetaWards.app</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Developer’s guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MetaWards</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Documentation</a> &raquo;</li>
+        
+      <li>MetaWards</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/index_MetaWards.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="metawards">
+<span id="ref-metawards"></span><h1>MetaWards<a class="headerlink" href="#metawards" title="Permalink to this headline">¶</a></h1>
+<p>This is the top-level Python package that provides the core objects to
+build and run MetaWards models.</p>
+<p>The package centers around a few core objects:</p>
+<dl class="simple">
+<dt><a class="reference external" href="generated/metawards.Nodes.html">Nodes</a> / <a class="reference external" href="generated/metawards.Node.html">Node</a></dt><dd><p>These represent the individual electoral wards in
+which progress of the disease is tracked.</p>
+</dd>
+<dt><a class="reference external" href="generated/metawards.Links.html">Links</a> / <a class="reference external" href="generated/metawards.Link.html">Link</a></dt><dd><p>These represent the connections between electoral wards,
+including how people commute between wards for work. These
+therefore provide the routes via which the disease
+can spread.</p>
+</dd>
+<dt><a class="reference external" href="generated/metawards.Parameters.html">Parameters</a></dt><dd><p>This is the holder of all model parameters that can describe,
+e.g. the proportion of day versus night, cutoff distance
+for transmission between wards etc.
+Example parameter sets are held in the
+<a class="reference external" href="https://github.com/metawards/MetaWardsData">MetaWardsData</a>
+repository.</p>
+</dd>
+<dt><a class="reference external" href="generated/metawards.Disease.html">Disease</a></dt><dd><p>This is the holder of disease parameters, used to change the model
+to represent different types of disease outbreaks. Different
+disease models are held in the
+<a class="reference external" href="https://github.com/metawards/MetaWardsData">MetaWardsData</a>
+repository.</p>
+</dd>
+<dt><a class="reference external" href="generated/metawards.InputFiles.html">InputFiles</a></dt><dd><p>This holds information about all of the input files that are
+used to build the network of wards and links. All of the
+input data is held in the
+<a class="reference external" href="https://github.com/metawards/MetaWardsData">MetaWardsData</a>
+repository.</p>
+</dd>
+<dt><a class="reference external" href="generated/metawards.NetWork.html">Network</a></dt><dd><p>This is the complete network of Nodes and Links built using
+the data loaded from the InputFiles, set up to model the
+disease whose parameters are in a Disease, using model run
+parameters held in a Parameters object. A Network is
+self-contained, containing everything needed for a model run.
+The Network.run function runs the model.</p>
+</dd>
+<dt><a class="reference external" href="generated/metawards.VariableSet.html">VariableSet</a> / <a class="reference external" href="generated/metawards.VariableSets.html">VariableSets</a></dt><dd><p>The model contains adjustable variables,
+which must be adjusted so that the model can match observed
+real-life data. A VariableSet contains a set of variables to
+be adjusted, while VariableSets is a collection of such
+changes that should be explored over multiple model runs.</p>
+</dd>
+<dt><a class="reference external" href="generated/metawards.Population.html">Population</a> / <a class="reference external" href="generated/metawards.Populations.html">Populations</a></dt><dd><p>A model run will result in a trajectory of
+changes in populations of people who have progressed along
+different stages of the disease (e.g. from being
+<em>susceptible to infection</em> (S), to being
+<em>removed from the outbreak</em> (R) - either because they
+have recovered or have sadly perished). A Population holds
+the numbers in each state for a single day in the outbreak,
+while Populations holds the full trajectory.</p>
+</dd>
+</dl>
+<p>All of the above classes (and others in the top-level package) are
+described <a class="reference external" href="index_api_MetaWards.html">in more detail here</a>;</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index_api_MetaWards.html">MetaWards API Detail</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="index_api_MetaWards.html" class="btn btn-neutral float-right" title="MetaWards API Detail" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020 University of Bristol
+      <span class="lastupdated">
+        Last updated on Apr 09, 2020.
+      </span>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
