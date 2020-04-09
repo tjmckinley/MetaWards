@@ -67,6 +67,14 @@ Installation
 
    install
 
+Model Data
+==========
+
+.. toctree::
+   :maxdepth: 2
+
+   model_data
+
 Usage
 =====
 
@@ -74,6 +82,7 @@ Usage
    :maxdepth: 2
 
    usage
+   cluster_usage
 
 Documentation
 =============

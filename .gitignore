@@ -18,3 +18,4 @@ __pycache__
 /doc/build
 /doc/source/api/generated
 /.coverage
+/doc/source/metawards_help.rst

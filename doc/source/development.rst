@@ -522,7 +522,11 @@ For information, see the documentation
 Thanks
 ======
 
-Thanks to Lester Hedges and the
+First, thanks to you for your interest in MetaWards and for reading this
+far. We hope you enjoy having a play with the code and having a go
+at adding new functionality, fixing bugs, writing docs etc.
+
+We would also like to thank Lester Hedges and the
 `BioSimSpace <https://biosimspace.org>`__ team who provided great advice
 to set up the above, and from whose
 `GitHub repo <https://github.com/michellab/biosimspace>`__

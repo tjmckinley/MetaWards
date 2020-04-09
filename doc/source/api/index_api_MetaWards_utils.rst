@@ -1,4 +1,4 @@
-.. _ref-MetaWards:
+.. _ref-MetaWards_utils:
 
 MetaWards.utils API Detail
 ==========================
