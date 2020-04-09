@@ -12,8 +12,73 @@ The data needed to run a MetaWards simulation is also on GitHub
 in the `MetaWardsData <https://github.com/metawards/MetaWardsData>`__
 repository.
 
-Python
-======
+Setting up your computer
+=========================
+
+MetaWards requires Python >= 3.7, so please install this before continuing
+further. `Anaconda <https://anaconda.org>`__ provides easy installers for
+Python that work on a range of operating systems and that don't need
+root or admin permissions.
+
+Virtual environments
+--------------------
+
+It is recommended that you develop MetaWards in a Python
+`virtual environment <https://docs.python.org/3/tutorial/venv.html>`__.
+You can create a new environment in the directory ``venvs/metawards-devel``
+by typing;
+
+.. code-block:: bash
+
+   mkdir venvs
+   python -m venv venvs/metawards-devel
+
+Feel free to place the environment in any directory you want.
+
+Virtual environments provide sandboxes which make it easier to develop
+and test code. They also allow you to install Python modules without
+interfering with other Python installations.
+
+You activate you environment by typing;
+
+.. code-block:: bash
+
+    source venvs/metawards-devel/bin/activate
+
+This will update your shell so that all python commands (such as
+``python``, ``pip`` etc.) will use the virtual environment. You can
+deactivate the environment and return to the "standard" Python using;
+
+.. code-block:: bash
+
+   deactivate
+
+If you no longer want the environment then you can remove it using
+
+.. code-block:: bash
+
+  rm -rf venvs/metawards-devel
+
+Developer dependencies
+----------------------
+
+If is recommended that you have the following modules installed when
+developing metawards;
+
+* cython
+* numpy
+* flake8
+* pytest
+* sphinx (plus sphinx_issues sphinx_rtd_theme)
+
+You can install these manually, or all at once using;
+
+.. code-block:: bash
+
+   pip install -r requirements-dev.txt
+
+Coding Style
+============
 
 MetaWards is written in Python 3 (>= 3.7), with time-critical functions
 written using `Cython <https://cython.org>`__ and parallelised using
@@ -41,10 +106,8 @@ challenging to create portable binary distributions.
 
 For ease of installation and support, we also minimise or bundle
 external dependencies (e.g. we use a
-`bundled version
-<https://github.com/metawards/MetaWards/tree/devel/src/metawards/ran_binomial>
-`__ of the binomial random number generator
-from `numpy <https://numpy.org>`__).
+`bundled version <https://github.com/metawards/MetaWards/tree/devel/src/metawards/ran_binomial>`__
+of the binomial random number generator from `numpy <https://numpy.org>`__).
 
 With this in mind, we use the following coding conventions:
 
@@ -169,7 +232,7 @@ of ``PYTHONPATH``, e.g.
    PYTHONPATH=./build/lib.{XXX} python script.py
    PYTHONPATH=./build/lib.{XXX} pytest tests
 
-(where {XXX} is the build directory for Cython on your computer, e.g.
+(where ``{XXX}`` is the build directory for Cython on your computer, e.g.
 ``./build/lib.macosx-10.9-x86_64-3.7`` - remember that you need to
 type ``make`` to rebuild any Cython code and to copy your updated
 files into that directory)
@@ -184,7 +247,7 @@ or use the ``develop`` argument when running the ``setup.py`` script, i.e.
 environment)
 
 Testing
--------
+=======
 
 When working on your feature it is important to write tests to ensure that it
 does what is expected and doesn't break any existing functionality. Tests
@@ -380,10 +443,11 @@ The custom attribute can just be a label, as in this case, or could be your
 own function decorator.
 
 Documentation
--------------
+=============
 
-MetaWards is fully documented using `NumPy <https://numpy.org>`__ style
-docstrings.
+MetaWards is fully documented using a combination of hand-written files
+(in the ``doc`` folder) and auto-generated api documentation created from
+`NumPy <https://numpy.org>`__ style docstrings.
 See `here <https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard>`__
 for details. The documentation is automatically built using
 `Sphinx <http://sphinx-doc.org>`__ whenever a commit is pushed to devel, which
@@ -405,7 +469,7 @@ Then move to the ``doc`` directory and run:
 When finished, point your browser to ``build/html/index.html``.
 
 Committing
-----------
+==========
 
 If you create new tests, please make sure that they pass locally before
 commiting. When happy, commit your changes, e.g.
@@ -417,12 +481,18 @@ commiting. When happy, commit your changes, e.g.
 
 Remember that it is better to make small changes and commit frequently.
 
-If your edits don't change the BioSimSpace source code, or documentation,
-e.g. fixing typos, then please add ``***NO_CI***`` to your commit message.
+If your edits don't change the MetaWards source code, or documentation,
+e.g. fixing typos, then please add ``ci skip`` to your commit message, e.g.
+
+.. code-block:: bash
+   git commit -a -m "Updating docs [ci skip]"
+
 This will avoid unnecessarily running the
-`Azure pipelines <https://dev.azure.com/michellab/BioSimSpace/_build>`__, e.g.
-building a new BioSimSpace binary, updating the website, etc. To this end, we
-have provided a git hook that will append ``***NO_CI***`` if the commit only
+`GitHub Actions <https://github.com/metawards/MetaWards/actions>`__, e.g.
+building a new MetaWards package, updating the website, etc.
+(the GitHub actions are configured in the file
+``.github/workflows/main.yaml``). To this end, we
+have provided a git hook that will append ``[ci skip]`` if the commit only
 modifies files in a blacklist that is specified in the file ``.ciignore``
 (analagous to the ``.gitignore`` used to ignore untracked files). To enable
 the hook, simply copy it into the ``.git/hooks`` directory:
@@ -438,12 +508,22 @@ Next, push your changes to the remote server, e.g.
 
 .. code-block:: bash
 
-   # Push to the feature branch on the main BioSimSpace repo, if you have access.
+   # Push to the feature branch on the main MetaWards repo, if you have access.
    git push origin feature
 
    # Push to the feature branch your own fork.
    git push fork feature
 
 When the feature is complete, create a *pull request* on GitHub so that the
-changes can be merged back into the development branch. For information, see
-the documentation `here <https://help.github.com/articles/about-pull-requests>`__.
+changes can be merged back into the development branch.
+For information, see the documentation
+`here <https://help.github.com/articles/about-pull-requests>`__.
+
+Thanks
+======
+
+Thanks to Lester Hedges and the
+`BioSimSpace <https://biosimspace.org>`__ team who provided great advice
+to set up the above, and from whose
+`GitHub repo <https://github.com/michellab/biosimspace>`__
+most of the procedures, scripts and documentation above is derived.

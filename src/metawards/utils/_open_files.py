@@ -12,13 +12,13 @@ def open_files(output_dir: str):
     """
     files = []
 
-    files.append( open(os.path.join(output_dir, "WorkInfections.dat"), "w") )
-    files.append( open(os.path.join(output_dir, "NumberWardsInfected.dat"),
-                       "w") )
-    files.append( open(os.path.join(output_dir, "MeanXY.dat"), "w") )
-    files.append( open(os.path.join(output_dir, "PlayInfections.dat"), "w") )
-    files.append( open(os.path.join(output_dir, "TotalInfections.dat"), "w") )
-    files.append( open(os.path.join(output_dir, "VarXY.dat"), "w") )
-    files.append( open(os.path.join(output_dir, "Dispersal.dat"), "w") )
+    files.append(open(os.path.join(output_dir, "WorkInfections.dat"), "w"))
+    files.append(open(os.path.join(output_dir, "NumberWardsInfected.dat"),
+                      "w"))
+    files.append(open(os.path.join(output_dir, "MeanXY.dat"), "w"))
+    files.append(open(os.path.join(output_dir, "PlayInfections.dat"), "w"))
+    files.append(open(os.path.join(output_dir, "TotalInfections.dat"), "w"))
+    files.append(open(os.path.join(output_dir, "VarXY.dat"), "w"))
+    files.append(open(os.path.join(output_dir, "Dispersal.dat"), "w"))
 
     return files

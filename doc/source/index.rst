@@ -67,6 +67,14 @@ Installation
 
    install
 
+Usage
+=====
+
+.. toctree::
+   :maxdepth: 2
+
+   usage
+
 Documentation
 =============
 
