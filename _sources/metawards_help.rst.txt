@@ -13,6 +13,7 @@ The full set of command line options for metawards is below;
       usage: metawards [-h] [--version] [-i INPUT] [-l [LINE [LINE ...]]]
                    [-r REPEATS] [-s SEED] [-a [ADDITIONAL [ADDITIONAL ...]]]
                    [-o OUTPUT] [-u UV] [-d DISEASE] [-I INPUT_DATA]
+                   [--start-date START_DATE] [--start-day START_DAY]
                    [-p PARAMETERS] [-R REPOSITORY] [-P POPULATION] [-n NSTEPS]
                    [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
                    [--cores-per-node CORES_PER_NODE] [--profile] [--no-profile]
@@ -62,6 +63,20 @@ The full set of command line options for metawards is below;
     -I INPUT_DATA, --input-data INPUT_DATA
                           Name of the input data set for the network (default is
                           '2011Data')
+    --start-date START_DATE
+                          Date of the start of the model outbreak. This accepts
+                          dates either is iso-format, or fuzzy dates such as
+                          'monday', 'tomorrow' etc. This is used to work out
+                          which days are weekends, or to make it easier to
+                          specify time-based events.
+    --start-day START_DAY
+                          The start day of the model outbreak. By default the
+                          model outbreak starts on day zero (0), with each step
+                          of the model representing an additional day. Use this
+                          to start from a later day, which may be useful if you
+                          want to more quickly reach time based events. Note
+                          that the passed '--start-date' is always day 0, so day
+                          10 has a date which is 10 days after start-date
     -p PARAMETERS, --parameters PARAMETERS
                           Name of the input parameter set used to control the
                           simulation (default 'march29')

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MetaWards API Detail &mdash; MetaWards 0+untagged.1.g376cd37 documentation</title>
+  <title>MetaWards API Detail &mdash; MetaWards 0+untagged.1.g9de1888 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="metawards.get_version_string" href="generated/metawards.get_version_string.html" />
+    <link rel="next" title="metawards.Disease" href="generated/metawards.Disease.html" />
     <link rel="prev" title="MetaWards" href="index_MetaWards.html" /> 
 </head>
 
@@ -98,8 +98,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index_MetaWards.html">MetaWards</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">MetaWards API Detail</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#classes">Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -183,21 +183,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-metawards">
-<span id="metawards-api-detail"></span><span id="ref-metawards"></span><h1>MetaWards API Detail<a class="headerlink" href="#module-metawards" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.get_version_string.html#metawards.get_version_string" title="metawards.get_version_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_version_string</span></code></a>()</p></td>
-<td><p>Return a version string for metawards which can be printed into a file or written out to the screen</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<span id="metawards-api-detail"></span><h1>MetaWards API Detail<a class="headerlink" href="#module-metawards" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <table class="longtable docutils align-default">
@@ -209,8 +195,8 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.Disease.html#metawards.Disease" title="metawards.Disease"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Disease</span></code></a>([beta, progress, too_ill_to_move, …])</p></td>
 <td><p>This class holds the parameters about a single disease</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.InputFiles.html#metawards.InputFiles" title="metawards.InputFiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InputFiles</span></code></a>(work, play, identifier, …)</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.InputFiles.html#metawards.InputFiles" title="metawards.InputFiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InputFiles</span></code></a>([work, play, identifier, …])</p></td>
+<td><p>This class holds all of the input files that must be loaded from METAWARDSDATA to construct the network of wards and links between them</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.Link.html#metawards.Link" title="metawards.Link"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Link</span></code></a>([ifrom, ito, weight, suscept, distance, A])</p></td>
 <td><p>This is a link between nodes in the network</p></td>
@@ -222,13 +208,13 @@
 <td><p>This class represents a network of wards.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.Node.html#metawards.Node" title="metawards.Node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Node</span></code></a>([label, begin_to, end_to, self_w, …])</p></td>
-<td><p>This is a node in the network</p></td>
+<td><p>This class represents an electoral ward (node) in the network</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.Nodes.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Nodes</span></code></a></p></td>
 <td><p>This is a container class for Nodes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.Parameters.html#metawards.Parameters" title="metawards.Parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameters</span></code></a>(input_files, uv_filename, …)</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.Parameters.html#metawards.Parameters" title="metawards.Parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameters</span></code></a>([input_files, uv_filename, …])</p></td>
+<td><p>The full set of Parameters that are used to control the model outbreak over a Network.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.Population.html#metawards.Population" title="metawards.Population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Population</span></code></a>([initial, susceptibles, latent, …])</p></td>
 <td><p>This class holds information about the progress of the disease through the population</p></td>
@@ -245,6 +231,20 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.get_version_string.html#metawards.get_version_string" title="metawards.get_version_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_version_string</span></code></a>()</p></td>
+<td><p>Return a version string for metawards which can be printed into a file or written out to the screen</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </div>
@@ -257,7 +257,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="generated/metawards.get_version_string.html" class="btn btn-neutral float-right" title="metawards.get_version_string" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="generated/metawards.Disease.html" class="btn btn-neutral float-right" title="metawards.Disease" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index_MetaWards.html" class="btn btn-neutral float-left" title="MetaWards" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

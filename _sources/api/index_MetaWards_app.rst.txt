@@ -1,5 +1,4 @@
-.. _ref-MetaWards:
-
+=============
 MetaWards.app
 =============
 

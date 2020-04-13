@@ -50,6 +50,8 @@ metawards.Population
       ~Population.__hash__
       ~Population.__module__
       ~Population.__weakref__
+      ~Population.date
+      ~Population.day
       ~Population.initial
       ~Population.latent
       ~Population.n_inf_wards

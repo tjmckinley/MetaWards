@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.VariableSets &mdash; MetaWards 0+untagged.1.g376cd37 documentation</title>
+  <title>metawards.VariableSets &mdash; MetaWards 0+untagged.1.g9de1888 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="MetaWards.utils" href="../index_MetaWards_utils.html" />
+    <link rel="next" title="metawards.get_version_string" href="metawards.get_version_string.html" />
     <link rel="prev" title="metawards.VariableSet" href="metawards.VariableSet.html" /> 
 </head>
 
@@ -98,8 +98,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../index_MetaWards.html">MetaWards</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../index_api_MetaWards.html">MetaWards API Detail</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="../index_api_MetaWards.html#functions">Functions</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="../index_api_MetaWards.html#classes">Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index_api_MetaWards.html#functions">Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -188,14 +188,39 @@
 <h1>metawards.VariableSets<a class="headerlink" href="#metawards-variablesets" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="metawards.VariableSets">
-<em class="property">class </em><code class="sig-prename descclassname">metawards.</code><code class="sig-name descname">VariableSets</code><a class="headerlink" href="#metawards.VariableSets" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">metawards.</code><code class="sig-name descname">VariableSets</code><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSets" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class holds the collection of all VariableSet objects
 that contain the set of adjustable variables that are used
 to control a single run of the model</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">VariableSets</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;beta[2]&quot;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">,</span> <span class="s2">&quot;beta[3]&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;beta[1]&quot;</span><span class="p">:</span> <span class="mf">0.86</span><span class="p">,</span> <span class="s2">&quot;beta[2]&quot;</span><span class="p">:</span> <span class="mf">0.89</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">{(beta[2]=0.95, beta[3]=0.9)[repeat 1], (beta[1]=0.86,</span>
+<span class="go">beta[2]=0.89)[repeat 1]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">{(beta[2]=0.95, beta[3]=0.9)[repeat 1], (beta[1]=0.86,</span>
+<span class="go">beta[2]=0.89)[repeat 1], (beta[2]=0.95, beta[3]=0.9)[repeat 2],</span>
+<span class="go">(beta[1]=0.86, beta[2]=0.89)[repeat 2]}</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="metawards.VariableSets.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#metawards.VariableSets.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSets.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSets.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise an empty VariableSets object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -230,7 +255,7 @@ to control a single run of the model</p>
 <td><p>Return self&gt;value.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#metawards.VariableSets.__init__" title="metawards.VariableSets.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>()</p></td>
-<td><p>Initialize self.</p></td>
+<td><p>Initialise an empty VariableSets object</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init_subclass__</span></code></p></td>
 <td><p>This method is called when a class is subclassed.</p></td>
@@ -272,7 +297,7 @@ to control a single run of the model</p>
 <td><p>Abstract classes can override this to customize issubclass().</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code>(variables)</p></td>
-<td><p>Append the passed set of variables to the set that will be used to run a model</p></td>
+<td><p>Append the passed set of variables to the set that will be used to run a model.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code>(filename[, line_numbers])</p></td>
 <td><p>Read and return collection of VariableSet objects from the specified line number(s) of the specified file</p></td>
@@ -318,7 +343,7 @@ to control a single run of the model</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../index_MetaWards_utils.html" class="btn btn-neutral float-right" title="MetaWards.utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards.get_version_string.html" class="btn btn-neutral float-right" title="metawards.get_version_string" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="metawards.VariableSet.html" class="btn btn-neutral float-left" title="metawards.VariableSet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

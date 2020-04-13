@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.utils.run_model &mdash; MetaWards 0+untagged.1.g376cd37 documentation</title>
+  <title>metawards.utils.run_model &mdash; MetaWards 0+untagged.1.g9de1888 documentation</title>
   
 
   
@@ -188,10 +188,52 @@
 <h1>metawards.utils.run_model<a class="headerlink" href="#metawards-utils-run-model" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="metawards.utils.run_model">
-<code class="sig-prename descclassname">metawards.utils.</code><code class="sig-name descname">run_model</code><span class="sig-paren">(</span><em class="sig-param">network: Network</em>, <em class="sig-param">infections</em>, <em class="sig-param">play_infections</em>, <em class="sig-param">rngs</em>, <em class="sig-param">s: int</em>, <em class="sig-param">unicode output_dir: str = u'.'</em>, <em class="sig-param">population: int = 57104043</em>, <em class="sig-param">nsteps: int = None</em>, <em class="sig-param">profile: bool = True</em>, <em class="sig-param">nthreads: int = None</em>, <em class="sig-param">MAXSIZE: int = 10050</em>, <em class="sig-param">VACCINATE: bool = False</em>, <em class="sig-param">IMPORTS: bool = False</em>, <em class="sig-param">EXTRASEEDS: bool = True</em>, <em class="sig-param">WEEKENDS: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">metawards.utils.</code><code class="sig-name descname">run_model</code><span class="sig-paren">(</span><em class="sig-param">network: Network</em>, <em class="sig-param">infections</em>, <em class="sig-param">play_infections</em>, <em class="sig-param">rngs</em>, <em class="sig-param">s: int</em>, <em class="sig-param">unicode output_dir: str = u'.'</em>, <em class="sig-param">population: Population = Population(initial=57104043)</em>, <em class="sig-param">nsteps: int = None</em>, <em class="sig-param">profile: bool = True</em>, <em class="sig-param">nthreads: int = None</em>, <em class="sig-param">MAXSIZE: int = 10050</em>, <em class="sig-param">VACCINATE: bool = False</em>, <em class="sig-param">IMPORTS: bool = False</em>, <em class="sig-param">EXTRASEEDS: bool = True</em>, <em class="sig-param">WEEKENDS: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Actually run the model… Real work happens here. The model
 will run until completion or until ‘nsteps’ have been
 completed (whichever happens first)</p>
+<blockquote>
+<div><dl class="simple">
+<dt>network: Network</dt><dd><p>The network on which to run the model</p>
+</dd>
+<dt>infections: list</dt><dd><p>The space used to record the infections</p>
+</dd>
+<dt>play_infections: list</dt><dd><p>The space used to record the play infectionss</p>
+</dd>
+<dt>rngs: list</dt><dd><p>The list of random number generators to use, one per thread</p>
+</dd>
+<dt>population: Population</dt><dd><p>The initial population at the start of the model outbreak.
+This is also used to set the date and day of the start of
+the model outbreak</p>
+</dd>
+<dt>seed: int</dt><dd><p>The random number seed used for this model run. If this is
+None then a very random random number seed will be used</p>
+</dd>
+<dt>output_dir: str</dt><dd><p>The directory to write all of the output into</p>
+</dd>
+<dt>nsteps: int</dt><dd><p>The maximum number of steps to run in the outbreak. If None
+then run until the outbreak has finished</p>
+</dd>
+<dt>profile: bool</dt><dd><p>Whether or not to profile the model run and print out the
+results</p>
+</dd>
+<dt>s: int</dt><dd><p>Index of the seeding parameter to use</p>
+</dd>
+<dt>nthreads: int</dt><dd><p>Number of threads over which to parallelise this model run</p>
+</dd>
+<dt>MAXSIZE: int</dt><dd><p>The maximum number of nodes that can be loaded - this is needed
+as memory is pre-allocated before reading</p>
+</dd>
+<dt>VACCINATE: bool</dt><dd><p>Whether to use the VACCINATE routines</p>
+</dd>
+<dt>IMPORTS: bool</dt><dd><p>Whether or not to use the IMPORT routines</p>
+</dd>
+<dt>EXTRASEEDS: bool</dt><dd><p>Whether or not to import EXTRASEEDS</p>
+</dd>
+<dt>WEEKENDS: bool</dt><dd><p>Whether or not to treat weekends differently to weekdays</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 </div>

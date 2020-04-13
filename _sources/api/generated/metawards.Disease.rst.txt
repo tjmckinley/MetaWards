@@ -24,6 +24,7 @@ metawards.Disease
       ~Disease.__init__
       ~Disease.__init_subclass__
       ~Disease.__le__
+      ~Disease.__len__
       ~Disease.__lt__
       ~Disease.__ne__
       ~Disease.__new__

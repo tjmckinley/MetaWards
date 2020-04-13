@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Command line options &mdash; MetaWards 0+untagged.1.g376cd37 documentation</title>
+  <title>Command line options &mdash; MetaWards 0+untagged.1.g9de1888 documentation</title>
   
 
   
@@ -172,6 +172,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    usage: metawards [-h] [--version] [-i INPUT] [-l [LINE [LINE ...]]]
                  [-r REPEATS] [-s SEED] [-a [ADDITIONAL [ADDITIONAL ...]]]
                  [-o OUTPUT] [-u UV] [-d DISEASE] [-I INPUT_DATA]
+                 [--start-date START_DATE] [--start-day START_DAY]
                  [-p PARAMETERS] [-R REPOSITORY] [-P POPULATION] [-n NSTEPS]
                  [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
                  [--cores-per-node CORES_PER_NODE] [--profile] [--no-profile]
@@ -221,6 +222,20 @@ optional arguments:
   -I INPUT_DATA, --input-data INPUT_DATA
                         Name of the input data set for the network (default is
                         &#39;2011Data&#39;)
+  --start-date START_DATE
+                        Date of the start of the model outbreak. This accepts
+                        dates either is iso-format, or fuzzy dates such as
+                        &#39;monday&#39;, &#39;tomorrow&#39; etc. This is used to work out
+                        which days are weekends, or to make it easier to
+                        specify time-based events.
+  --start-day START_DAY
+                        The start day of the model outbreak. By default the
+                        model outbreak starts on day zero (0), with each step
+                        of the model representing an additional day. Use this
+                        to start from a later day, which may be useful if you
+                        want to more quickly reach time based events. Note
+                        that the passed &#39;--start-date&#39; is always day 0, so day
+                        10 has a date which is 10 days after start-date
   -p PARAMETERS, --parameters PARAMETERS
                         Name of the input parameter set used to control the
                         simulation (default &#39;march29&#39;)

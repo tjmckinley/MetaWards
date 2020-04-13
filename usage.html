@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage &mdash; MetaWards 0+untagged.1.g376cd37 documentation</title>
+  <title>Usage &mdash; MetaWards 0+untagged.1.g9de1888 documentation</title>
   
 
   
@@ -277,6 +277,19 @@ so that you can use it together with this option to reproduce a run.
 The same version of <code class="docutils literal notranslate"><span class="pre">metawards</span></code> will reproduce the same output when
 given the same input, same random number seed, and run over the
 same number of threads.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--start-date</span></code> : specify the date of <em>day zero</em> of the model outbreak.
+If this isn’t specified then this defaults to the current date. This
+recognises any date that is understood by
+<a class="reference external" href="https://dateparser.readthedocs.io/en/latest/#usage">dateparser</a>,
+which includes dates like <em>today</em>, <em>tomorrow</em>, <em>Monday</em>, <em>Jan 2020</em> etc.
+The start date is used to trigger events based on day of week or
+date within a model outbreak (e.g. is the day a weekend)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--start-day</span></code> : specify the day of the outbreak, e.g. the default
+is <code class="docutils literal notranslate"><span class="pre">0</span></code> for <em>day zero</em>. This is useful if you want to start the
+model run from a later day than the start date. Note that the
+start date passed via <code class="docutils literal notranslate"><span class="pre">--start-date</span></code> is the date of <em>day zero</em>,
+so the first day modelled will be <code class="docutils literal notranslate"><span class="pre">--start-day</span></code> days
+after <code class="docutils literal notranslate"><span class="pre">--start-date</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--nthreads</span></code> : specify the number of threads over which to perform a
 model run. The sequence of random numbers drawn in parallel is
 deterministic for a given number of threads, but will be different
@@ -365,7 +378,7 @@ file for easy combined analysis.</p>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;output/results.csv.bz2&quot;</span><span class="p">)</span>
 
-<span class="n">df</span><span class="o">....</span> <span class="c1"># perform analysis</span>
+<span class="n">df</span> <span class="c1"># perform analysis</span>
 </pre></div>
 </div>
 <p>We run a good online workshop on

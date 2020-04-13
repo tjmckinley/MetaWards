@@ -39,6 +39,7 @@ metawards.VariableSet
       ~VariableSet._add
       ~VariableSet.adjust
       ~VariableSet.fingerprint
+      ~VariableSet.make_compatible_with
       ~VariableSet.repeat_index
       ~VariableSet.variable_names
       ~VariableSet.variable_values
