@@ -134,7 +134,7 @@ or [scoop](http://scoop.readthedocs.io) for multi-node cluster jobs.
 
 [Full instructions for running on a cluster are here](https://metawards.github.io/MetaWards/cluster_usage.html)
 
-### Next stages...
+### Next stages...
 
 The next stages of the program include more code cleaning, making all
 docs and imports obey the [coding style](https://metawards.github.io/MetaWards/development.html#coding-style), finishing up the parallelisation and

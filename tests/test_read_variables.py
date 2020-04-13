@@ -6,12 +6,14 @@ import pytest
 
 script_dir = os.path.dirname(__file__)
 ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
+testparams_csv = os.path.join(script_dir, "data", "testparams.csv")
+testparams2_csv = os.path.join(script_dir, "data", "testparams2.csv")
 
-l0 = {'beta2': 0.95, 'beta3': 0.95,
-      'progress1': 0.19, 'progress2': 0.91, 'progress3': 0.91}
+l0 = {'beta[2]': 0.95, 'beta[3]': 0.95,
+      'progress[1]': 0.19, 'progress[2]': 0.91, 'progress[3]': 0.91}
 
-l1 = {'beta2': 0.90, 'beta3': 0.93,
-      'progress1': 0.18, 'progress2': 0.92, 'progress3': 0.90}
+l1 = {'beta[2]': 0.90, 'beta[3]': 0.93,
+      'progress[1]': 0.18, 'progress[2]': 0.92, 'progress[3]': 0.90}
 
 vars01 = VariableSets()
 vars01.append(l0)
@@ -24,26 +26,72 @@ vars1 = VariableSets()
 vars1.append(l1)
 
 
+def test_variableset():
+    v1 = VariableSet()
+    v2 = VariableSet()
+
+    assert len(v1) == 0
+    assert len(v2) == 0
+
+    with pytest.raises(KeyError):
+        v1["beta[1]"]
+
+    v1["beta[1]"] = 0.5
+
+    assert v1["beta[1]"] == 0.5
+    assert len(v1) == 1
+
+    assert v1 != v2
+
+    v2["beta[1]"] = 0.5
+
+    assert v1 == v2
+
+    d = Disease.load("ncov")
+
+    p = Parameters()
+    p.set_disease("ncov")
+
+    assert p.disease_params == d
+
+    assert p.disease_params.beta[1] != 0.5
+
+    p = p.set_variables(v1)
+
+    assert p.disease_params.beta[1] == 0.5
+
+
+@pytest.mark.parametrize('lines, expect',
+                         [(1, vars0),
+                          (2, vars1),
+                          ([1, 2], vars01),
+                          ([2, 1], vars01)])
+def test_read_variables(lines, expect):
+    result = Parameters.read_variables(testparams2_csv, lines)
+    print(f"{result} == {expect}?")
+    assert result == expect
+
+
 @pytest.mark.parametrize('lines, expect',
                          [(0, vars0),
                           (1, vars1),
                           ([0, 1], vars01),
                           ([1, 0], vars01)])
-def test_read_variables(lines, expect):
+def test_read_variables2(lines, expect):
     result = Parameters.read_variables(ncovparams_csv, lines)
     print(f"{result} == {expect}?")
     assert result == expect
 
 
 def test_parameterset():
-    vars0 = VariableSet(l0)
+    vars0 = VariableSet(variables=l0)
 
     assert vars0.repeat_index() == 1
 
     for key, value in l0.items():
         assert key in vars0.variable_names()
         assert value in vars0.variable_values()
-        assert vars0.variables()[key] == value
+        assert vars0[key] == value
 
     vars1 = VariableSet(l1, 2)
 
@@ -52,7 +100,7 @@ def test_parameterset():
     for key, value in l1.items():
         assert key in vars1.variable_names()
         assert value in vars1.variable_values()
-        assert vars1.variables()[key] == value
+        assert vars1[key] == value
 
     assert vars0.fingerprint() != vars1.fingerprint()
     assert vars0.fingerprint() != vars0.fingerprint(include_index=True)
@@ -76,8 +124,11 @@ def test_parameterset():
         idx0 = 2*i
         idx1 = idx0 + 1
 
-        assert variables[idx0] == l0
-        assert variables[idx1] == l1
+        print(f"{idx0} : {variables[idx0]} vs {l0}")
+        print(f"{idx1} : {variables[idx1]} vs {l1}")
+
+        assert variables[idx0].variables() == l0
+        assert variables[idx1].variables() == l1
         assert variables[idx0].fingerprint() == vars0.fingerprint()
         assert variables[idx1].fingerprint() == vars1.fingerprint()
         assert variables[idx0].repeat_index() == i+1
@@ -114,4 +165,3 @@ def test_set_variables():
     assert p3.disease_params.progress[1] == 0.19
     assert p3.disease_params.progress[2] == 0.91
     assert p3.disease_params.progress[3] == 0.91
-

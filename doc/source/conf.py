@@ -313,6 +313,7 @@ def skip_deprecated(app, what, name, obj, skip, options):
         return True
     return skip or False
 
+
 def setup(app):
     app.connect('autodoc-skip-member', skip_deprecated)
     try:

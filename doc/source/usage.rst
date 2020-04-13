@@ -162,16 +162,34 @@ Understanding the input
 =======================
 
 The input file for ``metawards`` is a simple set of lines containing
-five comma-separated values per line, e.g.
+five comma-separated or space-separated values per line, e.g.
 
 ::
 
   0.95,0.95,0.19,0.91,0.91
   0.90,0.93,0.18,0.92,0.90
 
+or
+
+::
+
+  0.90 0.93 0.18 0.92 0.90
+
 These five values per line adjust the ``beta[2]``, ``beta[3]``,
 ``progress[1]``, ``progress[2]`` and ``progress[3]`` parameters of
 the ``disease`` model as described in `Model Data <model_data.html>`__.
+
+You can optionally choose which parameters will be varied by adding
+a title line, e.g.
+
+::
+
+  beta[2]   progress[2]   progress[3]
+    0.90        0.92         0.90
+    0.85        0.91         0.92
+
+specifies that you want to adjust the ``beta[2]``, ``progress[2]`` and
+``progress[3]`` parameters to the specified values.
 
 Understanding the output
 ========================
