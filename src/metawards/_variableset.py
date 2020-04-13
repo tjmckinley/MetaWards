@@ -10,10 +10,10 @@ class VariableSet:
        are used to adjust the variables as part of a model run
     """
     def __init__(self,
-                 names: _List[str] = None,
-                 values: _List[float] = None,
                  variables: _Dict[str, float] = None,
-                 repeat_index: int = 1):
+                 repeat_index: int = 1,
+                 names: _List[str] = None,
+                 values: _List[float] = None):
         """Construct a new VariableSet from the passed adjusted variable
            values.
 
@@ -89,6 +89,12 @@ class VariableSet:
 
         for i in range(0, len(self._vals)):
             if self._vals[i] != other._vals[i]:
+                return False
+
+            if self._varnames[i] != other._varnames[i]:
+                return False
+
+            if self._varidxs[i] != other._varidxs[i]:
                 return False
 
             if self._names[i] != other._names[i]:
@@ -175,7 +181,12 @@ class VariableSet:
 
     def variables(self):
         """Return the variables (name and values) to be adjusted"""
-        return list(zip(self._names, self._vals))
+        v = {}
+
+        for name, value in zip(self._names, self._vals):
+            v[name] = value
+
+        return v
 
     def repeat_index(self):
         """Return the repeat index of this set. The repeat index is the
@@ -216,7 +227,18 @@ class VariableSet:
             return f
 
     def adjust(self, params):  # should be 'Parameters' but circular include
-        """Use the variables in this set to adjust the passed parameters"""
+        """Use the variables in this set to adjust the passed parameters
+
+           Parameters
+           ----------
+           params: Parameters
+             The parameters whose variables will be adjusted (in a copy)
+
+           Returns
+           -------
+           params: Parameters
+             The returned copy that has the adjusted parameters
+        """
         try:
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
@@ -249,8 +271,10 @@ class VariableSets:
         for v in self._vars:
             s.append(str(v))
 
-        if len(s) > 0:
-            return "\n".join(s)
+        if len(s) == 1:
+            return s[0]
+        elif len(s) > 0:
+            return "{" + ", ".join(s) + "}"
         else:
             return "VariableSets:empty"
 
@@ -258,6 +282,11 @@ class VariableSets:
         return str(self)
 
     def __eq__(self, other):
+        if isinstance(other, dict):
+            v = VariableSet(variables=other)
+            other = VariableSets()
+            other.append(v)
+
         if len(self._vars) != len(other._vars):
             return False
 
@@ -297,17 +326,20 @@ class VariableSets:
         if nrepeats <= 1:
             return self
 
+        from copy import deepcopy
+
         repeats = VariableSets()
 
         for i in range(1, nrepeats+1):
             for v in self._vars:
-                repeats.append(VariableSet(variables=v.variables(),
-                                           repeat_index=i))
+                v2 = deepcopy(v)
+                v2._idx = i
+                repeats.append(v2)
 
         return repeats
 
     @staticmethod
-    def read(filename: str, line_numbers: _List[int]=None):
+    def read(filename: str, line_numbers: _List[int] = None):
         """Read and return collection of VariableSet objects from the
            specified line number(s) of the specified file
 
@@ -343,8 +375,8 @@ class VariableSets:
             separator = ","
 
             # default adjustable variables
-            titles = ["beta2", "beta3", "progress1",
-                      "progress2", "progress3"]
+            titles = ["beta[2]", "beta[3]", "progress[1]",
+                      "progress[2]", "progress[3]"]
 
             while line:
                 i += 1
@@ -372,6 +404,7 @@ class VariableSets:
 
                         if is_title_line:
                             titles = words
+                            line = FILE.readline()
                             continue
 
                 if line_numbers is None or i in line_numbers:

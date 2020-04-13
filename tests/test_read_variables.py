@@ -67,7 +67,7 @@ def test_variableset():
                           ([1, 2], vars01),
                           ([2, 1], vars01)])
 def test_read_variables(lines, expect):
-    result = Parameters.read_variables(ncovparams_csv, lines)
+    result = Parameters.read_variables(testparams2_csv, lines)
     print(f"{result} == {expect}?")
     assert result == expect
 
@@ -78,13 +78,13 @@ def test_read_variables(lines, expect):
                           ([0, 1], vars01),
                           ([1, 0], vars01)])
 def test_read_variables2(lines, expect):
-    result = Parameters.read_variables(testparams2_csv, lines)
+    result = Parameters.read_variables(ncovparams_csv, lines)
     print(f"{result} == {expect}?")
     assert result == expect
 
 
 def test_parameterset():
-    vars0 = VariableSet(l0)
+    vars0 = VariableSet(variables=l0)
 
     assert vars0.repeat_index() == 1
 
@@ -124,8 +124,11 @@ def test_parameterset():
         idx0 = 2*i
         idx1 = idx0 + 1
 
-        assert variables[idx0] == l0
-        assert variables[idx1] == l1
+        print(f"{idx0} : {variables[idx0]} vs {l0}")
+        print(f"{idx1} : {variables[idx1]} vs {l1}")
+
+        assert variables[idx0].variables() == l0
+        assert variables[idx1].variables() == l1
         assert variables[idx0].fingerprint() == vars0.fingerprint()
         assert variables[idx1].fingerprint() == vars1.fingerprint()
         assert variables[idx0].repeat_index() == i+1
