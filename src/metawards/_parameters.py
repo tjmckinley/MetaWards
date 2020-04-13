@@ -1,12 +1,3 @@
-"""
-.. currentmodule:: metawards
-
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-"""
 
 from dataclasses import dataclass
 from typing import List
@@ -298,53 +289,4 @@ class Parameters:
            read. You can then apply those variable parameters
            using the 'set_variables' function
         """
-        variables = VariableSets()
-
-        if not isinstance(line_numbers, list):
-            if line_numbers is not None:
-                line_numbers = [line_numbers]
-
-        i = -1
-        with open(filename, "r") as FILE:
-            line = FILE.readline()
-            while line:
-                i += 1
-
-                if line_numbers is None or i in line_numbers:
-                    words = line.split(",")
-
-                    if len(words) != 5:
-                        raise ValueError(
-                            f"Corrupted input file. Expecting 5 values. "
-                            f"Received {line}")
-
-                    vals = []
-
-                    try:
-                        for word in words:
-                            vals.append(float(word))
-                    except Exception:
-                        raise ValueError(
-                                f"Corrupted input file. Expected 5 numbers. "
-                                f"Received {line}")
-
-                    variables.append({"beta2": vals[0],
-                                      "beta3": vals[1],
-                                      "progress1": vals[2],
-                                      "progress2": vals[3],
-                                      "progress3": vals[4]})
-
-                    if line_numbers is not None:
-                        if len(variables) == len(line_numbers):
-                            return variables
-
-                line = FILE.readline()
-
-        # get here if we can't find this line in the file (or if we
-        # are supposed to read all lines)
-        if line_numbers is None:
-            return variables
-        else:
-            raise ValueError(
-                    f"Cannot read parameters from line {line_numbers} "
-                    f"as the number of lines in the file is {i+1}")
+        return VariableSets.read(filename, line_numbers)

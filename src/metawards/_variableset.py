@@ -1,4 +1,7 @@
 
+from typing import List as _List
+from typing import Dict as _Dict
+
 __all__ = ["VariableSets", "VariableSet"]
 
 
@@ -6,25 +9,61 @@ class VariableSet:
     """This class holds a single set of adjustable variables that
        are used to adjust the variables as part of a model run
     """
-    def __init__(self, variables=None, repeat_index: int = 1):
+    def __init__(self,
+                 names: _List[str] = None,
+                 values: _List[float] = None,
+                 variables: _Dict[str, float] = None,
+                 repeat_index: int = 1):
         """Construct a new VariableSet from the passed adjusted variable
-           values. This 'variables' should be a dictionary giving the
-           names of all variables to be adjusted, together with the
-           values to which they should be set. If the set value
-           is "None" then this means that the value should be kept
-           at whatever the original value was (useful if you want to
-           include the original value as part of a larger run)
+           values.
+
+           Parameters
+           ----------
+           names: List[str]
+             The list of the names of the variables to adjust
+           values: List[float]
+             The values of the variables to adjust (same order as names)
+           variables: Dict[str, float]
+             names and values of variables to adjust passed as a dictionary
+           repeat_index: int
+             the index used to distinguish different repeats of the same
+             VariableSet from one another
         """
-        self._vars = variables
+        self._names = None
+        self._vals = None
+        self._varnames = None
+        self._varidxs = None
+        self._idx = None
+
+        if variables is not None:
+            for name, value in variables.items():
+                self._add(name, value)
+
+        if values is not None:
+            if names is None:
+                names = ["beta[2]", "beta[3]", "progress[1]",
+                         "progress[2]", "progress[3]"]
+
+            if len(names) != len(values):
+                raise IndexError(
+                    f"The number of variable values '{values}' must equal "
+                    f"the number of variable names '{names}'")
+
+            for name, value in zip(names, values):
+                self._add(name, value)
+
         self._idx = repeat_index
 
     def __str__(self):
         """Return a printable representation of the variables to
            be adjusted
         """
+        if self._vals is None:
+            return "VariableSet::None"
+
         s = []
 
-        for key, value in self._vars.items():
+        for key, value in zip(self._names, self._vals):
             s.append(f"{key}={value}")
 
         if len(s) == 0:
@@ -37,73 +76,106 @@ class VariableSet:
 
     def __eq__(self, other):
         if isinstance(other, dict):
-            if self._vars is None or len(self._vars) == 0:
-                return len(other) == 0
+            other = VariableSet(variables=other)
 
-            if len(self._vars) != len(other):
+        if self._idx != other._idx:
+            return False
+
+        if len(self) != len(other):
+            return False
+
+        if self._vals is None:
+            return
+
+        for i in range(0, len(self._vals)):
+            if self._vals[i] != other._vals[i]:
                 return False
 
-            for key, value in self._vars.items():
-                if value != other[key]:
-                    return False
-
-            return True
-        else:
-            if self._idx != other._idx:
+            if self._names[i] != other._names[i]:
                 return False
 
-            if len(self) != len(other):
-                return False
-
-            if self._vars is None:
-                return
-
-            for key, value in self._vars.items():
-                if value != other._vars[key]:
-                    return False
-
-            return True
+        return True
 
     def __len__(self):
-        if self._vars is None:
+        if self._vals is None:
             return 0
         else:
-            return len(self._vars)
+            return len(self._vals)
 
     def __getitem__(self, key):
-        if self._vars is None:
+        if self._vals is None:
             raise KeyError(f"No adjustable parameter {key} in an empty set")
 
-        return self._vars[key]
+        for i, name in enumerate(self._names):
+            if key == name:
+                return self._vals[i]
+
+        raise KeyError(f"No adjustable parameter {key}. Available parameters "
+                       f"are '{self._names}'")
 
     def __setitem__(self, key, value):
-        if self._vars is None:
-            self._vars = {}
+        if self._names is None:
+            self._names = []
 
-        self._vars[key] = value
+        for i, name in enumerate(self._names):
+            if key == name:
+                self._vals[i] = value
+                return
+
+        self._add(key, value)
+
+    def _add(self, name, value):
+        """Internal function to add a new variable called 'name' to
+           be varied - it will be set equal to 'value'
+        """
+        import re
+
+        if self._vals is None:
+            self._names = []
+            self._vals = []
+            self._varnames = []
+            self._varidxs = []
+
+        name = name.strip()
+
+        # look for 'variable[index]'
+        m = re.search(r"(\w+)\[(\d+)\]", name)
+
+        if m:
+            self._varnames.append(m.group(1))
+            self._varidxs.append(int(m.group(2)))
+            self._names.append(name)
+            self._vals.append(float(value))
+        else:
+            self._varnames.append(name)
+            self._varidxs.append(None)
+            self._names.append(name)
+            self._vals.append(float(value))
 
     def variable_names(self):
         """Return the names of the variables that will be adjusted
            by this VariableSet
         """
-        if self._vars is None or len(self._vars) == 0:
+        if self._vals is None or len(self._vals) == 0:
             return None
         else:
-            return list(self._vars.keys())
+            from copy import deepcopy
+            return deepcopy(self._names)
 
     def variable_values(self):
         """Return the values that the variables will be adjusted to.
            Note that 'None' means that the variable won't be adjusted
            from its default (original) value
         """
-        if self._vars is None or len(self._vars) == 0:
+        if self._vals is None or len(self._vals) == 0:
             return None
         else:
-            return list(self._vars.values())
+            from copy import deepcopy
+            return deepcopy(self._vals)
 
     def variables(self):
         """Return the variables (name and values) to be adjusted"""
-        return self._vars
+        return list(zip(self._names, self._vals))
 
     def repeat_index(self):
         """Return the repeat index of this set. The repeat index is the
@@ -122,11 +194,11 @@ class VariableSet:
            If 'include_index' is true, then the repeat index
            of this VariableSet is appended to the fingerprint
         """
-        if self._vars is None or len(self._vars) == 0:
+        if self._vals is None or len(self._vals) == 0:
             f = "NO_CHANGE"
         else:
             f = None
-            for val in self._vars.values():
+            for val in self._vals:
                 v = str(val)
                 if v.startswith("0"):
                     v = v[1:]
@@ -146,22 +218,17 @@ class VariableSet:
     def adjust(self, params):  # should be 'Parameters' but circular include
         """Use the variables in this set to adjust the passed parameters"""
         try:
-            for key, value in self._vars.items():
-                if value is not None:
-                    if key == "beta2":
-                        params.disease_params.beta[2] = value
-                    elif key == "beta3":
-                        params.disease_params.beta[3] = value
-                    elif key == "progress1":
-                        params.disease_params.progress[1] = value
-                    elif key == "progress2":
-                        params.disease_params.progress[2] = value
-                    elif key == "progress3":
-                        params.disease_params.progress[3] = value
-                    else:
-                        raise KeyError(
-                            f"Cannot set unrecognised parameter {key} "
-                            f"to {value}")
+            for varname, varidx, value in zip(self._varnames, self._varidxs,
+                                              self._vals):
+                if varname == "beta":
+                    print(f"SET {varname} {varidx} to {value}")
+                    params.disease_params.beta[varidx] = value
+                elif varname == "progress":
+                    params.disease_params.progress[varidx] = value
+                else:
+                    raise KeyError(
+                        f"Cannot set unrecognised parameter {varname} "
+                        f"to {value}")
         except Exception as e:
             raise ValueError(
                 f"Unable to set parameters from {self}. Error "
@@ -218,7 +285,7 @@ class VariableSets:
            be used to run a model
         """
         if isinstance(variables, dict):
-            variables = VariableSet(variables)
+            variables = VariableSet(variables=variables)
 
         self._vars.append(variables)
 
@@ -238,3 +305,107 @@ class VariableSets:
                                            repeat_index=i))
 
         return repeats
+
+    @staticmethod
+    def read(filename: str, line_numbers: _List[int]=None):
+        """Read and return collection of VariableSet objects from the
+           specified line number(s) of the specified file
+
+           Parameters
+           ----------
+           filename: str
+             The name of the file from which to read the VariableSets
+           line_numbers: List[int]
+             The line numbers from the file to read. This is 0-indexed,
+             meaning that the first line is line 0. If this is None,
+             then all lines are read and used
+
+           Returns
+           -------
+           variables: VariableSets
+             The collection of VariableSet objects that have been read,
+             in the order they were read from the file
+        """
+        if not isinstance(line_numbers, list):
+            if line_numbers is not None:
+                line_numbers = [line_numbers]
+
+        variables = VariableSets()
+
+        i = -1
+        with open(filename, "r") as FILE:
+            line = FILE.readline()
+
+            # find the first line of the file. Use this to work out
+            # the separator to use and also to see if the user has
+            # named the adjustable variables
+            first_line = None
+            separator = ","
+
+            # default adjustable variables
+            titles = ["beta2", "beta3", "progress1",
+                      "progress2", "progress3"]
+
+            while line:
+                i += 1
+
+                line = line.strip()
+
+                if first_line is None:
+                    if len(line) > 0:
+                        # this is a valid first line - what separator
+                        # should we use?
+                        if line.find(",") != -1:
+                            separator = ","
+                        else:
+                            separator = None  # spaces
+
+                        first_line = line
+
+                        words = line.split(separator)
+
+                        try:
+                            float(words[0])
+                            is_title_line = False
+                        except Exception:
+                            is_title_line = True
+
+                        if is_title_line:
+                            titles = words
+                            continue
+
+                if line_numbers is None or i in line_numbers:
+                    words = line.split(separator)
+
+                    if len(words) != len(titles):
+                        raise ValueError(
+                            f"Corrupted input file. Expecting {len(titles)} "
+                            f"values. Received {line}")
+
+                    vals = []
+
+                    try:
+                        for word in words:
+                            vals.append(float(word))
+                    except Exception:
+                        raise ValueError(
+                               f"Corrupted input file. Expected {len(titles)} "
+                               f"numbers. Received {line}")
+
+                    variables.append(VariableSet(names=titles,
+                                                 values=vals))
+
+                    if line_numbers is not None:
+                        if len(variables) == len(line_numbers):
+                            return variables
+
+                line = FILE.readline()
+
+        # get here if we can't find this line in the file (or if we
+        # are supposed to read all lines)
+        if line_numbers is None:
+            return variables
+        else:
+            raise ValueError(
+                    f"Cannot read parameters from line {line_numbers} "
+                    f"as the number of lines in the file is {i+1}")
