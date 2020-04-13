@@ -12,8 +12,6 @@
 cimport cython
 from libc.math cimport sqrt
 from libc.stdlib cimport malloc, free
-
-from cython.parallel import parallel, prange
 cimport openmp
 
 from .._network import Network
@@ -188,11 +186,11 @@ cdef red_variables * redvars = <red_variables*>0
 
 
 def extract_data(network: Network, infections, play_infections,
-                 timestep: int, files, workspace: Workspace,
+                 files, workspace: Workspace,
                  population: Population, is_dangerous=None,
                  nthreads: int=None,
                  profiler: Profiler=None, SELFISOLATE: bool = False):
-    """Extract data for timestep 'timestep' from the network and
+    """Extract data from the network and
        infections and write this to the output files in 'files'
        (these must have been opened by 'open_files'). You need
        to pass in a Workspace that has been set up for the
@@ -201,6 +199,8 @@ def extract_data(network: Network, infections, play_infections,
        If SELFISOLATE is True then you need to pass in
        is_dangerous, which should be an array("i", network.nnodes)
     """
+    from cython.parallel import parallel, prange
+
     if profiler is None:
         profiler = NullProfiler()
 
@@ -219,6 +219,8 @@ def extract_data(network: Network, infections, play_infections,
                              "if SELFISOLATE is True")
 
     workspace.zero_all()
+
+    cdef int timestep = population.day
 
     files[0].write("%d " % timestep)
     files[1].write("%d " % timestep)

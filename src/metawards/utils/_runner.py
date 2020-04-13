@@ -1,13 +1,12 @@
 
-
 from .._network import Network
 from .._population import Population
-from ._profiler import Profiler
+from .._variableset import VariableSets
 
-from contextlib import contextmanager
+from contextlib import contextmanager as _contextmanager
 
-import os
-import sys
+import os as _os
+import sys as _sys
 
 __all__ = ["get_number_of_processes", "run_models", "redirect_output"]
 
@@ -51,39 +50,73 @@ def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
             f"Unrecognised parallelisation scheme {parallel_scheme}")
 
 
-@contextmanager
+@_contextmanager
 def redirect_output(outdir):
     """Nice way to redirect stdout and stderr - thanks to
        Emil Stenström in
        https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python
     """
-    new_out = open(os.path.join(outdir, "output.txt"), "w")
-    old_out = sys.stdout
-    sys.stdout = new_out
+    new_out = open(_os.path.join(outdir, "output.txt"), "w")
+    old_out = _sys.stdout
+    _sys.stdout = new_out
 
-    new_err = open(os.path.join(outdir, "output.err"), "w")
-    old_err = sys.stderr
-    sys.stderr = new_err
+    new_err = open(_os.path.join(outdir, "output.err"), "w")
+    old_err = _sys.stderr
+    _sys.stderr = new_err
 
     try:
         yield new_out
     finally:
-        sys.stdout = old_out
-        sys.stderr = old_err
+        _sys.stdout = old_out
+        _sys.stderr = old_err
         new_out.close()
         new_err.close()
 
 
-def run_models(network: Network, variables, population: Population,
+def run_models(network: Network, variables: VariableSets,
+               population: Population,
                nprocs: int, nthreads: int, seed: int,
-               nsteps: int, output_dir: str, profile: Profiler,
+               nsteps: int, output_dir: str, profile: bool,
                parallel_scheme: str):
+    """Run all of the models on the passed Network that are described
+       by the passed VariableSets
+
+       Parameters
+       ----------
+       network: Network
+         The network to model
+       variables: VariableSets
+         The sets of VariableSet that represent all of the model
+         runs to perform
+       population: Population
+         The initial population for all of the model runs. This also
+         contains the starting date and day for the model outbreak
+       nprocs: int
+         The number of model runs to perform in parallel
+       nthreads: int
+         The number of threads to parallelise each model run over
+       seed: int
+         Random number seed which is used to generate random seeds
+         for all model runs
+       nsteps: int
+         The maximum number of steps to perform for each model - this
+         will run until the outbreak is over if this is None
+       output_dir: str
+         The directory that should contain all output - this will be
+         created if it doesn't exist
+       profile: bool
+         Whether or not to profile the model run and print out live
+         timing (useful for performance debugging)
+       parallel_scheme: str
+         Which parallel scheme (multiprocessing, mpi4py or scoop) to use
+         to run multiple model runs in parallel
+    """
 
     # this variable is used to pick out some of the additional seeds?
     s = -1
 
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+    if not _os.path.exists(output_dir):
+        _os.mkdir(output_dir)
 
     if len(variables) == 1:
         # no need to do anything complex - just a single run
@@ -129,7 +162,7 @@ def run_models(network: Network, variables, population: Population,
 
     for v in variables:
         f = v.fingerprint(include_index=True)
-        d = os.path.join(output_dir, f)
+        d = _os.path.join(output_dir, f)
         outdirs.append(d)
 
     outputs = []
@@ -143,8 +176,8 @@ def run_models(network: Network, variables, population: Population,
             seed = seeds[i]
             outdir = outdirs[i]
 
-            if not os.path.exists(outdir):
-                os.mkdir(outdir)
+            if not _os.path.exists(outdir):
+                _os.mkdir(outdir)
 
             print(f"\nRunning parameter set {i+1} of {len(variables)} "
                   f"using seed {seed}")

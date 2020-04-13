@@ -104,6 +104,25 @@ def parse_args():
                         help="Name of the input data set for the network "
                              "(default is '2011Data')")
 
+    parser.add_argument('--start-date', type=str, default=None,
+                        help="Date of the start of the model outbreak. "
+                             "This accepts dates either is iso-format, "
+                             "or fuzzy dates such as 'monday', 'tomorrow' "
+                             "etc. This is used to work out which days "
+                             "are weekends, or to make it easier to specify "
+                             "time-based events.")
+
+    parser.add_argument('--start-day', type=int, default=0,
+                        help="The start day of the model outbreak. By "
+                             "default the model outbreak starts on day "
+                             "zero (0), with each step of the model "
+                             "representing an additional day. Use this "
+                             "to start from a later day, which may be "
+                             "useful if you want to more quickly reach "
+                             "time based events. Note that the passed "
+                             "'--start-date' is always day 0, so day 10 "
+                             "has a date which is 10 days after start-date")
+
     parser.add_argument('-p', '--parameters', type=str, default="march29",
                         help="Name of the input parameter set used to "
                              "control the simulation (default 'march29')")
@@ -646,6 +665,46 @@ def cli():
 
     variables = variables.repeat(nrepeats)
 
+    # get the starting day and date
+    start_day = args.start_day
+
+    if start_day < 0:
+        raise ValueError(f"You cannot use a start day {start_day} that is "
+                         f"less than zero!")
+
+    start_date = None
+
+    if args.start_date:
+        try:
+            from dateparser import parse
+            start_date = parse(args.start_date).date()
+        except Exception:
+            pass
+
+        if start_date is None:
+            from datetime import date
+            try:
+                start_date = date.fromisoformat(args.start_date)
+            except Exception as e:
+                raise ValueError(
+                        f"Cannot interpret a valid date from "
+                        f"'{args.start_date}'. Error is "
+                        f"{e.__class__} {e}")
+
+    if start_date is None:
+        from datetime import date
+        start_date = date.today()
+
+    print(f"Day zero is {start_date.strftime('%A %B %d %Y')}")
+
+    if start_day != 0:
+        from datetime import timedelta
+        start_day_date = start_date + timedelta(days=start_day)
+        print(f"Starting on day {start_day}, which is "
+              f"{start_day_date.strftime('%A %B %d %Y')}")
+    else:
+        start_day_date = start_date
+
     nthreads = args.nthreads
 
     if nthreads is None or nthreads < 1:
@@ -675,7 +734,9 @@ def cli():
     params.daily_imports = 0.0
 
     # the size of the starting population
-    population = Population(initial=args.population)
+    population = Population(initial=args.population,
+                            date=start_day_date,
+                            day=start_day)
 
     print("\nBuilding the network...")
     network = Network.build(params=params, calculate_distances=True,
@@ -687,7 +748,8 @@ def cli():
     result = run_models(network=network, variables=variables,
                         population=population, nprocs=nprocs,
                         nthreads=nthreads, seed=args.seed,
-                        nsteps=args.nsteps, output_dir=args.output,
+                        nsteps=args.nsteps,
+                        output_dir=args.output,
                         profile=profile, parallel_scheme=parallel_scheme)
 
     if result is None or len(result) == 0:
@@ -709,8 +771,15 @@ def cli():
         else:
             varnames = ",".join(varnames) + ","
 
-        FILE.write(f"fingerprint,repeat,{varnames}"
-                   f"date,step,susceptibles,latent,"
+        has_date = result[0][1][0].date
+
+        if has_date:
+            datestring = "date,"
+        else:
+            datestring = ""
+
+        FILE.write(f"fingerprint,repeat,{varnames}{datestring}"
+                   f"day,susceptibles,latent,"
                    f"total,n_inf_wards\n")
         for varset, trajectory in result:
             varvals = varset.variable_values()
@@ -720,11 +789,15 @@ def cli():
                 varvals = ",".join(map(str, varvals)) + ","
 
             start = f"{varset.fingerprint()}," \
-                    f"{varset.repeat_index()},{varvals}" \
-                    f"DATE,"
+                    f"{varset.repeat_index()},{varvals}"
 
             for i, pop in enumerate(trajectory):
-                FILE.write(f"{start}{i},{pop.susceptibles},"
+                if pop.date:
+                    d = pop.date.isoformat() + ","
+                else:
+                    d = ""
+
+                FILE.write(f"{start}{pop.day},{d}{pop.susceptibles},"
                            f"{pop.latent},{pop.total},{pop.n_inf_wards}\n")
 
     print("End of the run")

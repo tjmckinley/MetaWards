@@ -57,7 +57,7 @@ def test_integration():
 
     print("Run the model...")
     trajectory = network.run(population=population, seed=seed,
-                             s=-1, nsteps=28, profile=True,
+                             s=-1, nsteps=29, profile=True,
                              nthreads=1)
 
     print("End of the run")
@@ -70,7 +70,8 @@ def test_integration():
                           latent=122,
                           total=43,
                           recovereds=148,
-                          n_inf_wards=34)
+                          n_inf_wards=34,
+                          day=29)
 
     print(f"Expect output: {expected}")
 
