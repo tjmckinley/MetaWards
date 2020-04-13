@@ -32,8 +32,19 @@ def generate_repository_version(repository):
     subprocess.run(script, cwd=repository)
 
 
-def get_repository_version(repository):
-    """Read and return the Git version of the passed repository"""
+def get_repository_version(repository: str):
+    """Read and return the Git version of the passed repository
+
+       Parameters
+       ----------
+       repository: str
+         The full path to the repository whose version should be obtained
+
+       Returns
+       -------
+       version_data: dict
+         A dictionary containing version information for the repository
+    """
     global _repositories
 
     if repository in _repositories:
@@ -70,14 +81,37 @@ def get_repository_version(repository):
 
 @_dataclass
 class Parameters:
+    """The full set of Parameters that are used to control the model
+       outbreak over a Network. The combination of a Network and
+       a Parameters defines the model outbreak.
+
+       Load the Parameters using the Parameters.load function, and
+       then add extra data using the various "set" and "add" functions,
+       e.g.
+
+       Examples
+       --------
+       >>> params = Parameters.load("march29")
+       >>> params.set_disease("ncov")
+       >>> params.set_input_files("2011Data")
+       >>> params.add_seeds("ExtraSeedsBrighton.dat")
+    """
+    #: The set of input files that define the model Network
     input_files: InputFiles = None
+    #: The name of the UV file
     uv_filename: str = None
+    #: The set of parameters that define the disease
     disease_params: Disease = None
 
+    #: The set of files that contain additional seeds that
+    #: seed the outbreak during the model run
     additional_seeds: _List[str] = None
 
+    #: The fraction of day considered "day" for work, e.g. 0.7 * 24 hours
     length_day: float = 0.7
+    #: The fraction of day considered "day" for play
     plength_day: float = 0.5
+    #: The number of initial infections
     initial_inf: int = 5
 
     static_play_at_home: float = 0.0
@@ -94,7 +128,8 @@ class Parameters:
     daily_ward_vaccination_capacity: int = 5
     neighbour_weight_threshold: float = 0.0
 
-    daily_imports: float = 0.0  # proportion of daily imports
+    #: proportion of daily imports
+    daily_imports: float = 0.0
     UV: float = 0.0
 
     _name: str = None
@@ -143,15 +178,35 @@ class Parameters:
              repository: str = None,
              folder: str = _default_folder_name,
              filename: str = None):
-        """ This will return a Parameters object containing all of the
-            parameters loaded from the parameters found in file
-            f"{repository}/{folder}/{parameters}.json"
+        """This will return a Parameters object containing all of the
+           parameters loaded from the parameters found in file
+           f"{repository}/{folder}/{parameters}.json"
 
-            By default this will load the march29 parameters from
-            $HOME/GitHub/model_data/2011Data/parameters/march29.json
+           By default this will load the march29 parameters from
+           $HOME/GitHub/model_data/2011Data/parameters/march29.json
 
-            Alternatively, you can provide the exact path to the
-            filename via the 'filename' argument
+           Alternatively, you can provide the exact path to the
+           filename via the 'filename' argument
+
+           Parameters
+           ----------
+           parameters: str
+             The name of the parameters to load. This is the name that
+             will be searched for in the METAWARDSDATA parameters directory
+           repository: str
+             The location of the cloned METAWARDSDATA repository
+           folder: str
+             The name of the folder within the METAWARDSDATA repository
+             that contains the parameters
+           filename: str
+             The name of the file to load the parameters from - this directly
+             loads this file without searching through the METAWARDSDATA
+             repository
+
+           Returns
+           -------
+           params: Parameters
+             The constructed and validated parameters
         """
         repository_version = None
         repository_branch = None
@@ -226,6 +281,11 @@ class Parameters:
         """Add an 'additional seeds' file that can be used to
            seed wards with new infections at different times and
            locations. Several additional_seed files can be added
+
+           Parameters
+           ----------
+           filename: str
+             Name of the file containing the additional seeds
         """
         # resolve the filename to the GitHub repo if possible...
         if self.additional_seeds is None:
@@ -246,6 +306,13 @@ class Parameters:
     def set_input_files(self, input_files: InputFiles):
         """Set the input files that are used to initialise the
            simulation
+
+           Parameters
+           ----------
+           input_files: InputFiles
+             The set of input files that will be used to load the Network.
+             If a string is passed then the InputFiles will be loaded
+             based on that string.
         """
         if isinstance(input_files, str):
             input_files = InputFiles.load(input_files,
@@ -257,7 +324,12 @@ class Parameters:
         self.input_files = _deepcopy(input_files)
 
     def set_disease(self, disease: Disease):
-        """"Set the disease that will be modelled"""
+        """"Set the disease that will be modelled
+
+            Parameters:
+              disease: The disease to be modelled. If a string is passed
+              then the disease will be loaded using that string
+        """
         if isinstance(disease, str):
             disease = Disease.load(disease,
                                    repository=self._repository_dir)
@@ -271,6 +343,17 @@ class Parameters:
         """This function sets the adjustable variable values to those
            specified in 'variables' in A COPY OF THIS PARAMETERS OBJECT.
            This returns the copy. It does not change this object
+
+           Parameters
+           ----------
+           variables: VariableSet
+             The variables that will be adjusted before the model run.
+             This adjusts the parameters and returns them in a deep copy
+
+           Returns
+           -------
+           params: Parameters
+             A copy of this set of parameters with the variables adjusted
         """
         params = _deepcopy(self)
 
@@ -288,5 +371,18 @@ class Parameters:
            of the dictionaries of variables that have been
            read. You can then apply those variable parameters
            using the 'set_variables' function
+
+           Parameters
+           ----------
+           filename: str
+             The file from which to read the adjustable variables
+           line_numbers: List[int]
+             All of the line numbers from which to read. If this is
+             None then all lines will be read.
+
+           Returns
+           -------
+           variables: VariableSets
+             The VariableSets containing all of the adjustable variables
         """
         return VariableSets.read(filename, line_numbers)
