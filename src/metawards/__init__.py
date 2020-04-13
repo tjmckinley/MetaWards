@@ -1,14 +1,6 @@
 """
 .. currentmodule:: metawards
 
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-
-    get_version_string
-
 Classes
 =======
 
@@ -27,6 +19,14 @@ Classes
     Populations
     VariableSet
     VariableSets
+
+Functions
+=========
+
+.. autosummary::
+    :toctree: generated/
+
+    get_version_string
 
 """
 
