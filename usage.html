@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage &mdash; MetaWards 0+untagged.1.gc74bc66 documentation</title>
+  <title>Usage &mdash; MetaWards 0+untagged.1.gf87599c documentation</title>
   
 
   
@@ -310,14 +310,27 @@ original output is also the purpose of the unit test
 <div class="section" id="understanding-the-input">
 <h2>Understanding the input<a class="headerlink" href="#understanding-the-input" title="Permalink to this headline">¶</a></h2>
 <p>The input file for <code class="docutils literal notranslate"><span class="pre">metawards</span></code> is a simple set of lines containing
-five comma-separated values per line, e.g.</p>
+five comma-separated or space-separated values per line, e.g.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.95</span><span class="p">,</span><span class="mf">0.95</span><span class="p">,</span><span class="mf">0.19</span><span class="p">,</span><span class="mf">0.91</span><span class="p">,</span><span class="mf">0.91</span>
 <span class="mf">0.90</span><span class="p">,</span><span class="mf">0.93</span><span class="p">,</span><span class="mf">0.18</span><span class="p">,</span><span class="mf">0.92</span><span class="p">,</span><span class="mf">0.90</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.90</span> <span class="mf">0.93</span> <span class="mf">0.18</span> <span class="mf">0.92</span> <span class="mf">0.90</span>
 </pre></div>
 </div>
 <p>These five values per line adjust the <code class="docutils literal notranslate"><span class="pre">beta[2]</span></code>, <code class="docutils literal notranslate"><span class="pre">beta[3]</span></code>,
 <code class="docutils literal notranslate"><span class="pre">progress[1]</span></code>, <code class="docutils literal notranslate"><span class="pre">progress[2]</span></code> and <code class="docutils literal notranslate"><span class="pre">progress[3]</span></code> parameters of
 the <code class="docutils literal notranslate"><span class="pre">disease</span></code> model as described in <a class="reference external" href="model_data.html">Model Data</a>.</p>
+<p>You can optionally choose which parameters will be varied by adding
+a title line, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">beta</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>   <span class="n">progress</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>   <span class="n">progress</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+  <span class="mf">0.90</span>        <span class="mf">0.92</span>         <span class="mf">0.90</span>
+  <span class="mf">0.85</span>        <span class="mf">0.91</span>         <span class="mf">0.92</span>
+</pre></div>
+</div>
+<p>specifies that you want to adjust the <code class="docutils literal notranslate"><span class="pre">beta[2]</span></code>, <code class="docutils literal notranslate"><span class="pre">progress[2]</span></code> and
+<code class="docutils literal notranslate"><span class="pre">progress[3]</span></code> parameters to the specified values.</p>
 </div>
 <div class="section" id="understanding-the-output">
 <h2>Understanding the output<a class="headerlink" href="#understanding-the-output" title="Permalink to this headline">¶</a></h2>
@@ -382,7 +395,7 @@ file for easy combined analysis.</p>
     <p>
         &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
-        Last updated on Apr 09, 2020.
+        Last updated on Apr 13, 2020.
       </span>
 
     </p>

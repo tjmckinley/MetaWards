@@ -36,6 +36,7 @@ metawards.VariableSets
       ~VariableSets.__str__
       ~VariableSets.__subclasshook__
       ~VariableSets.append
+      ~VariableSets.read
       ~VariableSets.repeat
    
    

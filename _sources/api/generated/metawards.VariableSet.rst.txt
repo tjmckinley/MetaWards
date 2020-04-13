@@ -36,6 +36,7 @@ metawards.VariableSet
       ~VariableSet.__sizeof__
       ~VariableSet.__str__
       ~VariableSet.__subclasshook__
+      ~VariableSet._add
       ~VariableSet.adjust
       ~VariableSet.fingerprint
       ~VariableSet.repeat_index
