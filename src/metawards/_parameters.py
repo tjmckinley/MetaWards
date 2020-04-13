@@ -1,10 +1,10 @@
 
-from dataclasses import dataclass
-from typing import List
-from copy import deepcopy
-import pathlib
-import os
-import json
+from dataclasses import dataclass as _dataclass
+from typing import List as _List
+from copy import deepcopy as _deepcopy
+import pathlib as _pathlib
+import os as _os
+import json as _json
 
 from ._inputfiles import InputFiles
 from ._disease import Disease
@@ -13,8 +13,8 @@ from ._variableset import VariableSets, VariableSet
 
 __all__ = ["Parameters", "get_repository_version"]
 
-_default_parameters_path = os.path.join(pathlib.Path.home(),
-                                        "GitHub", "MetaWardsData")
+_default_parameters_path = _os.path.join(_pathlib.Path.home(),
+                                         "GitHub", "MetaWardsData")
 
 _default_folder_name = "parameters"
 
@@ -27,7 +27,7 @@ def generate_repository_version(repository):
        to generate the required 'version.txt' file
     """
     import subprocess
-    script = os.path.join(repository, "version")
+    script = _os.path.join(repository, "version")
     print(f"Regenerating version information using {script}")
     subprocess.run(script, cwd=repository)
 
@@ -39,11 +39,11 @@ def get_repository_version(repository):
     if repository in _repositories:
         return _repositories[repository]
 
-    filename = os.path.join(repository, "version.txt")
+    filename = _os.path.join(repository, "version.txt")
 
     try:
         with open(filename) as FILE:
-            version = json.load(FILE)
+            version = _json.load(FILE)
             _repositories[repository] = version
             return version
     except Exception:
@@ -55,7 +55,7 @@ def get_repository_version(repository):
         generate_repository_version(repository)
 
         with open(filename) as FILE:
-            version = json.load(FILE)
+            version = _json.load(FILE)
             _repositories[repository] = version
             return version
     except Exception:
@@ -68,13 +68,13 @@ def get_repository_version(repository):
         return _repositories[repository]
 
 
-@dataclass
+@_dataclass
 class Parameters:
     input_files: InputFiles = None
     uv_filename: str = None
     disease_params: Disease = None
 
-    additional_seeds: List[str] = None
+    additional_seeds: _List[str] = None
 
     length_day: float = 0.7
     plength_day: float = 0.5
@@ -159,11 +159,11 @@ class Parameters:
 
         if filename is None:
             if repository is None:
-                repository = os.getenv("METAWARDSDATA")
+                repository = _os.getenv("METAWARDSDATA")
                 if repository is None:
                     repository = _default_parameters_path
 
-            filename = os.path.join(repository, folder, f"{parameters}.json")
+            filename = _os.path.join(repository, folder, f"{parameters}.json")
             v = get_repository_version(repository)
             repository_dir = repository
             repository = v["repository"]
@@ -231,10 +231,10 @@ class Parameters:
         if self.additional_seeds is None:
             self.additional_seeds = []
 
-        if not os.path.exists(filename):
-            f = os.path.join(self._repository_dir, "extra_seeds", filename)
+        if not _os.path.exists(filename):
+            f = _os.path.join(self._repository_dir, "extra_seeds", filename)
 
-            if os.path.exists(f):
+            if _os.path.exists(f):
                 filename = f
             else:
                 raise FileExistsError(
@@ -254,7 +254,7 @@ class Parameters:
         print("Using input files:")
         print(input_files)
 
-        self.input_files = deepcopy(input_files)
+        self.input_files = _deepcopy(input_files)
 
     def set_disease(self, disease: Disease):
         """"Set the disease that will be modelled"""
@@ -265,14 +265,14 @@ class Parameters:
         print("Using disease")
         print(disease)
 
-        self.disease_params = deepcopy(disease)
+        self.disease_params = _deepcopy(disease)
 
     def set_variables(self, variables: VariableSet):
         """This function sets the adjustable variable values to those
            specified in 'variables' in A COPY OF THIS PARAMETERS OBJECT.
            This returns the copy. It does not change this object
         """
-        params = deepcopy(self)
+        params = _deepcopy(self)
 
         if isinstance(variables, dict):
             variables = VariableSet(variables)
@@ -282,7 +282,7 @@ class Parameters:
         return params
 
     @staticmethod
-    def read_variables(filename: str, line_numbers: List[int]):
+    def read_variables(filename: str, line_numbers: _List[int]):
         """Read in extra variable parameters from the specified line number(s)
            of the specified file, returning the list
            of the dictionaries of variables that have been

@@ -8,6 +8,20 @@ __all__ = ["VariableSets", "VariableSet"]
 class VariableSet:
     """This class holds a single set of adjustable variables that
        are used to adjust the variables as part of a model run
+
+       Examples
+       --------
+       >>> v = VariableSet()
+       >>> v["beta[1]"] = 0.95
+       >>> v["beta[2]"] = 0.9
+       >>> print(v.fingerprint())
+       (beta[1]=0.95, beta[2]=0.9)[repeat 1]
+       >>> params = Parameters()
+       >>> params.set_disease("ncov")
+       >>> v.adjust(params)
+       >>> print(params.disease_params.beta[1],
+       >>>       params.disease_params.beta[2])
+       0.95 0.9
     """
     def __init__(self,
                  variables: _Dict[str, float] = None,
@@ -28,6 +42,14 @@ class VariableSet:
            repeat_index: int
              the index used to distinguish different repeats of the same
              VariableSet from one another
+
+           Examples
+           --------
+           >>> v = VariableSet()
+           >>> v["beta[1]"] = 0.95
+           >>> v["beta[2]"] = 0.9
+           >>> print(v.fingerprint())
+           (beta[1]=0.95, beta[2]=0.9)[repeat 1]
         """
         self._names = None
         self._vals = None
@@ -161,6 +183,11 @@ class VariableSet:
     def variable_names(self):
         """Return the names of the variables that will be adjusted
            by this VariableSet
+
+           Returns
+           -------
+           names: List[str]
+             The list of names of variables to be adjusted
         """
         if self._vals is None or len(self._vals) == 0:
             return None
@@ -172,6 +199,11 @@ class VariableSet:
         """Return the values that the variables will be adjusted to.
            Note that 'None' means that the variable won't be adjusted
            from its default (original) value
+
+           Returns
+           -------
+           values: List[float]
+             The list of values for variables to be adjusted to
         """
         if self._vals is None or len(self._vals) == 0:
             return None
@@ -180,7 +212,14 @@ class VariableSet:
             return deepcopy(self._vals)
 
     def variables(self):
-        """Return the variables (name and values) to be adjusted"""
+        """Return the variables (name and values) to be adjusted
+
+           Returns
+           -------
+           variables: Dict[str, float]
+             The dictionary mapping the names of the variables that
+             with be adjusted to their desired values
+        """
         v = {}
 
         for name, value in zip(self._names, self._vals):
@@ -192,6 +231,11 @@ class VariableSet:
         """Return the repeat index of this set. The repeat index is the
            ID of this set if the VariableSet is repeated. The index should
            range from 1 to nrepeats
+
+           Returns
+           -------
+           index: int
+             The repeat index of this set
         """
         return self._idx
 
@@ -202,8 +246,15 @@ class VariableSet:
            VariableSets which have the same adjustable variables,
            but different parameters
 
-           If 'include_index' is true, then the repeat index
-           of this VariableSet is appended to the fingerprint
+           Parameters
+           ----------
+           include_index: bool
+             Whether or not to include the repeat_index in the fingerprint
+
+           Returns
+           -------
+           fingerprint: str
+             The fingerprint for this VariableSet
         """
         if self._vals is None or len(self._vals) == 0:
             f = "NO_CHANGE"
@@ -227,23 +278,36 @@ class VariableSet:
             return f
 
     def adjust(self, params):  # should be 'Parameters' but circular include
-        """Use the variables in this set to adjust the passed parameters
+        """Use the variables in this set to adjust the passed parameters.
+           Note that this directly modifies 'params'
 
            Parameters
            ----------
            params: Parameters
-             The parameters whose variables will be adjusted (in a copy)
+             The parameters whose variables will be adjusted
 
            Returns
            -------
-           params: Parameters
-             The returned copy that has the adjusted parameters
+           None
+
+           Examples
+           --------
+           >>> v = VariableSet()
+           >>> v["beta[1]"] = 0.95
+           >>> v["beta[2]"] = 0.9
+           >>> print(v.fingerprint())
+           (beta[1]=0.95, beta[2]=0.9)[repeat 1]
+           >>> params = Parameters()
+           >>> params.set_disease("ncov")
+           >>> v.adjust(params)
+           >>> print(params.disease_params.beta[1],
+           >>>       params.disease_params.beta[2])
+           0.95 0.9
         """
         try:
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
                 if varname == "beta":
-                    print(f"SET {varname} {varidx} to {value}")
                     params.disease_params.beta[varidx] = value
                 elif varname == "progress":
                     params.disease_params.progress[varidx] = value
@@ -261,8 +325,32 @@ class VariableSets:
     """This class holds the collection of all VariableSet objects
        that contain the set of adjustable variables that are used
        to control a single run of the model
+
+       Examples
+       --------
+       >>> v = VariableSets()
+       >>> v.append({"beta[2]": 0.95, "beta[3]": 0.9})
+       >>> v.append({"beta[1]": 0.86, "beta[2]": 0.89})
+       >>> print(v)
+       {(beta[2]=0.95, beta[3]=0.9)[repeat 1], (beta[1]=0.86,
+       beta[2]=0.89)[repeat 1]}
+       >>> v = v.repeat(2)
+       >>> print(v)
+       {(beta[2]=0.95, beta[3]=0.9)[repeat 1], (beta[1]=0.86,
+       beta[2]=0.89)[repeat 1], (beta[2]=0.95, beta[3]=0.9)[repeat 2],
+       (beta[1]=0.86, beta[2]=0.89)[repeat 2]}
     """
     def __init__(self):
+        """Initialise an empty VariableSets object
+
+           Parameters
+           ----------
+           None
+
+           Returns
+           -------
+           None
+        """
         self._vars = []
 
     def __str__(self):
@@ -312,6 +400,17 @@ class VariableSets:
     def append(self, variables: VariableSet):
         """Append the passed set of variables to the set that will
            be used to run a model
+
+           Parameters
+           ----------
+           variables: VariableSet
+             The VariableSet to append to this list. If you pass a
+             dict of {str: float} values, then this will automatically
+             be converted into a VariableSet
+
+           Returns
+           -------
+           None
         """
         if isinstance(variables, dict):
             variables = VariableSet(variables=variables)
@@ -322,6 +421,18 @@ class VariableSets:
         """Return a copy of this VariableSet in which all of the
            unique VaribleSet objects have been repeated 'nrepeats'
            times
+
+           Parameters
+           ----------
+           nrepeats: int
+             The number of repeats of the VariableSet objects to
+             perform
+
+           Returns
+           -------
+           repeats: VariableSets
+             A new VariableSets object containing 'nrepeats' copies
+             of the VariableSet objects from this set
         """
         if nrepeats <= 1:
             return self

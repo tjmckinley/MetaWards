@@ -232,7 +232,7 @@ For example, this output could be read into a pandas dataframe using
 
     df = pd.read_csv("output/results.csv.bz2")
 
-    df.... # perform analysis
+    df # perform analysis
 
 We run a good online workshop on
 `how to use pandas for data analysis <https://milliams.com/courses/data_analysis_python/index.html>`__.
