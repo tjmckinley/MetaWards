@@ -80,13 +80,11 @@ class VariableSet:
         """Return a printable representation of the variables to
            be adjusted
         """
-        if self._vals is None:
-            return "VariableSet::None"
-
         s = []
 
-        for key, value in zip(self._names, self._vals):
-            s.append(f"{key}={value}")
+        if self._vals is not None and len(self._vals) > 0:
+            for key, value in zip(self._names, self._vals):
+                s.append(f"{key}={value}")
 
         if len(s) == 0:
             return f"(NO_CHANGE)[repeat {self._idx}]"
@@ -239,6 +237,66 @@ class VariableSet:
         """
         return self._idx
 
+    def make_compatible_with(self, other):
+        """Return a copy of this VariableSet which has been made
+           compatible with 'other'. This means that it will change
+           the same variables as 'other', e.g. by adding 'None'
+           changes for missing variables. This will raise an error
+           if it is not possible to make this set compatible
+
+           Parameters
+           ----------
+           other: VariableSet
+             The passed VariableSet for which this should be made compatible
+
+           Returns
+           -------
+           result: VariableSet
+             A copy of this VariableSet which is now compatible with 'other'
+
+           Example
+           -------
+           >>> v1 = VariableSet()
+           >>> v1["beta1"] = 0.9
+           >>> v1["beta2"] = 0.8
+
+           >>> v2 = VariableSet()
+           >>> v2["beta1"] = 0.6
+           >>> v2 = v2.make_compatible_with(v1)
+           >>> print(v2)
+           (beta1=0.6, beta2=0.8)[repeat 1]
+        """
+        from copy import deepcopy
+
+        if self._names is None:
+            v = deepcopy(other)
+            v._idx = self._idx
+            return v
+
+        if other._names is None:
+            raise ValueError(f"VariableSet {self} is not compatible with "
+                             f"VariableSet {other}")
+
+        nmatch = 0
+
+        for name in self._names:
+            if name not in other._names:
+                raise ValueError(f"VariableSet {self} is not compatible with "
+                                 f"VariableSet {other}")
+            nmatch += 1
+
+        if len(other._names) == nmatch:
+            # fully compatible
+            return deepcopy(self)
+
+        v = deepcopy(self)
+
+        for name in other._names:
+            if name not in self._names:
+                v[name] = other[name]
+
+        return v
+
     def fingerprint(self, include_index: bool = False):
         """Return a fingerprint for this VariableSet. This can be
            used to quickly identify and distinguish the values of
@@ -304,17 +362,21 @@ class VariableSet:
            >>>       params.disease_params.beta[2])
            0.95 0.9
         """
+        if self._vals is None or len(self._vals) == 0:
+            return
+
         try:
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
-                if varname == "beta":
-                    params.disease_params.beta[varidx] = value
-                elif varname == "progress":
-                    params.disease_params.progress[varidx] = value
-                else:
-                    raise KeyError(
-                        f"Cannot set unrecognised parameter {varname} "
-                        f"to {value}")
+                if value is not None:
+                    if varname == "beta":
+                        params.disease_params.beta[varidx] = value
+                    elif varname == "progress":
+                        params.disease_params.progress[varidx] = value
+                    else:
+                        raise KeyError(
+                            f"Cannot set unrecognised parameter {varname} "
+                            f"to {value}")
         except Exception as e:
             raise ValueError(
                 f"Unable to set parameters from {self}. Error "
@@ -399,14 +461,17 @@ class VariableSets:
 
     def append(self, variables: VariableSet):
         """Append the passed set of variables to the set that will
-           be used to run a model
+           be used to run a model. If there are any existing
+           VariableSet objects in this list, then the new VariableSet
+           must adjust the same variables
 
            Parameters
            ----------
            variables: VariableSet
              The VariableSet to append to this list. If you pass a
              dict of {str: float} values, then this will automatically
-             be converted into a VariableSet
+             be converted into a VariableSet. Note that all VariableSet
+             objects in a VariableSets must adjust the same variables
 
            Returns
            -------
@@ -414,6 +479,12 @@ class VariableSets:
         """
         if isinstance(variables, dict):
             variables = VariableSet(variables=variables)
+
+        if self._vars is None:
+            self._vars = []
+
+        if len(self._vars) > 0:
+            variables = variables.make_compatible_with(self._vars[0])
 
         self._vars.append(variables)
 

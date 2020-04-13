@@ -135,6 +135,23 @@ def test_parameterset():
         assert variables[idx1].repeat_index() == i+1
 
 
+def test_make_compatible():
+    v1 = VariableSet()
+    v1["beta[1]"] = 0.95
+    v1["beta[2]"] = 0.9
+
+    v2 = VariableSet(repeat_index=5)
+    v2["beta[2]"] = 0.5
+
+    v3 = v2.make_compatible_with(v1)
+    assert v3["beta[1]"] == v1["beta[1]"]
+    assert v2["beta[2]"] == v2["beta[2]"]
+    assert v3.repeat_index() == v2.repeat_index()
+
+    with pytest.raises(ValueError):
+        v1.make_compatible_with(v2)
+
+
 def test_set_variables():
     d = Disease.load("ncov")
 

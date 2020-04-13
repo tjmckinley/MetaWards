@@ -66,7 +66,7 @@ def parse_args():
                              "the file is line 0. Ranges are inclusive, "
                              "so 3-5 is the same as 3 4 5")
 
-    parser.add_argument("-r", '--repeats', type=int, default=1,
+    parser.add_argument("-r", '--repeats', type=int, default=None,
                         help="The number of repeat runs of the model to "
                              "perform for each value of the adjustable "
                              "parameters. By default only a single "
@@ -558,9 +558,15 @@ def cli():
             # supervisor and this is the main process
 
     # This is now the code for the main process
-    if args.input is None:
+
+    # WE NEED ONE OF 'input' or 'nrepeats'
+    if (args.input is None) and (args.repeats is None):
+        print("ERROR: You must specify one of '--input' or '--repeats'")
         parser.print_help(sys.stdout)
-        sys.exit(0)
+        sys.exit(-1)
+
+    if args.repeats is None:
+        args.repeats = 1
 
     # import the parameters here to speed up the display of help
     from metawards import Parameters, Network, Population, get_version_string
@@ -568,6 +574,9 @@ def cli():
     # print the version information first, so that there is enough
     # information to enable someone to reproduce this run
     print(get_version_string())
+
+    # also print the full command line used for this job
+    print(f"Command used to run this job:\n{' '.join(sys.argv)}\n")
 
     # load all of the parameters
     try:
@@ -592,23 +601,31 @@ def cli():
     params.set_disease(args.disease)
     params.set_input_files(args.input_data)
 
-    # get the line numbers of the input file to read
-    if args.line is None or len(args.line) == 0:
-        linenums = None
-        print(f"Using parameters from all lines of {args.input}")
-    else:
-        from metawards.utils import string_to_ints
-        linenums = string_to_ints(args.line)
-
-        if len(linenums) == 0:
-            print(f"You cannot read no lines from {args.input}?")
-            sys.exit(-1)
-        elif len(linenums) == 1:
-            print(f"Using parameters from line {linenums[0]} of {args.input}")
+    if args.input:
+        # get the line numbers of the input file to read
+        if args.line is None or len(args.line) == 0:
+            linenums = None
+            print(f"Using parameters from all lines of {args.input}")
         else:
-            print(f"Using parameters from lines {linenums} of {args.input}")
+            from metawards.utils import string_to_ints
+            linenums = string_to_ints(args.line)
 
-    variables = params.read_variables(args.input, linenums)
+            if len(linenums) == 0:
+                print(f"You cannot read no lines from {args.input}?")
+                sys.exit(-1)
+            elif len(linenums) == 1:
+                print(f"Using parameters from line {linenums[0]} of "
+                      f"{args.input}")
+            else:
+                print(f"Using parameters from lines {linenums} of "
+                      f"{args.input}")
+
+        variables = params.read_variables(args.input, linenums)
+    else:
+        from metawards import VariableSets, VariableSet
+        # create a VariableSets with one null VariableSet
+        variables = VariableSets()
+        variables.append(VariableSet())
 
     if args.additional is None or len(args.additional) == 0:
         print("Not using any additional seeds...")
@@ -673,6 +690,10 @@ def cli():
                         nsteps=args.nsteps, output_dir=args.output,
                         profile=profile, parallel_scheme=parallel_scheme)
 
+    if result is None or len(result) == 0:
+        print("No output - end of run")
+        return 0
+
     # write the result to a csv file that can be easily read by R or
     # pandas - this will be written compressed to save space
     results_file = os.path.join(args.output, "results.csv.bz2")
@@ -681,16 +702,34 @@ def cli():
           f"look at statistics across all runs using e.g. R or pandas")
 
     with bz2.open(results_file, "wt") as FILE:
-        FILE.write("variables,repeat,step,susceptibles,latent,"
-                   "total,n_inf_wards\n")
+        varnames = result[0][0].variable_names()
+
+        if varnames is None or len(varnames) == 0:
+            varnames = ""
+        else:
+            varnames = ",".join(varnames) + ","
+
+        FILE.write(f"fingerprint,repeat,{varnames}"
+                   f"date,step,susceptibles,latent,"
+                   f"total,n_inf_wards\n")
         for varset, trajectory in result:
-            start = f"{varset.fingerprint()},{varset.repeat_index()},"
+            varvals = varset.variable_values()
+            if varvals is None or len(varvals) == 0:
+                varvals = ""
+            else:
+                varvals = ",".join(map(str, varvals)) + ","
+
+            start = f"{varset.fingerprint()}," \
+                    f"{varset.repeat_index()},{varvals}" \
+                    f"DATE,"
 
             for i, pop in enumerate(trajectory):
                 FILE.write(f"{start}{i},{pop.susceptibles},"
                            f"{pop.latent},{pop.total},{pop.n_inf_wards}\n")
 
     print("End of the run")
+
+    return 0
 
 
 if __name__ == "__main__":
