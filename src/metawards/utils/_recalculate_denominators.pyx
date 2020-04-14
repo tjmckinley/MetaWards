@@ -1,6 +1,4 @@
 
-cimport cython
-
 from libc.math cimport floor
 
 from .._network import Network
@@ -9,8 +7,6 @@ __all__ = ["recalculate_work_denominator_day",
            "recalculate_play_denominator_day"]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def recalculate_work_denominator_day(network: Network):
     """Recalculate the denominator_d for the wards (nodes) in
        the network for the normal links

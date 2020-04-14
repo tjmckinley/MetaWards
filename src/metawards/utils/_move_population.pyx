@@ -1,5 +1,4 @@
 
-cimport cython
 from libc.math cimport floor, ceil
 
 from .._network import Network
@@ -18,8 +17,6 @@ def move_population_from_work_to_play(network: Network):
     raise AssertionError("Code has not been written")
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def move_population_from_play_to_work(network: Network):
     """And Vice Versa From Work to Play
        The relevant parameters are network.params.play_to_work and

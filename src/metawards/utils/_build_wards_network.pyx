@@ -1,5 +1,4 @@
 
-cimport cython
 from libc.stdio cimport FILE, fopen, fscanf, fclose, feof
 
 from .._parameters import Parameters
@@ -11,8 +10,6 @@ from ._profiler import Profiler, NullProfiler
 
 __all__ = ["build_wards_network"]
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def build_wards_network(params: Parameters,
                         profiler: Profiler = None,
                         max_nodes:int = 10050,

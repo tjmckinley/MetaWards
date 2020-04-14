@@ -1,13 +1,9 @@
 
-cimport cython
-
 from .._network import Network
 
 __all__ = ["rescale_play_matrix"]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def rescale_play_matrix(network: Network):
     """ Static Play At Home rescaling.
 	    for 1, everyone stays at home.
