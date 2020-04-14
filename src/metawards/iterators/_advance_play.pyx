@@ -13,17 +13,15 @@ from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 __all__ = ["advance_play", "advance_play_omp"]
 
 
-def advance_play_omp(network: Network, infections, play_infections, rngs,
+def advance_play_omp(network: Network, play_infections, rngs,
                      nthreads: int, profiler: Profiler, **kwargs):
     """Advance the model by triggering infections related to random
-       'play' movements
+       'play' movements (parallel version of the function)
 
        Parameters
        ----------
        network: Network
          The network being modelled
-       infections:
-         The space that holds all of the "work" infections
        play_infections:
          The space that holds all of the "play" infections
        rngs:
@@ -160,29 +158,27 @@ def advance_play_omp(network: Network, infections, play_infections, rngs,
     # end of parallel
     p.stop()
 
-    # End of the function :-)
 
-def advance_play(network: Network, infections, play_infections, rngs,
+def advance_play(network: Network, play_infections, rngs,
                  profiler: Profiler, **kwargs):
-    """Serial version of ``advance_play_omp``. Advance the model
-       by triggering infections related to random 'play' movements
+    """Advance the model by triggering infections related to random
+       'play' movements (serial version of the function)
 
        Parameters
        ----------
        network: Network
          The network being modelled
-       infections:
-         The space that holds all of the "work" infections
        play_infections:
          The space that holds all of the "play" infections
        rngs:
          The list of thread-safe random number generators, one per thread
+       nthreads: int
+         The number of threads over which to parallelise the calculation
        profiler: Profiler
          The profiler used to profile this calculation
        kwargs:
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
     """
-    advance_play_omp(network=network, infections=infections,
-                     play_infections=play_infections, rngs=rngs,
-                     nthreads=1, profiler=profiler, **kwargs)
+    advance_play_omp(network=network, play_infections=play_infections,
+                     rngs=rngs, nthreads=1, profiler=profiler, **kwargs)
