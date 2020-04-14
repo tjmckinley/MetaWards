@@ -1,5 +1,4 @@
 
-cimport cython
 from libc.stdint cimport uintptr_t
 
 cdef extern from "../ran_binomial/distributions.h":
@@ -51,16 +50,12 @@ cdef inline uintptr_t _seed_ran_binomial(uintptr_t rng,
     seed_ran_binomial(r, seed)
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 cdef inline int _ran_binomial(binomial_rng *rng, double p, int n) nogil:
     """Generate a random number from the binomial distribution
        described by p and n
     """
     return ran_binomial(rng, p, n)
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 cdef inline double _ran_uniform(binomial_rng *rng) nogil:
     """Generate the next random-distributed uniform [0,1] random number"""
     return binomial_rng_uniform(rng)

@@ -1,5 +1,4 @@
 
-cimport cython
 from libc.math cimport sqrt
 
 from .._network import Network
@@ -11,8 +10,6 @@ from ._workspace import Workspace
 __all__ = ["extract_data_for_graphics"]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def extract_data_for_graphics(network: Network, infections,
                               play_infections, workspace: Workspace,
                               FILE, profiler: Profiler = None):

@@ -1,6 +1,4 @@
 
-cimport cython
-
 from libc.stdio cimport FILE, fopen, fscanf, fclose, feof
 
 from .._network import Network
@@ -9,8 +7,6 @@ from ._profiler import Profiler, NullProfiler
 
 __all__ = ["build_play_matrix"]
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def build_play_matrix(network: Network, profiler: Profiler=None):
     """Build the play matrix for the passed network"""
     if profiler is None:

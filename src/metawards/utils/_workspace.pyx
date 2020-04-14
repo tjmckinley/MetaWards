@@ -1,6 +1,4 @@
 
-cimport cython
-
 from ._array import create_int_array
 
 from .._network import Network
@@ -34,8 +32,6 @@ class Workspace:
         self.total_infections = create_int_array(MAXSIZE, 0)
         self.prevalence = create_int_array(MAXSIZE, 0)
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def zero_all(self):
         """Reset the values of all of the arrays to zero"""
         cdef int i = 0

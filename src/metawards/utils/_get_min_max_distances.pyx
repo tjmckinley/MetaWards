@@ -1,13 +1,9 @@
 
-cimport cython
-
 from .._network import Network
 
 __all__ = ["get_min_max_distances"]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def get_min_max_distances(network: Network):
     """Return the minimum and maximum distances recorded in the network"""
     links = network.to_links

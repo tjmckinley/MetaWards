@@ -1,6 +1,4 @@
 
-cimport cython
-
 from .._network import Network
 from .._node import Node
 
@@ -8,8 +6,6 @@ __all__ = ["reset_work_matrix", "reset_play_matrix",
            "reset_play_susceptibles", "reset_everything"]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def reset_work_matrix(network: Network):
     links = network.to_links
 
@@ -24,8 +20,6 @@ def reset_work_matrix(network: Network):
         else:
             links_suscept[i] = links_weight[i]
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def reset_play_matrix(network: Network):
     links = network.play
 
@@ -41,8 +35,6 @@ def reset_play_matrix(network: Network):
             links.weight[i] = links.suscept[i]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def reset_play_susceptibles(network: Network):
     nodes = network.nodes
 
