@@ -132,6 +132,12 @@ extensions = [
     Extension("metawards.iterators._advance_infprob",
               ["src/metawards/iterators/_advance_infprob.pyx"]+random_sources,
               define_macros=define_macros),
+    Extension("metawards.iterators._advance_recovery",
+              ["src/metawards/iterators/_advance_recovery.pyx"]+random_sources,
+              define_macros=define_macros),
+    Extension("metawards.iterators._advance_foi",
+              ["src/metawards/iterators/_advance_foi.pyx"]+random_sources,
+              define_macros=define_macros),
 ]
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))

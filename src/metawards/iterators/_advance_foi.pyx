@@ -3,40 +3,21 @@
 # MUST ALWAYS DISABLE AS WAY TOO SLOW FOR ITERATE
 
 cimport cython
-
-from libc.stdlib cimport malloc, free
-
-from libc.math cimport cos, pi
-from  ._rate_to_prob cimport rate_to_prob
-
 from cython.parallel import parallel, prange
 cimport openmp
 
+from libc.stdlib cimport malloc, free
+from libc.math cimport cos, pi
+
 from .._network import Network
-from .._parameters import Parameters
-from ._profiler import Profiler, NullProfiler
-from ._import_infection import import_infection
-from ._array import create_int_array, create_double_array
+from ..utils._profiler import Profiler
 
-from ._ran_binomial cimport _ran_binomial, _get_binomial_ptr, binomial_rng
+from ..utils._ran_binomial cimport _ran_binomial, \
+                                   _get_binomial_ptr, binomial_rng
 
-__all__ = ["advance_foi"]
+from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
-
-cdef double * get_double_array_ptr(double_array):
-    """Return the raw C pointer to the passed double array which was
-       created using create_double_array
-    """
-    cdef double [::1] a = double_array
-    return &(a[0])
-
-
-cdef int * get_int_array_ptr(int_array):
-    """Return the raw C pointer to the passed int array which was
-       created using create_int_array
-    """
-    cdef int [::1] a = int_array
-    return &(a[0])
+__all__ = ["advance_foi", "advance_foi_omp"]
 
 
 cdef struct foi_buffer:
@@ -45,7 +26,8 @@ cdef struct foi_buffer:
     double *foi
 
 
-cdef foi_buffer* allocate_foi_buffers(int nthreads, int buffer_size=4096) nogil:
+cdef foi_buffer* allocate_foi_buffers(int nthreads,
+                                      int buffer_size=4096) nogil:
     cdef int size = buffer_size
     cdef int n = nthreads
 
@@ -94,139 +76,120 @@ cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
         buffer[0].count = 0
 
 
-def advance_foi(network: Network, infections, play_infections,
-                params: Parameters, rngs, timestep: int,
-                population: int, nthreads: int = None,
-                profiler: Profiler=None,
-                is_dangerous=None,
-                SELFISOLATE: bool = False,
-                IMPORTS: bool = False):
-    """Iterate the model forward one timestep (day) using the supplied
-       network and parameters, advancing the supplied infections,
-       and using the supplied random number generators (rngs)
-       to generate random numbers (this is an array with one generator
-       per thread). This iterates for a normal
-       (working) day (with predictable movements, mixed
-       with random movements)
+def advance_foi_omp(network: Network, infections, play_infections, rngs,
+                    nthreads: int, day: int, profiler: Profiler, **kwargs):
+    """Advance the model calculating the new force of infection (foi)
+       for all of the wards and links between wards, based on the
+       current number of infections. Note that you must call this
+       first before performing any other step in the iteration
+       as this will update the foi based on the infections that
+       occured the previous day. This is the parallel version of
+       this function
 
-       If SELFISOLATE is True then you need to pass in
-       is_dangerous, which should be an array("i", network.nnodes)
+       Parameters
+       ----------
+       network: Network
+         The network being modelled
+       infections:
+         The space that holds all of the "work" infections
+       play_infections:
+         The space that holds all of the "play" infections
+       rngs:
+         The list of thread-safe random number generators, one per thread
+       nthreads: int
+         The number of threads over which to parallelise the calculation
+       day: int
+         The day of the outbreak (timestep in the simulation)
+       profiler: Profiler
+         The profiler used to profile this calculation
+       kwargs:
+         Extra arguments that may be used by other advancers, but which
+         are not used by advance_play
     """
-    if profiler is None:
-        profiler = NullProfiler()
-
-    p = profiler.start("iterate")
-
-    cdef double uv = params.UV
-    cdef int ts = timestep
-
-    #starting day = 41
-    cdef double uvscale = (1.0-uv/2.0 + cos(2.0*pi*ts/365.0)/2.0)
-
-    cdef double cutoff = params.dyn_dist_cutoff
-
-    cdef double thresh = 0.01
 
     links = network.to_links
     wards = network.nodes
     plinks = network.play
+    params = network.params
 
-    cdef int i = 0
+    cdef double uv = params.UV
+    cdef int ts = day
+    cdef double uvscale = (1.0-uv/2.0 + cos(2.0*pi*ts/365.0)/2.0)
+
+    # Copy arguments from Python into C cdef variables
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
-    cdef double night_foi
 
-    p = p.start("setup")
-    for i in range(1, network.nnodes+1):
-        wards_day_foi[i] = 0.0
-        wards_night_foi[i] = 0.0
-
-    p = p.stop()
-
-    if IMPORTS:
-        p = p.start("imports")
-        imported = import_infection(network=network, infections=infections,
-                                    play_infections=play_infections,
-                                    params=params, rng=rngs[0],
-                                    population=population)
-
-        print(f"Day: {timestep} Imports: expected {params.daily_imports} "
-              f"actual {imported}")
-        p = p.stop()
-
-    cdef int N_INF_CLASSES = len(infections)
-    cdef double scl_foi_uv = 0.0
-    cdef double contrib_foi = 0.0
-    cdef double beta = 0.0
-    cdef double play_at_home_scl = 0.0
-
-    cdef int num_threads = nthreads
-    cdef unsigned long [::1] rngs_view = rngs
-    cdef binomial_rng* r = _get_binomial_ptr(rngs[0])
-
-    cdef int j = 0
-    cdef int k = 0
-    cdef int l = 0
-    cdef int inf_ij = 0
-    cdef double weight = 0.0
-    cdef double distance = 0.0
     cdef double * links_weight = get_double_array_ptr(links.weight)
+    cdef double * plinks_weight = get_double_array_ptr(plinks.weight)
+
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
     cdef int * links_ito = get_int_array_ptr(links.ito)
-    cdef int ifrom = 0
-    cdef int ito = 0
-    cdef int staying, moving, play_move, end_p
-    cdef double * links_distance = get_double_array_ptr(links.distance)
-    cdef double frac = 0.0
-    cdef double cumulative_prob = 0
-    cdef double prob_scaled
-    cdef double too_ill_to_move
+
+    cdef int * plinks_ifrom = get_int_array_ptr(plinks.ifrom)
+    cdef int * plinks_ito = get_int_array_ptr(plinks.ito)
 
     cdef int * wards_begin_p = get_int_array_ptr(wards.begin_p)
     cdef int * wards_end_p = get_int_array_ptr(wards.end_p)
 
+    cdef double * links_distance = get_double_array_ptr(links.distance)
     cdef double * plinks_distance = get_double_array_ptr(plinks.distance)
-    cdef double * plinks_weight = get_double_array_ptr(plinks.weight)
-    cdef int * plinks_ifrom = get_int_array_ptr(plinks.ifrom)
-    cdef int * plinks_ito = get_int_array_ptr(plinks.ito)
 
-    cdef double * wards_denominator_d = get_double_array_ptr(wards.denominator_d)
-    cdef double * wards_denominator_n = get_double_array_ptr(wards.denominator_n)
-    cdef double * wards_denominator_p = get_double_array_ptr(wards.denominator_p)
-    cdef double * wards_denominator_pd = get_double_array_ptr(wards.denominator_pd)
+    cdef double cutoff = params.dyn_dist_cutoff
 
-    cdef double * links_suscept = get_double_array_ptr(links.suscept)
-    cdef double * wards_play_suscept = get_double_array_ptr(wards.play_suscept)
+    # get the random number generator
+    cdef unsigned long [::1] rngs_view = rngs
+    cdef binomial_rng* rng   # pointer to parallel rng
 
-    cdef double * wards_day_inf_prob = get_double_array_ptr(wards.day_inf_prob)
-    cdef double * wards_night_inf_prob = get_double_array_ptr(wards.night_inf_prob)
-
-    cdef int * wards_label = get_int_array_ptr(wards.label)
-
-    cdef int * infections_i
-    cdef int * play_infections_i
-
-    cdef int * is_dangerous_array
+    # create and initialise variables used in the loop
+    cdef int num_threads = nthreads
+    cdef int thread_id = 0
 
     cdef int nnodes_plus_one = network.nnodes + 1
     cdef int nlinks_plus_one = network.nlinks + 1
 
-    cdef binomial_rng* pr   # pointer to parallel rng
-    cdef int thread_id
+    cdef int i = 0
+    cdef int j = 0
+    cdef int k = 0
+    cdef int end_p = 0
+    cdef int inf_ij = 0
+    cdef int ifrom = 0
+    cdef int ito = 0
+    cdef int staying = 0
+    cdef int moving = 0
+    cdef int play_move = 0
 
+    cdef int N_INF_CLASSES = len(infections)
+
+    cdef double weight = 0.0
+    cdef double cumulative_prob = 0.0
+    cdef double prob_scaled = 0.0
+    cdef double too_ill_to_move = 0.0
+    cdef double scl_foi_uv = 0.0
+
+    # allocate buffers that will be used to manage the reductions
     cdef foi_buffer * day_buffers = allocate_foi_buffers(num_threads)
     cdef foi_buffer * day_buffer
     cdef foi_buffer * night_buffers = allocate_foi_buffers(num_threads)
     cdef foi_buffer * night_buffer
 
-    cdef int cSELFISOLATE = 0
-
-    if SELFISOLATE:
-        cSELFISOLATE = 1
-        is_dangerous_array = get_int_array_ptr(is_dangerous)
-
+    # we need to create an OpenMP lock so that we can
+    # use critical regions to serialise reduction updates
     cdef openmp.omp_lock_t lock
     openmp.omp_init_lock(&lock)
+
+    ## Finally(!) we can now declare the actual loop.
+    ## This loops over all disease stages, and then in
+    ## parallel over all wards and all links to then
+    ## update the daytime and nighttime foi arrays
+    ## for each ward (wards.day_foi and wards.night_foi)
+
+    ## we begin by initialising the day and night fois to 0
+    p = profiler.start("setup")
+    for i in range(1, network.nnodes+1):
+        wards_day_foi[i] = 0.0
+        wards_night_foi[i] = 0.0
+    p = p.stop()
 
     p = p.start("loop_over_classes")
     for i in range(0, N_INF_CLASSES):
@@ -247,7 +210,7 @@ def advance_foi(network: Network, infections, play_infections,
             p = p.start(f"work_{i}")
             with nogil, parallel(num_threads=1):
                 thread_id = cython.parallel.threadid()
-                pr = _get_binomial_ptr(rngs_view[thread_id])
+                rng = _get_binomial_ptr(rngs_view[thread_id])
                 day_buffer = &(day_buffers[thread_id])
                 night_buffer = &(night_buffers[thread_id])
                 day_buffer[0].count = 0
@@ -266,26 +229,10 @@ def advance_foi(network: Network, infections, play_infections,
                         #        f"{weight}")
 
                         if links_distance[j] < cutoff:
-                            if cSELFISOLATE:
-                                frac = is_dangerous_array[ito] / (
-                                                    wards_denominator_d[ito] +
-                                                    wards_denominator_p[ito])
-
-                                if frac > thresh:
-                                    staying = infections_i[j]
-                                else:
-                                    # number staying - this is G_ij
-                                    staying = _ran_binomial(pr,
-                                                            too_ill_to_move,
-                                                            inf_ij)
-                            else:
-                                # number staying - this is G_ij
-                                staying = _ran_binomial(pr,
-                                                        too_ill_to_move,
-                                                        inf_ij)
-
-                            #if staying < 0:
-                            #    print(f"staying < 0")
+                            # number staying - this is G_ij
+                            staying = _ran_binomial(rng,
+                                                    too_ill_to_move,
+                                                    inf_ij)
 
                             # number moving, this is I_ij - G_ij
                             moving = inf_ij - staying
@@ -307,7 +254,8 @@ def advance_foi(network: Network, infections, play_infections,
                                               &(wards_day_foi[0]), &lock)
                             #wards_day_foi[ito] += moving * scl_foi_uv
 
-                            # Daytime FOI for destination is incremented (including self links, I_ii)
+                            # Daytime FOI for destination is incremented
+                            # (including self links, I_ii)
                         else:
                             # outside cutoff
                             if inf_ij > 0:
@@ -340,7 +288,7 @@ def advance_foi(network: Network, infections, play_infections,
             p = p.start(f"play_{i}")
             with nogil, parallel(num_threads=1):
                 thread_id = cython.parallel.threadid()
-                pr = _get_binomial_ptr(rngs_view[thread_id])
+                rng = _get_binomial_ptr(rngs_view[thread_id])
                 day_buffer = &(day_buffers[thread_id])
                 day_buffer[0].count = 0
 
@@ -350,11 +298,7 @@ def advance_foi(network: Network, infections, play_infections,
                     if inf_ij > 0:
                         wards_night_foi[j] += inf_ij * scl_foi_uv
 
-                        staying = _ran_binomial(pr, play_at_home_scl, inf_ij)
-
-                        #if staying < 0:
-                        #    print(f"staying < 0")
-
+                        staying = _ran_binomial(rng, play_at_home_scl, inf_ij)
                         moving = inf_ij - staying
 
                         cumulative_prob = 0.0
@@ -372,27 +316,14 @@ def advance_foi(network: Network, infections, play_infections,
                                 prob_scaled = weight / (1.0 - cumulative_prob)
                                 cumulative_prob = cumulative_prob + weight
 
-                                play_move = _ran_binomial(pr, prob_scaled, moving)
+                                play_move = _ran_binomial(rng, prob_scaled,
+                                                          moving)
 
-                                if cSELFISOLATE:
-                                    frac = is_dangerous_array[ito] / (
-                                                    wards_denominator_d[ito] +
-                                                    wards_denominator_p[ito])
-
-                                    if frac > thresh:
-                                        staying = staying + play_move
-                                    else:
-                                        add_to_buffer(day_buffer, ito,
-                                                      play_move * scl_foi_uv,
-                                                      &(wards_day_foi[0]),
-                                                      &lock)
-                                        #wards_day_foi[ito] += play_move * scl_foi_uv
-                                else:
-                                    add_to_buffer(day_buffer, ito,
-                                                  play_move * scl_foi_uv,
-                                                  &(wards_day_foi[0]),
-                                                  &lock)
-                                    #wards_day_foi[ito] += play_move * scl_foi_uv
+                                add_to_buffer(day_buffer, ito,
+                                                play_move * scl_foi_uv,
+                                                &(wards_day_foi[0]),
+                                                &lock)
+                                #wards_day_foi[ito] += play_move * scl_foi_uv
 
                                 moving = moving - play_move
                             # end of if within cutoff
@@ -415,3 +346,36 @@ def advance_foi(network: Network, infections, play_infections,
 
     free_foi_buffers(&(day_buffers[0]), num_threads)
     free_foi_buffers(&(night_buffers[0]), num_threads)
+
+
+def advance_foi(network: Network, infections, play_infections, rngs,
+                day: int, profiler: Profiler, **kwargs):
+    """Advance the model calculating the new force of infection (foi)
+       for all of the wards and links between wards, based on the
+       current number of infections. Note that you must call this
+       first before performing any other step in the iteration
+       as this will update the foi based on the infections that
+       occured the previous day. This is the serial version of
+       this function
+
+       Parameters
+       ----------
+       network: Network
+         The network being modelled
+       infections:
+         The space that holds all of the "work" infections
+       play_infections:
+         The space that holds all of the "play" infections
+       rngs:
+         The list of thread-safe random number generators, one per thread
+       day: int
+         The day of the outbreak (timestep in the simulation)
+       profiler: Profiler
+         The profiler used to profile this calculation
+       kwargs:
+         Extra arguments that may be used by other advancers, but which
+         are not used by advance_play
+    """
+    advance_foi_omp(network=network, infections=infections,
+                    play_infections=play_infections, rngs=rngs,
+                    day=day, profiler=profiler, **kwargs)
