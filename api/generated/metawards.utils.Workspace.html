@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.utils.Workspace &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>metawards.utils.Workspace &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="../../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -186,115 +191,37 @@
             
   <div class="section" id="metawards-utils-workspace">
 <h1>metawards.utils.Workspace<a class="headerlink" href="#metawards-utils-workspace" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
+<dl class="class">
 <dt id="metawards.utils.Workspace">
-<em class="property">class </em><code class="sig-prename descclassname">metawards.utils.</code><code class="sig-name descname">Workspace</code><a class="headerlink" href="#metawards.utils.Workspace" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.utils.</code><code class="descname">Workspace</code><a class="headerlink" href="#metawards.utils.Workspace" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class provides a workspace for the running calculation.
 This pre-allocates all of the memory into arrays, which
 can then be used via cython memory views</p>
-<dl class="py method">
+<dl class="method">
 <dt id="metawards.utils.Workspace.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">Network</span></em>, <em class="sig-param"><span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.Workspace.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>network: Network</em>, <em>params: Parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.Workspace.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the workspace needed to run the model for the
 passed network with the passed parameters</p>
 </dd></dl>
 
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delattr__</span></code></p></td>
-<td><p>Implement delattr(self, name).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code></p></td>
-<td><p>Default dir() implementation.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code></p></td>
-<td><p>Return self==value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__format__</span></code></p></td>
-<td><p>Default object formatter.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ge__</span></code></p></td>
-<td><p>Return self&gt;=value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getattribute__</span></code></p></td>
-<td><p>Return getattr(self, name).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__gt__</span></code></p></td>
-<td><p>Return self&gt;value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__hash__</span></code></p></td>
-<td><p>Return hash(self).</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#metawards.utils.Workspace.__init__" title="metawards.utils.Workspace.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, network, params)</p></td>
-<td><p>Create the workspace needed to run the model for the passed network with the passed parameters</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init_subclass__</span></code></p></td>
-<td><p>This method is called when a class is subclassed.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__le__</span></code></p></td>
-<td><p>Return self&lt;=value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__lt__</span></code></p></td>
-<td><p>Return self&lt;value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ne__</span></code></p></td>
-<td><p>Return self!=value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__new__</span></code></p></td>
-<td><p>Create and return a new object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce__</span></code></p></td>
-<td><p>Helper for pickle.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce_ex__</span></code></p></td>
-<td><p>Helper for pickle.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></p></td>
-<td><p>Return repr(self).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setattr__</span></code></p></td>
-<td><p>Implement setattr(self, name, value).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__sizeof__</span></code></p></td>
-<td><p>Size of object in memory, in bytes.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code></p></td>
-<td><p>Return str(self).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__subclasshook__</span></code></p></td>
-<td><p>Abstract classes can override this to customize issubclass().</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_all</span></code>(self)</p></td>
-<td><p>Reset the values of all of the arrays to zero</p></td>
-</tr>
-</tbody>
-</table>
 <p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
+<table border="1" class="longtable docutils">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dict__</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__doc__</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__module__</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__weakref__</span></code></p></td>
-<td><p>list of weak references to the object (if defined)</p></td>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.utils.Workspace.zero_all" title="metawards.utils.Workspace.zero_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_all</span></code></a></td>
+<td>Reset the values of all of the arrays to zero</td>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="metawards.utils.Workspace.zero_all">
+<code class="descname">zero_all</code><a class="headerlink" href="#metawards.utils.Workspace.zero_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the values of all of the arrays to zero</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -319,14 +246,12 @@ passed network with the passed parameters</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

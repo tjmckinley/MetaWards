@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.Node &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>metawards.Node &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="../../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -186,189 +191,166 @@
             
   <div class="section" id="metawards-node">
 <h1>metawards.Node<a class="headerlink" href="#metawards-node" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
+<dl class="class">
 <dt id="metawards.Node">
-<em class="property">class </em><code class="sig-prename descclassname">metawards.</code><code class="sig-name descname">Node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">begin_to</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">end_to</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">self_w</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">begin_p</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">end_p</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">self_p</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">begin_we</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">end_we</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">self_we</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">day_foi</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">night_foi</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">weekend_foi</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">play_suscept</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">save_play_suscept</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">denominator_n</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">denominator_d</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">denominator_p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">denominator_pd</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">b</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vacid</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_node.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Node" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>label: int = None</em>, <em>begin_to: int = None</em>, <em>end_to: int = None</em>, <em>self_w: int = None</em>, <em>begin_p: int = None</em>, <em>end_p: int = None</em>, <em>self_p: int = None</em>, <em>begin_we: int = None</em>, <em>end_we: int = None</em>, <em>self_we: int = None</em>, <em>day_foi: float = 0.0</em>, <em>night_foi: float = 0.0</em>, <em>weekend_foi: float = 0.0</em>, <em>play_suscept: float = 0.0</em>, <em>save_play_suscept: float = 0.0</em>, <em>denominator_n: float = 0.0</em>, <em>denominator_d: float = 0.0</em>, <em>denominator_p: float = 0.0</em>, <em>denominator_pd: float = 0.0</em>, <em>x: float = 0.0</em>, <em>y: float = 0.0</em>, <em>b: float = 0.0</em>, <em>id: str = None</em>, <em>vacid: int = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_node.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class represents an electoral ward (node) in the network</p>
-<dl class="py method">
+<dl class="method">
 <dt id="metawards.Node.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">begin_to</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">end_to</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">self_w</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">begin_p</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">end_p</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">self_p</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">begin_we</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">end_we</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">self_we</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">day_foi</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">night_foi</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">weekend_foi</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">play_suscept</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">save_play_suscept</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">denominator_n</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">denominator_d</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">denominator_p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">denominator_pd</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">b</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vacid</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Node.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>label: int = None</em>, <em>begin_to: int = None</em>, <em>end_to: int = None</em>, <em>self_w: int = None</em>, <em>begin_p: int = None</em>, <em>end_p: int = None</em>, <em>self_p: int = None</em>, <em>begin_we: int = None</em>, <em>end_we: int = None</em>, <em>self_we: int = None</em>, <em>day_foi: float = 0.0</em>, <em>night_foi: float = 0.0</em>, <em>weekend_foi: float = 0.0</em>, <em>play_suscept: float = 0.0</em>, <em>save_play_suscept: float = 0.0</em>, <em>denominator_n: float = 0.0</em>, <em>denominator_d: float = 0.0</em>, <em>denominator_p: float = 0.0</em>, <em>denominator_pd: float = 0.0</em>, <em>x: float = 0.0</em>, <em>y: float = 0.0</em>, <em>b: float = 0.0</em>, <em>id: str = None</em>, <em>vacid: int = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Node.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
+<table border="1" class="longtable docutils">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delattr__</span></code></p></td>
-<td><p>Implement delattr(self, name).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code></p></td>
-<td><p>Default dir() implementation.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code>(other)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__format__</span></code></p></td>
-<td><p>Default object formatter.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ge__</span></code></p></td>
-<td><p>Return self&gt;=value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getattribute__</span></code></p></td>
-<td><p>Return getattr(self, name).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__gt__</span></code></p></td>
-<td><p>Return self&gt;value.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#metawards.Node.__init__" title="metawards.Node.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([label, begin_to, end_to, self_w, …])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init_subclass__</span></code></p></td>
-<td><p>This method is called when a class is subclassed.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__le__</span></code></p></td>
-<td><p>Return self&lt;=value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__lt__</span></code></p></td>
-<td><p>Return self&lt;value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ne__</span></code></p></td>
-<td><p>Return self!=value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__new__</span></code></p></td>
-<td><p>Create and return a new object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce__</span></code></p></td>
-<td><p>Helper for pickle.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce_ex__</span></code></p></td>
-<td><p>Helper for pickle.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setattr__</span></code></p></td>
-<td><p>Implement setattr(self, name, value).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__sizeof__</span></code></p></td>
-<td><p>Size of object in memory, in bytes.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code></p></td>
-<td><p>Return str(self).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__subclasshook__</span></code></p></td>
-<td><p>Abstract classes can override this to customize issubclass().</p></td>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Node.__init__" title="metawards.Node.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(label,&nbsp;begin_to,&nbsp;end_to,&nbsp;self_w,&nbsp;…)</td>
+<td></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
+<table border="1" class="longtable docutils">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__annotations__</span></code></p></td>
-<td><p></p></td>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">b</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dataclass_fields__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Node.begin_p" title="metawards.Node.begin_p"><code class="xref py py-obj docutils literal notranslate"><span class="pre">begin_p</span></code></a></td>
+<td>The index (int) of the first link for this node in the network play Links list (play)</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dataclass_params__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Node.begin_to" title="metawards.Node.begin_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">begin_to</span></code></a></td>
+<td>The index (int) of the first link for this node in the network Links list</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dict__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Node.begin_we" title="metawards.Node.begin_we"><code class="xref py py-obj docutils literal notranslate"><span class="pre">begin_we</span></code></a></td>
+<td>The index (int) of the first link for this node in the network weekend Links list</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__doc__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">day_foi</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__hash__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator_d</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__module__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator_n</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__weakref__</span></code></p></td>
-<td><p>list of weak references to the object (if defined)</p></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator_p</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">b</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator_pd</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">begin_p</span></code></p></td>
-<td><p>The index (int) of the first link for this node in the network play Links list (play)</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Node.end_p" title="metawards.Node.end_p"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_p</span></code></a></td>
+<td>The number (int) of links for this node in the Links play list</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">begin_to</span></code></p></td>
-<td><p>The index (int) of the first link for this node in the network Links list</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Node.end_to" title="metawards.Node.end_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_to</span></code></a></td>
+<td>The number (int) of links for this node in the Links list</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">begin_we</span></code></p></td>
-<td><p>The index (int) of the first link for this node in the network weekend Links list</p></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_we</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">day_foi</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Node.id" title="metawards.Node.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a></td>
+<td>the name of the ward, e.g.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator_d</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Node.label" title="metawards.Node.label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">label</span></code></a></td>
+<td>The node’s label (int).</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator_n</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">night_foi</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator_p</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">play_suscept</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">denominator_pd</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_play_suscept</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_p</span></code></p></td>
-<td><p>The number (int) of links for this node in the Links play list</p></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_p</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_to</span></code></p></td>
-<td><p>The number (int) of links for this node in the Links list</p></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_w</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_we</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_we</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></p></td>
-<td><p>the name of the ward, e.g.</p></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">vacid</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">label</span></code></p></td>
-<td><p>The node’s label (int).</p></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">weekend_foi</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">night_foi</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Node.x" title="metawards.Node.x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></a></td>
+<td>x coordinate of the ward (location)</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">play_suscept</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_play_suscept</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_p</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_w</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_we</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">vacid</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">weekend_foi</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></p></td>
-<td><p>x coordinate of the ward (location)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></p></td>
-<td><p>y coordinate of the ward (location)</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Node.y" title="metawards.Node.y"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></a></td>
+<td>y coordinate of the ward (location)</td>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="metawards.Node.begin_p">
+<code class="descname">begin_p</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.begin_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index (int) of the first link for this node in the network
+play Links list (play)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.begin_to">
+<code class="descname">begin_to</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.begin_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index (int) of the first link for this node in the
+network Links list</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.begin_we">
+<code class="descname">begin_we</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.begin_we" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index (int) of the first link for this node in the network
+weekend Links list</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.end_p">
+<code class="descname">end_p</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.end_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number (int) of links for this node in the Links play list</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.end_to">
+<code class="descname">end_to</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.end_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number (int) of links for this node in the Links list</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.id">
+<code class="descname">id</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>the name of the ward, e.g. ‘Bristol’</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.label">
+<code class="descname">label</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>The node’s label (int). This is the index of the node, which must
+run from 1 up to len(nodes). A value of -1 implies a null node</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.x">
+<code class="descname">x</code><em class="property"> = 0.0</em><a class="headerlink" href="#metawards.Node.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>x coordinate of the ward (location)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.y">
+<code class="descname">y</code><em class="property"> = 0.0</em><a class="headerlink" href="#metawards.Node.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>y coordinate of the ward (location)</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -393,14 +375,12 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

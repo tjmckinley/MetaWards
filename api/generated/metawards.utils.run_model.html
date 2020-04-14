@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.utils.run_model &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>metawards.utils.run_model &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="../../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -186,52 +191,49 @@
             
   <div class="section" id="metawards-utils-run-model">
 <h1>metawards.utils.run_model<a class="headerlink" href="#metawards-utils-run-model" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
+<dl class="function">
 <dt id="metawards.utils.run_model">
-<code class="sig-prename descclassname">metawards.utils.</code><code class="sig-name descname">run_model</code><span class="sig-paren">(</span><em class="sig-param">network: Network</em>, <em class="sig-param">infections</em>, <em class="sig-param">play_infections</em>, <em class="sig-param">rngs</em>, <em class="sig-param">s: int</em>, <em class="sig-param">unicode output_dir: str = u'.'</em>, <em class="sig-param">population: Population = Population(initial=57104043)</em>, <em class="sig-param">nsteps: int = None</em>, <em class="sig-param">profile: bool = True</em>, <em class="sig-param">nthreads: int = None</em>, <em class="sig-param">MAXSIZE: int = 10050</em>, <em class="sig-param">VACCINATE: bool = False</em>, <em class="sig-param">IMPORTS: bool = False</em>, <em class="sig-param">EXTRASEEDS: bool = True</em>, <em class="sig-param">WEEKENDS: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">run_model</code><span class="sig-paren">(</span><em>network: Network</em>, <em>infections</em>, <em>play_infections</em>, <em>rngs</em>, <em>s: int</em>, <em>unicode output_dir: str = u'.'</em>, <em>population: Population = Population(initial=57104043)</em>, <em>nsteps: int = None</em>, <em>profile: bool = True</em>, <em>nthreads: int = None</em>, <em>IMPORTS: bool = False</em>, <em>EXTRASEEDS: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Actually run the model… Real work happens here. The model
 will run until completion or until ‘nsteps’ have been
 completed (whichever happens first)</p>
 <blockquote>
-<div><dl class="simple">
-<dt>network: Network</dt><dd><p>The network on which to run the model</p>
-</dd>
-<dt>infections: list</dt><dd><p>The space used to record the infections</p>
-</dd>
-<dt>play_infections: list</dt><dd><p>The space used to record the play infectionss</p>
-</dd>
-<dt>rngs: list</dt><dd><p>The list of random number generators to use, one per thread</p>
-</dd>
-<dt>population: Population</dt><dd><p>The initial population at the start of the model outbreak.
+<div><dl class="docutils">
+<dt>network: Network</dt>
+<dd>The network on which to run the model</dd>
+<dt>infections: list</dt>
+<dd>The space used to record the infections</dd>
+<dt>play_infections: list</dt>
+<dd>The space used to record the play infectionss</dd>
+<dt>rngs: list</dt>
+<dd>The list of random number generators to use, one per thread</dd>
+<dt>population: Population</dt>
+<dd>The initial population at the start of the model outbreak.
 This is also used to set the date and day of the start of
-the model outbreak</p>
-</dd>
-<dt>seed: int</dt><dd><p>The random number seed used for this model run. If this is
-None then a very random random number seed will be used</p>
-</dd>
-<dt>output_dir: str</dt><dd><p>The directory to write all of the output into</p>
-</dd>
-<dt>nsteps: int</dt><dd><p>The maximum number of steps to run in the outbreak. If None
-then run until the outbreak has finished</p>
-</dd>
-<dt>profile: bool</dt><dd><p>Whether or not to profile the model run and print out the
-results</p>
-</dd>
-<dt>s: int</dt><dd><p>Index of the seeding parameter to use</p>
-</dd>
-<dt>nthreads: int</dt><dd><p>Number of threads over which to parallelise this model run</p>
-</dd>
-<dt>MAXSIZE: int</dt><dd><p>The maximum number of nodes that can be loaded - this is needed
-as memory is pre-allocated before reading</p>
-</dd>
-<dt>VACCINATE: bool</dt><dd><p>Whether to use the VACCINATE routines</p>
-</dd>
-<dt>IMPORTS: bool</dt><dd><p>Whether or not to use the IMPORT routines</p>
-</dd>
-<dt>EXTRASEEDS: bool</dt><dd><p>Whether or not to import EXTRASEEDS</p>
-</dd>
-<dt>WEEKENDS: bool</dt><dd><p>Whether or not to treat weekends differently to weekdays</p>
-</dd>
+the model outbreak</dd>
+<dt>seed: int</dt>
+<dd>The random number seed used for this model run. If this is
+None then a very random random number seed will be used</dd>
+<dt>output_dir: str</dt>
+<dd>The directory to write all of the output into</dd>
+<dt>nsteps: int</dt>
+<dd>The maximum number of steps to run in the outbreak. If None
+then run until the outbreak has finished</dd>
+<dt>profile: bool</dt>
+<dd>Whether or not to profile the model run and print out the
+results</dd>
+<dt>s: int</dt>
+<dd>Index of the seeding parameter to use</dd>
+<dt>nthreads: int</dt>
+<dd>Number of threads over which to parallelise this model run</dd>
+<dt>IMPORTS: bool</dt>
+<dd>Whether or not to use the IMPORT routines</dd>
+<dt>EXTRASEEDS: bool</dt>
+<dd>Whether or not to import EXTRASEEDS</dd>
+</dl>
+<dl class="docutils">
+<dt>trajectory: Populations</dt>
+<dd>The trajectory of the population for every day of the model run</dd>
 </dl>
 </div></blockquote>
 </dd></dl>
@@ -258,14 +260,12 @@ as memory is pre-allocated before reading</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

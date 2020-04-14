@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.VariableSet &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>metawards.VariableSet &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="../../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -186,13 +191,13 @@
             
   <div class="section" id="metawards-variableset">
 <h1>metawards.VariableSet<a class="headerlink" href="#metawards-variableset" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
+<dl class="class">
 <dt id="metawards.VariableSet">
-<em class="property">class </em><code class="sig-prename descclassname">metawards.</code><code class="sig-name descname">VariableSet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variables</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">repeat_index</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">names</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">VariableSet</code><span class="sig-paren">(</span><em>variables: Dict[str</em>, <em>float] = None</em>, <em>repeat_index: int = 1</em>, <em>names: List[str] = None</em>, <em>values: List[float] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class holds a single set of adjustable variables that
 are used to adjust the variables as part of a model run</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;beta[1]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.95</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;beta[2]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">())</span>
@@ -205,24 +210,28 @@ are used to adjust the variables as part of a model run</p>
 <span class="go">0.95 0.9</span>
 </pre></div>
 </div>
-<dl class="py method">
+<dl class="method">
 <dt id="metawards.VariableSet.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variables</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">repeat_index</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">names</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>variables: Dict[str</em>, <em>float] = None</em>, <em>repeat_index: int = 1</em>, <em>names: List[str] = None</em>, <em>values: List[float] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a new VariableSet from the passed adjusted variable
 values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The list of the names of the variables to adjust</p></li>
-<li><p><strong>values</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – The values of the variables to adjust (same order as names)</p></li>
-<li><p><strong>variables</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – names and values of variables to adjust passed as a dictionary</p></li>
-<li><p><strong>repeat_index</strong> (<em>int</em>) – the index used to distinguish different repeats of the same
-VariableSet from one another</p></li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The list of the names of the variables to adjust</li>
+<li><strong>values</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – The values of the variables to adjust (same order as names)</li>
+<li><strong>variables</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – names and values of variables to adjust passed as a dictionary</li>
+<li><strong>repeat_index</strong> (<em>int</em>) – the index used to distinguish different repeats of the same
+VariableSet from one another</li>
 </ul>
-</dd>
-</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;beta[1]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.95</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;beta[2]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">())</span>
@@ -232,131 +241,198 @@ VariableSet from one another</p></li>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
+<table border="1" class="longtable docutils">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delattr__</span></code></p></td>
-<td><p>Implement delattr(self, name).</p></td>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.__init__" title="metawards.VariableSet.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(variables,&nbsp;float]&nbsp;=&nbsp;None,&nbsp;…)</td>
+<td>Construct a new VariableSet from the passed adjusted variable values.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code></p></td>
-<td><p>Default dir() implementation.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.adjust" title="metawards.VariableSet.adjust"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjust</span></code></a>(params)</td>
+<td>Use the variables in this set to adjust the passed parameters.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code>(other)</p></td>
-<td><p>Return self==value.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.fingerprint" title="metawards.VariableSet.fingerprint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fingerprint</span></code></a>(include_index)</td>
+<td>Return a fingerprint for this VariableSet.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__format__</span></code></p></td>
-<td><p>Default object formatter.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.make_compatible_with" title="metawards.VariableSet.make_compatible_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_compatible_with</span></code></a>(other)</td>
+<td>Return a copy of this VariableSet which has been made compatible with ‘other’.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ge__</span></code></p></td>
-<td><p>Return self&gt;=value.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.repeat_index" title="metawards.VariableSet.repeat_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_index</span></code></a>()</td>
+<td>Return the repeat index of this set.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getattribute__</span></code></p></td>
-<td><p>Return getattr(self, name).</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.variable_names" title="metawards.VariableSet.variable_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_names</span></code></a>()</td>
+<td>Return the names of the variables that will be adjusted by this VariableSet</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(key)</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.variable_values" title="metawards.VariableSet.variable_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_values</span></code></a>()</td>
+<td>Return the values that the variables will be adjusted to.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__gt__</span></code></p></td>
-<td><p>Return self&gt;value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#metawards.VariableSet.__init__" title="metawards.VariableSet.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([variables, repeat_index, names, …])</p></td>
-<td><p>Construct a new VariableSet from the passed adjusted variable values.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init_subclass__</span></code></p></td>
-<td><p>This method is called when a class is subclassed.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__le__</span></code></p></td>
-<td><p>Return self&lt;=value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__lt__</span></code></p></td>
-<td><p>Return self&lt;value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ne__</span></code></p></td>
-<td><p>Return self!=value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__new__</span></code></p></td>
-<td><p>Create and return a new object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce__</span></code></p></td>
-<td><p>Helper for pickle.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce_ex__</span></code></p></td>
-<td><p>Helper for pickle.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
-<td><p>Return repr(self).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setattr__</span></code></p></td>
-<td><p>Implement setattr(self, name, value).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setitem__</span></code>(key, value)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__sizeof__</span></code></p></td>
-<td><p>Size of object in memory, in bytes.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code>()</p></td>
-<td><p>Return a printable representation of the variables to be adjusted</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__subclasshook__</span></code></p></td>
-<td><p>Abstract classes can override this to customize issubclass().</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_add</span></code>(name, value)</p></td>
-<td><p>Internal function to add a new variable called ‘name’ to be varied - it will be set equal to ‘value’</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjust</span></code>(params)</p></td>
-<td><p>Use the variables in this set to adjust the passed parameters.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fingerprint</span></code>([include_index])</p></td>
-<td><p>Return a fingerprint for this VariableSet.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_compatible_with</span></code>(other)</p></td>
-<td><p>Return a copy of this VariableSet which has been made compatible with ‘other’.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_index</span></code>()</p></td>
-<td><p>Return the repeat index of this set.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_names</span></code>()</p></td>
-<td><p>Return the names of the variables that will be adjusted by this VariableSet</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_values</span></code>()</p></td>
-<td><p>Return the values that the variables will be adjusted to.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">variables</span></code>()</p></td>
-<td><p>Return the variables (name and values) to be adjusted</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.variables" title="metawards.VariableSet.variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variables</span></code></a>()</td>
+<td>Return the variables (name and values) to be adjusted</td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dict__</span></code></p></td>
-<td><p></p></td>
+<dl class="method">
+<dt id="metawards.VariableSet.adjust">
+<code class="descname">adjust</code><span class="sig-paren">(</span><em>params</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.adjust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.adjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use the variables in this set to adjust the passed parameters.
+Note that this directly modifies ‘params’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> (<a class="reference internal" href="metawards.Parameters.html#metawards.Parameters" title="metawards.Parameters"><em>Parameters</em></a>) – The parameters whose variables will be adjusted</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__doc__</span></code></p></td>
-<td><p></p></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__hash__</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__module__</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__weakref__</span></code></p></td>
-<td><p>list of weak references to the object (if defined)</p></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;beta[1]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.95</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;beta[2]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">())</span>
+<span class="go">(beta[1]=0.95, beta[2]=0.9)[repeat 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">Parameters</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">set_disease</span><span class="p">(</span><span class="s2">&quot;ncov&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>      <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="go">0.95 0.9</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.fingerprint">
+<code class="descname">fingerprint</code><span class="sig-paren">(</span><em>include_index: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.fingerprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.fingerprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a fingerprint for this VariableSet. This can be
+used to quickly identify and distinguish the values of
+the variables in this set from the values in other
+VariableSets which have the same adjustable variables,
+but different parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>include_index</strong> (<em>bool</em>) – Whether or not to include the repeat_index in the fingerprint</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>fingerprint</strong> – The fingerprint for this VariableSet</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.make_compatible_with">
+<code class="descname">make_compatible_with</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.make_compatible_with"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.make_compatible_with" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of this VariableSet which has been made
+compatible with ‘other’. This means that it will change
+the same variables as ‘other’, e.g. by adding ‘None’
+changes for missing variables. This will raise an error
+if it is not possible to make this set compatible</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<a class="reference internal" href="#metawards.VariableSet" title="metawards.VariableSet"><em>VariableSet</em></a>) – The passed VariableSet for which this should be made compatible</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>result</strong> – A copy of this VariableSet which is now compatible with ‘other’</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#metawards.VariableSet" title="metawards.VariableSet">VariableSet</a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span><span class="p">[</span><span class="s2">&quot;beta1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span><span class="p">[</span><span class="s2">&quot;beta2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span><span class="p">[</span><span class="s2">&quot;beta1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v2</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">make_compatible_with</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+<span class="go">(beta1=0.6, beta2=0.8)[repeat 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.repeat_index">
+<code class="descname">repeat_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.repeat_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.repeat_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the repeat index of this set. The repeat index is the
+ID of this set if the VariableSet is repeated. The index should
+range from 1 to nrepeats</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>index</strong> – The repeat index of this set</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.variable_names">
+<code class="descname">variable_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.variable_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.variable_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the names of the variables that will be adjusted
+by this VariableSet</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>names</strong> – The list of names of variables to be adjusted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">List[str]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.variable_values">
+<code class="descname">variable_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.variable_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.variable_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the values that the variables will be adjusted to.
+Note that ‘None’ means that the variable won’t be adjusted
+from its default (original) value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>values</strong> – The list of values for variables to be adjusted to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">List[float]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.variables">
+<code class="descname">variables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the variables (name and values) to be adjusted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>variables</strong> – The dictionary mapping the names of the variables that
+with be adjusted to their desired values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Dict[str, float]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -381,14 +457,12 @@ VariableSet from one another</p></li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

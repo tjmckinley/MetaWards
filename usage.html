@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>Usage &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -250,58 +255,58 @@ typing;</p>
 The most used and thus most important options are given first. These
 are;</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--input</span></code> : Specify the input file adjustable parameters that will be
+<li><code class="docutils literal notranslate"><span class="pre">--input</span></code> : Specify the input file adjustable parameters that will be
 explored for the model run. You must supply an input file to be
-able to run a model. This file is described below.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--line</span></code> : Specify the line number (or line numbers) of adjustable
+able to run a model. This file is described below.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--line</span></code> : Specify the line number (or line numbers) of adjustable
 parameter sets from the input file. Line numbers are counted from 0, and
 multiple line numbers can be given, e.g. <code class="docutils literal notranslate"><span class="pre">--line</span> <span class="pre">3,</span> <span class="pre">5,</span> <span class="pre">7-10</span></code> will
 read from lines 3, 5, 7, 8, 9, and 10 (remembering that the first line
 of the file is line 0). If multiple lines are read, then multiple model
-runs will be performed.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--repeats</span></code> : specify the number of times model runs for each
+runs will be performed.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--repeats</span></code> : specify the number of times model runs for each
 adjustable parameter set should be repeated. MetaWards model runs
 are stochastic, based on random numbers. The results for multiple
-runs must thus be processed to derive meaning.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--additional</span></code> : specify the file (or files) containing additional
+runs must thus be processed to derive meaning.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--additional</span></code> : specify the file (or files) containing additional
 seeds. These files are described in <a class="reference external" href="model_data.html">Model data</a>.
 You can specify as many or few files as you wish. If the file exists
 in your path then that will be used. Otherwise the file will be
-searched for from the <code class="docutils literal notranslate"><span class="pre">MetaWardsData/extra_seeds</span></code> directory.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--output</span></code> : specify the location to place all output files. By default
+searched for from the <code class="docutils literal notranslate"><span class="pre">MetaWardsData/extra_seeds</span></code> directory.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--output</span></code> : specify the location to place all output files. By default
 this will be in a new directory called <code class="docutils literal notranslate"><span class="pre">output</span></code>. A description of the
-output files is below.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--seed</span></code> : specify the random number seed to use for a run. By default
+output files is below.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--seed</span></code> : specify the random number seed to use for a run. By default
 a truly random seed will be used. This will be printed into the output,
 so that you can use it together with this option to reproduce a run.
 The same version of <code class="docutils literal notranslate"><span class="pre">metawards</span></code> will reproduce the same output when
 given the same input, same random number seed, and run over the
-same number of threads.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--start-date</span></code> : specify the date of <em>day zero</em> of the model outbreak.
+same number of threads.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--start-date</span></code> : specify the date of <em>day zero</em> of the model outbreak.
 If this isn’t specified then this defaults to the current date. This
 recognises any date that is understood by
 <a class="reference external" href="https://dateparser.readthedocs.io/en/latest/#usage">dateparser</a>,
 which includes dates like <em>today</em>, <em>tomorrow</em>, <em>Monday</em>, <em>Jan 2020</em> etc.
 The start date is used to trigger events based on day of week or
-date within a model outbreak (e.g. is the day a weekend)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--start-day</span></code> : specify the day of the outbreak, e.g. the default
+date within a model outbreak (e.g. is the day a weekend)</li>
+<li><code class="docutils literal notranslate"><span class="pre">--start-day</span></code> : specify the day of the outbreak, e.g. the default
 is <code class="docutils literal notranslate"><span class="pre">0</span></code> for <em>day zero</em>. This is useful if you want to start the
 model run from a later day than the start date. Note that the
 start date passed via <code class="docutils literal notranslate"><span class="pre">--start-date</span></code> is the date of <em>day zero</em>,
 so the first day modelled will be <code class="docutils literal notranslate"><span class="pre">--start-day</span></code> days
-after <code class="docutils literal notranslate"><span class="pre">--start-date</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--nthreads</span></code> : specify the number of threads over which to perform a
+after <code class="docutils literal notranslate"><span class="pre">--start-date</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--nthreads</span></code> : specify the number of threads over which to perform a
 model run. The sequence of random numbers drawn in parallel is
 deterministic for a given number of threads, but will be different
 for different numbers of threads. This is why you can only reproduce
 a model run using a combination of the same random number seed and
 same number of threads. The number of threads used for a model run
-is written into the output.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--nprocs</span></code> : specify the number of processes over which you want
+is written into the output.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--nprocs</span></code> : specify the number of processes over which you want
 to parallelise the model runs. This is useful if you have multiple
 processors on your computer and you are running multiple model runs.
 Note that this option is set automatically for you if you are
-<a class="reference external" href="cluster_usage.html">running on a cluster</a>.</p></li>
+<a class="reference external" href="cluster_usage.html">running on a cluster</a>.</li>
 </ul>
 <p>Using these options, a typical <code class="docutils literal notranslate"><span class="pre">metawards</span></code> run can be performed
 using;</p>
@@ -359,11 +364,11 @@ to the screen, e.g.</p>
 whether they become infected, and then progress through the outbreak.
 The codes mean;</p>
 <ul class="simple">
-<li><p><em class="xref py py-obj">S</em> : number who are susceptible to infection (and not infected)</p></li>
-<li><p><em class="xref py py-obj">E</em> : number who are infected but not yet infectious (latent)</p></li>
-<li><p><em class="xref py py-obj">I</em> : number who are infected, infectious and mildly symptomatic</p></li>
-<li><p><em class="xref py py-obj">IW</em> : number who are infected, infectious and symptomatic</p></li>
-<li><p><em class="xref py py-obj">R</em> : number who are recovered from the infection and thus immune</p></li>
+<li><em class="xref py py-obj">S</em> : number who are susceptible to infection (and not infected)</li>
+<li><em class="xref py py-obj">E</em> : number who are infected but not yet infectious (latent)</li>
+<li><em class="xref py py-obj">I</em> : number who are infected, infectious and mildly symptomatic</li>
+<li><em class="xref py py-obj">IW</em> : number who are infected, infectious and symptomatic</li>
+<li><em class="xref py py-obj">R</em> : number who are recovered from the infection and thus immune</li>
 </ul>
 <p>As well as being printed to the screen, this data is also written
 to the CSV file <code class="docutils literal notranslate"><span class="pre">output/results.csv.bz2</span></code> for easy reading and analysis
@@ -406,14 +411,12 @@ file for easy combined analysis.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

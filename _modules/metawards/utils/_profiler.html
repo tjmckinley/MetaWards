@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.utils._profiler &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>metawards.utils._profiler &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -51,6 +53,9 @@
             <a href="../../../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../../../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -201,9 +206,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-    <span class="k">def</span> <span class="nf">is_null</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="Profiler.is_null"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.is_null">[docs]</a>    <span class="k">def</span> <span class="nf">is_null</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return whether this is a null profiler&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
     <span class="k">def</span> <span class="nf">_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Used to write the results of profiling as a report&quot;&quot;&quot;</span>
@@ -245,11 +250,11 @@
         <span class="sd">&quot;&quot;&quot;Return the results of profiling as a report&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_string</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="Profiler.name"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return the name of this profiler&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span></div>
 
-    <span class="k">def</span> <span class="nf">child_total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="Profiler.child_total"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.child_total">[docs]</a>    <span class="k">def</span> <span class="nf">child_total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return the sum of time spent in the child profilers&quot;&quot;&quot;</span>
         <span class="nb">sum</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -262,9 +267,9 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="nb">sum</span> <span class="o">+=</span> <span class="n">t</span>
 
-        <span class="k">return</span> <span class="nb">sum</span>
+        <span class="k">return</span> <span class="nb">sum</span></div>
 
-    <span class="k">def</span> <span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="Profiler.total"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.total">[docs]</a>    <span class="k">def</span> <span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return the amount of time that was recorded for this</span>
 <span class="sd">           profiler in milliseconds (accurate to ~nanoseconds)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -274,9 +279,9 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_end</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.000001</span>  <span class="c1"># ns to ms</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
 
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="Profiler.start"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Start profiling the section called &#39;name&#39;. This</span>
 <span class="sd">           returns the updated profiler, e.g.</span>
 
@@ -294,9 +299,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
         <span class="n">p</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time_ns</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">p</span>
+        <span class="k">return</span> <span class="n">p</span></div>
 
-    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Profiler.stop"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Stop profiling. This records the end time</span>
 <span class="sd">           and returns the parent profiler (if we have one)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -315,7 +320,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># no parent - just return this profiler</span>
-            <span class="k">return</span> <span class="bp">self</span></div>
+            <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
 
            </div>
@@ -328,14 +333,12 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

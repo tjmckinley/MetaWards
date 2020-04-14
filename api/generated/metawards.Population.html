@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.Population &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>metawards.Population &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="../../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -186,145 +191,114 @@
             
   <div class="section" id="metawards-population">
 <h1>metawards.Population<a class="headerlink" href="#metawards-population" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
+<dl class="class">
 <dt id="metawards.Population">
-<em class="property">class </em><code class="sig-prename descclassname">metawards.</code><code class="sig-name descname">Population</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">susceptibles</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">latent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">total</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">recovereds</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">n_inf_wards</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">day</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">date</span><span class="p">:</span> <span class="n">datetime.date</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_population.html#Population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Population" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Population</code><span class="sig-paren">(</span><em>initial: int = 0</em>, <em>susceptibles: int = 0</em>, <em>latent: int = 0</em>, <em>total: int = 0</em>, <em>recovereds: int = 0</em>, <em>n_inf_wards: int = 0</em>, <em>day: int = 0</em>, <em>date: datetime.date = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_population.html#Population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Population" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class holds information about the progress of the
 disease through the population</p>
-<dl class="py method">
+<dl class="method">
 <dt id="metawards.Population.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">susceptibles</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">latent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">total</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">recovereds</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">n_inf_wards</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">day</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">date</span><span class="p">:</span> <span class="n">datetime.date</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Population.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>initial: int = 0</em>, <em>susceptibles: int = 0</em>, <em>latent: int = 0</em>, <em>total: int = 0</em>, <em>recovereds: int = 0</em>, <em>n_inf_wards: int = 0</em>, <em>day: int = 0</em>, <em>date: datetime.date = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Population.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
+<table border="1" class="longtable docutils">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delattr__</span></code></p></td>
-<td><p>Implement delattr(self, name).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code></p></td>
-<td><p>Default dir() implementation.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code>(other)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__format__</span></code></p></td>
-<td><p>Default object formatter.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ge__</span></code></p></td>
-<td><p>Return self&gt;=value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getattribute__</span></code></p></td>
-<td><p>Return getattr(self, name).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__gt__</span></code></p></td>
-<td><p>Return self&gt;value.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#metawards.Population.__init__" title="metawards.Population.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([initial, susceptibles, latent, …])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init_subclass__</span></code></p></td>
-<td><p>This method is called when a class is subclassed.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__le__</span></code></p></td>
-<td><p>Return self&lt;=value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__lt__</span></code></p></td>
-<td><p>Return self&lt;value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__ne__</span></code></p></td>
-<td><p>Return self!=value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__new__</span></code></p></td>
-<td><p>Create and return a new object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce__</span></code></p></td>
-<td><p>Helper for pickle.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce_ex__</span></code></p></td>
-<td><p>Helper for pickle.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setattr__</span></code></p></td>
-<td><p>Implement setattr(self, name, value).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__sizeof__</span></code></p></td>
-<td><p>Size of object in memory, in bytes.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code>()</p></td>
-<td><p>Return str(self).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__subclasshook__</span></code></p></td>
-<td><p>Abstract classes can override this to customize issubclass().</p></td>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Population.__init__" title="metawards.Population.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(initial,&nbsp;susceptibles,&nbsp;latent,&nbsp;…)</td>
+<td></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
+<table border="1" class="longtable docutils">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__annotations__</span></code></p></td>
-<td><p></p></td>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Population.date" title="metawards.Population.date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">date</span></code></a></td>
+<td>The date in the outbreak of this record</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dataclass_fields__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Population.day" title="metawards.Population.day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">day</span></code></a></td>
+<td>The day in the outbreak of this record (e.g.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dataclass_params__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Population.initial" title="metawards.Population.initial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initial</span></code></a></td>
+<td>The initial population loaded into the model</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dict__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Population.latent" title="metawards.Population.latent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">latent</span></code></a></td>
+<td>The number of latent infections</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__doc__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Population.n_inf_wards" title="metawards.Population.n_inf_wards"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_inf_wards</span></code></a></td>
+<td>The number infected in all wards</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__hash__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">population</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__module__</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Population.recovereds" title="metawards.Population.recovereds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recovereds</span></code></a></td>
+<td>The total number who are removed from the outbreak, either because they have recovered, or are otherwise no longer able to be infected</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__weakref__</span></code></p></td>
-<td><p>list of weak references to the object (if defined)</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Population.susceptibles" title="metawards.Population.susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">susceptibles</span></code></a></td>
+<td>The number of members who could be infected</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">date</span></code></p></td>
-<td><p>The date in the outbreak of this record</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">day</span></code></p></td>
-<td><p>The day in the outbreak of this record (e.g.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">initial</span></code></p></td>
-<td><p>The initial population loaded into the model</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">latent</span></code></p></td>
-<td><p>The number of latent infections</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_inf_wards</span></code></p></td>
-<td><p>The number infected in all wards</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">population</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">recovereds</span></code></p></td>
-<td><p>The total number who are removed from the outbreak, either because they have recovered, or are otherwise no longer able to be infected</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">susceptibles</span></code></p></td>
-<td><p>The number of members who could be infected</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">total</span></code></p></td>
-<td><p>The total number of infections</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Population.total" title="metawards.Population.total"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total</span></code></a></td>
+<td>The total number of infections</td>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="metawards.Population.date">
+<code class="descname">date</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Population.date" title="Permalink to this definition">¶</a></dt>
+<dd><p>The date in the outbreak of this record</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Population.day">
+<code class="descname">day</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.day" title="Permalink to this definition">¶</a></dt>
+<dd><p>The day in the outbreak of this record (e.g. day 0, day 10 etc.)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Population.initial">
+<code class="descname">initial</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.initial" title="Permalink to this definition">¶</a></dt>
+<dd><p>The initial population loaded into the model</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Population.latent">
+<code class="descname">latent</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.latent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of latent infections</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Population.n_inf_wards">
+<code class="descname">n_inf_wards</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.n_inf_wards" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number infected in all wards</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Population.recovereds">
+<code class="descname">recovereds</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.recovereds" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number who are removed from the outbreak,
+either because they have recovered, or are otherwise
+no longer able to be infected</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Population.susceptibles">
+<code class="descname">susceptibles</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.susceptibles" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of members who could be infected</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Population.total">
+<code class="descname">total</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.total" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number of infections</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -349,14 +323,12 @@ disease through the population</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

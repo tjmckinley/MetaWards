@@ -13,26 +13,7 @@ metawards.Network
 
    .. autosummary::
    
-      ~Network.__delattr__
-      ~Network.__dir__
-      ~Network.__eq__
-      ~Network.__format__
-      ~Network.__ge__
-      ~Network.__getattribute__
-      ~Network.__gt__
       ~Network.__init__
-      ~Network.__init_subclass__
-      ~Network.__le__
-      ~Network.__lt__
-      ~Network.__ne__
-      ~Network.__new__
-      ~Network.__reduce__
-      ~Network.__reduce_ex__
-      ~Network.__repr__
-      ~Network.__setattr__
-      ~Network.__sizeof__
-      ~Network.__str__
-      ~Network.__subclasshook__
       ~Network.add_distances
       ~Network.assert_sane
       ~Network.build
@@ -53,14 +34,6 @@ metawards.Network
 
    .. autosummary::
    
-      ~Network.__annotations__
-      ~Network.__dataclass_fields__
-      ~Network.__dataclass_params__
-      ~Network.__dict__
-      ~Network.__doc__
-      ~Network.__hash__
-      ~Network.__module__
-      ~Network.__weakref__
       ~Network.max_links
       ~Network.max_nodes
       ~Network.nlinks

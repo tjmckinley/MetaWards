@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MetaWards.app &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>MetaWards.app &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -182,19 +187,21 @@
 <code class="docutils literal notranslate"><span class="pre">metawards</span></code> command line application.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">metawards</span></code> command line application will automatically run itself
 in one of three modes;</p>
-<dl>
-<dt>main</dt><dd><p>This is the default mode, and is used when you normally run metawards
+<dl class="docutils">
+<dt>main</dt>
+<dd><p class="first">This is the default mode, and is used when you normally run metawards
 to perform calculations using a single computer. Key functions that are
 used in <code class="docutils literal notranslate"><span class="pre">main</span></code> mode are;</p>
 <ul class="simple">
-<li><p><a class="reference external" href="generated/metawards.app.cli.html">cli</a>: The main command line interface</p></li>
-<li><p><a class="reference external" href="generated/metawards.app.parse_args.html">parse_args</a>: Parse command line arguments</p></li>
+<li><a class="reference external" href="generated/metawards.app.cli.html">cli</a>: The main command line interface</li>
+<li><a class="reference external" href="generated/metawards.app.parse_args.html">parse_args</a>: Parse command line arguments</li>
 </ul>
-<p>This mode is used to run either single model runs, or to run multiple
+<p class="last">This mode is used to run either single model runs, or to run multiple
 runs in parallel on the same computer via a
 <a class="reference external" href="https://docs.python.org/3.4/library/multiprocessing.html?highlight=process#using-a-pool-of-workers">multiprocessing pool</a>.</p>
 </dd>
-<dt>worker</dt><dd><p>This is the mode used when <code class="docutils literal notranslate"><span class="pre">metawards</span></code> detects that it should be
+<dt>worker</dt>
+<dd><p class="first">This is the mode used when <code class="docutils literal notranslate"><span class="pre">metawards</span></code> detects that it should be
 running as a worker process as part of a simulation run on a large
 cluster. If this is the case, then the application will go to sleep
 until it is called upon as part of a parallel run on multiple
@@ -206,11 +213,12 @@ or an
 used based on which of these modules have been loaded via the
 <code class="docutils literal notranslate"><span class="pre">-m</span> <span class="pre">scoop</span></code> or <code class="docutils literal notranslate"><span class="pre">-m</span> <span class="pre">mpi4py</span></code> command line injector.</p>
 <p>The key function used in <code class="docutils literal notranslate"><span class="pre">worker</span></code> mode is;</p>
-<ul class="simple">
-<li><p><a class="reference external" href="generated/metawards.app.get_parallel_scheme.html">get_parallel_scheme</a> : Auto-detect scoop or mpi4py</p></li>
+<ul class="last simple">
+<li><a class="reference external" href="generated/metawards.app.get_parallel_scheme.html">get_parallel_scheme</a> : Auto-detect scoop or mpi4py</li>
 </ul>
 </dd>
-<dt>supervisor</dt><dd><p>This is the mode used when <code class="docutils literal notranslate"><span class="pre">metawards</span></code> detects that it is being
+<dt>supervisor</dt>
+<dd><p class="first">This is the mode used when <code class="docutils literal notranslate"><span class="pre">metawards</span></code> detects that it is being
 run across multiple computer nodes in a cluster. This is detected
 automatically via environment variables from common queueing systems
 that supply a <code class="docutils literal notranslate"><span class="pre">hostfile</span></code>, or by manually specifying a
@@ -222,12 +230,12 @@ user specifies, which modules are installed, or automatically
 choosing in the order scoop &gt; mpi4py (this order is simply because
 MPI is more error-prone to use automatically).</p>
 <p>Key functions used in <code class="docutils literal notranslate"><span class="pre">supervisor</span></code> mode are;</p>
-<ul class="simple">
-<li><p><a class="reference external" href="generated/metawards.app.get_hostfile.html">get_hostfile</a> : Get the hostfile</p></li>
-<li><p><a class="reference external" href="generated/metawards.app.get_cores_per_node.html">get_cores_per_node</a> : Work out the number of cores per compute node</p></li>
-<li><p><a class="reference external" href="generated/metawards.app.get_threads_per_task.html">get_threads_per_task</a>: Work out the number of threads per model run</p></li>
-<li><p><a class="reference external" href="generated/metawards.app.scoop_supervisor.html">scoop_supervisor</a> : Run a scoop supervisor to start and manage jobs</p></li>
-<li><p><a class="reference external" href="generated/metawards.app.mpi_supervisor.html">mpi_supervisor</a> : Run a mpi4py supervisor to start and manage jobs</p></li>
+<ul class="last simple">
+<li><a class="reference external" href="generated/metawards.app.get_hostfile.html">get_hostfile</a> : Get the hostfile</li>
+<li><a class="reference external" href="generated/metawards.app.get_cores_per_node.html">get_cores_per_node</a> : Work out the number of cores per compute node</li>
+<li><a class="reference external" href="generated/metawards.app.get_threads_per_task.html">get_threads_per_task</a>: Work out the number of threads per model run</li>
+<li><a class="reference external" href="generated/metawards.app.scoop_supervisor.html">scoop_supervisor</a> : Run a scoop supervisor to start and manage jobs</li>
+<li><a class="reference external" href="generated/metawards.app.mpi_supervisor.html">mpi_supervisor</a> : Run a mpi4py supervisor to start and manage jobs</li>
 </ul>
 </dd>
 </dl>
@@ -260,14 +268,12 @@ described <a class="reference external" href="index_api_MetaWards_app.html">in m
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

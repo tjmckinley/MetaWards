@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.app.cli &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>metawards.app.cli &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="../../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -185,19 +190,19 @@
             
   <div class="section" id="metawards-app-cli">
 <h1>metawards.app.cli<a class="headerlink" href="#metawards-app-cli" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
+<dl class="function">
 <dt id="metawards.app.cli">
-<code class="sig-prename descclassname">metawards.app.</code><code class="sig-name descname">cli</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/app/run.html#cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.app.cli" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.app.</code><code class="descname">cli</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/app/run.html#cli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.app.cli" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main function for the command line interface. This does one of three
 things:</p>
 <ol class="arabic simple">
-<li><p>If this is the main process, then it parses the arguments and
-runs and manages the jobs</p></li>
-<li><p>If this is a worker process, then it starts up and waits for work</p></li>
-<li><p>If this is a supervisor process, then it query the job scheduling
+<li>If this is the main process, then it parses the arguments and
+runs and manages the jobs</li>
+<li>If this is a worker process, then it starts up and waits for work</li>
+<li>If this is a supervisor process, then it query the job scheduling
 system for information about the compute nodes to use, and will then
 set up and run a manager (main) process that will use those
-nodes to run the jobs</p></li>
+nodes to run the jobs</li>
 </ol>
 </dd></dl>
 
@@ -223,14 +228,12 @@ nodes to run the jobs</p></li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

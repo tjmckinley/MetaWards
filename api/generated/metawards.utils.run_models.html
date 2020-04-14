@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.utils.run_models &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>metawards.utils.run_models &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="../../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -186,34 +191,38 @@
             
   <div class="section" id="metawards-utils-run-models">
 <h1>metawards.utils.run_models<a class="headerlink" href="#metawards-utils-run-models" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
+<dl class="function">
 <dt id="metawards.utils.run_models">
-<code class="sig-prename descclassname">metawards.utils.</code><code class="sig-name descname">run_models</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">metawards._network.Network</span></em>, <em class="sig-param"><span class="n">variables</span><span class="p">:</span> <span class="n">metawards._variableset.VariableSets</span></em>, <em class="sig-param"><span class="n">population</span><span class="p">:</span> <span class="n">metawards._population.Population</span></em>, <em class="sig-param"><span class="n">nprocs</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">nthreads</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">nsteps</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">output_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">profile</span><span class="p">:</span> <span class="n">bool</span></em>, <em class="sig-param"><span class="n">parallel_scheme</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_runner.html#run_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_models" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">run_models</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>variables: metawards._variableset.VariableSets</em>, <em>population: metawards._population.Population</em>, <em>nprocs: int</em>, <em>nthreads: int</em>, <em>seed: int</em>, <em>nsteps: int</em>, <em>output_dir: str</em>, <em>profile: bool</em>, <em>parallel_scheme: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_runner.html#run_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_models" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run all of the models on the passed Network that are described
 by the passed VariableSets</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>network</strong> (<a class="reference internal" href="metawards.Network.html#metawards.Network" title="metawards.Network"><em>Network</em></a>) – The network to model</p></li>
-<li><p><strong>variables</strong> (<a class="reference internal" href="metawards.VariableSets.html#metawards.VariableSets" title="metawards.VariableSets"><em>VariableSets</em></a>) – The sets of VariableSet that represent all of the model
-runs to perform</p></li>
-<li><p><strong>population</strong> (<a class="reference internal" href="metawards.Population.html#metawards.Population" title="metawards.Population"><em>Population</em></a>) – The initial population for all of the model runs. This also
-contains the starting date and day for the model outbreak</p></li>
-<li><p><strong>nprocs</strong> (<em>int</em>) – The number of model runs to perform in parallel</p></li>
-<li><p><strong>nthreads</strong> (<em>int</em>) – The number of threads to parallelise each model run over</p></li>
-<li><p><strong>seed</strong> (<em>int</em>) – Random number seed which is used to generate random seeds
-for all model runs</p></li>
-<li><p><strong>nsteps</strong> (<em>int</em>) – The maximum number of steps to perform for each model - this
-will run until the outbreak is over if this is None</p></li>
-<li><p><strong>output_dir</strong> (<em>str</em>) – The directory that should contain all output - this will be
-created if it doesn’t exist</p></li>
-<li><p><strong>profile</strong> (<em>bool</em>) – Whether or not to profile the model run and print out live
-timing (useful for performance debugging)</p></li>
-<li><p><strong>parallel_scheme</strong> (<em>str</em>) – Which parallel scheme (multiprocessing, mpi4py or scoop) to use
-to run multiple model runs in parallel</p></li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>network</strong> (<a class="reference internal" href="metawards.Network.html#metawards.Network" title="metawards.Network"><em>Network</em></a>) – The network to model</li>
+<li><strong>variables</strong> (<a class="reference internal" href="metawards.VariableSets.html#metawards.VariableSets" title="metawards.VariableSets"><em>VariableSets</em></a>) – The sets of VariableSet that represent all of the model
+runs to perform</li>
+<li><strong>population</strong> (<a class="reference internal" href="metawards.Population.html#metawards.Population" title="metawards.Population"><em>Population</em></a>) – The initial population for all of the model runs. This also
+contains the starting date and day for the model outbreak</li>
+<li><strong>nprocs</strong> (<em>int</em>) – The number of model runs to perform in parallel</li>
+<li><strong>nthreads</strong> (<em>int</em>) – The number of threads to parallelise each model run over</li>
+<li><strong>seed</strong> (<em>int</em>) – Random number seed which is used to generate random seeds
+for all model runs</li>
+<li><strong>nsteps</strong> (<em>int</em>) – The maximum number of steps to perform for each model - this
+will run until the outbreak is over if this is None</li>
+<li><strong>output_dir</strong> (<em>str</em>) – The directory that should contain all output - this will be
+created if it doesn’t exist</li>
+<li><strong>profile</strong> (<em>bool</em>) – Whether or not to profile the model run and print out live
+timing (useful for performance debugging)</li>
+<li><strong>parallel_scheme</strong> (<em>str</em>) – Which parallel scheme (multiprocessing, mpi4py or scoop) to use
+to run multiple model runs in parallel</li>
 </ul>
-</dd>
-</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -238,14 +247,12 @@ to run multiple model runs in parallel</p></li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 

@@ -8,10 +8,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.utils.build_wards_network &mdash; MetaWards 0+untagged.1.gb6cec84 documentation</title>
+  <title>metawards.utils.build_wards_network &mdash; MetaWards Documentation</title>
   
 
   
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   
   
   
@@ -21,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -53,6 +55,9 @@
             <a href="../../index.html" class="icon icon-home"> MetaWards
           
 
+          
+            
+            <img src="../../_static/logo.jpg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -186,24 +191,23 @@
             
   <div class="section" id="metawards-utils-build-wards-network">
 <h1>metawards.utils.build_wards_network<a class="headerlink" href="#metawards-utils-build-wards-network" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
+<dl class="function">
 <dt id="metawards.utils.build_wards_network">
-<code class="sig-prename descclassname">metawards.utils.</code><code class="sig-name descname">build_wards_network</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span></em>, <em class="sig-param"><span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_nodes</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10050</span></em>, <em class="sig-param"><span class="n">max_links</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2414000</span></em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.build_wards_network" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">build_wards_network</code><span class="sig-paren">(</span><em>params: Parameters</em>, <em>profiler: Profiler = None</em>, <em>max_nodes: int = 10050</em>, <em>max_links: int = 2414000</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.build_wards_network" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a network of wards using the information provided in
 the file specified in parameters.input_files.work.</p>
 <p>The format of this should be:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Node_1 Node_2 weight 1-2</p></li>
-<li><p>Node_3 Node_4 weight 3-4</p></li>
-<li><p>Node_4 Node_1 weight 4-1</p></li>
-<li><p>Node_2 Node_1 weight 2-1</p></li>
-<li><p>…</p></li>
+<li>Node_1 Node_2 weight 1-2</li>
+<li>Node_3 Node_4 weight 3-4</li>
+<li>Node_4 Node_1 weight 4-1</li>
+<li>Node_2 Node_1 weight 2-1</li>
+<li>…</li>
 </ul>
 <blockquote>
-<div><p>BE CAREFUL!! Weights may not be symmetric, network is built with
-asymmetric links</p>
-</div></blockquote>
+<div>BE CAREFUL!! Weights may not be symmetric, network is built with
+asymmetric links</div></blockquote>
 </div></blockquote>
 </dd></dl>
 
@@ -229,14 +233,12 @@ asymmetric links</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 University of Bristol
       <span class="lastupdated">
         Last updated on Apr 14, 2020.
       </span>
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
