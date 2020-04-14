@@ -20,7 +20,7 @@ from ._array import create_int_array, create_double_array
 
 from ._ran_binomial cimport _ran_binomial, _get_binomial_ptr, binomial_rng
 
-__all__ = ["iterate"]
+__all__ = ["advance_foi"]
 
 
 cdef double * get_double_array_ptr(double_array):

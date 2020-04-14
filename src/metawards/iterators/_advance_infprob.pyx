@@ -1,5 +1,7 @@
 
 
+__all__ = ["advance_infprob"]
+
 def advance_infprob():
     cdef double length_day = params.length_day
     cdef double rate, inf_prob, denom

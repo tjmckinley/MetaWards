@@ -120,6 +120,12 @@ extensions = [
     Extension("metawards.utils._parallel",
               ["src/metawards/utils/_parallel.pyx"],
               define_macros=define_macros),
+    Extension("metawards.utils._get_array_ptr",
+              ["src/metawards/utils/_get_array_ptr.pyx"],
+              define_macros=define_macros),
+    Extension("metawards.iterators._advance_play",
+              ["src/metawards/iterators/_advance_play.pyx"]+random_sources,
+              define_macros=define_macros),
 ]
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
