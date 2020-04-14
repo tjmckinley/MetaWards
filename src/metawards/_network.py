@@ -1,6 +1,6 @@
 
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass as _dataclass
+from typing import List as _List
 
 from ._parameters import Parameters
 from ._nodes import Nodes
@@ -10,7 +10,7 @@ from ._population import Population
 __all__ = ["Network"]
 
 
-@dataclass
+@_dataclass
 class Network:
     """This class represents a network of wards. The network comprises
        nodes (representing wards), connected with links which represent
@@ -18,31 +18,31 @@ class Network:
        play (unpredictable/random) and weekend
     """
 
-    """The list of nodes (wards) in the network"""
+    #: The list of nodes (wards) in the network
     nodes: Nodes = None
-    """The links between nodes (work)"""
+    #: The links between nodes (work)
     to_links: Links = None
-    """The links between nodes (play)"""
+    #: The links between nodes (play)
     play: Links = None
-    """The links between nodes (weekend)"""
+    #: The links between nodes (weekend)
     weekend: Links = None
 
-    """The number of nodes in the network"""
+    #: The number of nodes in the network
     nnodes: int = 0
-    """The number of links in the network"""
+    #: The number of links in the network
     nlinks: int = 0
-    """The number of play links in the network"""
+    #: The number of play links in the network
     plinks: int = 0
 
-    """The maximum allowable number of nodes in the network"""
+    #: The maximum allowable number of nodes in the network
     max_nodes: int = 10050
-    """The maximum allowable number of links in the network"""
+    #: The maximum allowable number of links in the network
     max_links: int = 2414000
 
-    """To seed provides additional seeding information"""
-    to_seed: List[int] = None
+    #: To seed provides additional seeding information
+    to_seed: _List[int] = None
 
-    """The parameters used to generate this network"""
+    #: The parameters used to generate this network
     params: Parameters = None
 
     @staticmethod
@@ -263,6 +263,28 @@ class Network:
 
            s is used to select the 'to_seed' entry to seed
            the nodes
+
+           Parameters
+           ----------
+           population: Population
+             The initial population at the start of the model outbreak.
+             This is also used to set start date and day of the model
+             outbreak
+           seed: int
+             The random number seed used for this model run. If this is
+             None then a very random random number seed will be used
+           output_dir: str
+             The directory to write all of the output into
+           nsteps: int
+             The maximum number of steps to run in the outbreak. If None
+             then run until the outbreak has finished
+           profile: bool
+             Whether or not to profile the model run and print out the
+             results
+           s: int
+             Index of the seeding parameter to use
+           nthreads: int
+             Number of threads over which to parallelise this model run
         """
         # Create the random number generator
         from .utils._ran_binomial import seed_ran_binomial, ran_binomial
@@ -297,13 +319,11 @@ class Network:
 
         from .utils import run_model
         population = run_model(network=self,
-                               population=population.initial,
+                               population=population,
                                infections=infections,
                                play_infections=play_infections,
                                rngs=rngs, s=s, output_dir=output_dir,
-                               nsteps=nsteps, profile=profile,
-                               nthreads=nthreads)
-
-        # do we want to save infections and play_infections for inspection?
+                               nsteps=nsteps,
+                               profile=profile, nthreads=nthreads)
 
         return population

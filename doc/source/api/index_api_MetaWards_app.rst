@@ -1,5 +1,4 @@
-.. _ref-MetaWards_app:
-
+==========================
 MetaWards.app API Detail
 ==========================
 

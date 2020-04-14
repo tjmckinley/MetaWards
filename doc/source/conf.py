@@ -56,6 +56,7 @@ The full set of command line options for metawards is below;
 
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',

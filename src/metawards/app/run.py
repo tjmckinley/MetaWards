@@ -66,7 +66,7 @@ def parse_args():
                              "the file is line 0. Ranges are inclusive, "
                              "so 3-5 is the same as 3 4 5")
 
-    parser.add_argument("-r", '--repeats', type=int, default=1,
+    parser.add_argument("-r", '--repeats', type=int, default=None,
                         help="The number of repeat runs of the model to "
                              "perform for each value of the adjustable "
                              "parameters. By default only a single "
@@ -103,6 +103,25 @@ def parse_args():
     parser.add_argument('-I', '--input-data', type=str, default="2011Data",
                         help="Name of the input data set for the network "
                              "(default is '2011Data')")
+
+    parser.add_argument('--start-date', type=str, default=None,
+                        help="Date of the start of the model outbreak. "
+                             "This accepts dates either is iso-format, "
+                             "or fuzzy dates such as 'monday', 'tomorrow' "
+                             "etc. This is used to work out which days "
+                             "are weekends, or to make it easier to specify "
+                             "time-based events.")
+
+    parser.add_argument('--start-day', type=int, default=0,
+                        help="The start day of the model outbreak. By "
+                             "default the model outbreak starts on day "
+                             "zero (0), with each step of the model "
+                             "representing an additional day. Use this "
+                             "to start from a later day, which may be "
+                             "useful if you want to more quickly reach "
+                             "time based events. Note that the passed "
+                             "'--start-date' is always day 0, so day 10 "
+                             "has a date which is 10 days after start-date")
 
     parser.add_argument('-p', '--parameters', type=str, default="march29",
                         help="Name of the input parameter set used to "
@@ -558,9 +577,15 @@ def cli():
             # supervisor and this is the main process
 
     # This is now the code for the main process
-    if args.input is None:
+
+    # WE NEED ONE OF 'input' or 'nrepeats'
+    if (args.input is None) and (args.repeats is None):
+        print("ERROR: You must specify one of '--input' or '--repeats'")
         parser.print_help(sys.stdout)
-        sys.exit(0)
+        sys.exit(-1)
+
+    if args.repeats is None:
+        args.repeats = 1
 
     # import the parameters here to speed up the display of help
     from metawards import Parameters, Network, Population, get_version_string
@@ -568,6 +593,9 @@ def cli():
     # print the version information first, so that there is enough
     # information to enable someone to reproduce this run
     print(get_version_string())
+
+    # also print the full command line used for this job
+    print(f"Command used to run this job:\n{' '.join(sys.argv)}\n")
 
     # load all of the parameters
     try:
@@ -592,23 +620,31 @@ def cli():
     params.set_disease(args.disease)
     params.set_input_files(args.input_data)
 
-    # get the line numbers of the input file to read
-    if args.line is None or len(args.line) == 0:
-        linenums = None
-        print(f"Using parameters from all lines of {args.input}")
-    else:
-        from metawards.utils import string_to_ints
-        linenums = string_to_ints(args.line)
-
-        if len(linenums) == 0:
-            print(f"You cannot read no lines from {args.input}?")
-            sys.exit(-1)
-        elif len(linenums) == 1:
-            print(f"Using parameters from line {linenums[0]} of {args.input}")
+    if args.input:
+        # get the line numbers of the input file to read
+        if args.line is None or len(args.line) == 0:
+            linenums = None
+            print(f"Using parameters from all lines of {args.input}")
         else:
-            print(f"Using parameters from lines {linenums} of {args.input}")
+            from metawards.utils import string_to_ints
+            linenums = string_to_ints(args.line)
 
-    variables = params.read_variables(args.input, linenums)
+            if len(linenums) == 0:
+                print(f"You cannot read no lines from {args.input}?")
+                sys.exit(-1)
+            elif len(linenums) == 1:
+                print(f"Using parameters from line {linenums[0]} of "
+                      f"{args.input}")
+            else:
+                print(f"Using parameters from lines {linenums} of "
+                      f"{args.input}")
+
+        variables = params.read_variables(args.input, linenums)
+    else:
+        from metawards import VariableSets, VariableSet
+        # create a VariableSets with one null VariableSet
+        variables = VariableSets()
+        variables.append(VariableSet())
 
     if args.additional is None or len(args.additional) == 0:
         print("Not using any additional seeds...")
@@ -628,6 +664,46 @@ def cli():
         print(f"Performing {nrepeats} runs of each set of parameters")
 
     variables = variables.repeat(nrepeats)
+
+    # get the starting day and date
+    start_day = args.start_day
+
+    if start_day < 0:
+        raise ValueError(f"You cannot use a start day {start_day} that is "
+                         f"less than zero!")
+
+    start_date = None
+
+    if args.start_date:
+        try:
+            from dateparser import parse
+            start_date = parse(args.start_date).date()
+        except Exception:
+            pass
+
+        if start_date is None:
+            from datetime import date
+            try:
+                start_date = date.fromisoformat(args.start_date)
+            except Exception as e:
+                raise ValueError(
+                        f"Cannot interpret a valid date from "
+                        f"'{args.start_date}'. Error is "
+                        f"{e.__class__} {e}")
+
+    if start_date is None:
+        from datetime import date
+        start_date = date.today()
+
+    print(f"Day zero is {start_date.strftime('%A %B %d %Y')}")
+
+    if start_day != 0:
+        from datetime import timedelta
+        start_day_date = start_date + timedelta(days=start_day)
+        print(f"Starting on day {start_day}, which is "
+              f"{start_day_date.strftime('%A %B %d %Y')}")
+    else:
+        start_day_date = start_date
 
     nthreads = args.nthreads
 
@@ -658,7 +734,9 @@ def cli():
     params.daily_imports = 0.0
 
     # the size of the starting population
-    population = Population(initial=args.population)
+    population = Population(initial=args.population,
+                            date=start_day_date,
+                            day=start_day)
 
     print("\nBuilding the network...")
     network = Network.build(params=params, calculate_distances=True,
@@ -670,8 +748,13 @@ def cli():
     result = run_models(network=network, variables=variables,
                         population=population, nprocs=nprocs,
                         nthreads=nthreads, seed=args.seed,
-                        nsteps=args.nsteps, output_dir=args.output,
+                        nsteps=args.nsteps,
+                        output_dir=args.output,
                         profile=profile, parallel_scheme=parallel_scheme)
+
+    if result is None or len(result) == 0:
+        print("No output - end of run")
+        return 0
 
     # write the result to a csv file that can be easily read by R or
     # pandas - this will be written compressed to save space
@@ -681,16 +764,45 @@ def cli():
           f"look at statistics across all runs using e.g. R or pandas")
 
     with bz2.open(results_file, "wt") as FILE:
-        FILE.write("variables,repeat,step,susceptibles,latent,"
-                   "total,n_inf_wards\n")
+        varnames = result[0][0].variable_names()
+
+        if varnames is None or len(varnames) == 0:
+            varnames = ""
+        else:
+            varnames = ",".join(varnames) + ","
+
+        has_date = result[0][1][0].date
+
+        if has_date:
+            datestring = "date,"
+        else:
+            datestring = ""
+
+        FILE.write(f"fingerprint,repeat,{varnames}{datestring}"
+                   f"day,susceptibles,latent,"
+                   f"total,n_inf_wards\n")
         for varset, trajectory in result:
-            start = f"{varset.fingerprint()},{varset.repeat_index()},"
+            varvals = varset.variable_values()
+            if varvals is None or len(varvals) == 0:
+                varvals = ""
+            else:
+                varvals = ",".join(map(str, varvals)) + ","
+
+            start = f"{varset.fingerprint()}," \
+                    f"{varset.repeat_index()},{varvals}"
 
             for i, pop in enumerate(trajectory):
-                FILE.write(f"{start}{i},{pop.susceptibles},"
+                if pop.date:
+                    d = pop.date.isoformat() + ","
+                else:
+                    d = ""
+
+                FILE.write(f"{start}{pop.day},{d}{pop.susceptibles},"
                            f"{pop.latent},{pop.total},{pop.n_inf_wards}\n")
 
     print("End of the run")
+
+    return 0
 
 
 if __name__ == "__main__":

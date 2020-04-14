@@ -123,6 +123,21 @@ are;
   given the same input, same random number seed, and run over the
   same number of threads.
 
+* ``--start-date`` : specify the date of *day zero* of the model outbreak.
+  If this isn't specified then this defaults to the current date. This
+  recognises any date that is understood by
+  `dateparser <https://dateparser.readthedocs.io/en/latest/#usage>`__,
+  which includes dates like *today*, *tomorrow*, *Monday*, *Jan 2020* etc.
+  The start date is used to trigger events based on day of week or
+  date within a model outbreak (e.g. is the day a weekend)
+
+* ``--start-day`` : specify the day of the outbreak, e.g. the default
+  is ``0`` for *day zero*. This is useful if you want to start the
+  model run from a later day than the start date. Note that the
+  start date passed via ``--start-date`` is the date of *day zero*,
+  so the first day modelled will be ``--start-day`` days
+  after ``--start-date``.
+
 * ``--nthreads`` : specify the number of threads over which to perform a
   model run. The sequence of random numbers drawn in parallel is
   deterministic for a given number of threads, but will be different
@@ -232,7 +247,7 @@ For example, this output could be read into a pandas dataframe using
 
     df = pd.read_csv("output/results.csv.bz2")
 
-    df.... # perform analysis
+    df # perform analysis
 
 We run a good online workshop on
 `how to use pandas for data analysis <https://milliams.com/courses/data_analysis_python/index.html>`__.

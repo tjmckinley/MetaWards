@@ -1,24 +1,49 @@
 
-from dataclasses import dataclass
-from typing import List
-import pathlib
-import os
+from dataclasses import dataclass as _dataclass
+from typing import List as _List
+import pathlib as _pathlib
+import os as _os
 
 __all__ = ["Disease"]
 
-_default_disease_path = os.path.join(pathlib.Path.home(),
-                                     "GitHub", "MetaWardsData")
+_default_disease_path = _os.path.join(_pathlib.Path.home(),
+                                      "GitHub", "MetaWardsData")
 
 _default_folder_name = "diseases"
 
 
-@dataclass
+@_dataclass
 class Disease:
-    """This class holds the parameters about a single disease"""
-    beta: List[float] = None
-    progress: List[float] = None
-    too_ill_to_move: List[float] = None
-    contrib_foi: List[float] = None
+    """This class holds the parameters about a single disease
+
+       A disease is characterised as a serious of stages, each
+       with their own values of the beta, progress, too_ill_to_move
+       and contrib_foi parameters. To load a disease use
+       the Disease.load function, e.g.
+
+       Examples
+       --------
+       >>> disease = Disease.load("ncov")
+       >>> print(disease)
+       Disease ncov
+       repository: https://github.com/metawards/MetaWardsData
+       repository_branch: master
+       repository_version: 0.2.0
+       beta = [0.0, 0.0, 0.95, 0.95, 0.0]
+       progress = [1.0, 0.1923, 0.909091, 0.909091, 0.0]
+       too_ill_to_move = [0.0, 0.0, 0.0, 0.0, 0.0]
+       contrib_foi = [1.0, 1.0, 1.0, 1.0, 0.0]
+    """
+    #: Beta parameter for each stage of the disease
+    beta: _List[float] = None
+    #: Progress parameter for each stage of the disease
+    progress: _List[float] = None
+    #: TooIllToMove parameter for each stage of the disease
+    too_ill_to_move: _List[float] = None
+    #: Contribution to the Force of Infection (FOI) parameter for each
+    #: stage of the disease
+    contrib_foi: _List[float] = None
+
     _name: str = None
     _version: str = None
     _authors: str = None
@@ -50,7 +75,14 @@ class Disease:
                self.too_ill_to_move == other.too_ill_to_move and \
                self.contrib_foi == other.contrib_foi
 
+    def __len__(self):
+        if self.beta:
+            return len(self.beta)
+        else:
+            return 0
+
     def N_INF_CLASSES(self):
+        """Return the number of stages of the disease"""
         return len(self.beta)
 
     def _validate(self):
@@ -80,18 +112,38 @@ class Disease:
 
            Alternatively you can provide the full path to the
            json file via the "filename" argument
+
+           Parameters
+           ----------
+           disease: str
+             The name of the disease to load. This is the name that
+             will be searched for in the METAWARDSDATA diseases directory
+           repository: str
+             The location of the cloned METAWARDSDATA repository
+           folder: str
+             The name of the folder within the METAWARDSDATA repository
+             that contains the diseases
+           filename: str
+             The name of the file to load the disease from - this directly
+             loads this file without searching through the METAWARDSDATA
+             repository
+
+           Returns
+           -------
+           disease: Disease
+             The constructed and validated disease
         """
         repository_version = None
         repository_branch = None
 
         if filename is None:
             if repository is None:
-                repository = os.getenv("METAWARDSDATA")
+                repository = _os.getenv("METAWARDSDATA")
                 if repository is None:
                     repository = _default_disease_path
 
-            filename = os.path.join(repository, folder,
-                                    f"{disease}.json")
+            filename = _os.path.join(repository, folder,
+                                     f"{disease}.json")
 
             from ._parameters import get_repository_version
             v = get_repository_version(repository)

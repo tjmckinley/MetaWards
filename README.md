@@ -111,7 +111,7 @@ metawards --help
 will print out all of the help for the program. For example;
 
 ```
-metawards --input tests/data/ncovparams.csv --seed 15324 --nsteps 30
+metawards --input tests/data/ncovparams.csv --seed 15324 --nsteps 30 --nthreads 1
 ```
 
 This will duplicate the run of the MetaWards C program that is bundled

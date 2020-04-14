@@ -10,7 +10,7 @@
 #cython: overflowcheck=False
 
 cimport cython
-import os
+import os as _os
 
 from .._network import Network
 from .._parameters import Parameters
@@ -34,8 +34,8 @@ __all__ = ["run_model"]
 def run_model(network: Network,
               infections, play_infections,
               rngs, s: int,
-              output_dir: str=".",
-              population: int=57104043,
+              output_dir: str = ".",
+              population: Population = Population(initial=57104043),
               nsteps: int=None,
               profile: bool=True,
               nthreads: int=None,
@@ -47,8 +47,48 @@ def run_model(network: Network,
     """Actually run the model... Real work happens here. The model
        will run until completion or until 'nsteps' have been
        completed (whichever happens first)
-    """
 
+           Parameters
+           ----------
+           network: Network
+             The network on which to run the model
+           infections: list
+             The space used to record the infections
+           play_infections: list
+             The space used to record the play infectionss
+           rngs: list
+             The list of random number generators to use, one per thread
+           population: Population
+             The initial population at the start of the model outbreak.
+             This is also used to set the date and day of the start of
+             the model outbreak
+           seed: int
+             The random number seed used for this model run. If this is
+             None then a very random random number seed will be used
+           output_dir: str
+             The directory to write all of the output into
+           nsteps: int
+             The maximum number of steps to run in the outbreak. If None
+             then run until the outbreak has finished
+           profile: bool
+             Whether or not to profile the model run and print out the
+             results
+           s: int
+             Index of the seeding parameter to use
+           nthreads: int
+             Number of threads over which to parallelise this model run
+           MAXSIZE: int
+             The maximum number of nodes that can be loaded - this is needed
+             as memory is pre-allocated before reading
+           VACCINATE: bool
+             Whether to use the VACCINATE routines
+           IMPORTS: bool
+             Whether or not to use the IMPORT routines
+           EXTRASEEDS: bool
+             Whether or not to import EXTRASEEDS
+           WEEKENDS: bool
+             Whether or not to treat weekends differently to weekdays
+    """
     if profile:
         p = Profiler()
     else:
@@ -59,7 +99,10 @@ def run_model(network: Network,
     params = network.params
 
     if params is None:
-        return Population(initial=population)
+        return population
+
+    from copy import deepcopy
+    population = deepcopy(population)
 
     to_seed = network.to_seed
 
@@ -67,9 +110,6 @@ def run_model(network: Network,
     p = p.start("allocate workspace")
     workspace = Workspace(network=network, params=params)
     p = p.stop()
-
-    # create a population object to monitor the outbreak
-    population = Population(initial=population)
 
     # create space to hold the population trajectory
     trajectory = Populations()
@@ -79,14 +119,14 @@ def run_model(network: Network,
 
     size = MAXSIZE   # suspect this will be the number of nodes
 
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+    if not _os.path.exists(output_dir):
+        _os.mkdir(output_dir)
 
-    if not os.path.isdir(output_dir):
+    if not _os.path.isdir(output_dir):
         raise AssertionError(f"The specified output directory ({output_dir}) "
                              f"does not appear to be a valid directory")
 
-    EXPORT = open(os.path.join(output_dir, "ForMattData.dat"), "w")
+    EXPORT = open(_os.path.join(output_dir, "ForMattData.dat"), "w")
 
     if VACCINATE:
         from ._vaccination import allocate_vaccination
@@ -127,13 +167,10 @@ def run_model(network: Network,
                                    play_infections=play_infections)
         p = p.stop()
 
-    cdef int timestep = 0  # start timestep of the model
-                           # (day since infection starts)
-
     p = p.start("extract_data")
     cdef int infecteds = extract_data(network=network, infections=infections,
                                       play_infections=play_infections,
-                                      timestep=timestep, files=files,
+                                      files=files,
                                       workspace=workspace,
                                       nthreads=nthreads,
                                       population=population)
@@ -143,8 +180,12 @@ def run_model(network: Network,
     trajectory.append(population)
 
     cdef int day = 0
+    cdef int timestep = population.day
 
-    if WEEKENDS:
+    if population.date:
+        day = population.date.weekday() + 1  # 1 = Monday
+
+    elif WEEKENDS:
         day = 1  # day number of the week, 1-5 = weekday, 6-7 = weekend
 
     if EXTRASEEDS:
@@ -212,7 +253,7 @@ def run_model(network: Network,
         p2 = p2.start("extract_data")
         infecteds = extract_data(network=network, infections=infections,
                                  play_infections=play_infections,
-                                 timestep=timestep, files=files,
+                                 files=files,
                                  workspace=workspace,
                                  population=population,
                                  nthreads=nthreads,
@@ -228,9 +269,14 @@ def run_model(network: Network,
         #p2 = p2.stop()
 
         timestep += 1
+        population.day += 1
+
+        if population.date:
+            from datetime import timedelta
+            population.date += timedelta(days=1)
 
         if nsteps is not None:
-            if timestep > nsteps:
+            if timestep >= nsteps:
                 trajectory.append(population)
                 print(f"Exiting model run early at nsteps = {nsteps}")
                 break

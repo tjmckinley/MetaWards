@@ -1,31 +1,58 @@
 
-from dataclasses import dataclass
-import os
-import pathlib
+from dataclasses import dataclass as _dataclass
+import os as _os
+import pathlib as _pathlib
 
 __all__ = ["InputFiles"]
 
 _inputfiles = {}
 
-_default_model_path = os.path.join(pathlib.Path.home(),
-                                   "GitHub", "MetaWardsData")
+_default_model_path = _os.path.join(_pathlib.Path.home(),
+                                    "GitHub", "MetaWardsData")
 
 _default_folder_name = "model_data"
 
 
-@dataclass
+@_dataclass
 class InputFiles:
-    work: str = None                # WORK MATRIX
-    play: str = None                # PLAY MATRIX
-    identifier: str = None          # WARD NAMES
-    identifier2: str = None         # WARD IDs (Communities, Counties,
-                                    #           Districts, UA's etc)
-    weekend: str = None             # WEEKEND MATRIX
-    play_size: str = None           # SIZE OF POPULATION IN THE PLAY PILE
-    position: str = None            # CENTRE of BOUNDING BOXES
-    seed: str = None                # LIST OF SEED NODES
-    nodes_to_track: str = None      # LIST OF NODES TO TRACK
-    uv: str = None                  # UV file
+    """This class holds all of the input files that must be loaded
+       from METAWARDSDATA to construct the network of wards
+       and links between them
+
+       Load using the InputFiles.load function e.g.
+
+       Examples
+       --------
+       >>> infiles = InputFiles.load("2011Data")
+       >>> print(infiles)
+       Model 2011Data version March 29 2020
+       repository: https://github.com/metawards/MetaWardsData
+       repository_branch: master
+       repository_version: 0.2.0
+       etc.
+    """
+    #: File from which to read the work matrix of links
+    work: str = None
+    #: File from which to read the play matrix of links
+    play: str = None
+    #: File from which to read all of the ward names
+    identifier: str = None
+    #: File from which to read all of the secondary
+    #: ward IDs, (Communities, Counties, Districts, UA's etc)
+    identifier2: str = None
+    #: File from which to read the weekend matrix of links
+    weekend: str = None
+    #: File from which to read the size of the population in the play pile
+    play_size: str = None
+    #: File from which to read the positions (locations) of the wards
+    #: (the centre of the bounding boxes)
+    position: str = None
+    #: File from which to read the values to seed the wards
+    seed: str = None
+    #: File from which to read the list of nodes to track
+    nodes_to_track: str = None
+    #: UV file
+    uv: str = None
 
     _filename: str = None            # Full path of the description.json file
     _model_name: str = None          # Name of the model
@@ -77,14 +104,15 @@ class InputFiles:
         """
         members = [attr for attr in dir(self)
                    if not callable(getattr(self, attr))
-                      and not attr.startswith("_")]
+                   and not attr.startswith("_")]
 
         for member in members:
             filename = getattr(self, member)
             if filename:
-                filename = os.path.join(self._model_path, filename)
+                filename = _os.path.join(self._model_path, filename)
 
-                if not (os.path.exists(filename) and os.path.isfile(filename)):
+                if not (_os.path.exists(filename) and
+                        _os.path.isfile(filename)):
                     raise FileNotFoundError(
                             f"Cannot find input file {member} = {filename}")
 
@@ -108,18 +136,38 @@ class InputFiles:
            All files within this description will be searched
            for using the directory that contains that file
            as a base
+
+           Parameters
+           ----------
+           model: str
+             The name of the model data to load. This is the name that
+             will be searched for in the METAWARDSDATA model_data directory
+           repository: str
+             The location of the cloned METAWARDSDATA repository
+           folder: str
+             The name of the folder within the METAWARDSDATA repository
+             that contains the model data
+           filename: str
+             The name of the file to load the model data from - this directly
+             loads this file without searching through the METAWARDSDATA
+             repository
+
+           Returns
+           -------
+           input_files: InputFiles
+             The constructed and validated set of input files
         """
         repository_version = None
         repository_branch = None
 
         if filename is None:
             if repository is None:
-                repository = os.getenv("METAWARDSDATA")
+                repository = _os.getenv("METAWARDSDATA")
                 if repository is None:
                     repository = _default_model_path
 
-            filename = os.path.join(repository, folder,
-                                    model, description)
+            filename = _os.path.join(repository, folder,
+                                     model, description)
 
             from ._parameters import get_repository_version
             v = get_repository_version(repository)
@@ -128,7 +176,7 @@ class InputFiles:
             repository_branch = v["branch"]
 
         json_file = filename
-        model_path = os.path.dirname(filename)
+        model_path = _os.path.dirname(filename)
 
         try:
             with open(json_file, "r") as FILE:
