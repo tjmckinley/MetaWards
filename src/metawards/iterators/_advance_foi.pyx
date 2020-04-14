@@ -10,6 +10,8 @@ from libc.stdlib cimport malloc, free
 from libc.math cimport cos, pi
 
 from .._network import Network
+from .._population import Population
+
 from ..utils._profiler import Profiler
 
 from ..utils._ran_binomial cimport _ran_binomial, \
@@ -76,8 +78,9 @@ cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
         buffer[0].count = 0
 
 
-def advance_foi_omp(network: Network, infections, play_infections, rngs,
-                    nthreads: int, day: int, profiler: Profiler, **kwargs):
+def advance_foi_omp(network: Network, population: Population,
+                    infections, play_infections, rngs,
+                    nthreads: int, profiler: Profiler, **kwargs):
     """Advance the model calculating the new force of infection (foi)
        for all of the wards and links between wards, based on the
        current number of infections. Note that you must call this
@@ -90,6 +93,9 @@ def advance_foi_omp(network: Network, infections, play_infections, rngs,
        ----------
        network: Network
          The network being modelled
+       population: Population
+         The population experiencing the outbreak - contains the
+         day number of the outbreak
        infections:
          The space that holds all of the "work" infections
        play_infections:
@@ -98,8 +104,6 @@ def advance_foi_omp(network: Network, infections, play_infections, rngs,
          The list of thread-safe random number generators, one per thread
        nthreads: int
          The number of threads over which to parallelise the calculation
-       day: int
-         The day of the outbreak (timestep in the simulation)
        profiler: Profiler
          The profiler used to profile this calculation
        kwargs:
@@ -113,7 +117,7 @@ def advance_foi_omp(network: Network, infections, play_infections, rngs,
     params = network.params
 
     cdef double uv = params.UV
-    cdef int ts = day
+    cdef int ts = population.day
     cdef double uvscale = (1.0-uv/2.0 + cos(2.0*pi*ts/365.0)/2.0)
 
     # Copy arguments from Python into C cdef variables
@@ -348,8 +352,9 @@ def advance_foi_omp(network: Network, infections, play_infections, rngs,
     free_foi_buffers(&(night_buffers[0]), num_threads)
 
 
-def advance_foi(network: Network, infections, play_infections, rngs,
-                day: int, profiler: Profiler, **kwargs):
+def advance_foi(network: Network, population: Population,
+                infections, play_infections, rngs,
+                profiler: Profiler, **kwargs):
     """Advance the model calculating the new force of infection (foi)
        for all of the wards and links between wards, based on the
        current number of infections. Note that you must call this
@@ -362,6 +367,9 @@ def advance_foi(network: Network, infections, play_infections, rngs,
        ----------
        network: Network
          The network being modelled
+       population: Population
+         The population experiencing the outbreak - contains the
+         day number of the outbreak
        infections:
          The space that holds all of the "work" infections
        play_infections:
@@ -376,6 +384,7 @@ def advance_foi(network: Network, infections, play_infections, rngs,
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
     """
-    advance_foi_omp(network=network, infections=infections,
+    advance_foi_omp(network=network, population=population,
+                    infections=infections,
                     play_infections=play_infections, rngs=rngs,
-                    day=day, profiler=profiler, **kwargs)
+                    profiler=profiler, **kwargs)

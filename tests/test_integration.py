@@ -153,4 +153,4 @@ def test_integration_pox():
 
 if __name__ == "__main__":
     test_integration_ncov()
-    test_integration_pox()
+    #test_integration_pox()
