@@ -6,7 +6,7 @@ from .._population import Population, Populations
 from ._profiler import Profiler, NullProfiler
 from ._iterate import iterate
 from ..iterators._iterate_default import iterate_default
-from ._open_files import open_files
+from ..extractors._extract_default import extract_default
 from ._clear_all_infections import clear_all_infections
 from ._extract_data import extract_data
 
@@ -21,7 +21,8 @@ def run_model(network: Network,
               nsteps: int = None,
               profile: bool = True,
               nthreads: int = None,
-              get_advance_functions=iterate_default):
+              get_advance_functions=iterate_default,
+              get_output_functions=extract_default):
     """Actually run the model... Real work happens here. The model
        will run until completion or until 'nsteps' have been
        completed (whichever happens first)
@@ -81,19 +82,8 @@ def run_model(network: Network,
     from copy import deepcopy
     population = deepcopy(population)
 
-    # create a workspace in which to run the model
-    p = p.start("allocate workspace")
-    workspace = Workspace(network=network, params=params)
-    p = p.stop()
-
     # create space to hold the population trajectory
     trajectory = Populations()
-
-    EXPORT = output_dir.open("ForMattData.dat")
-
-    p = p.start("open_files")
-    files = open_files(output_dir)
-    p = p.stop()
 
     p = p.start("clear_all_infections")
     clear_all_infections(infections=infections,
@@ -109,18 +99,29 @@ def run_model(network: Network,
         setup_func(network=network, population=population,
                    infections=infections, play_infections=play_infections,
                    rngs=rngs, profiler=p, nthreads=nthreads)
+
+    setup_funcs = get_output_functions(nthreads=nthreads, setup=True)
+
+    for setup_func in setup_funcs:
+        setup_func(network=network, population=population,
+                   output_dir=output_dir, profiler=p, nthreads=nthreads)
     p = p.stop()
+
+    # create a workspace that is used as part of extract_data to
+    # provide a scratch-pad while extracting data from the model
+    workspace = Workspace(network=network)
 
     # Now get the population and network data for the first day of the
     # model ("day zero", unless a future day has been set by the user)
     p = p.start("extract_data")
-    infecteds = extract_data(network=network, infections=infections,
-                             play_infections=play_infections,
-                             files=files,
-                             workspace=workspace,
-                             nthreads=nthreads,
-                             population=population)
+    extract_data(network=network, population=population, workspace=workspace,
+                 output_dir=output_dir, infections=infections,
+                 play_infections=play_infections,
+                 rngs=rngs, get_output_functions=get_output_functions,
+                 nthreads=nthreads, profiler=p)
     p = p.stop()
+
+    infecteds = population.infecteds
 
     # save the initial population
     trajectory.append(population)
@@ -138,25 +139,22 @@ def run_model(network: Network,
 
         p2 = p2.start(f"timing for day {population.day}")
 
-        iterate(network=network,
-                population=population,
-                infections=infections,
-                play_infections=play_infections,
-                rngs=rngs,
-                get_advance_functions=get_advance_functions,
-                profiler=p2, nthreads=nthreads)
+        iterate(network=network, population=population,
+                infections=infections, play_infections=play_infections,
+                rngs=rngs, get_advance_functions=get_advance_functions,
+                nthreads=nthreads, profiler=p2)
 
         print(f"\n {population.day} {infecteds}")
 
         p2 = p2.start("extract_data")
-        infecteds = extract_data(network=network, infections=infections,
-                                 play_infections=play_infections,
-                                 files=files,
-                                 workspace=workspace,
-                                 population=population,
-                                 nthreads=nthreads,
-                                 profiler=p2)
+        extract_data(network=network, population=population,
+                     workspace=workspace, output_dir=output_dir,
+                     infections=infections, play_infections=play_infections,
+                     rngs=rngs, get_output_functions=get_output_functions,
+                     nthreads=nthreads, profiler=p2)
         p2 = p2.stop()
+
+        infecteds = population.infecteds
 
         iteration_count += 1
         population.day += 1
@@ -180,14 +178,6 @@ def run_model(network: Network,
         trajectory.append(population)
 
     # end of while loop
-    p = p.stop()
-
-    p = p.start("closing_files")
-    EXPORT.close()
-
-    for FILE in files:
-        FILE.close()
-
     p = p.stop()
     p.stop()
 

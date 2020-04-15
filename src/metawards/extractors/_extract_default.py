@@ -30,17 +30,14 @@ def extract_default(nthreads: int = 1, setup=False, **kwargs):
 
     if setup:
         from ._output_default import setup_output_default
-
         funcs = [setup_output_default]
 
     elif nthreads is None or nthreads == 1:
         from ._output_default import output_default
-
         funcs = [output_default]
 
     else:
         from ._output_default import output_default_omp
-
         funcs = [output_default_omp]
 
     return funcs

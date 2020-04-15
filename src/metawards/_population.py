@@ -33,7 +33,13 @@ class Population:
 
     @property
     def population(self) -> int:
+        """The total population in all wards"""
         return self.susceptibles + self.total + self.recovereds
+
+    @property
+    def infecteds(self) -> int:
+        """The number who are infected across all wards"""
+        return self.total + self.latent
 
     def __str__(self):
         s = f"DAY: {self.day} " \

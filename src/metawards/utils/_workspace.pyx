@@ -2,7 +2,6 @@
 from ._array import create_int_array
 
 from .._network import Network
-from .._parameters import Parameters
 
 __all__ = ["Workspace"]
 
@@ -12,10 +11,11 @@ class Workspace:
        This pre-allocates all of the memory into arrays, which
        can then be used via cython memory views
     """
-    def __init__(self, network: Network, params: Parameters):
+    def __init__(self, network: Network):
         """Create the workspace needed to run the model for the
-           passed network with the passed parameters
+           passed network
         """
+        params = network.params
         N_INF_CLASSES = params.disease_params.N_INF_CLASSES()
         MAXSIZE = network.nnodes + 1  # 1-indexed
 

@@ -10,27 +10,46 @@ cimport openmp
 
 from .._network import Network
 from .._parameters import Parameters
-from ._profiler import Profiler, NullProfiler
+from .._outputfiles import OutputFiles
 from .._population import Population
-from ._workspace import Workspace
 
-from ..utils.get_array_ptr import get_int_array_ptr, get_double_array_ptr
+from ..utils._profiler import Profiler, NullProfiler
+from ..utils._workspace import Workspace
 
-__all__ = ["extract_data"]
+#from ..utils.get_array_ptr import get_int_array_ptr, get_double_array_ptr
+
+__all__ = ["setup_output_default", "output_default", "output_default_omp"]
 
 
-cdef struct inf_buffer:
+# Don't know why I can't get cython to work with the imported functions
+# from utils.get_array_ptr - these are directly copied below...
+cdef double * get_double_array_ptr(double_array):
+    """Return the raw C pointer to the passed double array which was
+       created using create_double_array
+    """
+    cdef double [::1] a = double_array
+    return &(a[0])
+
+
+cdef int * get_int_array_ptr(int_array):
+    """Return the raw C pointer to the passed int array which was
+       created using create_int_array
+    """
+    cdef int [::1] a = int_array
+    return &(a[0])
+
+cdef struct _inf_buffer:
     int count
     int *index
     int *infected
 
 
-cdef inf_buffer* allocate_inf_buffers(int nthreads,
-                                      int buffer_size=1024) nogil:
+cdef _inf_buffer* _allocate_inf_buffers(int nthreads,
+                                        int buffer_size=1024) nogil:
     cdef int size = buffer_size
     cdef int n = nthreads
 
-    cdef inf_buffer *buffers = <inf_buffer *> malloc(n * sizeof(inf_buffer))
+    cdef _inf_buffer *buffers = <_inf_buffer *> malloc(n * sizeof(_inf_buffer))
 
     for i in range(0, n):
         buffers[i].count = 0
@@ -40,7 +59,7 @@ cdef inf_buffer* allocate_inf_buffers(int nthreads,
     return buffers
 
 
-cdef void free_inf_buffers(inf_buffer *buffers, int nthreads) nogil:
+cdef void _free_inf_buffers(_inf_buffer *buffers, int nthreads) nogil:
     cdef int n = nthreads
 
     for i in range(0, n):
@@ -50,7 +69,7 @@ cdef void free_inf_buffers(inf_buffer *buffers, int nthreads) nogil:
     free(buffers)
 
 
-cdef void reset_inf_buffer(inf_buffer *buffers, int nthreads) nogil:
+cdef void _reset_inf_buffer(_inf_buffer *buffers, int nthreads) nogil:
     cdef int n = nthreads
     cdef int i = 0
 
@@ -58,7 +77,7 @@ cdef void reset_inf_buffer(inf_buffer *buffers, int nthreads) nogil:
         buffers[i].count = 0
 
 
-cdef void add_from_buffer(inf_buffer *buffer, int *wards_infected) nogil:
+cdef void _add_from_buffer(_inf_buffer *buffer, int *wards_infected) nogil:
     cdef int i = 0
     cdef int count = buffer[0].count
 
@@ -68,10 +87,10 @@ cdef void add_from_buffer(inf_buffer *buffer, int *wards_infected) nogil:
     buffer[0].count = 0
 
 
-cdef inline void add_to_buffer(inf_buffer *buffer, int index, int value,
-                               int *wards_infected,
-                               openmp.omp_lock_t *lock,
-                               int buffer_size=1024) nogil:
+cdef inline void _add_to_buffer(_inf_buffer *buffer, int index, int value,
+                                int *wards_infected,
+                                openmp.omp_lock_t *lock,
+                                int buffer_size=1024) nogil:
     cdef int count = buffer[0].count
 
     buffer[0].index[count] = index
@@ -80,13 +99,13 @@ cdef inline void add_to_buffer(inf_buffer *buffer, int index, int value,
 
     if buffer[0].count >= buffer_size:
         openmp.omp_set_lock(lock)
-        add_from_buffer(buffer, wards_infected)
+        _add_from_buffer(buffer, wards_infected)
         openmp.omp_unset_lock(lock)
         buffer[0].count = 0
 
 
 # struct to hold all of the variables that will be reduced across threads
-cdef struct red_variables:
+cdef struct _red_variables:
     double sum_x
     double sum_y
     double sum_x2
@@ -99,8 +118,8 @@ cdef struct red_variables:
     int susceptibles
 
 
-cdef void reset_reduce_variables(red_variables * variables,
-                                 int nthreads) nogil:
+cdef void _reset_reduce_variables(_red_variables * variables,
+                                  int nthreads) nogil:
     cdef int i = 0
     cdef int n = nthreads
 
@@ -117,28 +136,28 @@ cdef void reset_reduce_variables(red_variables * variables,
         variables[i].susceptibles = 0
 
 
-cdef red_variables* allocate_red_variables(int nthreads) nogil:
+cdef _red_variables* _allocate_red_variables(int nthreads) nogil:
     """Allocate space for thread-local reduction variables for each
        of the 'nthreads' threads. Note that we need this as
        cython won't allow reduction in parallel blocks (only loops)
     """
     cdef int n = nthreads
 
-    cdef red_variables *variables = <red_variables *> malloc(
-                                                n * sizeof(red_variables))
+    cdef _red_variables *variables = <_red_variables *> malloc(
+                                                n * sizeof(_red_variables))
 
 
-    reset_reduce_variables(variables, n)
+    _reset_reduce_variables(variables, n)
 
     return variables
 
 
-cdef void free_red_variables(red_variables *variables) nogil:
+cdef void _free_red_variables(_red_variables *variables) nogil:
     """Free the memory held by the reduction variables"""
     free(variables)
 
 
-cdef void reduce_variables(red_variables *variables, int nthreads) nogil:
+cdef void _reduce_variables(_red_variables *variables, int nthreads) nogil:
     """Reduce all of the thread-local totals in 'variables' for
        the 'nthreads' threads into the values in variables[0]
     """
@@ -159,19 +178,45 @@ cdef void reduce_variables(red_variables *variables, int nthreads) nogil:
             variables[0].susceptibles += variables[i].susceptibles
 
 
-cdef int buffer_nthreads = 0
-cdef inf_buffer * total_new_inf_ward_buffers = <inf_buffer*>0
-cdef inf_buffer * total_inf_ward_buffers = <inf_buffer*>0
-cdef inf_buffer * is_dangerous_buffers = <inf_buffer*>0
-cdef red_variables * redvars = <red_variables*>0
+# Global variables that are used to cache information that is needed
+# from one iteration to the next - this is safe as metawards will
+# only run one model run at a time per process
+cdef int _buffer_nthreads = 0
+cdef _inf_buffer * _total_new_inf_ward_buffers = <_inf_buffer*>0
+cdef _inf_buffer * _total_inf_ward_buffers = <_inf_buffer*>0
+cdef _red_variables * _redvars = <_red_variables*>0
+
+_files = None
 
 
-# Global flag used to detect whether we have set up everything
-# correctly to run the output
-_has_setup = False
+def setup_output_default(network: Network,
+                         output_dir: OutputFiles,
+                         nthreads: int,
+                         **kwargs):
+    """This is the setup function that corresponds with
+       :meth:`~metawards.extractors.output_default`.
+    """
+    global _buffer_nthreads
+
+    if _buffer_nthreads != nthreads:
+        global _total_new_inf_ward_buffers
+        global _total_inf_ward_buffers
+        global _redvars
+
+        if _buffer_nthreads != 0:
+            _free_red_variables(_redvars)
+            _free_inf_buffers(_total_new_inf_ward_buffers, nthreads)
+            _free_inf_buffers(_total_inf_ward_buffers, nthreads)
+
+        _redvars = _allocate_red_variables(nthreads)
+        _total_new_inf_ward_buffers = _allocate_inf_buffers(nthreads)
+        _total_inf_ward_buffers = _allocate_inf_buffers(nthreads)
+        _buffer_nthreads = nthreads
 
 
 def output_default_omp(network: Network, population: Population,
+                       output_dir: OutputFiles,
+                       workspace: Workspace,
                        infections, play_infections,
                        nthreads: int, profiler: Profiler,
                        **kwargs):
@@ -187,6 +232,10 @@ def output_default_omp(network: Network, population: Population,
          The network over which the outbreak is being modelled
        population: Population
          The population experiencing the outbreak
+       output_dir: OutputFiles
+         The directory in which to place all output files
+       workspace: Workspace
+         A workspace that can be used to extract data
        infections
          Space to hold the 'work' infections
        play_infections
@@ -206,28 +255,27 @@ def output_default_omp(network: Network, population: Population,
     wards = network.nodes
 
     cdef int N_INF_CLASSES = len(infections)
-    cdef int MAXSIZE = network.nnodes + 1
 
     assert len(infections) == len(play_infections)
-
-    # make sure that the files have been opened and the workspace
-    # has been set up
-    global _has_setup
-    if not _has_setup:
-
 
     workspace.zero_all()
 
     cdef int timestep = population.day
 
-    files[0].write("%d " % timestep)
-    files[1].write("%d " % timestep)
-    files[3].write("%d " % timestep)
+    global _files
+    _files[0].write("%d " % timestep)
+    _files[1].write("%d " % timestep)
+    _files[3].write("%d " % timestep)
+
+    global _total_inf_ward_buffers
+    global _total_new_inf_ward_buffers
+    global _redvars
 
     cdef int * inf_tot = get_int_array_ptr(workspace.inf_tot)
     cdef int * pinf_tot = get_int_array_ptr(workspace.pinf_tot)
     cdef int * total_inf_ward = get_int_array_ptr(workspace.total_inf_ward)
-    cdef int * total_new_inf_ward = get_int_array_ptr(workspace.total_new_inf_ward)
+    cdef int * total_new_inf_ward = get_int_array_ptr(
+                                                workspace.total_new_inf_ward)
     cdef int * n_inf_wards = get_int_array_ptr(workspace.n_inf_wards)
 
     cdef int total = 0
@@ -261,11 +309,7 @@ def output_default_omp(network: Network, population: Population,
     cdef double * wards_x = get_double_array_ptr(wards.x)
     cdef double * wards_y = get_double_array_ptr(wards.y)
 
-    cdef int * is_dangerous_array
-
     cdef int pinf = 0
-
-    cdef int cSELFISOLATE = 0
 
     cdef int num_threads = nthreads
     cdef int thread_id = 0
@@ -277,38 +321,9 @@ def output_default_omp(network: Network, population: Population,
     cdef openmp.omp_lock_t lock
     openmp.omp_init_lock(&lock)
 
-    if SELFISOLATE:
-        is_dangerous_array = get_int_array_ptr(is_dangerous)
-        cSELFISOLATE = 1
-
-    global buffer_nthreads
-    global total_inf_ward_buffers
-    global total_new_inf_ward_buffers
-    global is_dangerous_buffers
-    global redvars
-
-    if buffer_nthreads != num_threads:
-        if buffer_nthreads != 0:
-            free_red_variables(redvars)
-            free_inf_buffers(total_new_inf_ward_buffers, num_threads)
-            free_inf_buffers(total_inf_ward_buffers, num_threads)
-
-        redvars = allocate_red_variables(num_threads)
-        total_new_inf_ward_buffers = allocate_inf_buffers(num_threads)
-        total_inf_ward_buffers = allocate_inf_buffers(num_threads)
-
-        if cSELFISOLATE:
-            if buffer_nthreads != 0:
-                free_inf_buffers(is_dangerous_buffers, num_threads)
-
-            is_dangerous_buffers = allocate_inf_buffers(num_threads)
-
-        buffer_nthreads = num_threads
-
-    cdef inf_buffer * total_new_inf_ward_buffer
-    cdef inf_buffer * total_inf_ward_buffer
-    cdef inf_buffer * is_dangerous_buffer
-    cdef red_variables * redvar
+    cdef _inf_buffer * total_new_inf_ward_buffer
+    cdef _inf_buffer * total_inf_ward_buffer
+    cdef _red_variables * redvar
 
     p = p.start("loop_over_classes")
 
@@ -316,23 +331,20 @@ def output_default_omp(network: Network, population: Population,
         n_inf_wards[i] = 0
         inf_tot[i] = 0
         pinf_tot[i] = 0
-        reset_reduce_variables(redvars, num_threads)
-        reset_inf_buffer(total_inf_ward_buffers, num_threads)
-        reset_inf_buffer(total_new_inf_ward_buffers, num_threads)
-        if cSELFISOLATE:
-            reset_inf_buffer(is_dangerous_buffers, num_threads)
+
+        _reset_reduce_variables(_redvars, num_threads)
+        _reset_inf_buffer(_total_inf_ward_buffers, num_threads)
+        _reset_inf_buffer(_total_new_inf_ward_buffers, num_threads)
 
         infections_i = get_int_array_ptr(infections[i])
         play_infections_i = get_int_array_ptr(play_infections[i])
 
         with nogil, parallel(num_threads=num_threads):
             thread_id = cython.parallel.threadid()
-            total_inf_ward_buffer = &(total_inf_ward_buffers[thread_id])
-            total_new_inf_ward_buffer = &(total_new_inf_ward_buffers[thread_id])
-            redvar = &(redvars[thread_id])
-
-            if cSELFISOLATE:
-                is_dangerous_buffer = &(is_dangerous_buffers[thread_id])
+            total_inf_ward_buffer = &(_total_inf_ward_buffers[thread_id])
+            total_new_inf_ward_buffer = \
+                                &(_total_new_inf_ward_buffers[thread_id])
+            redvar = &(_redvars[thread_id])
 
             for j in prange(1, nlinks_plus_one, schedule="static"):
                 ifrom = links_ifrom[j]
@@ -341,32 +353,25 @@ def output_default_omp(network: Network, population: Population,
                     redvar[0].susceptibles += <int>(links_suscept[j])
 
                     if infections_i[j] != 0:
-                        add_to_buffer(total_new_inf_ward_buffer,
-                                      ifrom, infections_i[j],
-                                      &(total_new_inf_ward[0]), &lock)
+                        _add_to_buffer(total_new_inf_ward_buffer,
+                                       ifrom, infections_i[j],
+                                       &(total_new_inf_ward[0]), &lock)
                         #total_new_inf_ward[links_ifrom[j]] += infections_i[j]
 
                 if infections_i[j] != 0:
-                    if cSELFISOLATE:
-                        if (i > 4) and (i < 10):
-                                add_to_buffer(is_dangerous_buffer,
-                                              links_ito[j], infections_i[j],
-                                              &(is_dangerous_array[0]), &lock)
-                                #is_dangerous_array[links_ito[j]] += infections_i[j]
-
                     redvar[0].inf_tot += infections_i[j]
-                    add_to_buffer(total_inf_ward_buffer,
-                                  ifrom, infections_i[j],
-                                  &(total_inf_ward[0]), &lock)
+                    _add_to_buffer(total_inf_ward_buffer,
+                                   ifrom, infections_i[j],
+                                   &(total_inf_ward[0]), &lock)
                     #total_inf_ward[links_ifrom[j]] += infections_i[j]
             # end of loop over links
 
             # cannot reduce in parallel, so manual reduction
             openmp.omp_set_lock(&lock)
-            add_from_buffer(total_new_inf_ward_buffer,
-                            &(total_new_inf_ward[0]))
-            add_from_buffer(total_inf_ward_buffer,
-                            &(total_inf_ward[0]))
+            _add_from_buffer(total_new_inf_ward_buffer,
+                             &(total_new_inf_ward[0]))
+            _add_from_buffer(total_inf_ward_buffer,
+                             &(total_inf_ward[0]))
             openmp.omp_unset_lock(&lock)
 
             # loop over wards (nodes)
@@ -392,10 +397,6 @@ def output_default_omp(network: Network, population: Population,
                     redvar[0].pinf_tot += pinf
                     total_inf_ward[j] += pinf
 
-                    if cSELFISOLATE:
-                        if (i > 4) and (i < 10):
-                            redvar[0].is_dangerous += pinf
-
                 if (i < N_INF_CLASSES-1) and total_inf_ward[j] > 0:
                     redvar[0].n_inf_wards += 1
             # end of loop over nodes
@@ -403,28 +404,25 @@ def output_default_omp(network: Network, population: Population,
 
         # can now reduce across all threads (don't need to lock as each
         # thread maintained its own running total)
-        reduce_variables(redvars, num_threads)
+        _reduce_variables(_redvars, num_threads)
 
-        inf_tot[i] = redvars[0].inf_tot
-        pinf_tot[i] = redvars[0].pinf_tot
-        n_inf_wards[i] = redvars[0].n_inf_wards
+        inf_tot[i] = _redvars[0].inf_tot
+        pinf_tot[i] = _redvars[0].pinf_tot
+        n_inf_wards[i] = _redvars[0].n_inf_wards
 
-        if cSELFISOLATE:
-            is_dangerous_array[i] += redvars[0].is_dangerous
+        total_new += _redvars[0].total_new
+        susceptibles += _redvars[0].susceptibles
 
-        total_new += redvars[0].total_new
-        susceptibles += redvars[0].susceptibles
+        sum_x += _redvars[0].sum_x
+        sum_y += _redvars[0].sum_y
+        sum_x2 += _redvars[0].sum_x2
+        sum_y2 += _redvars[0].sum_y2
 
-        sum_x += redvars[0].sum_x
-        sum_y += redvars[0].sum_y
-        sum_x2 += redvars[0].sum_x2
-        sum_y2 += redvars[0].sum_y2
+        _reset_reduce_variables(_redvars, num_threads)
 
-        reset_reduce_variables(redvars, num_threads)
-
-        files[0].write("%d " % inf_tot[i])
-        files[1].write("%d " % n_inf_wards[i])
-        files[3].write("%d " % pinf_tot[i])
+        _files[0].write("%d " % inf_tot[i])
+        _files[1].write("%d " % n_inf_wards[i])
+        _files[3].write("%d " % pinf_tot[i])
 
         if i == 1:
             latent += inf_tot[i] + pinf_tot[i]
@@ -444,19 +442,19 @@ def output_default_omp(network: Network, population: Population,
         var_y = (sum_y2 - sum_y*mean_y) / (total_new - 1)
 
         dispersal = sqrt(var_x + var_y)
-        files[2].write("%d %f %f\n" % (timestep, mean_x, mean_y))
-        files[5].write("%d %f %f\n" % (timestep, var_x, var_y))
-        files[6].write("%d %f\n" % (timestep, dispersal))
+        _files[2].write("%d %f %f\n" % (timestep, mean_x, mean_y))
+        _files[5].write("%d %f %f\n" % (timestep, var_x, var_y))
+        _files[6].write("%d %f\n" % (timestep, dispersal))
     else:
-        files[2].write("%d %f %f\n" % (timestep, 0.0, 0.0))
-        files[5].write("%d %f %f\n" % (timestep, 0.0, 0.0))
-        files[6].write("%d %f\n" % (timestep, 0.0))
+        _files[2].write("%d %f %f\n" % (timestep, 0.0, 0.0))
+        _files[5].write("%d %f %f\n" % (timestep, 0.0, 0.0))
+        _files[6].write("%d %f\n" % (timestep, 0.0))
 
-    files[0].write("\n")
-    files[1].write("\n")
-    files[3].write("\n")
-    files[4].write("%d \n" % total)
-    files[4].flush()
+    _files[0].write("\n")
+    _files[1].write("\n")
+    _files[3].write("\n")
+    _files[4].write("%d \n" % total)
+    _files[4].flush()
 
     p = p.stop()
 
@@ -480,6 +478,7 @@ def output_default_omp(network: Network, population: Population,
 
 
 def output_default(network: Network, population: Population,
+                   output_dir: OutputFiles, workspace: Workspace,
                    infections, play_infections,
                    profiler: Profiler, **kwargs):
     """This is the default output function that must be called
@@ -494,6 +493,10 @@ def output_default(network: Network, population: Population,
          The network over which the outbreak is being modelled
        population: Population
          The population experiencing the outbreak
+       output_dir: OutputFiles
+         The directory in which to place all output files
+       workspace: Workspace
+         A workspace that can be used to extract data
        infections
          Space to hold the 'work' infections
        play_infections
@@ -506,7 +509,8 @@ def output_default(network: Network, population: Population,
          Extra argumentst that are ignored by this function
     """
     kwargs["nthreads"] = 1
-    output_default(network=network, population=population,
-                   infections=infections,
-                   play_infections=play_infections,
-                   profiler=profiler, **kwargs)
+    output_default_omp(network=network, population=population,
+                       output_dir=output_dir, workspace=workspace,
+                       infections=infections,
+                       play_infections=play_infections,
+                       profiler=profiler, **kwargs)

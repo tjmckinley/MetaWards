@@ -93,12 +93,6 @@ extensions = [
               define_macros=define_macros),
     Extension("metawards.utils._array", ["src/metawards/utils/_array.pyx"],
               define_macros=define_macros),
-    Extension("metawards.utils._extract_data",
-              ["src/metawards/utils/_extract_data.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._extract_data_for_graphics",
-              ["src/metawards/utils/_extract_data_for_graphics.pyx"],
-              define_macros=define_macros),
     Extension("metawards.utils._ran_binomial",
               ["src/metawards/utils/_ran_binomial.pyx"]+random_sources,
               define_macros=define_macros),
@@ -128,6 +122,9 @@ extensions = [
               define_macros=define_macros),
     Extension("metawards.iterators._advance_imports",
               ["src/metawards/iterators/_advance_imports.pyx"]+random_sources,
+              define_macros=define_macros),
+    Extension("metawards.extractors._output_default",
+              ["src/metawards/extractors/_output_default.pyx"],
               define_macros=define_macros),
 ]
 
