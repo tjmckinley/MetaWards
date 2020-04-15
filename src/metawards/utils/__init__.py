@@ -25,13 +25,9 @@ Functions
     get_min_max_distances
     get_number_of_processes
     how_many_vaccinated
-    import_infection
-    infect_additional_seeds
     initialise_infections
     initialise_play_infections
-    iterate_weekend
     iterate
-    load_additional_seeds
     move_population_from_work_to_play
     move_population_from_play_to_work
     open_files
@@ -52,8 +48,6 @@ Functions
     run_model
     run_models
     run_worker
-    seed_all_wards
-    seed_infection_at_node
     seed_ran_binomial
     string_to_ints
     vaccinate_same_id
@@ -77,7 +71,9 @@ from ._initialise_infections import *
 from ._read_done_file import *
 from ._string_to_ints import *
 from ._profiler import *
+from ._run_model import *
 from ._runner import *
+from ._iterate import *
 from ._worker import *
 
 # pyx imports
@@ -91,11 +87,7 @@ from ._move_population import *
 from ._fill_in_gaps import *
 from ._build_play_matrix import *
 from ._workspace import *
-from ._run_model import *
 from ._array import *
-from ._iterate import *
-from ._iterate_weekend import *
-from ._import_infection import *
 from ._ran_binomial import *
 from ._parallel import *
 from ._assert_sane_network import *
@@ -103,6 +95,5 @@ from ._extract_data import *
 from ._extract_data_for_graphics import *
 from ._vaccination import *
 from ._clear_all_infections import *
-from ._seeding import *
 from ._open_files import *
 

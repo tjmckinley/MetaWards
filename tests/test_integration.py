@@ -152,5 +152,20 @@ def test_integration_pox():
 
 
 if __name__ == "__main__":
-    test_integration_ncov()
-    test_integration_pox()
+    import sys
+
+    try:
+        n = str(sys.argv[1]).lower()
+    except Exception:
+        n = None
+
+    if n is None or n == "all":
+        test_integration_ncov()
+        test_integration_pox()
+    elif n == "pox":
+        test_integration_pox()
+    elif n == "ncov":
+        test_integration_ncov()
+    else:
+        test_integration_ncov()
+
