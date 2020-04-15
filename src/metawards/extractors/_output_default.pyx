@@ -16,27 +16,10 @@ from .._population import Population
 from ..utils._profiler import Profiler, NullProfiler
 from ..utils._workspace import Workspace
 
-#from ..utils.get_array_ptr import get_int_array_ptr, get_double_array_ptr
+from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
 __all__ = ["setup_output_default", "output_default", "output_default_omp"]
 
-
-# Don't know why I can't get cython to work with the imported functions
-# from utils.get_array_ptr - these are directly copied below...
-cdef double * get_double_array_ptr(double_array):
-    """Return the raw C pointer to the passed double array which was
-       created using create_double_array
-    """
-    cdef double [::1] a = double_array
-    return &(a[0])
-
-
-cdef int * get_int_array_ptr(int_array):
-    """Return the raw C pointer to the passed int array which was
-       created using create_int_array
-    """
-    cdef int [::1] a = int_array
-    return &(a[0])
 
 cdef struct _inf_buffer:
     int count
@@ -212,6 +195,17 @@ def setup_output_default(network: Network,
         _total_new_inf_ward_buffers = _allocate_inf_buffers(nthreads)
         _total_inf_ward_buffers = _allocate_inf_buffers(nthreads)
         _buffer_nthreads = nthreads
+
+    global _files
+
+    _files = []
+    _files.append(output_dir.open("WorkInfections.dat"))
+    _files.append(output_dir.open("NumberWardsInfected.dat"))
+    _files.append(output_dir.open("MeanXY.dat"))
+    _files.append(output_dir.open("PlayInfections.dat"))
+    _files.append(output_dir.open("TotalInfections.dat"))
+    _files.append(output_dir.open("VarXY.dat"))
+    _files.append(output_dir.open("Dispersal.dat"))
 
 
 def output_default_omp(network: Network, population: Population,

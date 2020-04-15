@@ -87,7 +87,8 @@ def run_model(network: Network,
 
     p = p.start("clear_all_infections")
     clear_all_infections(infections=infections,
-                         play_infections=play_infections)
+                         play_infections=play_infections,
+                         nthreads=nthreads)
     p = p.stop()
 
     # get and call all of the functions that need to be called to set

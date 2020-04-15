@@ -49,7 +49,7 @@ def extract_data(network: Network, population: Population,
     if profiler is None:
         profiler = NullProfiler()
 
-    p = profiler.start("iterate")
+    p = profiler.start("extract_data")
 
     output_functions = get_output_functions(population=population,
                                             nthreads=nthreads)
