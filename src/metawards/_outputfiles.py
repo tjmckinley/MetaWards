@@ -408,7 +408,7 @@ class OutputFiles:
                              f"this is not in the output directory "
                              f"{outdir} - common prefix is {prefix}")
 
-        return OutputFiles(outdir=subdir, check_empty=self._check_empty,
+        return OutputFiles(output_dir=subdir, check_empty=self._check_empty,
                            force_empty=self._force_empty, prompt=self._prompt,
                            auto_bzip=self._auto_bzip)
 
@@ -422,6 +422,18 @@ class OutputFiles:
 
     def get_filename(self, filename):
         """Return the full expanded filename for 'filename'"""
+        import os
+
+        self._open_dir()
+
+        outdir = self._output_dir
+        p = _Path(_expand(filename))
+
+        if not p.is_absolute():
+            p = _Path(os.path.join(outdir, filename))
+
+        filename = str(p.absolute().resolve())
+
         if filename in self._filenames:
             return self._filenames[filename]
         else:

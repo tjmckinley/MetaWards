@@ -43,10 +43,14 @@ def test_openfiles(prompt=None):
         FILE = of.open("test.txt")
         assert of.is_open()
 
+        assert of.get_filename("test.txt").endswith("test.txt")
+
         FILE.write("goodbye\n")
 
         FILE = of.open("test2.txt", auto_bzip=True)
         FILE.write("hello ")
+
+        assert of.get_filename("test2.txt").endswith("test2.txt.bz2")
 
         FILE = of.open("test2.txt")
         FILE.write("world\n")
