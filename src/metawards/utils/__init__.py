@@ -19,7 +19,6 @@ Functions
     create_thread_generators
     delete_ran_binomial
     extract_data
-    extract_data_for_graphics
     fill_in_gaps
     get_available_num_threads
     get_min_max_distances
@@ -30,7 +29,6 @@ Functions
     iterate
     move_population_from_work_to_play
     move_population_from_play_to_work
-    open_files
     prepare_worker
     ran_binomial
     ran_int

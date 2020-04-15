@@ -24,7 +24,6 @@ Performing a model run
 
 Extracting data from each iteration
     * :meth:`~metawards.utils.extract_data`
-    * :meth:`~metawards.utils.extract_data_for_graphics`
 
 Performing multiple model runs in parallel
     * :meth:`~metawards.utils.run_models`

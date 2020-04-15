@@ -51,6 +51,11 @@ from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
+from . import utils
+from . import iterators
+from . import extractors
+from . import app
+
 
 def get_version_string():
     """Return a version string for metawards which can be printed
