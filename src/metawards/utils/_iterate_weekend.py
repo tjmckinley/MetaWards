@@ -1,7 +1,7 @@
 
 from .._network import Network
 from .._parameters import Parameters
-from ._profiler import Profiler, NullProfiler
+from ._profiler import Profiler
 
 __all__ = ["iterate_weekend"]
 
@@ -10,8 +10,8 @@ def iterate_weekend(network: Network, infections, play_infections,
                     params: Parameters, rngs, timestep: int,
                     population: int, nthreads: int = None,
                     profiler: Profiler = None,
-                    is_dangerous = None, SELFISOLATE: bool = False,
-                   ):
+                    is_dangerous=None, SELFISOLATE: bool = False,
+                    ):
     """Iterate the model forward one timestep (day) using the supplied
        network and parameters, advancing the supplied infections,
        and using the supplied random number generator (rngs)

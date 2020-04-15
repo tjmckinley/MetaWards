@@ -157,5 +157,6 @@ def advance_fixed(network: Network, infections, rngs,
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
     """
+    kwargs["nthreads"] = 1
     advance_fixed_omp(network=network, infections=infections,
-                      rngs=rngs, nthreads=1, profiler=profiler, **kwargs)
+                      rngs=rngs, profiler=profiler, **kwargs)

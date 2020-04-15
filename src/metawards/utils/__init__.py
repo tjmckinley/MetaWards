@@ -25,7 +25,6 @@ Functions
     get_min_max_distances
     get_number_of_processes
     how_many_vaccinated
-    import_infection
     infect_additional_seeds
     initialise_infections
     initialise_play_infections
@@ -77,7 +76,9 @@ from ._initialise_infections import *
 from ._read_done_file import *
 from ._string_to_ints import *
 from ._profiler import *
+from ._run_model import *
 from ._runner import *
+from ._iterate import *
 from ._worker import *
 
 # pyx imports
@@ -91,11 +92,7 @@ from ._move_population import *
 from ._fill_in_gaps import *
 from ._build_play_matrix import *
 from ._workspace import *
-from ._run_model import *
 from ._array import *
-from ._iterate import *
-from ._iterate_weekend import *
-from ._import_infection import *
 from ._ran_binomial import *
 from ._parallel import *
 from ._assert_sane_network import *
@@ -103,6 +100,5 @@ from ._extract_data import *
 from ._extract_data_for_graphics import *
 from ._vaccination import *
 from ._clear_all_infections import *
-from ._seeding import *
 from ._open_files import *
 

@@ -6,7 +6,7 @@ __all__ = ["Profiler", "NullProfiler"]
 
 class NullProfiler:
     """This is a null profiler that does nothing"""
-    def __init__(self, name:str = None, parent=None):
+    def __init__(self, name: str = None, parent=None):
         pass
 
     def is_null(self) -> bool:
@@ -27,7 +27,7 @@ class Profiler:
        instrumenting of the code. It is used for sub-function
        profiling.
     """
-    def __init__(self, name:str = None, parent=None):
+    def __init__(self, name: str = None, parent=None):
         self._name = name
         self._parent = parent
         self._children = []
@@ -105,7 +105,7 @@ class Profiler:
             # this is the top-level profiler - just return the child total
             return self.child_total()
         elif self._end:
-            return (self._end - self._start) * 0.000001  # ns to ms
+            return (self._end - self._start) * 0.000001    # ns to ms
         else:
             return None
 

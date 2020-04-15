@@ -93,3 +93,9 @@ def advance_infprob_omp(network: Network, nthreads: int,
         # end of loop over wards
     # end of parallel
     p = p.stop()
+
+
+def advance_infprob(**kwargs):
+    """Stubbded serial version of advance_infprob"""
+    kwargs["nthreads"] = 1
+    advance_infprob_omp(**kwargs)

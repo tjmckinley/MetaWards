@@ -135,6 +135,8 @@ def advance_recovery(network: Network, infections, play_infections, rngs,
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
     """
+    kwargs["nthreads"] = 1
+
     advance_recovery_omp(network=network, infections=infections,
                          play_infections=play_infections, rngs=rngs,
-                         nthreads=1, profiler=profiler, **kwargs)
+                         profiler=profiler, **kwargs)

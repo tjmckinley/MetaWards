@@ -2,18 +2,14 @@
 import os as _os
 
 from .._network import Network
-from .._parameters import Parameters
 from ._workspace import Workspace
 from .._population import Population, Populations
 from ._profiler import Profiler, NullProfiler
 from ._iterate import iterate
-from ._iterate_weekend import iterate_weekend
+from ..iterators._iterate_default import iterate_default
 from ._open_files import open_files
 from ._clear_all_infections import clear_all_infections
-from ._seeding import seed_all_wards, seed_infection_at_node,  \
-                      load_additional_seeds, infect_additional_seeds
 from ._extract_data import extract_data
-
 
 __all__ = ["run_model"]
 
@@ -23,11 +19,10 @@ def run_model(network: Network,
               rngs, s: int,
               output_dir: str = ".",
               population: Population = Population(initial=57104043),
-              nsteps: int=None,
-              profile: bool=True,
-              nthreads: int=None,
-              IMPORTS: bool = False,
-              EXTRASEEDS: bool = True):
+              nsteps: int = None,
+              profile: bool = True,
+              nthreads: int = None,
+              get_advance_functions=iterate_default):
     """Actually run the model... Real work happens here. The model
        will run until completion or until 'nsteps' have been
        completed (whichever happens first)
@@ -61,10 +56,11 @@ def run_model(network: Network,
             Index of the seeding parameter to use
         nthreads: int
             Number of threads over which to parallelise this model run
-        IMPORTS: bool
-             Whether or not to use the IMPORT routines
-        EXTRASEEDS: bool
-             Whether or not to import EXTRASEEDS
+        get_advance_functions: function
+            Function that will be used to dynamically get the functions
+            that will be used to advance the model at each iteration.
+            Any additional files or parameters needed by these functions
+            should be included in the `network.params` object.
 
         Returns
         -------
@@ -85,8 +81,6 @@ def run_model(network: Network,
 
     from copy import deepcopy
     population = deepcopy(population)
-
-    to_seed = network.to_seed
 
     # create a workspace in which to run the model
     p = p.start("allocate workspace")
@@ -114,80 +108,53 @@ def run_model(network: Network,
                          play_infections=play_infections)
     p = p.stop()
 
-    if s < 0:
-        print(f"Negative value of s? {s}")
-        to_seed = 0
-    else:
-        to_seed = to_seed[s]
+    # get and call all of the functions that need to be called to set
+    # up the model run
+    p = p.start("setup_funcs")
+    setup_funcs = get_advance_functions(nthreads=nthreads, setup=True)
 
-    print(f"node_seed {to_seed}")
+    for setup_func in setup_funcs:
+        setup_func(network=network, population=population,
+                   infections=infections, play_infections=play_infections,
+                   rngs=rngs, profiler=p, nthreads=nthreads)
+    p = p.stop()
 
-    if not IMPORTS:
-        p = p.start("seeding_imports")
-        if s < 0:
-            seed_all_wards(network=network,
-                           play_infections=play_infections,
-                           expected=params.daily_imports,
-                           population=population.initial)
-        else:
-            seed_infection_at_node(network=network, params=params,
-                                   seed=to_seed,
-                                   infections=infections,
-                                   play_infections=play_infections)
-        p = p.stop()
-
+    # Now get the population and network data for the first day of the
+    # model ("day zero", unless a future day has been set by the user)
     p = p.start("extract_data")
-    cdef int infecteds = extract_data(network=network, infections=infections,
-                                      play_infections=play_infections,
-                                      files=files,
-                                      workspace=workspace,
-                                      nthreads=nthreads,
-                                      population=population)
+    infecteds = extract_data(network=network, infections=infections,
+                             play_infections=play_infections,
+                             files=files,
+                             workspace=workspace,
+                             nthreads=nthreads,
+                             population=population)
     p = p.stop()
 
     # save the initial population
     trajectory.append(population)
 
-    cdef int day = 0
-    cdef int timestep = population.day
-
-    if population.date:
-        day = population.date.weekday() + 1  # 1 = Monday
-
-    if EXTRASEEDS:
-        p = p.start("load_additional_seeds")
-        additional_seeds = []
-
-        if params.additional_seeds is not None:
-            for additional in params.additional_seeds:
-                additional_seeds += load_additional_seeds(additional)
-        p = p.stop()
-
     p = p.start("run_model_loop")
-    while (infecteds != 0) or (timestep < 5):
+    iteration_count = 0
+
+    # keep looping until the outbreak is over or until we have completed
+    # at least 5 loop iterations
+    while (infecteds != 0) or (iteration_count < 5):
         if profile:
             p2 = Profiler()
         else:
             p2 = NullProfiler()
 
-        p2 = p2.start(f"timing for iteration {timestep}")
-
-        if EXTRASEEDS:
-            p2 = p2.start("additional_seeds")
-            infect_additional_seeds(network=network, params=params,
-                                    infections=infections,
-                                    play_infections=play_infections,
-                                    additional_seeds=additional_seeds,
-                                    timestep=timestep)
-            p2 = p2.stop()
+        p2 = p2.start(f"timing for day {population.day}")
 
         iterate(network=network,
                 population=population,
                 infections=infections,
                 play_infections=play_infections,
-                rngs=rngs, profiler=p2, nthreads=nthreads)
+                rngs=rngs,
+                get_advance_functions=get_advance_functions,
+                profiler=p2, nthreads=nthreads)
 
-        print(f"\n {timestep} {infecteds}")
+        print(f"\n {population.day} {infecteds}")
 
         p2 = p2.start("extract_data")
         infecteds = extract_data(network=network, infections=infections,
@@ -199,7 +166,7 @@ def run_model(network: Network,
                                  profiler=p2)
         p2 = p2.stop()
 
-        timestep += 1
+        iteration_count += 1
         population.day += 1
 
         if population.date:
@@ -207,7 +174,7 @@ def run_model(network: Network,
             population.date += timedelta(days=1)
 
         if nsteps is not None:
-            if timestep >= nsteps:
+            if iteration_count >= nsteps:
                 trajectory.append(population)
                 print(f"Exiting model run early at nsteps = {nsteps}")
                 break
@@ -235,6 +202,6 @@ def run_model(network: Network,
     if not p.is_null():
         print(f"\nOVERALL MODEL TIMING\n{p}")
 
-    print(f"Infection died ... Ending at time {timestep}")
+    print(f"Infection died ... Ending on day {population.day}")
 
     return trajectory

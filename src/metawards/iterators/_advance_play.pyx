@@ -183,5 +183,6 @@ def advance_play(network: Network, play_infections, rngs,
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
     """
+    kwargs["nthreads"] = 1
     advance_play_omp(network=network, play_infections=play_infections,
-                     rngs=rngs, nthreads=1, profiler=profiler, **kwargs)
+                     rngs=rngs, profiler=profiler, **kwargs)

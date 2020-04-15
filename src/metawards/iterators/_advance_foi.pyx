@@ -384,6 +384,7 @@ def advance_foi(network: Network, population: Population,
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
     """
+    kwargs["nthreads"] = 1
     advance_foi_omp(network=network, population=population,
                     infections=infections,
                     play_infections=play_infections, rngs=rngs,
