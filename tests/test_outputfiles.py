@@ -63,5 +63,6 @@ def test_openfiles(prompt=None):
 
     OutputFiles.remove(outdir, prompt=None)
 
+
 if __name__ == "__main__":
     test_openfiles(input)

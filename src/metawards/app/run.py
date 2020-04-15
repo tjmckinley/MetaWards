@@ -177,6 +177,21 @@ def parse_args():
                              "queueing system. Use this option if the "
                              "auto-detection fails.")
 
+    parser.add_argument('--auto-bzip', action="store_true",
+                        default=False,
+                        help="Whether or not to automatically bz2 compress "
+                             "all output files as they are written.")
+
+    parser.add_argument('--force-overwrite-output', action="store_true",
+                        default=False,
+                        help="Whether or not to force overwriting of any "
+                             "existing output. Using this option will "
+                             "tell metawards that it is safe to delete "
+                             "the contents of the output directory "
+                             "specified in by '--output' if it already "
+                             "exists. Dangerous as this can remove "
+                             "existing output files")
+
     parser.add_argument('--profile', action="store_true",
                         default=None, help="Enable profiling of the code")
 
@@ -749,7 +764,13 @@ def cli():
     if outdir is None:
         outdir = "output"
 
-    with OutputFiles(outdir) as output_dir:
+    if args.force_overwrite_output:
+        prompt = None
+    else:
+        prompt = input
+
+    with OutputFiles(outdir, force_empty=args.force_overwrite_output,
+                     auto_bzip=args.auto_bzip, prompt=prompt) as output_dir:
         result = run_models(network=network, variables=variables,
                             population=population, nprocs=nprocs,
                             nthreads=nthreads, seed=args.seed,

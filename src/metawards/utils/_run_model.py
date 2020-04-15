@@ -1,6 +1,4 @@
 
-import os as _os
-
 from .._network import Network
 from .._outputfiles import OutputFiles
 from ._workspace import Workspace

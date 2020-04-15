@@ -180,4 +180,3 @@ if __name__ == "__main__":
         test_integration_ncov(input)
     else:
         test_integration_ncov(input)
-

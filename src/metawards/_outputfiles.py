@@ -235,7 +235,10 @@ class OutputFiles:
                         _check_remove(outdir, self._prompt)
 
                     # remake the directory after it has been removed
-                    os.makedirs(outdir)
+                    try:
+                        os.makedirs(outdir)
+                    except FileExistsError:
+                        pass
 
             if not os.path.isdir(outdir):
                 print(f"Cannot open {outdir} as it is not a directory!")

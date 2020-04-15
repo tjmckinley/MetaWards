@@ -72,8 +72,10 @@ def run_worker(arguments):
     auto_bzip = options["auto_bzip"]
     del options["auto_bzip"]
 
-    with OutputFiles(outdir, check_empty=True, prompt=None,
-                     auto_bzip=auto_bzip) as output_dir:
+    # if the user wanted to remove this directory then they would
+    # have done so in the main process - no need to check again
+    with OutputFiles(outdir, check_empty=False, force_empty=False,
+                     prompt=None, auto_bzip=auto_bzip) as output_dir:
         options["output_dir"] = output_dir
 
         with redirect_output(output_dir.get_path()):
