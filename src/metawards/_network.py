@@ -54,7 +54,8 @@ class Network:
               max_nodes: int = 10050,
               max_links: int = 2414000,
               nthreads: int = 1,
-              profile: bool = True):
+              profile: bool = True,
+              profiler=None):
         """Builds and returns a new Network that is described by the
            passed parameters. If 'calculate_distances' is True, then
            this will also read in the ward positions and add
@@ -73,8 +74,11 @@ class Network:
            will be shrunk back after building.
         """
         if profile:
-            from .utils import Profiler
-            p = Profiler()
+            if profiler is None:
+                from .utils import Profiler
+                p = Profiler()
+            else:
+                p = profiler
         else:
             from .utils import NullProfiler
             p = NullProfiler()
@@ -89,7 +93,8 @@ class Network:
         network = build_function(params=params,
                                  profiler=p,
                                  max_nodes=max_nodes,
-                                 max_links=max_links)
+                                 max_links=max_links,
+                                 nthreads=nthreads)
         p = p.stop()
 
         # sanity-check that the network makes sense - there are specific
@@ -98,7 +103,8 @@ class Network:
 
         if calculate_distances:
             p = p.start("add_distances")
-            network.add_distances(distance_function=distance_function)
+            network.add_distances(distance_function=distance_function,
+                                  nthreads=nthreads, profiler=p)
             p = p.stop()
 
         if params.input_files.seed:
@@ -117,17 +123,17 @@ class Network:
         # is at work
         print("Reset everything...")
         p = p.start("reset_everything")
-        network.reset_everything()
+        network.reset_everything(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         print("Rescale play matrix...")
         p = p.start("rescale_play_matrix")
-        network.rescale_play_matrix()
+        network.rescale_play_matrix(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         print("Move population from play to work...")
         p = p.start("move_from_play_to_work")
-        network.move_from_play_to_work()
+        network.move_from_play_to_work(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         if not p.is_null():
@@ -145,7 +151,8 @@ class Network:
         from .utils import assert_sane_network
         assert_sane_network(self)
 
-    def add_distances(self, distance_function=None):
+    def add_distances(self, distance_function=None, nthreads: int = 1,
+                      profiler=None):
         """Read in the positions of all of the nodes (wards) and calculate
            the distances of the links.
 
@@ -153,35 +160,35 @@ class Network:
            read the positions and calculate the distances.
            By default this is mw.utils.add_wards_network_distance
         """
-
         if distance_function is None:
             from .utils import add_wards_network_distance
             distance_function = add_wards_network_distance
 
-        distance_function(self)
+        distance_function(self, nthreads=nthreads)
 
         # now need to update the dynamic distance cutoff based on the
         # maximum distance between nodes
         print("Get min/max distances...")
-        (_mindist, maxdist) = self.get_min_max_distances()
+        (_mindist, maxdist) = self.get_min_max_distances(nthreads=nthreads)
 
         self.params.dyn_dist_cutoff = maxdist + 1
 
-    def initialise_infections(self):
+    def initialise_infections(self, nthreads: int = 1):
         """Initialise and return the space that will be used
            to track infections
         """
         from .utils import initialise_infections
         return initialise_infections(self)
 
-    def initialise_play_infections(self):
+    def initialise_play_infections(self, nthreads: int = 1):
         """Initialise and return the space that will be used
            to track play infections
         """
         from .utils import initialise_play_infections
         return initialise_play_infections(self)
 
-    def get_min_max_distances(self):
+    def get_min_max_distances(self, nthreads: int = 1,
+                              profiler=None):
         """Calculate and return the minimum and maximum distances
            between nodes in the network
         """
@@ -191,14 +198,16 @@ class Network:
             pass
 
         from .utils import get_min_max_distances
-        self._min_max_distances = get_min_max_distances(self)
+        self._min_max_distances = get_min_max_distances(network=self,
+                                                        nthreads=nthreads)
 
         return self._min_max_distances
 
-    def reset_everything(self):
+    def reset_everything(self, nthreads: int = 1,
+                         profiler=None):
         """Resets the network ready for a new run of the model"""
         from .utils import reset_everything
-        reset_everything(self)
+        reset_everything(network=self, nthreads=nthreads, profiler=profiler)
 
     def update(self, params: Parameters,
                nthreads: int = 1, profile: bool = False):
@@ -219,15 +228,15 @@ class Network:
         self.params = params
 
         p = p.start("reset_everything")
-        self.reset_everything()
+        self.reset_everything(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         p = p.start("rescale_play_matrix")
-        self.rescale_play_matrix()
+        self.rescale_play_matrix(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         p = p.start("move_from_play_to_work")
-        self.move_from_play_to_work()
+        self.move_from_play_to_work(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         p = p.stop()
@@ -235,15 +244,18 @@ class Network:
         if profile:
             print(p)
 
-    def rescale_play_matrix(self):
+    def rescale_play_matrix(self, nthreads: int = 1,
+                            profiler=None):
         """Rescale the play matrix"""
         from .utils import rescale_play_matrix
-        rescale_play_matrix(self)
+        rescale_play_matrix(network=self, nthreads=nthreads, profiler=profiler)
 
-    def move_from_play_to_work(self):
+    def move_from_play_to_work(self, nthreads: int = 1,
+                               profiler=None):
         """Move the population from play to work"""
         from .utils import move_population_from_play_to_work
-        move_population_from_play_to_work(self)
+        move_population_from_play_to_work(network=self, nthreads=nthreads,
+                                          profiler=profiler)
 
     def run(self, population: Population,
             output_dir: OutputFiles,
@@ -251,7 +263,8 @@ class Network:
             nsteps: int = None,
             profile: bool = True,
             s: int = None,
-            nthreads: int = None):
+            nthreads: int = None,
+            profiler=None):
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
            is None, then a random seed is used.
@@ -282,6 +295,8 @@ class Network:
            profile: bool
              Whether or not to profile the model run and print out the
              results
+           profiler: Profiler
+             The profiler to use - a new one is created if one isn't passed
            s: int
              Index of the seeding parameter to use
            nthreads: int
@@ -325,6 +340,7 @@ class Network:
                                play_infections=play_infections,
                                rngs=rngs, s=s, output_dir=output_dir,
                                nsteps=nsteps,
-                               profile=profile, nthreads=nthreads)
+                               profile=profile, nthreads=nthreads,
+                               profiler=profiler)
 
         return population

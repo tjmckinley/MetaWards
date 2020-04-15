@@ -20,6 +20,7 @@ def run_model(network: Network,
               population: Population = Population(initial=57104043),
               nsteps: int = None,
               profile: bool = True,
+              profiler: Profiler = None,
               nthreads: int = None,
               get_advance_functions=iterate_default,
               get_output_functions=extract_default):
@@ -52,6 +53,9 @@ def run_model(network: Network,
         profile: bool
             Whether or not to profile the model run and print out the
             results
+        profiler: Profiler
+            The profiler to use to profile - a new one is created if
+            one isn't passed
         s: int
             Index of the seeding parameter to use
         nthreads: int
@@ -68,7 +72,10 @@ def run_model(network: Network,
             The trajectory of the population for every day of the model run
     """
     if profile:
-        p = Profiler()
+        if profiler:
+            p = profiler
+        else:
+            p = Profiler()
     else:
         p = NullProfiler()
 
