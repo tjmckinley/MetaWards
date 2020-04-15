@@ -1,10 +1,10 @@
 
-import os
+from .._outputfiles import OutputFiles
 
 __all__ = ["open_files"]
 
 
-def open_files(output_dir: str):
+def open_files(output_dir: OutputFiles):
     """Opens all of the output files written to during the simulation,
        opening them all in the directory 'output_dir'
 
@@ -12,13 +12,12 @@ def open_files(output_dir: str):
     """
     files = []
 
-    files.append(open(os.path.join(output_dir, "WorkInfections.dat"), "w"))
-    files.append(open(os.path.join(output_dir, "NumberWardsInfected.dat"),
-                      "w"))
-    files.append(open(os.path.join(output_dir, "MeanXY.dat"), "w"))
-    files.append(open(os.path.join(output_dir, "PlayInfections.dat"), "w"))
-    files.append(open(os.path.join(output_dir, "TotalInfections.dat"), "w"))
-    files.append(open(os.path.join(output_dir, "VarXY.dat"), "w"))
-    files.append(open(os.path.join(output_dir, "Dispersal.dat"), "w"))
+    files.append(output_dir.open("WorkInfections.dat"))
+    files.append(output_dir.open("NumberWardsInfected.dat"))
+    files.append(output_dir.open("MeanXY.dat"))
+    files.append(output_dir.open("PlayInfections.dat"))
+    files.append(output_dir.open("TotalInfections.dat"))
+    files.append(output_dir.open("VarXY.dat"))
+    files.append(output_dir.open("Dispersal.dat"))
 
     return files

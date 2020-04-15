@@ -2,6 +2,7 @@
 import os as _os
 
 from .._network import Network
+from .._outputfiles import OutputFiles
 from ._workspace import Workspace
 from .._population import Population, Populations
 from ._profiler import Profiler, NullProfiler
@@ -17,7 +18,7 @@ __all__ = ["run_model"]
 def run_model(network: Network,
               infections, play_infections,
               rngs, s: int,
-              output_dir: str = ".",
+              output_dir: OutputFiles,
               population: Population = Population(initial=57104043),
               nsteps: int = None,
               profile: bool = True,
@@ -44,7 +45,7 @@ def run_model(network: Network,
         seed: int
             The random number seed used for this model run. If this is
             None then a very random random number seed will be used
-        output_dir: str
+        output_dir: OutputFiles
             The directory to write all of the output into
         nsteps: int
             The maximum number of steps to run in the outbreak. If None
@@ -90,14 +91,7 @@ def run_model(network: Network,
     # create space to hold the population trajectory
     trajectory = Populations()
 
-    if not _os.path.exists(output_dir):
-        _os.mkdir(output_dir)
-
-    if not _os.path.isdir(output_dir):
-        raise AssertionError(f"The specified output directory ({output_dir}) "
-                             f"does not appear to be a valid directory")
-
-    EXPORT = open(_os.path.join(output_dir, "ForMattData.dat"), "w")
+    EXPORT = output_dir.open("ForMattData.dat")
 
     p = p.start("open_files")
     files = open_files(output_dir)

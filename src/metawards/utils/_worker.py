@@ -1,6 +1,7 @@
 
 from .._network import Network
 from .._parameters import Parameters
+from .._outputfiles import OutputFiles
 
 import os
 import sys
@@ -68,12 +69,15 @@ def run_worker(arguments):
     from ._runner import redirect_output
 
     outdir = options["output_dir"]
+    auto_bzip = options["auto_bzip"]
+    del options["auto_bzip"]
 
-    if not os.path.exists(outdir):
-        os.mkdir(outdir)
+    with OutputFiles(outdir, check_empty=True, prompt=None,
+                     auto_bzip=auto_bzip) as output_dir:
+        options["output_dir"] = output_dir
 
-    with redirect_output(outdir):
-        global global_network
-        output = global_network.run(**options)
+        with redirect_output(output_dir.get_path()):
+            global global_network
+            output = global_network.run(**options)
 
-        return output
+            return output

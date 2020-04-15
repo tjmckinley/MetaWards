@@ -45,7 +45,17 @@ def test_openfiles(prompt=None):
 
         FILE.write("goodbye\n")
 
+        FILE = of.open("test2.txt", auto_bzip=True)
+        FILE.write("hello ")
+
+        FILE = of.open("test2.txt")
+        FILE.write("world\n")
+
     assert open(os.path.join(outdir, "test.txt")).readline() == "goodbye\n"
+
+    import bz2
+    line = bz2.open(os.path.join(outdir, "test2.txt.bz2"), "rt").readline()
+    assert line == "hello world\n"
 
     OutputFiles.remove(outdir, prompt=None)
 

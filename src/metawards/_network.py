@@ -6,6 +6,7 @@ from ._parameters import Parameters
 from ._nodes import Nodes
 from ._links import Links
 from ._population import Population
+from ._outputfiles import OutputFiles
 
 __all__ = ["Network"]
 
@@ -245,8 +246,8 @@ class Network:
         move_population_from_play_to_work(self)
 
     def run(self, population: Population,
+            output_dir: OutputFiles,
             seed: int = None,
-            output_dir: str = "tmp",
             nsteps: int = None,
             profile: bool = True,
             s: int = None,
@@ -270,11 +271,11 @@ class Network:
              The initial population at the start of the model outbreak.
              This is also used to set start date and day of the model
              outbreak
+           output_dir: OutputFiles
+             The directory to write all of the output into
            seed: int
              The random number seed used for this model run. If this is
              None then a very random random number seed will be used
-           output_dir: str
-             The directory to write all of the output into
            nsteps: int
              The maximum number of steps to run in the outbreak. If None
              then run until the outbreak has finished

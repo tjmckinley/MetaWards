@@ -199,6 +199,7 @@ class OutputFiles:
         self._output_dir = output_dir
         self._is_open = False
         self._open_files = {}
+        self._filenames = {}
 
         self._open_dir()
 
@@ -269,6 +270,7 @@ class OutputFiles:
 
         self._is_open = False
         self._open_files = {}
+        self._filenames = {}
 
     @staticmethod
     def remove(path, prompt=input):
@@ -358,13 +360,72 @@ class OutputFiles:
 
         if auto_bzip:
             import bz2
-            FILE = bz2.open(filename, f"w{mode}")
+            if not filename.endswith(".bz2"):
+                suffix = ".bz2"
+            else:
+                suffix = ""
+
+            FILE = bz2.open(f"{filename}{suffix}", f"w{mode}")
             self._open_files[filename] = FILE
+            self._filenames[filename] = f"{filename}{suffix}"
             return FILE
         else:
             FILE = open(filename, f"w{mode}")
             self._open_files[filename] = FILE
+            self._filenames[filename] = filename
             return FILE
+
+    def open_subdir(self, dirname):
+        """Create and open a sub-directory in this OutputFiles
+           called 'dirname'. This will inherit all properties,
+           e.g. check_empty, auto_bzip etc from this OutputFiles
+
+           Parameters
+           ----------
+           dirname: str
+             The name of the subdirectory to open
+
+           Returns
+           -------
+           subdir: OutputFiles
+             The open subdirectory
+        """
+        import os
+
+        self._open_dir()
+
+        outdir = self._output_dir
+        p = _Path(_expand(dirname))
+
+        if not p.is_absolute():
+            p = _Path(os.path.join(outdir, dirname))
+
+        subdir = str(p.absolute().resolve())
+
+        prefix = os.path.commonprefix([outdir, subdir])
+        if prefix != outdir:
+            raise ValueError(f"You cannot try to open {dirname} as "
+                             f"this is not in the output directory "
+                             f"{outdir} - common prefix is {prefix}")
+
+        return OutputFiles(outdir=subdir, check_empty=self._check_empty,
+                           force_empty=self._force_empty, prompt=self._prompt,
+                           auto_bzip=self._auto_bzip)
+
+    def auto_bzip(self):
+        """Return whether the default is to automatically bzip2 files"""
+        return self._auto_bzip
+
+    def get_path(self):
+        """Return the full expanded path to this directory"""
+        return self._output_dir
+
+    def get_filename(self, filename):
+        """Return the full expanded filename for 'filename'"""
+        if filename in self._filenames:
+            return self._filenames[filename]
+        else:
+            raise FileNotFoundError(f"No open file {filename}")
 
     def close(self):
         """Close all of the files and this directory"""
