@@ -25,12 +25,9 @@ Functions
     get_min_max_distances
     get_number_of_processes
     how_many_vaccinated
-    infect_additional_seeds
     initialise_infections
     initialise_play_infections
-    iterate_weekend
     iterate
-    load_additional_seeds
     move_population_from_work_to_play
     move_population_from_play_to_work
     open_files
@@ -51,8 +48,6 @@ Functions
     run_model
     run_models
     run_worker
-    seed_all_wards
-    seed_infection_at_node
     seed_ran_binomial
     string_to_ints
     vaccinate_same_id
