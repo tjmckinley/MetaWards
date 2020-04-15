@@ -138,12 +138,12 @@ class OutputFiles:
        --------
        >>> output = OutputFiles(output_dir="output", check_empty=True)
        >>> FILE = output.open("output.txt")
-       >>> FILE.write("some output\n")
+       >>> FILE.write("some output\\n")
        >>> FILE = output.open("something.csv.bz2", auto_bzip=True)
-       >>> FILE.write("something,else,is,here\n")
+       >>> FILE.write("something,else,is,here\\n")
        >>> output.flush()
        >>> FILE = output.open("output.txt")
-       >>> FILE.write("some more output\n")
+       >>> FILE.write("some more output\\n")
        >>> output.close()
 
        Note that you can also use OutputFiles in a contexthandler, to
@@ -151,7 +151,7 @@ class OutputFiles:
 
        >>> with OutputFiles(output_dir="output") as output:
        >>>     FILE = output.open("output.txt")
-       >>>     FILE.write("something\n")
+       >>>     FILE.write("something\\n")
     """
     def __init__(self, output_dir: str = "output",
                  check_empty: bool = True,
