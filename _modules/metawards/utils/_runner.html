@@ -222,7 +222,7 @@
             <span class="sa">f</span><span class="s2">&quot;Unrecognised parallelisation scheme </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="redirect_output"><a class="viewcode-back" href="../../../api/generated/metawards.utils.redirect_output.html#metawards.utils.redirect_output">[docs]</a><span class="nd">@_contextmanager</span>
+<span class="nd">@_contextmanager</span>
 <span class="k">def</span> <span class="nf">redirect_output</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Nice way to redirect stdout and stderr - thanks to</span>
 <span class="sd">       Emil Stenström in</span>
@@ -242,10 +242,10 @@
         <span class="n">_sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">old_out</span>
         <span class="n">_sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">old_err</span>
         <span class="n">new_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">new_err</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">new_err</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">run_models</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">VariableSets</span><span class="p">,</span>
+<div class="viewcode-block" id="run_models"><a class="viewcode-back" href="../../../api/generated/metawards.utils.run_models.html#metawards.utils.run_models">[docs]</a><span class="k">def</span> <span class="nf">run_models</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">VariableSets</span><span class="p">,</span>
                <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
                <span class="n">nprocs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                <span class="n">nsteps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
@@ -442,7 +442,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised parallelisation scheme &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">outputs</span>
+    <span class="k">return</span> <span class="n">outputs</span></div>
 </pre></div>
 
            </div>
