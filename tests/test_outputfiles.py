@@ -1,0 +1,53 @@
+
+from metawards import OutputFiles
+
+import pytest
+import os
+
+script_dir = os.path.dirname(__file__)
+
+
+def test_openfiles(prompt=None):
+    outdir = os.path.join(script_dir, "test_openfiles_output")
+
+    if os.path.exists(outdir):
+        OutputFiles.remove(outdir, prompt=prompt)
+
+    of = OutputFiles(outdir)
+
+    assert of.is_open()
+    assert not of.is_closed()
+
+    with pytest.raises(ValueError):
+        of.open("../test.txt")
+
+    with pytest.raises(ValueError):
+        of.open("/test.txt")
+
+    FILE = of.open("test.txt")
+
+    assert of.is_open()
+
+    FILE.write("hello\n")
+
+    of.close()
+
+    assert of.is_closed()
+
+    assert open(os.path.join(outdir, "test.txt")).readline() == "hello\n"
+
+    with pytest.raises(FileExistsError):
+        OutputFiles(outdir, prompt=None)
+
+    with OutputFiles(outdir, force_empty=True, prompt=None) as of:
+        FILE = of.open("test.txt")
+        assert of.is_open()
+
+        FILE.write("goodbye\n")
+
+    assert open(os.path.join(outdir, "test.txt")).readline() == "goodbye\n"
+
+    OutputFiles.remove(outdir, prompt=None)
+
+if __name__ == "__main__":
+    test_openfiles(input)

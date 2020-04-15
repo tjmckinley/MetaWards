@@ -34,7 +34,7 @@ def iterate_default(nthreads: int = 1, setup=False, **kwargs):
         funcs = [setup_seed_wards,
                  setup_additional_seeds]
 
-    elif nthreads == 1:
+    elif nthreads is None or nthreads == 1:
         from ._advance_additional import advance_additional
         from ._advance_foi import advance_foi
         from ._advance_recovery import advance_recovery
