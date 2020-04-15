@@ -178,7 +178,7 @@
 
 <div class="viewcode-block" id="NullProfiler"><a class="viewcode-back" href="../../../api/generated/metawards.utils.NullProfiler.html#metawards.utils.NullProfiler">[docs]</a><span class="k">class</span> <span class="nc">NullProfiler</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This is a null profiler that does nothing&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="NullProfiler.__init__"><a class="viewcode-back" href="../../../api/generated/metawards.utils.NullProfiler.html#metawards.utils.NullProfiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="NullProfiler.__init__"><a class="viewcode-back" href="../../../api/generated/metawards.utils.NullProfiler.html#metawards.utils.NullProfiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
     <span class="k">def</span> <span class="nf">is_null</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -199,7 +199,7 @@
 <span class="sd">       instrumenting of the code. It is used for sub-function</span>
 <span class="sd">       profiling.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Profiler.__init__"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Profiler.__init__"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_children</span> <span class="o">=</span> <span class="p">[]</span>
@@ -277,7 +277,7 @@
             <span class="c1"># this is the top-level profiler - just return the child total</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_total</span><span class="p">()</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_end</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.000001</span>  <span class="c1"># ns to ms</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.000001</span>    <span class="c1"># ns to ms</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -334,7 +334,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 14, 2020.
+        Last updated on Apr 15, 2020.
       </span>
 
     </p>

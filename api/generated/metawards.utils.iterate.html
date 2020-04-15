@@ -36,9 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="metawards.utils.load_additional_seeds" href="metawards.utils.load_additional_seeds.html" />
-    <link rel="prev" title="metawards.utils.iterate_weekend" href="metawards.utils.iterate_weekend.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -193,7 +191,7 @@
 <h1>metawards.utils.iterate<a class="headerlink" href="#metawards-utils-iterate" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.iterate">
-<code class="descclassname">metawards.utils.</code><code class="descname">iterate</code><span class="sig-paren">(</span><em>network: Network</em>, <em>population: Population</em>, <em>infections</em>, <em>play_infections</em>, <em>rngs</em>, <em>nthreads: int</em>, <em>get_advance_functions=iterate_default</em>, <em>profiler: Profiler = None</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.iterate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">iterate</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>population: metawards._population.Population</em>, <em>infections</em>, <em>play_infections</em>, <em>rngs</em>, <em>nthreads: int</em>, <em>get_advance_functions</em>, <em>profiler: metawards.utils._profiler.Profiler = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_iterate.html#iterate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.iterate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Advance the infection by one day for the passed Network,
 acting on the passed Population.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -228,22 +226,13 @@ if you want to disable profiling</li>
           </div>
           <footer>
   
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="metawards.utils.load_additional_seeds.html" class="btn btn-neutral float-right" title="metawards.utils.load_additional_seeds" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="metawards.utils.iterate_weekend.html" class="btn btn-neutral float-left" title="metawards.utils.iterate_weekend" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 14, 2020.
+        Last updated on Apr 15, 2020.
       </span>
 
     </p>
