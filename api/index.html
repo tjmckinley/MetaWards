@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="MetaWards" href="index_MetaWards.html" />
+    <link rel="next" title="MetaWards.app" href="index_MetaWards_app.html" />
     <link rel="prev" title="Running on a cluster" href="../cluster_usage.html" /> 
 </head>
 
@@ -101,9 +101,10 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index_MetaWards.html">MetaWards</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_app.html">MetaWards.app</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards.html">MetaWards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_iterators.html">MetaWards.iterators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
 </ul>
 </li>
 </ul>
@@ -181,24 +182,30 @@
 <p>The metawards program and associated Python module is composed
 of three main units;</p>
 <ul class="simple">
+<li>The <a class="reference external" href="index_MetaWards_app.html">metawards</a> command line program, which is
+what most people would use to run metawards. This program comes with
+full help that is provided by typing <code class="docutils literal notranslate"><span class="pre">metawards</span> <span class="pre">--help</span></code>.</li>
 <li>The <a class="reference external" href="index_MetaWards.html">metawards</a> top-level Python module, which is
 what you should use if you want to write new Python programs that
 integrate metawards functionality. These could include plugging
 metawards as a model into a higher-level statictical
 analysis package.</li>
-<li>The <a class="reference external" href="index_MetaWards_app.html">metawards</a> command line program, which is
-what most people would use to run metawards. This program comes with
-full help that is provided by typing <code class="docutils literal notranslate"><span class="pre">metawards</span> <span class="pre">--help</span></code>.</li>
-<li>The <a class="reference external" href="index_MetaWards_utils.html">metawards.utils</a> utility Python module which
-contains lots of functions that are used by metawards to build and
+<li>The <a class="reference external" href="index_MetaWards_iterators.html">metawards.iterators</a> which contains
+all of the package-supplied iterators that are used to advance the
+model infection from day to day. These are used to customise exactly
+how an infection progresses, and how control measures are applied.
+This is described in the <a class="reference external" href="TUTORIAL_LINK">tutorial</a>.</li>
+<li>The <a class="reference external" href="index_MetaWards_utils.html">metawards.utils</a> utility Python module
+which contains lots of functions that are used by metawards to build and
 perform model runs. These functions are internal to metawards and are
 not designed to be used outside of this program.</li>
 </ul>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="index_MetaWards.html">MetaWards</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index_MetaWards_app.html">MetaWards.app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_MetaWards.html">MetaWards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_MetaWards_iterators.html">MetaWards.iterators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
 </ul>
 </div>
 </div>
@@ -211,7 +218,7 @@ not designed to be used outside of this program.</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="index_MetaWards.html" class="btn btn-neutral float-right" title="MetaWards" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="index_MetaWards_app.html" class="btn btn-neutral float-right" title="MetaWards.app" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../cluster_usage.html" class="btn btn-neutral float-left" title="Running on a cluster" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
