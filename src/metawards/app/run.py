@@ -177,6 +177,21 @@ def parse_args():
                              "queueing system. Use this option if the "
                              "auto-detection fails.")
 
+    parser.add_argument('--auto-bzip', action="store_true",
+                        default=False,
+                        help="Whether or not to automatically bz2 compress "
+                             "all output files as they are written.")
+
+    parser.add_argument('--force-overwrite-output', action="store_true",
+                        default=False,
+                        help="Whether or not to force overwriting of any "
+                             "existing output. Using this option will "
+                             "tell metawards that it is safe to delete "
+                             "the contents of the output directory "
+                             "specified in by '--output' if it already "
+                             "exists. Dangerous as this can remove "
+                             "existing output files")
+
     parser.add_argument('--profile', action="store_true",
                         default=None, help="Enable profiling of the code")
 
@@ -533,8 +548,6 @@ def cli():
         print("STARTING SCOOP PROCESS")
 
     import sys
-    import bz2
-    import os
 
     args, parser = parse_args()
 
@@ -743,27 +756,40 @@ def cli():
                             profile=profile)
 
     print("\nRun the model...")
+    from metawards import OutputFiles
     from metawards.utils import run_models
 
-    result = run_models(network=network, variables=variables,
-                        population=population, nprocs=nprocs,
-                        nthreads=nthreads, seed=args.seed,
-                        nsteps=args.nsteps,
-                        output_dir=args.output,
-                        profile=profile, parallel_scheme=parallel_scheme)
+    outdir = args.output
 
-    if result is None or len(result) == 0:
-        print("No output - end of run")
-        return 0
+    if outdir is None:
+        outdir = "output"
 
-    # write the result to a csv file that can be easily read by R or
-    # pandas - this will be written compressed to save space
-    results_file = os.path.join(args.output, "results.csv.bz2")
-    print(f"\nWriting a summary of all results into the compressed\n"
-          f"csv file {results_file}. You can use this to quickly\n"
-          f"look at statistics across all runs using e.g. R or pandas")
+    if args.force_overwrite_output:
+        prompt = None
+    else:
+        prompt = input
 
-    with bz2.open(results_file, "wt") as FILE:
+    with OutputFiles(outdir, force_empty=args.force_overwrite_output,
+                     auto_bzip=args.auto_bzip, prompt=prompt) as output_dir:
+        result = run_models(network=network, variables=variables,
+                            population=population, nprocs=nprocs,
+                            nthreads=nthreads, seed=args.seed,
+                            nsteps=args.nsteps,
+                            output_dir=output_dir,
+                            profile=profile, parallel_scheme=parallel_scheme)
+
+        if result is None or len(result) == 0:
+            print("No output - end of run")
+            return 0
+
+        # write the result to a csv file that can be easily read by R or
+        # pandas - this will be written compressed to save space
+        RESULTS = output_dir.open("results.csv", auto_bzip=True)
+        print(f"\nWriting a summary of all results into the compressed\n"
+              f"csv file {output_dir.get_filename('results.csv')}.\n"
+              f"You can use this to quickly look at statistics across\n"
+              f"all runs using e.g. R or pandas")
+
         varnames = result[0][0].variable_names()
 
         if varnames is None or len(varnames) == 0:
@@ -778,9 +804,9 @@ def cli():
         else:
             datestring = ""
 
-        FILE.write(f"fingerprint,repeat,{varnames}{datestring}"
-                   f"day,susceptibles,latent,"
-                   f"total,n_inf_wards\n")
+        RESULTS.write(f"fingerprint,repeat,{varnames}{datestring}"
+                      f"day,susceptibles,latent,"
+                      f"total,n_inf_wards\n")
         for varset, trajectory in result:
             varvals = varset.variable_values()
             if varvals is None or len(varvals) == 0:
@@ -797,8 +823,8 @@ def cli():
                 else:
                     d = ""
 
-                FILE.write(f"{start}{pop.day},{d}{pop.susceptibles},"
-                           f"{pop.latent},{pop.total},{pop.n_inf_wards}\n")
+                RESULTS.write(f"{start}{pop.day},{d}{pop.susceptibles},"
+                              f"{pop.latent},{pop.total},{pop.n_inf_wards}\n")
 
     print("End of the run")
 

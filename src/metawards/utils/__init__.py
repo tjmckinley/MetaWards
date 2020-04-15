@@ -92,8 +92,6 @@ from ._ran_binomial import *
 from ._parallel import *
 from ._assert_sane_network import *
 from ._extract_data import *
-from ._extract_data_for_graphics import *
 from ._vaccination import *
 from ._clear_all_infections import *
-from ._open_files import *
 

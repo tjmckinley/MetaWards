@@ -1,13 +1,13 @@
 
 import os
 
-from metawards import Parameters, Network, Population
+from metawards import Parameters, Network, Population, OutputFiles
 
 script_dir = os.path.dirname(__file__)
 ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
 
 
-def test_integration_ncov():
+def test_integration_ncov(prompt=None):
     """This test repeats main_RepeatsNcov.c and validates that the
        various stages report the same results as the original C code
        for ncov
@@ -57,9 +57,15 @@ def test_integration_ncov():
     network.update(params, profile=True)
 
     print("Run the model...")
-    trajectory = network.run(population=population, seed=seed,
-                             s=-1, nsteps=29, profile=True,
-                             nthreads=1)
+    outdir = os.path.join(script_dir, "test_integration_output")
+
+    with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
+        trajectory = network.run(population=population, seed=seed,
+                                 output_dir=output_dir,
+                                 s=-1, nsteps=29, profile=True,
+                                 nthreads=1)
+
+    OutputFiles.remove(outdir, prompt=None)
 
     print("End of the run")
 
@@ -79,7 +85,7 @@ def test_integration_ncov():
     assert trajectory[-1] == expected
 
 
-def test_integration_pox():
+def test_integration_pox(prompt=None):
     """This test repeats main_RepeatsNcov.c and validates that the
        various stages report the same results as the original C code
        for the POX
@@ -128,10 +134,16 @@ def test_integration_pox():
     params = params.set_variables(variables[0])
     network.update(params, profile=True)
 
-    print("Run the model...")
-    trajectory = network.run(population=population, seed=seed,
-                             s=-1, nsteps=31, profile=True,
-                             nthreads=1)
+    outdir = os.path.join(script_dir, "test_integration_output")
+
+    with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
+        print("Run the model...")
+        trajectory = network.run(population=population, seed=seed,
+                                 output_dir=output_dir,
+                                 s=-1, nsteps=31, profile=True,
+                                 nthreads=1)
+
+    OutputFiles.remove(outdir, prompt=None)
 
     print("End of the run")
 
@@ -160,12 +172,11 @@ if __name__ == "__main__":
         n = None
 
     if n is None or n == "all":
-        test_integration_ncov()
-        test_integration_pox()
+        test_integration_ncov(input)
+        test_integration_pox(input)
     elif n == "pox":
-        test_integration_pox()
+        test_integration_pox(input)
     elif n == "ncov":
-        test_integration_ncov()
+        test_integration_ncov(input)
     else:
-        test_integration_ncov()
-
+        test_integration_ncov(input)
