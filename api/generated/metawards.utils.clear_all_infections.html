@@ -194,10 +194,21 @@
 <h1>metawards.utils.clear_all_infections<a class="headerlink" href="#metawards-utils-clear-all-infections" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.clear_all_infections">
-<code class="descclassname">metawards.utils.</code><code class="descname">clear_all_infections</code><span class="sig-paren">(</span><em>infections</em>, <em>play_infections</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_clear_all_infections.html#clear_all_infections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.clear_all_infections" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clears all infections (held in the list of array(int) in infections,
-and array(int) in play_infections) associated with the
-passed network</p>
+<code class="descclassname">metawards.utils.</code><code class="descname">clear_all_infections</code><span class="sig-paren">(</span><em>infections</em>, <em>play_infections</em>, <em>nthreads: int = 1</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.clear_all_infections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears all infections associated with a model run</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>infections</strong> – Space that is used to hold all of the ‘work’ infections</li>
+<li><strong>play_infections</strong> – Space that is used to hold all of the ‘play’ infections</li>
+<li><strong>nthreads</strong> (<em>int</em>) – Number of threads to use to clear the arrays</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

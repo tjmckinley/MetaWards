@@ -206,7 +206,7 @@
         <span class="n">funcs</span> <span class="o">=</span> <span class="p">[</span><span class="n">setup_seed_wards</span><span class="p">,</span>
                  <span class="n">setup_additional_seeds</span><span class="p">]</span>
 
-    <span class="k">elif</span> <span class="n">nthreads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">nthreads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">._advance_additional</span> <span class="kn">import</span> <span class="n">advance_additional</span>
         <span class="kn">from</span> <span class="nn">._advance_foi</span> <span class="kn">import</span> <span class="n">advance_foi</span>
         <span class="kn">from</span> <span class="nn">._advance_recovery</span> <span class="kn">import</span> <span class="n">advance_recovery</span>

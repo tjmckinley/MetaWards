@@ -349,6 +349,21 @@
                              <span class="s2">&quot;queueing system. Use this option if the &quot;</span>
                              <span class="s2">&quot;auto-detection fails.&quot;</span><span class="p">)</span>
 
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--auto-bzip&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Whether or not to automatically bz2 compress &quot;</span>
+                             <span class="s2">&quot;all output files as they are written.&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--force-overwrite-output&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Whether or not to force overwriting of any &quot;</span>
+                             <span class="s2">&quot;existing output. Using this option will &quot;</span>
+                             <span class="s2">&quot;tell metawards that it is safe to delete &quot;</span>
+                             <span class="s2">&quot;the contents of the output directory &quot;</span>
+                             <span class="s2">&quot;specified in by &#39;--output&#39; if it already &quot;</span>
+                             <span class="s2">&quot;exists. Dangerous as this can remove &quot;</span>
+                             <span class="s2">&quot;existing output files&quot;</span><span class="p">)</span>
+
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--profile&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
                         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Enable profiling of the code&quot;</span><span class="p">)</span>
 
@@ -705,8 +720,6 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STARTING SCOOP PROCESS&quot;</span><span class="p">)</span>
 
     <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">import</span> <span class="nn">bz2</span>
-    <span class="kn">import</span> <span class="nn">os</span>
 
     <span class="n">args</span><span class="p">,</span> <span class="n">parser</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">()</span>
 
@@ -915,27 +928,40 @@
                             <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Run the model...&quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">OutputFiles</span>
     <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">run_models</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">run_models</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
-                        <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">nprocs</span><span class="o">=</span><span class="n">nprocs</span><span class="p">,</span>
-                        <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
-                        <span class="n">nsteps</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nsteps</span><span class="p">,</span>
-                        <span class="n">output_dir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
-                        <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="n">parallel_scheme</span><span class="o">=</span><span class="n">parallel_scheme</span><span class="p">)</span>
+    <span class="n">outdir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
 
-    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No output - end of run&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">outdir</span> <span class="o">=</span> <span class="s2">&quot;output&quot;</span>
 
-    <span class="c1"># write the result to a csv file that can be easily read by R or</span>
-    <span class="c1"># pandas - this will be written compressed to save space</span>
-    <span class="n">results_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="s2">&quot;results.csv.bz2&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Writing a summary of all results into the compressed</span><span class="se">\n</span><span class="s2">&quot;</span>
-          <span class="sa">f</span><span class="s2">&quot;csv file </span><span class="si">{</span><span class="n">results_file</span><span class="si">}</span><span class="s2">. You can use this to quickly</span><span class="se">\n</span><span class="s2">&quot;</span>
-          <span class="sa">f</span><span class="s2">&quot;look at statistics across all runs using e.g. R or pandas&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite_output</span><span class="p">:</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="nb">input</span>
 
-    <span class="k">with</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">OutputFiles</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">force_empty</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">force_overwrite_output</span><span class="p">,</span>
+                     <span class="n">auto_bzip</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">auto_bzip</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_dir</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">run_models</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                            <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">nprocs</span><span class="o">=</span><span class="n">nprocs</span><span class="p">,</span>
+                            <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+                            <span class="n">nsteps</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nsteps</span><span class="p">,</span>
+                            <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+                            <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="n">parallel_scheme</span><span class="o">=</span><span class="n">parallel_scheme</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No output - end of run&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="c1"># write the result to a csv file that can be easily read by R or</span>
+        <span class="c1"># pandas - this will be written compressed to save space</span>
+        <span class="n">RESULTS</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;results.csv&quot;</span><span class="p">,</span> <span class="n">auto_bzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Writing a summary of all results into the compressed</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;csv file </span><span class="si">{</span><span class="n">output_dir</span><span class="o">.</span><span class="n">get_filename</span><span class="p">(</span><span class="s1">&#39;results.csv&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;You can use this to quickly look at statistics across</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;all runs using e.g. R or pandas&quot;</span><span class="p">)</span>
+
         <span class="n">varnames</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">varnames</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">varnames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -950,9 +976,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">datestring</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-        <span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fingerprint,repeat,</span><span class="si">{</span><span class="n">varnames</span><span class="si">}{</span><span class="n">datestring</span><span class="si">}</span><span class="s2">&quot;</span>
-                   <span class="sa">f</span><span class="s2">&quot;day,susceptibles,latent,&quot;</span>
-                   <span class="sa">f</span><span class="s2">&quot;total,n_inf_wards</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fingerprint,repeat,</span><span class="si">{</span><span class="n">varnames</span><span class="si">}{</span><span class="n">datestring</span><span class="si">}</span><span class="s2">&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;day,susceptibles,latent,&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;total,n_inf_wards</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">varset</span><span class="p">,</span> <span class="n">trajectory</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
             <span class="n">varvals</span> <span class="o">=</span> <span class="n">varset</span><span class="o">.</span><span class="n">variable_values</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">varvals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">varvals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -969,8 +995,8 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">d</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-                <span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">d</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">susceptibles</span><span class="si">}</span><span class="s2">,&quot;</span>
-                           <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">latent</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">n_inf_wards</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">d</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">susceptibles</span><span class="si">}</span><span class="s2">,&quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">latent</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">n_inf_wards</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;End of the run&quot;</span><span class="p">)</span>
 

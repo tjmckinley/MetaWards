@@ -25,6 +25,7 @@ metawards.Population
    
       ~Population.date
       ~Population.day
+      ~Population.infecteds
       ~Population.initial
       ~Population.latent
       ~Population.n_inf_wards

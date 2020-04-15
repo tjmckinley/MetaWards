@@ -198,7 +198,7 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.add_wards_network_distance.html#metawards.utils.add_wards_network_distance" title="metawards.utils.add_wards_network_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_wards_network_distance</span></code></a>(network)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.add_wards_network_distance.html#metawards.utils.add_wards_network_distance" title="metawards.utils.add_wards_network_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_wards_network_distance</span></code></a>(network,&nbsp;nthreads)</td>
 <td>Reads the location data in network.parameters.input_files.position and adds those locations to all of the nodes in the passed network.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.allocate_vaccination.html#metawards.utils.allocate_vaccination" title="metawards.utils.allocate_vaccination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">allocate_vaccination</span></code></a>(network,&nbsp;output_dir)</td>
@@ -213,8 +213,8 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.build_wards_network.html#metawards.utils.build_wards_network" title="metawards.utils.build_wards_network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_wards_network</span></code></a>(params,&nbsp;profiler,&nbsp;…)</td>
 <td>Creates a network of wards using the information provided in the file specified in parameters.input_files.work.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.clear_all_infections.html#metawards.utils.clear_all_infections" title="metawards.utils.clear_all_infections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear_all_infections</span></code></a>(infections,&nbsp;play_infections)</td>
-<td>Clears all infections (held in the list of array(int) in infections, and array(int) in play_infections) associated with the passed network</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.clear_all_infections.html#metawards.utils.clear_all_infections" title="metawards.utils.clear_all_infections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear_all_infections</span></code></a>(infections,&nbsp;…)</td>
+<td>Clears all infections associated with a model run</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.create_int_array.html#metawards.utils.create_int_array" title="metawards.utils.create_int_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_int_array</span></code></a>(size,&nbsp;default)</td>
 <td>Create a new array.array of the specified size.</td>
@@ -231,11 +231,11 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.delete_ran_binomial.html#metawards.utils.delete_ran_binomial" title="metawards.utils.delete_ran_binomial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_ran_binomial</span></code></a>(rng)</td>
 <td>Delete the passed random number generator.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.extract_data.html#metawards.utils.extract_data" title="metawards.utils.extract_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_data</span></code></a>(network,&nbsp;infections,&nbsp;…[,&nbsp;…])</td>
-<td>Extract data from the network and infections and write this to the output files in ‘files’ (these must have been opened by ‘open_files’).</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.extract_data.html#metawards.utils.extract_data" title="metawards.utils.extract_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_data</span></code></a>(network,&nbsp;population,&nbsp;workspace,&nbsp;…)</td>
+<td>Extract data from the network and write this to the specified output directory.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.extract_data_for_graphics.html#metawards.utils.extract_data_for_graphics" title="metawards.utils.extract_data_for_graphics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_data_for_graphics</span></code></a>(network,&nbsp;…)</td>
-<td>Extract data that will be used for graphical analysis</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_data_for_graphics</span></code></td>
+<td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.fill_in_gaps.html#metawards.utils.fill_in_gaps" title="metawards.utils.fill_in_gaps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_in_gaps</span></code></a>(network)</td>
 <td>Fills in gaps in the network</td>
@@ -243,7 +243,7 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.get_available_num_threads.html#metawards.utils.get_available_num_threads" title="metawards.utils.get_available_num_threads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_num_threads</span></code></a>()</td>
 <td>Return the maximum number of threads that are recommended for this computer (the OMP_NUM_THREADS value)</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.get_min_max_distances.html#metawards.utils.get_min_max_distances" title="metawards.utils.get_min_max_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_min_max_distances</span></code></a>(network)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.get_min_max_distances.html#metawards.utils.get_min_max_distances" title="metawards.utils.get_min_max_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_min_max_distances</span></code></a>(network,&nbsp;nthreads,&nbsp;…)</td>
 <td>Return the minimum and maximum distances recorded in the network</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.get_number_of_processes.html#metawards.utils.get_number_of_processes" title="metawards.utils.get_number_of_processes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_number_of_processes</span></code></a>(parallel_scheme,&nbsp;nprocs)</td>
@@ -261,14 +261,14 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.iterate.html#metawards.utils.iterate" title="metawards.utils.iterate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterate</span></code></a>(network,&nbsp;population,&nbsp;infections,&nbsp;…)</td>
 <td>Advance the infection by one day for the passed Network, acting on the passed Population.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.move_population_from_work_to_play.html#metawards.utils.move_population_from_work_to_play" title="metawards.utils.move_population_from_work_to_play"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_population_from_work_to_play</span></code></a>(network)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.move_population_from_work_to_play.html#metawards.utils.move_population_from_work_to_play" title="metawards.utils.move_population_from_work_to_play"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_population_from_work_to_play</span></code></a>(network,&nbsp;…)</td>
 <td>This function is not used or implemented, but is implied by the naming scheme…</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.move_population_from_play_to_work.html#metawards.utils.move_population_from_play_to_work" title="metawards.utils.move_population_from_play_to_work"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_population_from_play_to_work</span></code></a>(network)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.move_population_from_play_to_work.html#metawards.utils.move_population_from_play_to_work" title="metawards.utils.move_population_from_play_to_work"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_population_from_play_to_work</span></code></a>(network,&nbsp;…)</td>
 <td>And Vice Versa From Work to Play The relevant parameters are network.params.play_to_work and                             network.params.work_to_play</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.open_files.html#metawards.utils.open_files" title="metawards.utils.open_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_files</span></code></a>(output_dir)</td>
-<td>Opens all of the output files written to during the simulation, opening them all in the directory ‘output_dir’</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_files</span></code></td>
+<td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.prepare_worker.html#metawards.utils.prepare_worker" title="metawards.utils.prepare_worker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_worker</span></code></a>(params)</td>
 <td>Prepare a worker to receive work to run a model using the passed parameters.</td>
@@ -285,32 +285,32 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.read_done_file.html#metawards.utils.read_done_file" title="metawards.utils.read_done_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_done_file</span></code></a>(filename)</td>
 <td>This function reads the ‘done_file’ from ‘filename’ returning the list of seeded nodes</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.recalculate_work_denominator_day.html#metawards.utils.recalculate_work_denominator_day" title="metawards.utils.recalculate_work_denominator_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recalculate_work_denominator_day</span></code></a>(network)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.recalculate_work_denominator_day.html#metawards.utils.recalculate_work_denominator_day" title="metawards.utils.recalculate_work_denominator_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recalculate_work_denominator_day</span></code></a>(network,&nbsp;…)</td>
 <td>Recalculate the denominator_d for the wards (nodes) in the network for the normal links</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.recalculate_play_denominator_day.html#metawards.utils.recalculate_play_denominator_day" title="metawards.utils.recalculate_play_denominator_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recalculate_play_denominator_day</span></code></a>(network)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.recalculate_play_denominator_day.html#metawards.utils.recalculate_play_denominator_day" title="metawards.utils.recalculate_play_denominator_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recalculate_play_denominator_day</span></code></a>(network,&nbsp;…)</td>
 <td>Recalculate the denominator_d for the wards (nodes) in the network for the play links</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.redirect_output.html#metawards.utils.redirect_output" title="metawards.utils.redirect_output"><code class="xref py py-obj docutils literal notranslate"><span class="pre">redirect_output</span></code></a>(outdir)</td>
 <td>Nice way to redirect stdout and stderr - thanks to Emil Stenström in <a class="reference external" href="https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python">https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python</a></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.rescale_play_matrix.html#metawards.utils.rescale_play_matrix" title="metawards.utils.rescale_play_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_play_matrix</span></code></a>(network)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.rescale_play_matrix.html#metawards.utils.rescale_play_matrix" title="metawards.utils.rescale_play_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_play_matrix</span></code></a>(network,&nbsp;nthreads,&nbsp;profiler)</td>
 <td>Static Play At Home rescaling.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.resize_array.html#metawards.utils.resize_array" title="metawards.utils.resize_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize_array</span></code></a>(a,&nbsp;size,&nbsp;default)</td>
 <td>Resize the passed array to size ‘size’, adding ‘default’ if this will grow the array</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.reset_everything.html#metawards.utils.reset_everything" title="metawards.utils.reset_everything"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_everything</span></code></a>(network)</td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.reset_everything.html#metawards.utils.reset_everything" title="metawards.utils.reset_everything"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_everything</span></code></a>(network,&nbsp;profiler,&nbsp;nthreads)</td>
+<td>Reset everything in the passed network so that it can be used for a new model run</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.reset_play_matrix.html#metawards.utils.reset_play_matrix" title="metawards.utils.reset_play_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_play_matrix</span></code></a>(network)</td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.reset_play_matrix.html#metawards.utils.reset_play_matrix" title="metawards.utils.reset_play_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_play_matrix</span></code></a>(network,&nbsp;nthreads)</td>
+<td>Resets the play entries in the passed Network.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.reset_play_susceptibles.html#metawards.utils.reset_play_susceptibles" title="metawards.utils.reset_play_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_play_susceptibles</span></code></a>(network)</td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.reset_play_susceptibles.html#metawards.utils.reset_play_susceptibles" title="metawards.utils.reset_play_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_play_susceptibles</span></code></a>(network,&nbsp;nthreads)</td>
+<td>Resets the ward entries in the passed Network.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.reset_work_matrix.html#metawards.utils.reset_work_matrix" title="metawards.utils.reset_work_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_work_matrix</span></code></a>(network)</td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.reset_work_matrix.html#metawards.utils.reset_work_matrix" title="metawards.utils.reset_work_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_work_matrix</span></code></a>(network[,&nbsp;nthreads])</td>
+<td>Resets the work entries in the passed Network.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.run_model.html#metawards.utils.run_model" title="metawards.utils.run_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_model</span></code></a>(network,&nbsp;infections,&nbsp;…[,&nbsp;…])</td>
 <td>Actually run the model…</td>

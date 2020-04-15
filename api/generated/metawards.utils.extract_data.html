@@ -37,7 +37,6 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="metawards.utils.extract_data_for_graphics" href="metawards.utils.extract_data_for_graphics.html" />
     <link rel="prev" title="metawards.utils.delete_ran_binomial" href="metawards.utils.delete_ran_binomial.html" /> 
 </head>
 
@@ -194,14 +193,37 @@
 <h1>metawards.utils.extract_data<a class="headerlink" href="#metawards-utils-extract-data" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.extract_data">
-<code class="descclassname">metawards.utils.</code><code class="descname">extract_data</code><span class="sig-paren">(</span><em>network: Network</em>, <em>infections</em>, <em>play_infections</em>, <em>files</em>, <em>workspace: Workspace</em>, <em>population: Population</em>, <em>is_dangerous=None</em>, <em>nthreads: int = None</em>, <em>profiler: Profiler = None</em>, <em>SELFISOLATE: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.utils.extract_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract data from the network and
-infections and write this to the output files in ‘files’
-(these must have been opened by ‘open_files’). You need
-to pass in a Workspace that has been set up for the
-passed network and parameters</p>
-<p>If SELFISOLATE is True then you need to pass in
-is_dangerous, which should be an array(“i”, network.nnodes)</p>
+<code class="descclassname">metawards.utils.</code><code class="descname">extract_data</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>population: metawards._population.Population</em>, <em>workspace: metawards.utils._workspace.Workspace</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>infections</em>, <em>play_infections</em>, <em>rngs</em>, <em>get_output_functions</em>, <em>nthreads: int</em>, <em>profiler: metawards.utils._profiler.Profiler = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_extract_data.html#extract_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.extract_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract data from the network and write this to the specified
+output directory. Like <a class="reference internal" href="metawards.utils.iterate.html#metawards.utils.iterate" title="metawards.utils.iterate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iterate()</span></code></a> this
+uses a dynamic set of functions that can be utilised to
+customise what is output dynamically throughout the model
+run.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>network</strong> (<a class="reference internal" href="metawards.Network.html#metawards.Network" title="metawards.Network"><em>Network</em></a>) – The network over which the model is being run</li>
+<li><strong>population</strong> (<a class="reference internal" href="metawards.Population.html#metawards.Population" title="metawards.Population"><em>Population</em></a>) – The population experiencing the model outbreak</li>
+<li><strong>workspace</strong> (<a class="reference internal" href="metawards.utils.Workspace.html#metawards.utils.Workspace" title="metawards.utils.Workspace"><em>Workspace</em></a>) – A scratch-space that can be used to accumulate data while
+it is being extracted</li>
+<li><strong>output_dir</strong> (<a class="reference internal" href="metawards.OutputFiles.html#metawards.OutputFiles" title="metawards.OutputFiles"><em>OutputFiles</em></a>) – The output directory to which to write all files</li>
+<li><strong>infections</strong> – Space to hold all of the ‘work’ infections</li>
+<li><strong>play_infections</strong> – Space to hold all of the ‘play’ infections</li>
+<li><strong>rngs</strong> – Thread-safe random number generators (one per thread)</li>
+<li><strong>get_output_functions</strong> – A function that should return the list of output functions
+that are called in sequence to write the output data.
+See <code class="xref py py-meth docutils literal notranslate"><span class="pre">extract_default()</span></code> for an
+example of a suitable function</li>
+<li><strong>nthreads</strong> (<em>int</em>) – The number of threads over which to parallelise extracting
+the output</li>
+<li><strong>profiler</strong> (<a class="reference internal" href="metawards.utils.Profiler.html#metawards.utils.Profiler" title="metawards.utils.Profiler"><em>Profiler</em></a>) – The profiler used to profile extracting the output</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -213,8 +235,6 @@ is_dangerous, which should be an array(“i”, network.nnodes)</p>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="metawards.utils.extract_data_for_graphics.html" class="btn btn-neutral float-right" title="metawards.utils.extract_data_for_graphics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="metawards.utils.delete_ran_binomial.html" class="btn btn-neutral float-left" title="metawards.utils.delete_ran_binomial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

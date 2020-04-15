@@ -194,7 +194,7 @@
 <h1>metawards.utils.run_model<a class="headerlink" href="#metawards-utils-run-model" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.run_model">
-<code class="descclassname">metawards.utils.</code><code class="descname">run_model</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>infections</em>, <em>play_infections</em>, <em>rngs</em>, <em>s: int</em>, <em>output_dir: str = '.'</em>, <em>population: metawards._population.Population = Population(initial=57104043</em>, <em>susceptibles=0</em>, <em>latent=0</em>, <em>total=0</em>, <em>recovereds=0</em>, <em>n_inf_wards=0</em>, <em>day=0</em>, <em>date=None)</em>, <em>nsteps: int = None</em>, <em>profile: bool = True</em>, <em>nthreads: int = None</em>, <em>get_advance_functions=&lt;function iterate_default&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_run_model.html#run_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">run_model</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>infections</em>, <em>play_infections</em>, <em>rngs</em>, <em>s: int</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>population: metawards._population.Population = Population(initial=57104043</em>, <em>susceptibles=0</em>, <em>latent=0</em>, <em>total=0</em>, <em>recovereds=0</em>, <em>n_inf_wards=0</em>, <em>day=0</em>, <em>date=None)</em>, <em>nsteps: int = None</em>, <em>profile: bool = True</em>, <em>profiler: metawards.utils._profiler.Profiler = None</em>, <em>nthreads: int = None</em>, <em>get_advance_functions=&lt;function iterate_default&gt;</em>, <em>get_output_functions=&lt;function extract_default&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_run_model.html#run_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Actually run the model… Real work happens here. The model
 will run until completion or until ‘nsteps’ have been
 completed (whichever happens first)</p>
@@ -215,7 +215,7 @@ the model outbreak</dd>
 <dt>seed: int</dt>
 <dd>The random number seed used for this model run. If this is
 None then a very random random number seed will be used</dd>
-<dt>output_dir: str</dt>
+<dt>output_dir: OutputFiles</dt>
 <dd>The directory to write all of the output into</dd>
 <dt>nsteps: int</dt>
 <dd>The maximum number of steps to run in the outbreak. If None
@@ -223,6 +223,9 @@ then run until the outbreak has finished</dd>
 <dt>profile: bool</dt>
 <dd>Whether or not to profile the model run and print out the
 results</dd>
+<dt>profiler: Profiler</dt>
+<dd>The profiler to use to profile - a new one is created if
+one isn’t passed</dd>
 <dt>s: int</dt>
 <dd>Index of the seeding parameter to use</dd>
 <dt>nthreads: int</dt>

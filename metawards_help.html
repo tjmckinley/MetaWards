@@ -180,8 +180,9 @@
                  [--start-date START_DATE] [--start-day START_DAY]
                  [-p PARAMETERS] [-R REPOSITORY] [-P POPULATION] [-n NSTEPS]
                  [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
-                 [--cores-per-node CORES_PER_NODE] [--profile] [--no-profile]
-                 [--mpi] [--scoop]
+                 [--cores-per-node CORES_PER_NODE] [--auto-bzip]
+                 [--force-overwrite-output] [--profile] [--no-profile] [--mpi]
+                 [--scoop]
 
 MetaWards epidemic modelling - see https://github.com/metawards/metawards for
 more information
@@ -277,6 +278,14 @@ optional arguments:
                         set then the program will attempt to get this
                         information from the cluster queueing system. Use this
                         option if the auto-detection fails.
+  --auto-bzip           Whether or not to automatically bz2 compress all
+                        output files as they are written.
+  --force-overwrite-output
+                        Whether or not to force overwriting of any existing
+                        output. Using this option will tell metawards that it
+                        is safe to delete the contents of the output directory
+                        specified in by &#39;--output&#39; if it already exists.
+                        Dangerous as this can remove existing output files
   --profile             Enable profiling of the code
   --no-profile          Disable profiling of the code
   --mpi                 Force use of MPI to parallelise across runs
