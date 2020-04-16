@@ -35,45 +35,110 @@ def import_graphics_modules(verbose=False):
     return (pd, plt)
 
 
-def create_overview_plot(df):
+def create_overview_plot(df, match_axes=True):
     """Create a summary plot of the result.csv data held in the
        passed pandas dataframe. This returns the figure for you
        to save if desired (or just call ``plt.show()`` to show
        it in Jupyter)
 
+       If the dataframe contains multiple fingerprints, then this
+       will return a dictionary of figures, one for each fingerprint,
+       indexed by fingerprint
+
        Parameters
        ----------
        df : Pandas Dataframe
          The pandas dataframe containing the data from results.csv.bz2
+       match_axes: bool
+         If true (default) then this will ensure that all of the plots
+         for different fingerprints are put on the same axis scale
 
        Returns
        -------
        fig
-         The matplotlib figure containing the summary plot
+         The matplotlib figure containing the summary plot, or a
+         dictionary of figures if there are multiple fingerprints
     """
     _, plt = import_graphics_modules()
+    import datetime
 
-    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
+    fingerprints = df["fingerprint"].unique()
 
-    i = 0
-    j = 0
+    figs = {}
 
-    for column in ["E", "I", "IW", "R"]:
-        ax = df.pivot(index="date", columns="repeat",
-                      values=column).plot.line(ax=axes[i][j])
-        ax.tick_params('x', labelrotation=90)
-        ax.get_legend().remove()
-        ax.set_title(column)
-        ax.set_ylabel("Population")
+    min_date = None
+    max_date = None
+    max_y = {}
+    min_y = {}
 
-        j += 1
-        if j == 2:
-            j = 0
-            i += 1
+    columns = ["E", "I", "IW", "R"]
 
-    fig.tight_layout(pad=1)
+    if len(fingerprints) > 1 and match_axes:
+        for fingerprint in fingerprints:
+            df2 = df[df["fingerprint"] == fingerprint]
 
-    return fig
+            for column in columns:
+                min_d = df2["day"].min()
+                max_d = df2["day"].max()
+                min_val = df2[column].min()
+                max_val = df2[column].max()
+
+                if min_date is None:
+                    min_date = min_d
+                    max_date = max_d
+                else:
+                    if min_d < min_date:
+                        min_date = min_d
+                    if max_d > max_date:
+                        max_date = max_d
+
+                if column not in min_y:
+                    min_y[column] = min_val
+                    max_y[column] = max_val
+                else:
+                    if min_val < min_y[column]:
+                        min_y[column] = min_val
+                    if max_val > max_y[column]:
+                        max_y[column] = max_val
+
+    for fingerprint in fingerprints:
+        df2 = df[df["fingerprint"] == fingerprint]
+
+        fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
+
+        i = 0
+        j = 0
+
+        for column in columns:
+            ax = df2.pivot(index="date", columns="repeat",
+                           values=column).plot.line(ax=axes[i][j])
+            ax.tick_params('x', labelrotation=90)
+            ax.get_legend().remove()
+            ax.set_ylabel("Population")
+
+            if len(fingerprints) > 1 and match_axes:
+                ax.set_xlim(min_date, max_date)
+                ax.set_ylim(min_y[column], 1.1*max_y[column])
+
+            if len(fingerprints) > 1:
+                ax.set_title(f"{fingerprint} : {column}")
+            else:
+                ax.set_title(column)
+
+            j += 1
+            if j == 2:
+                j = 0
+                i += 1
+
+        fig.tight_layout(pad=1)
+        figs[fingerprint] = fig
+
+    if len(figs) == 0:
+        return None
+    elif len(figs) == 1:
+        return figs[list(figs.keys())[0]]
+    else:
+        return figs
 
 
 def create_average_plot(df):
@@ -82,6 +147,14 @@ def create_average_plot(df):
        to save if desired (or just call ``plt.show()`` to show
        it in Jupyter)
 
+       Note that this won't do anything unless there are multiple
+       repeats of the model run in the output. In that case, it
+       will return None
+
+       If the dataframe contains multiple fingerprints, then this
+       will return a dictionary of figures, one for each fingerprint,
+       indexed by fingerprint
+
        Parameters
        ----------
        df : Pandas Dataframe
@@ -90,34 +163,53 @@ def create_average_plot(df):
        Returns
        -------
        fig
-         The matplotlib figure containing the summary plot
+         The matplotlib figure containing the summary plot, or None
+         if there are no repeats over which to average. A dictionary
+         of figures will be returned if the dataframe contains multiple
+         fingerprint - the dictionaries will be indexed by fingerprint
     """
-    _, plt = import_graphics_modules()
+    fingerprints = df["fingerprint"].unique()
 
-    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
+    figs = {}
 
-    mean_average = df.groupby("date").mean()
-    stddev = df.groupby("date").std()
+    for fingerprint in fingerprints:
+        df2 = df[df["fingerprint"] == fingerprint]
 
-    i = 0
-    j = 0
+        nrepeats = len(df2["repeat"].unique())
 
-    for column in ["E", "I", "IW", "R"]:
-        ax = mean_average.plot.line(y=column, yerr=stddev[column],
-                                    ax=axes[i][j])
-        ax.tick_params('x', labelrotation=90)
-        ax.get_legend().remove()
-        ax.set_title(column)
-        ax.set_ylabel("Population")
+        if nrepeats > 1:
+            _, plt = import_graphics_modules()
 
-        j += 1
-        if j == 2:
+            fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
+
+            mean_average = df2.groupby("date").mean()
+            stddev = df2.groupby("date").std()
+
+            i = 0
             j = 0
-            i += 1
 
-    fig.tight_layout(pad=1)
+            for column in ["E", "I", "IW", "R"]:
+                ax = mean_average.plot.line(y=column, yerr=stddev[column],
+                                            ax=axes[i][j])
+                ax.tick_params('x', labelrotation=90)
+                ax.get_legend().remove()
+                ax.set_title(column)
+                ax.set_ylabel("Population")
 
-    return fig
+                j += 1
+                if j == 2:
+                    j = 0
+                    i += 1
+
+            fig.tight_layout(pad=1)
+            figs[fingerprint] = fig
+
+    if len(figs) == 0:
+        return None
+    elif len(figs) == 1:
+        return figs[list(figs.keys())[0]]
+    else:
+        return figs
 
 
 def save_summary_plots(results: str, output_dir: str = None,
@@ -145,9 +237,8 @@ def save_summary_plots(results: str, output_dir: str = None,
 
        Returns
        -------
-       (overview, average): Tuple(str, str)
-         Full file paths to the 'overview' and 'average graphs that
-         this function produces
+       filenames: List(str)
+         Full file paths of all of the files written by this function
     """
     pd, _ = import_graphics_modules(verbose=verbose)
     import os
@@ -163,27 +254,51 @@ def save_summary_plots(results: str, output_dir: str = None,
     if format is None:
         format = "pdf"
 
-    overview = os.path.join(output_dir, f"overview.{format}")
+    filenames = []
 
     if verbose:
-        print(f"Creating overview plot...")
+        print(f"Creating overview plot(s)...")
 
-    fig = create_overview_plot(df)
+    figs = create_overview_plot(df)
+
+    if not isinstance(figs, dict):
+        figs = {"fingerprint": figs}
+
+    for fingerprint, fig in figs.items():
+        if len(figs) == 1:
+            filename = os.path.join(output_dir, f"overview.{format}")
+        else:
+            filename = os.path.join(output_dir,
+                                    f"overview_{fingerprint}.{format}")
+
+        if verbose:
+            print(f"Saving to {filename}...")
+
+        fig.savefig(filename, dpi=dpi)
+        filenames.append(filename)
 
     if verbose:
-        print(f"Saving to {overview}...")
+        print(f"Creating average plot(s)...")
 
-    fig.savefig(overview, dpi=dpi)
+    figs = create_average_plot(df)
 
-    average = os.path.join(output_dir, f"average.{format}")
+    if figs is None:
+        print("Nothing to plot")
+    else:
+        if not isinstance(figs, dict):
+            figs = {"fingerprint": figs}
 
-    if verbose:
-        print(f"Creating average plot...")
-    fig = create_average_plot(df)
+        for fingerprint, fig in figs.items():
+            if len(figs) == 1:
+                filename = os.path.join(output_dir, f"average.{format}")
+            else:
+                filename = os.path.join(output_dir,
+                                        f"average_{fingerprint}.{format}")
 
-    if verbose:
-        print(f"Saving to {average}...")
+            if verbose:
+                print(f"Saving to {filename}...")
 
-    fig.savefig(average, dpi=dpi)
+            fig.savefig(filename, dpi=dpi)
+            filenames.append(filename)
 
-    return (overview, average)
+    return filenames
