@@ -10,6 +10,7 @@ import sys
 
 import metawards
 from metawards.app import parse_args as _parse_args
+from metawards.app.plot import parse_args as _plot_args
 
 print("Generating doc for MetaWards version {version} installed in {path}"
       .format(version=metawards.__version__, path=metawards.__path__))
@@ -30,6 +31,13 @@ with open("metawards_help.rst", "w") as FILE:
 
 help_lines = open("metawards_help.rst", "r").readlines()
 
+_args, _parser = _plot_args()
+
+with open("metawards_plot_help.rst", "w") as FILE:
+    _parser.print_help(FILE)
+
+help_plot_lines = open("metawards_plot_help.rst", "r").readlines()
+
 sys.argv = old_argv
 
 with open("metawards_help.rst", "w") as FILE:
@@ -45,6 +53,21 @@ The full set of command line options for metawards is below;
     """)
 
     for line in help_lines:
+        FILE.write(f"  {line}")
+
+with open("metawards_plot_help.rst", "w") as FILE:
+    FILE.write("""
+====================
+Command line options
+====================
+
+The full set of command line options for metawards-plot is below;
+
+::
+
+    """)
+
+    for line in help_plot_lines:
         FILE.write(f"  {line}")
 
 # -- General configuration -----------------------------------------------

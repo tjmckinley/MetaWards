@@ -1,6 +1,6 @@
-==========================
-Viewing and averaging runs
-==========================
+===================
+Multiple model runs
+===================
 
 In the last page you successfully performed a single run modelling
 an outbreak of the lurgy that started in London. This run
@@ -127,15 +127,3 @@ each day are then given in their correspondingly named columns.
 
 The *fingerprint* column not used for this calculation - we will see what it is
 later.
-
-Plotting outputs
-----------------
-
-You can plot graphs of the result using the ``metawards-plot`` command.
-To run this, type;
-
-.. code-block:: bash
-
-   metawards-plot --input output/results.csv.bz2
-
-This will
