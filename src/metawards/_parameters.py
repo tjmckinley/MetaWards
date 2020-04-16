@@ -174,6 +174,48 @@ class Parameters:
                f"additional_seeds = {self.additional_seeds}\n\n"
 
     @staticmethod
+    def get_repository(repository: str = None):
+        """Return the repository location and version information
+           for the passed repository
+
+           Parameters
+           ----------
+           repository: str
+             Location on the filesystem of the repository. If this
+             is None then it will be searched for using first
+             the environment variable METAWARDSDATA, then
+             $HOME/GitHub/MetaWardsData, then ./METAWARDSDATA
+
+           Returns
+           -------
+           (repository, version): tuple
+             A tuple of the location on disk of the repository,
+             plus the version information (git ID etc)
+        """
+        if repository is None:
+            repository = _os.getenv("METAWARDSDATA")
+            if repository is None:
+                repository = _default_parameters_path
+
+        from pathlib import Path
+        import os
+        repository = os.path.expanduser(os.path.expandvars(repository))
+        repository = Path(repository).absolute().resolve()
+
+        if not os.path.exists(repository):
+            raise FileNotFoundError(
+                    f"Cannot find the MetaWardsData repository "
+                    f"at {repository}")
+
+        if not os.path.isdir(repository):
+            raise FileNotFoundError(
+                    f"Expected {repository} to be a directory containing "
+                    f"the MetaWardsData repository. It isn't?")
+
+        v = get_repository_version(repository)
+        return (repository, v)
+
+    @staticmethod
     def load(parameters: str = "march29",
              repository: str = None,
              folder: str = _default_folder_name,
@@ -213,13 +255,8 @@ class Parameters:
         repository_dir = None
 
         if filename is None:
-            if repository is None:
-                repository = _os.getenv("METAWARDSDATA")
-                if repository is None:
-                    repository = _default_parameters_path
-
+            (repository, v) = Parameters.get_repository(repository)
             filename = _os.path.join(repository, folder, f"{parameters}.json")
-            v = get_repository_version(repository)
             repository_dir = repository
             repository = v["repository"]
             repository_branch = v["branch"]

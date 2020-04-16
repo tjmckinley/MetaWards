@@ -664,11 +664,106 @@ def cli():
                                             nprocs=args.nprocs,
                                             parallel_scheme=parallel_scheme)
 
-    print(f"Number of threads to use for each model run is {nthreads}")
-    print(f"Number of processes used to parallelise model runs is {nprocs}")
+    print(f"\nNumber of threads to use for each model run is {nthreads}")
 
     if nprocs > 1:
+        print(f"Number of processes used to parallelise model "
+              f"runs is {nprocs}")
         print(f"Parallelisation will be achieved using {parallel_scheme}")
+
+    # sort out the random number seed
+    seed = args.seed
+
+    if seed is None:
+        import random
+        seed = random.randint(10000, 99999999)
+
+    print(f"\nUsing random number seed {seed}")
+
+    # get the starting day and date
+    start_day = args.start_day
+
+    if start_day < 0:
+        raise ValueError(f"You cannot use a start day {start_day} that is "
+                         f"less than zero!")
+
+    start_date = None
+
+    if args.start_date:
+        try:
+            from dateparser import parse
+            start_date = parse(args.start_date).date()
+        except Exception:
+            pass
+
+        if start_date is None:
+            from datetime import date
+            try:
+                start_date = date.fromisoformat(args.start_date)
+            except Exception as e:
+                raise ValueError(
+                        f"Cannot interpret a valid date from "
+                        f"'{args.start_date}'. Error is "
+                        f"{e.__class__} {e}")
+
+    if start_date is None:
+        from datetime import date
+        start_date = date.today()
+
+    print(f"\nDay zero is {start_date.strftime('%A %B %d %Y')}")
+
+    if start_day != 0:
+        from datetime import timedelta
+        start_day_date = start_date + timedelta(days=start_day)
+        print(f"Starting on day {start_day}, which is "
+              f"{start_day_date.strftime('%A %B %d %Y')}")
+    else:
+        start_day_date = start_date
+
+    # now find the MetaWardsData repository as this will be needed
+    # for the repeat command line too
+    (repository, repository_version) = Parameters.get_repository(
+                                                        args.repository)
+
+    print(f"\nUsing MetaWardsData at {repository}")
+    print(f"This is cloned from {repository_version['repository']}")
+    print(f"branch {repository_version['branch']}, version "
+          f"{repository_version['version']}")
+
+    if repository_version["is_dirty"]:
+        print("## WARNING - this repository is dirty, meaning that the data")
+        print("## WARNING - has not been committed to git. This may make ")
+        print("## WARNING - this calculation very difficult to reproduce")
+
+    # now work out the minimum command line needed to repeat this job
+    args.seed = seed
+    args.nprocs = nprocs
+    args.nthreads = nthreads
+    args.start_date = start_date.isoformat()
+    args.repository = repository
+
+    repeat_cmd = "metawards"
+
+    for key, value in vars(args).items():
+        if value is not None:
+            k = key.replace("_", "-")
+
+            if isinstance(value, bool):
+                if value:
+                    repeat_cmd += f" --{k}"
+            else:
+                v = str(value)
+                if " " in v:
+                    repeat_cmd += f" --{k} '{v}''"
+                else:
+                    repeat_cmd += f" --{k} {v}"
+
+    t = "*** To repeat this job use the command ***"
+
+    print("\n" + "*"*len(t))
+    print(t)
+    print("*"*len(t) + "\n")
+    print(repeat_cmd + "\n")
 
     # load all of the parameters
     try:
@@ -704,46 +799,6 @@ def cli():
         for additional in args.additional:
             print(f"Loading additional seeds from {additional}")
             params.add_seeds(additional)
-
-    # get the starting day and date
-    start_day = args.start_day
-
-    if start_day < 0:
-        raise ValueError(f"You cannot use a start day {start_day} that is "
-                         f"less than zero!")
-
-    start_date = None
-
-    if args.start_date:
-        try:
-            from dateparser import parse
-            start_date = parse(args.start_date).date()
-        except Exception:
-            pass
-
-        if start_date is None:
-            from datetime import date
-            try:
-                start_date = date.fromisoformat(args.start_date)
-            except Exception as e:
-                raise ValueError(
-                        f"Cannot interpret a valid date from "
-                        f"'{args.start_date}'. Error is "
-                        f"{e.__class__} {e}")
-
-    if start_date is None:
-        from datetime import date
-        start_date = date.today()
-
-    print(f"Day zero is {start_date.strftime('%A %B %d %Y')}")
-
-    if start_day != 0:
-        from datetime import timedelta
-        start_day_date = start_date + timedelta(days=start_day)
-        print(f"Starting on day {start_day}, which is "
-              f"{start_day_date.strftime('%A %B %d %Y')}")
-    else:
-        start_day_date = start_date
 
     # extra parameters that are set
     params.UV = args.UV
@@ -781,7 +836,7 @@ def cli():
                      auto_bzip=args.auto_bzip, prompt=prompt) as output_dir:
         result = run_models(network=network, variables=variables,
                             population=population, nprocs=nprocs,
-                            nthreads=nthreads, seed=args.seed,
+                            nthreads=nthreads, seed=seed,
                             nsteps=args.nsteps,
                             output_dir=output_dir,
                             profile=profile, parallel_scheme=parallel_scheme)

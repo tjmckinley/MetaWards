@@ -96,11 +96,13 @@ def get_version_string():
         lines.append("")
         lines.append("WARNING: This version has not been committed to git,")
         lines.append("WARNING: so you may not be able to recover the original")
-        lines.append("WARNING: source code that was used to generate this run!")
+        lines.append("WARNING: source code that was used to generate "
+                     "this run!")
 
     lines.append("")
     lines.append(center(f"-- Additional information --"))
-    lines.append(center(f"Visit https://metawards.github.io for more informaion"))
+    lines.append(center(f"Visit https://metawards.github.io for more "
+                        f"information"))
     lines.append(center(f"about metawards, its authors and its license"))
     lines.append("")
 
