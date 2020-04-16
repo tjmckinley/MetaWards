@@ -14,8 +14,8 @@ The full set of command line options for metawards is below;
                    [-p PARAMETERS] [-R REPOSITORY] [-P POPULATION] [-n NSTEPS]
                    [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
                    [--cores-per-node CORES_PER_NODE] [--auto-bzip]
-                   [--force-overwrite-output] [--profile] [--no-profile] [--mpi]
-                   [--scoop]
+                   [--no-auto-bzip] [--force-overwrite-output] [--profile]
+                   [--no-profile] [--mpi] [--scoop]
   
   MetaWards epidemic modelling - see https://github.com/metawards/metawards for
   more information
@@ -111,8 +111,10 @@ The full set of command line options for metawards is below;
                           set then the program will attempt to get this
                           information from the cluster queueing system. Use this
                           option if the auto-detection fails.
-    --auto-bzip           Whether or not to automatically bz2 compress all
-                          output files as they are written.
+    --auto-bzip           Automatically bz2 compress all output files as they
+                          are written.
+    --no-auto-bzip        Do not automatically bz2 compress all output files as
+                          they are written.
     --force-overwrite-output
                           Whether or not to force overwriting of any existing
                           output. Using this option will tell metawards that it

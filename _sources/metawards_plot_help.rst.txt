@@ -1,0 +1,28 @@
+
+====================
+Command line options
+====================
+
+The full set of command line options for metawards-plot is below;
+
+::
+
+      usage: metawards-plot [-h] [--version] [-i INPUT] [-o OUTPUT]
+                        [--format FORMAT]
+  
+  MetaWards simple plotting program - see https://github.com/metawards/metawards
+  for more information
+  
+  optional arguments:
+    -h, --help            show this help message and exit
+    --version             Print the version information about metawards-plot
+    -i INPUT, --input INPUT
+                          Full path to the 'results.csv.bz2' file that you want
+                          to quickly plot.
+    -o OUTPUT, --output OUTPUT
+                          Directory in which you want to place the graphs. By
+                          default this is the same directory as contains the
+                          'results.csv.bz2' file
+    --format FORMAT       Desired format of the graphs that are produced. Good
+                          formats are 'pdf' for publication graphics and 'png'
+                          or 'jpeg' for webpages.

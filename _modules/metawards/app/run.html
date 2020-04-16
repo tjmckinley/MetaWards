@@ -190,7 +190,7 @@
            <span class="s2">&quot;cli&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_parallel_scheme"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_parallel_scheme.html#metawards.app.get_parallel_scheme">[docs]</a><span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;This function tries to work out which of the different parallel</span>
 <span class="sd">       methods we should use to distribute work between multiple processes.</span>
 
@@ -204,10 +204,10 @@
     <span class="k">elif</span> <span class="s2">&quot;scoop&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;scoop&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span></div>
+        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span>
 
 
-<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../api/generated/metawards.app.parse_args.html#metawards.app.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Parse all of the command line arguments&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">argparse</span>
     <span class="kn">import</span> <span class="nn">sys</span>
@@ -271,7 +271,7 @@
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Value for the UV parameter for the model &quot;</span>
                              <span class="s2">&quot;(default is 1.0)&quot;</span><span class="p">)</span>
 
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--disease&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;ncov&quot;</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--disease&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the disease to model &quot;</span>
                              <span class="s2">&quot;(default is &#39;ncov&#39;)&quot;</span><span class="p">)</span>
 
@@ -353,8 +353,13 @@
                              <span class="s2">&quot;auto-detection fails.&quot;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--auto-bzip&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Whether or not to automatically bz2 compress &quot;</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Automatically bz2 compress &quot;</span>
+                             <span class="s2">&quot;all output files as they are written.&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--no-auto-bzip&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not automatically bz2 compress &quot;</span>
                              <span class="s2">&quot;all output files as they are written.&quot;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--force-overwrite-output&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
@@ -391,10 +396,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">get_version_string</span><span class="p">())</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_hostfile"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_hostfile.html#metawards.app.get_hostfile">[docs]</a><span class="k">def</span> <span class="nf">get_hostfile</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_hostfile</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Attempt to find the name of the hostfile used to specify the hosts</span>
 <span class="sd">       to use in a cluster</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -415,10 +420,10 @@
     <span class="k">if</span> <span class="n">hostfile</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">hostfile</span>
 
-    <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="k">return</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="get_cores_per_node"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_cores_per_node.html#metawards.app.get_cores_per_node">[docs]</a><span class="k">def</span> <span class="nf">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the number of cores per node in the cluster&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cores_per_node</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">cores_per_node</span>
@@ -436,10 +441,10 @@
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must specify the number of cores per node &quot;</span>
                      <span class="s2">&quot;using --cores-per-node or by setting the &quot;</span>
-                     <span class="s2">&quot;environment variable METAWARDS_CORES_PER_NODE&quot;</span><span class="p">)</span></div>
+                     <span class="s2">&quot;environment variable METAWARDS_CORES_PER_NODE&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_threads_per_task"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_threads_per_task.html#metawards.app.get_threads_per_task">[docs]</a><span class="k">def</span> <span class="nf">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span>
 
@@ -461,7 +466,7 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must specify the number of threads per task &quot;</span>
                      <span class="s2">&quot;using --nthreads or by setting the &quot;</span>
                      <span class="s2">&quot;environment variables METAWARDS_THREADS_PER_TASK &quot;</span>
-                     <span class="s2">&quot;or OMP_NUM_THREADS&quot;</span><span class="p">)</span></div>
+                     <span class="s2">&quot;or OMP_NUM_THREADS&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="scoop_supervisor"><a class="viewcode-back" href="../../../api/generated/metawards.app.scoop_supervisor.html#metawards.app.scoop_supervisor">[docs]</a><span class="k">def</span> <span class="nf">scoop_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
@@ -566,7 +571,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scoop processes completed successfully&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="mpi_supervisor"><a class="viewcode-back" href="../../../api/generated/metawards.app.mpi_supervisor.html#metawards.app.mpi_supervisor">[docs]</a><span class="k">def</span> <span class="nf">mpi_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">mpi_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Function used by the MPI supervisor to get the information needed to</span>
 <span class="sd">       form the mpiexec call to run an MPI version of the program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -682,10 +687,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MPI processes completed successfully&quot;</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MPI processes completed successfully&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="cli"><a class="viewcode-back" href="../../../api/generated/metawards.app.cli.html#metawards.app.cli">[docs]</a><span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Main function for the command line interface. This does one of three</span>
 <span class="sd">       things:</span>
 
@@ -766,11 +771,17 @@
 
     <span class="c1"># This is now the code for the main process</span>
 
-    <span class="c1"># WE NEED ONE OF &#39;input&#39; or &#39;nrepeats&#39;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">repeats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: You must specify one of &#39;--input&#39; or &#39;--repeats&#39;&quot;</span><span class="p">)</span>
+    <span class="c1"># WE NEED ONE OF these listed options;</span>
+    <span class="n">should_run</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">repeats</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">disease</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">additional</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">should_run</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">should_run</span><span class="p">:</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">repeats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">args</span><span class="o">.</span><span class="n">repeats</span> <span class="o">=</span> <span class="mi">1</span>
@@ -784,29 +795,6 @@
 
     <span class="c1"># also print the full command line used for this job</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Command used to run this job:</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="c1"># load all of the parameters</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to load parameter files. Make sure that you have &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;cloned the MetaWardsData repository and have set the &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;environment variable METAWARDSDATA to point to the &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;local directory containing the repository, e.g. the &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;default is $HOME/GitHub/MetaWardsData&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">e</span>
-
-    <span class="c1"># should we profile the code? (default yes, as it doesn&#39;t cost anything)</span>
-    <span class="n">profile</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">profile</span>
-
-    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">no_profile</span><span class="p">:</span>
-        <span class="n">profile</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">elif</span> <span class="n">profile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">profile</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="c1"># load the disease and starting-point input files</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">set_disease</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">disease</span><span class="p">)</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">set_input_files</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input_data</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">:</span>
         <span class="c1"># get the line numbers of the input file to read</span>
@@ -827,19 +815,14 @@
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using parameters from lines </span><span class="si">{</span><span class="n">linenums</span><span class="si">}</span><span class="s2"> of &quot;</span>
                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">variables</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">read_variables</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">linenums</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">VariableSets</span><span class="p">,</span> <span class="n">VariableSet</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="n">VariableSets</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">,</span>
+                                      <span class="n">line_numbers</span><span class="o">=</span><span class="n">linenums</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">VariableSets</span><span class="p">,</span> <span class="n">VariableSet</span>
         <span class="c1"># create a VariableSets with one null VariableSet</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="n">VariableSets</span><span class="p">()</span>
         <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VariableSet</span><span class="p">())</span>
-
-    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">additional</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">additional</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not using any additional seeds...&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">additional</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">additional</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading additional seeds from </span><span class="si">{</span><span class="n">additional</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">params</span><span class="o">.</span><span class="n">add_seeds</span><span class="p">(</span><span class="n">additional</span><span class="p">)</span>
 
     <span class="n">nrepeats</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">repeats</span>
 
@@ -852,6 +835,30 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Performing </span><span class="si">{</span><span class="n">nrepeats</span><span class="si">}</span><span class="s2"> runs of each set of parameters&quot;</span><span class="p">)</span>
 
     <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">nrepeats</span><span class="p">)</span>
+
+    <span class="c1"># working out the number of processes and threads...</span>
+    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">guess_num_threads_and_procs</span>
+    <span class="p">(</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">)</span> <span class="o">=</span> <span class="n">guess_num_threads_and_procs</span><span class="p">(</span>
+                                            <span class="n">njobs</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">),</span>
+                                            <span class="n">nthreads</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nthreads</span><span class="p">,</span>
+                                            <span class="n">nprocs</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nprocs</span><span class="p">,</span>
+                                            <span class="n">parallel_scheme</span><span class="o">=</span><span class="n">parallel_scheme</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Number of threads to use for each model run is </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nprocs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of processes used to parallelise model &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;runs is </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallelisation will be achieved using </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># sort out the random number seed</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">seed</span>
+
+    <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">random</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">99999999</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using random number seed </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># get the starting day and date</span>
     <span class="n">start_day</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">start_day</span>
@@ -883,7 +890,7 @@
         <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
         <span class="n">start_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Day zero is </span><span class="si">{</span><span class="n">start_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%A %B </span><span class="si">%d</span><span class="s1"> %Y&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Day zero is </span><span class="si">{</span><span class="n">start_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%A %B </span><span class="si">%d</span><span class="s1"> %Y&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">start_day</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
@@ -893,24 +900,93 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">start_day_date</span> <span class="o">=</span> <span class="n">start_date</span>
 
-    <span class="n">nthreads</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span>
+    <span class="c1"># now find the MetaWardsData repository as this will be needed</span>
+    <span class="c1"># for the repeat command line too</span>
+    <span class="p">(</span><span class="n">repository</span><span class="p">,</span> <span class="n">repository_version</span><span class="p">)</span> <span class="o">=</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">get_repository</span><span class="p">(</span>
+                                                        <span class="n">args</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">nthreads</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">get_available_num_threads</span>
-        <span class="n">nthreads</span> <span class="o">=</span> <span class="n">get_available_num_threads</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using MetaWardsData at </span><span class="si">{</span><span class="n">repository</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is cloned from </span><span class="si">{</span><span class="n">repository_version</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;branch </span><span class="si">{</span><span class="n">repository_version</span><span class="p">[</span><span class="s1">&#39;branch&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, version &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">repository_version</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of threads to use for each model run is </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">repository_version</span><span class="p">[</span><span class="s2">&quot;is_dirty&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;## WARNING - this repository is dirty, meaning that the data&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;## WARNING - has not been committed to git. This may make &quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;## WARNING - this calculation very difficult to reproduce&quot;</span><span class="p">)</span>
 
-    <span class="n">nprocs</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nprocs</span>
+    <span class="c1"># now work out the minimum command line needed to repeat this job</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">nprocs</span> <span class="o">=</span> <span class="n">nprocs</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span> <span class="o">=</span> <span class="n">nthreads</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="n">start_date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="n">repository</span>
 
-    <span class="k">if</span> <span class="n">nprocs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">nprocs</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">get_number_of_processes</span>
-        <span class="n">nprocs</span> <span class="o">=</span> <span class="n">get_number_of_processes</span><span class="p">(</span><span class="n">parallel_scheme</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">)</span>
+    <span class="n">repeat_cmd</span> <span class="o">=</span> <span class="s2">&quot;metawards&quot;</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of processes used to parallelise model runs is </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">nprocs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallelisation will be achieved using </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                        <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; &#39;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&#39;&#39;&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                    <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> &#39;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&#39;&#39;&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="s2">&quot;*** To repeat this job use the command ***&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">repeat_cmd</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># load all of the parameters</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to load parameter files. Make sure that you have &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;cloned the MetaWardsData repository and have set the &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;environment variable METAWARDSDATA to point to the &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;local directory containing the repository, e.g. the &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;default is $HOME/GitHub/MetaWardsData&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="c1"># should we profile the code? (default yes, as it doesn&#39;t cost anything)</span>
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">profile</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">no_profile</span><span class="p">:</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">profile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># load the disease and starting-point input files</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">disease</span><span class="p">:</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">set_disease</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">disease</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">set_disease</span><span class="p">(</span><span class="s2">&quot;ncov&quot;</span><span class="p">)</span>
+
+    <span class="n">params</span><span class="o">.</span><span class="n">set_input_files</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input_data</span><span class="p">)</span>
+
+    <span class="c1"># read the additional seeds</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">additional</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">additional</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not using any additional seeds...&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">additional</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">additional</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading additional seeds from </span><span class="si">{</span><span class="n">additional</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">add_seeds</span><span class="p">(</span><span class="n">additional</span><span class="p">)</span>
 
     <span class="c1"># extra parameters that are set</span>
     <span class="n">params</span><span class="o">.</span><span class="n">UV</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">UV</span>
@@ -944,11 +1020,18 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">prompt</span> <span class="o">=</span> <span class="nb">input</span>
 
+    <span class="n">auto_bzip</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">auto_bzip</span><span class="p">:</span>
+        <span class="n">auto_bzip</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">no_auto_bzip</span><span class="p">:</span>
+        <span class="n">auto_bzip</span> <span class="o">=</span> <span class="kc">False</span>
+
     <span class="k">with</span> <span class="n">OutputFiles</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">force_empty</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">force_overwrite_output</span><span class="p">,</span>
-                     <span class="n">auto_bzip</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">auto_bzip</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_dir</span><span class="p">:</span>
+                     <span class="n">auto_bzip</span><span class="o">=</span><span class="n">auto_bzip</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_dir</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">run_models</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
                             <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">nprocs</span><span class="o">=</span><span class="n">nprocs</span><span class="p">,</span>
-                            <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+                            <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
                             <span class="n">nsteps</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nsteps</span><span class="p">,</span>
                             <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
                             <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="n">parallel_scheme</span><span class="o">=</span><span class="n">parallel_scheme</span><span class="p">)</span>
@@ -959,8 +1042,8 @@
 
         <span class="c1"># write the result to a csv file that can be easily read by R or</span>
         <span class="c1"># pandas - this will be written compressed to save space</span>
-        <span class="n">RESULTS</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;results.csv&quot;</span><span class="p">,</span> <span class="n">auto_bzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Writing a summary of all results into the compressed</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">RESULTS</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;results.csv&quot;</span><span class="p">,</span> <span class="n">auto_bzip</span><span class="o">=</span><span class="n">auto_bzip</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Writing a summary of all results into the</span><span class="se">\n</span><span class="s2">&quot;</span>
               <span class="sa">f</span><span class="s2">&quot;csv file </span><span class="si">{</span><span class="n">output_dir</span><span class="o">.</span><span class="n">get_filename</span><span class="p">(</span><span class="s1">&#39;results.csv&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
               <span class="sa">f</span><span class="s2">&quot;You can use this to quickly look at statistics across</span><span class="se">\n</span><span class="s2">&quot;</span>
               <span class="sa">f</span><span class="s2">&quot;all runs using e.g. R or pandas&quot;</span><span class="p">)</span>
@@ -979,9 +1062,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">datestring</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-        <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fingerprint,repeat,</span><span class="si">{</span><span class="n">varnames</span><span class="si">}{</span><span class="n">datestring</span><span class="si">}</span><span class="s2">&quot;</span>
-                      <span class="sa">f</span><span class="s2">&quot;day,susceptibles,latent,&quot;</span>
-                      <span class="sa">f</span><span class="s2">&quot;total,n_inf_wards</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fingerprint,repeat,</span><span class="si">{</span><span class="n">varnames</span><span class="si">}</span><span class="s2">&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;day,</span><span class="si">{</span><span class="n">datestring</span><span class="si">}</span><span class="s2">S,E,I,R,IW</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">varset</span><span class="p">,</span> <span class="n">trajectory</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
             <span class="n">varvals</span> <span class="o">=</span> <span class="n">varset</span><span class="o">.</span><span class="n">variable_values</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">varvals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">varvals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -999,11 +1081,12 @@
                     <span class="n">d</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
                 <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">d</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">susceptibles</span><span class="si">}</span><span class="s2">,&quot;</span>
-                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">latent</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">n_inf_wards</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">latent</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2">,&quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">recovereds</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">n_inf_wards</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;End of the run&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="mi">0</span></div>
+    <span class="k">return</span> <span class="mi">0</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

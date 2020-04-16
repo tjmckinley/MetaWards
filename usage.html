@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Command line options" href="metawards_help.html" />
-    <link rel="prev" title="1. Getting Started" href="tutorial/part01/getting_started.html" /> 
+    <link rel="prev" title="4. Refining the disease model" href="tutorial/part02/01_disease.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -107,7 +107,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#understanding-the-options">Understanding the options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#understanding-the-input">Understanding the input</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#understanding-the-output">Understanding the output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-output">Understanding the output</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#metawards-plot">metawards-plot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="metawards_plot_help.html">Command line options</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cluster_usage.html">Running on a cluster</a></li>
@@ -394,6 +400,19 @@ file for easy combined analysis.</p>
 </div>
 <p>We run a good online workshop on
 <a class="reference external" href="https://milliams.com/courses/data_analysis_python/index.html">how to use pandas for data analysis</a>.</p>
+<div class="section" id="metawards-plot">
+<h3>metawards-plot<a class="headerlink" href="#metawards-plot" title="Permalink to this headline">¶</a></h3>
+<p>For quick and simple plots, <code class="docutils literal notranslate"><span class="pre">metawards</span></code> comes with the command-line
+program <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code>. This can be used to create plots of the
+data in the <code class="docutils literal notranslate"><span class="pre">output/results.csv.bz2</span></code> file using, e.g.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot --input output/results.csv.bz2
+</pre></div>
+</div>
+<p>For full help on this program using <code class="docutils literal notranslate"><span class="pre">metawards-plot</span> <span class="pre">--help</span></code>.
+The full help is <a class="reference internal" href="metawards_plot_help.html"><span class="doc">available here</span></a>.</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
 </div>
 </div>
 
@@ -408,7 +427,7 @@ file for easy combined analysis.</p>
         <a href="metawards_help.html" class="btn btn-neutral float-right" title="Command line options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tutorial/part01/getting_started.html" class="btn btn-neutral float-left" title="1. Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tutorial/part02/01_disease.html" class="btn btn-neutral float-left" title="4. Refining the disease model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

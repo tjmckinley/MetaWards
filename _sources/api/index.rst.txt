@@ -3,7 +3,7 @@ Documentation
 =============
 
 The metawards program and associated Python module is composed
-of five main units;
+of six main units;
 
 * The :doc:`metawards <index_MetaWards_app>` command line program, which is
   what most people would use to run metawards. This program comes with
@@ -29,6 +29,10 @@ of five main units;
   You can see how to use these to customise output in
   the :doc:`tutorial <tutorial>`.
 
+* The :doc:`metawards.analysis <index_MetaWards_analysis>` contains
+  analysis functions that can be used to process the results of a
+  ``metawards`` run to generate insights and useful graphics.
+
 * The :doc:`metawards.utils <index_MetaWards_utils>` utility Python module
   which contains lots of functions that are used by metawards to build and
   perform model runs. These functions are internal to metawards and are
@@ -38,4 +42,5 @@ of five main units;
   index_MetaWards
   index_MetaWards_iterators
   index_MetaWards_extractors
+  index_MetaWards_analysis
   index_MetaWards_utils

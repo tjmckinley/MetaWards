@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Running on a cluster" href="cluster_usage.html" />
+    <link rel="next" title="Command line options" href="metawards_plot_help.html" />
     <link rel="prev" title="Usage" href="usage.html" /> 
 </head>
 
@@ -196,8 +196,8 @@
                  [-p PARAMETERS] [-R REPOSITORY] [-P POPULATION] [-n NSTEPS]
                  [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
                  [--cores-per-node CORES_PER_NODE] [--auto-bzip]
-                 [--force-overwrite-output] [--profile] [--no-profile] [--mpi]
-                 [--scoop]
+                 [--no-auto-bzip] [--force-overwrite-output] [--profile]
+                 [--no-profile] [--mpi] [--scoop]
 
 MetaWards epidemic modelling - see https://github.com/metawards/metawards for
 more information
@@ -293,8 +293,10 @@ optional arguments:
                         set then the program will attempt to get this
                         information from the cluster queueing system. Use this
                         option if the auto-detection fails.
-  --auto-bzip           Whether or not to automatically bz2 compress all
-                        output files as they are written.
+  --auto-bzip           Automatically bz2 compress all output files as they
+                        are written.
+  --no-auto-bzip        Do not automatically bz2 compress all output files as
+                        they are written.
   --force-overwrite-output
                         Whether or not to force overwriting of any existing
                         output. Using this option will tell metawards that it
@@ -317,7 +319,7 @@ optional arguments:
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="cluster_usage.html" class="btn btn-neutral float-right" title="Running on a cluster" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards_plot_help.html" class="btn btn-neutral float-right" title="Command line options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

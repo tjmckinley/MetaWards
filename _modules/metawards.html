@@ -228,6 +228,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">iterators</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">extractors</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">app</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">analysis</span>
 
 
 <div class="viewcode-block" id="get_version_string"><a class="viewcode-back" href="../api/index_api_MetaWards.html#metawards.get_version_string">[docs]</a><span class="k">def</span> <span class="nf">get_version_string</span><span class="p">():</span>
@@ -269,11 +270,13 @@
         <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;WARNING: This version has not been committed to git,&quot;</span><span class="p">)</span>
         <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;WARNING: so you may not be able to recover the original&quot;</span><span class="p">)</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;WARNING: source code that was used to generate this run!&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;WARNING: source code that was used to generate &quot;</span>
+                     <span class="s2">&quot;this run!&quot;</span><span class="p">)</span>
 
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-- Additional information --&quot;</span><span class="p">))</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Visit https://metawards.github.io for more informaion&quot;</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Visit https://metawards.github.io for more &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;information&quot;</span><span class="p">))</span>
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;about metawards, its authors and its license&quot;</span><span class="p">))</span>
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
