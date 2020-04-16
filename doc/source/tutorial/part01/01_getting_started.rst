@@ -199,7 +199,31 @@ may look something like this;
 
    Do not worry if your numbers are different. All will be explained :-)
 
+Repeating a calculation
+-----------------------
+
 ``metawards`` runs a stochastic simulation. This means that random numbers
 are used in the decisions on how individuals in the model are infected,
 and how quickly they progress through the infection. This means that
 every ``metawards`` run is different.
+
+Fortunately, ``metawards`` prints enough information in the output
+to enable a job to be repeated. Look the for line the reads;
+
+::
+
+  ******************************************
+  *** To repeat this job use the command ***
+  ******************************************
+
+  metawards --repeats 1 --seed 17294186 --additional ExtraSeedsLondon.dat --output output --UV 1.0 --disease lurgy --input-data 2011Data --start-date 2020-04-16 --start-day 0 --parameters march29 --repository /Users/chris/GitHub/MetaWardsData --population 57104043 --nthreads 4 --nprocs 1
+
+This is the command line that you can use to repeat a job (note that
+the command line you see will be different). We have been careful to
+write ``metawards`` so that it gives the same output when you use
+the same inputs, using the same version of ``metawards`` and same version
+of data in ``MetaWardsData``, for the same random number seed and running
+the calculation over the same number of threads. We consider it a bug
+if ``metawards`` is not reproducible, and ask that you
+`submit an issue <https://github.com/metawards/MetaWards/issues>`__ if
+you find you cannot repeat a run.

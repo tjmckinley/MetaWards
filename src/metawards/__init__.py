@@ -55,6 +55,7 @@ from . import utils
 from . import iterators
 from . import extractors
 from . import app
+from . import analysis
 
 
 def get_version_string():

@@ -178,8 +178,13 @@ def parse_args():
                              "auto-detection fails.")
 
     parser.add_argument('--auto-bzip', action="store_true",
-                        default=False,
-                        help="Whether or not to automatically bz2 compress "
+                        default=None,
+                        help="Automatically bz2 compress "
+                             "all output files as they are written.")
+
+    parser.add_argument('--no-auto-bzip', action="store_true",
+                        default=None,
+                        help="Do not automatically bz2 compress "
                              "all output files as they are written.")
 
     parser.add_argument('--force-overwrite-output', action="store_true",
@@ -751,6 +756,14 @@ def cli():
             if isinstance(value, bool):
                 if value:
                     repeat_cmd += f" --{k}"
+            elif isinstance(value, list):
+                repeat_cmd += f" --{k}"
+                for val in value:
+                    v = str(val)
+                    if " " in v:
+                        repeat_cmd += f" '{v}''"
+                    else:
+                        repeat_cmd += f" {v}"
             else:
                 v = str(value)
                 if " " in v:
@@ -832,8 +845,15 @@ def cli():
     else:
         prompt = input
 
+    auto_bzip = True
+
+    if args.auto_bzip:
+        auto_bzip = True
+    elif args.no_auto_bzip:
+        auto_bzip = False
+
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
-                     auto_bzip=args.auto_bzip, prompt=prompt) as output_dir:
+                     auto_bzip=auto_bzip, prompt=prompt) as output_dir:
         result = run_models(network=network, variables=variables,
                             population=population, nprocs=nprocs,
                             nthreads=nthreads, seed=seed,
@@ -847,8 +867,8 @@ def cli():
 
         # write the result to a csv file that can be easily read by R or
         # pandas - this will be written compressed to save space
-        RESULTS = output_dir.open("results.csv", auto_bzip=True)
-        print(f"\nWriting a summary of all results into the compressed\n"
+        RESULTS = output_dir.open("results.csv", auto_bzip=auto_bzip)
+        print(f"\nWriting a summary of all results into the\n"
               f"csv file {output_dir.get_filename('results.csv')}.\n"
               f"You can use this to quickly look at statistics across\n"
               f"all runs using e.g. R or pandas")
@@ -867,9 +887,8 @@ def cli():
         else:
             datestring = ""
 
-        RESULTS.write(f"fingerprint,repeat,{varnames}{datestring}"
-                      f"day,susceptibles,latent,"
-                      f"total,n_inf_wards\n")
+        RESULTS.write(f"fingerprint,repeat,{varnames}"
+                      f"day,{datestring}S,E,I,R,IW\n")
         for varset, trajectory in result:
             varvals = varset.variable_values()
             if varvals is None or len(varvals) == 0:
@@ -887,7 +906,8 @@ def cli():
                     d = ""
 
                 RESULTS.write(f"{start}{pop.day},{d}{pop.susceptibles},"
-                              f"{pop.latent},{pop.total},{pop.n_inf_wards}\n")
+                              f"{pop.latent},{pop.total},"
+                              f"{pop.recovereds},{pop.n_inf_wards}\n")
 
     print("End of the run")
 

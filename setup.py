@@ -158,7 +158,8 @@ setup(
     },
     entry_points={
         "console_scripts": [
-           "metawards = metawards.app.run:cli"
+           "metawards = metawards.app.run:cli",
+           "metawards-plot = metawards.app.plot:cli"
         ]
     }
 )
