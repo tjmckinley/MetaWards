@@ -548,6 +548,10 @@
                         <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="n">varidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                     <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;progress&quot;</span><span class="p">:</span>
                         <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">progress</span><span class="p">[</span><span class="n">varidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;too_ill_to_move&quot;</span><span class="p">:</span>
+                        <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">too_ill_to_move</span><span class="p">[</span><span class="n">varidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;contrib_foi&quot;</span><span class="p">:</span>
+                        <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">contrib_foi</span><span class="p">[</span><span class="n">varidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Cannot set unrecognised parameter </span><span class="si">{</span><span class="n">varname</span><span class="si">}</span><span class="s2"> &quot;</span>
