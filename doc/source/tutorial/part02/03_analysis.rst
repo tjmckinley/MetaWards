@@ -4,7 +4,7 @@ Analysing the output
 
 The ``results.csv.bz2`` file contains all of the population trajectories
 from the nine model runs. You can explore this using Python pandas, R,
-or Excel :doc:`as you did before <../part02/02_repeating>`. Using
+or Excel :doc:`as you did before <../part01/02_repeating>`. Using
 ipython or Jupyter notebooks with pandas, we can load up the file;
 
 .. code-block:: python
@@ -91,3 +91,23 @@ do this type;
 
   metawards-plot -i output/results.csv.bz2
 
+As there are multiple fingerprints, this will produce multiple overview
+graphs (one overview per fingerprint, and if you have run multiple
+repeats, then one average per fingerprint too).
+
+The fingerprint value is included in the graph name, and they will
+all be plotted on the same axes. This means that tools that stack
+pages together, e.g. joining the PDFs, or merging images into a GIF,
+will let you animate between the different fingerprint values. For example,
+here is an animation of the overview graphs;
+
+.. image:: ../../images/tutorial_2_3.gif
+   :alt: Animated overview graphs from the parameter sweep
+
+Jupyter notebook
+----------------
+
+In addition, to the ``metawards-plot`` command, we also have a
+:download:`Jupyter notebook <../../notebooks/2_3_analysis.ipynb>`
+which you can look at which breaks down exactly how ``metawards-plot``
+uses pandas and matplotlib to render multi-fingerprint graphs.
