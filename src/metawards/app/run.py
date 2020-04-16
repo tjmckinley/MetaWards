@@ -96,7 +96,7 @@ def parse_args():
                         help="Value for the UV parameter for the model "
                              "(default is 1.0)")
 
-    parser.add_argument('-d', '--disease', type=str, default="ncov",
+    parser.add_argument('-d', '--disease', type=str, default=None,
                         help="Name of the disease to model "
                              "(default is 'ncov')")
 
@@ -591,11 +591,17 @@ def cli():
 
     # This is now the code for the main process
 
-    # WE NEED ONE OF 'input' or 'nrepeats'
-    if (args.input is None) and (args.repeats is None):
-        print("ERROR: You must specify one of '--input' or '--repeats'")
+    # WE NEED ONE OF these listed options;
+    should_run = False
+
+    for arg in [args.input, args.repeats, args.disease, args.additional]:
+        if arg is not None:
+            should_run = True
+            break
+
+    if not should_run:
         parser.print_help(sys.stdout)
-        sys.exit(-1)
+        sys.exit(0)
 
     if args.repeats is None:
         args.repeats = 1
@@ -609,6 +615,60 @@ def cli():
 
     # also print the full command line used for this job
     print(f"Command used to run this job:\n{' '.join(sys.argv)}\n")
+
+    if args.input:
+        # get the line numbers of the input file to read
+        if args.line is None or len(args.line) == 0:
+            linenums = None
+            print(f"Using parameters from all lines of {args.input}")
+        else:
+            from metawards.utils import string_to_ints
+            linenums = string_to_ints(args.line)
+
+            if len(linenums) == 0:
+                print(f"You cannot read no lines from {args.input}?")
+                sys.exit(-1)
+            elif len(linenums) == 1:
+                print(f"Using parameters from line {linenums[0]} of "
+                      f"{args.input}")
+            else:
+                print(f"Using parameters from lines {linenums} of "
+                      f"{args.input}")
+
+        from metawards import VariableSets, VariableSet
+        variables = VariableSets.read(filename=args.input,
+                                      line_numbers=linenums)
+    else:
+        from metawards import VariableSets, VariableSet
+        # create a VariableSets with one null VariableSet
+        variables = VariableSets()
+        variables.append(VariableSet())
+
+    nrepeats = args.repeats
+
+    if nrepeats is None or nrepeats < 1:
+        nrepeats = 1
+
+    if nrepeats == 1:
+        print("Performing a single run of each set of parameters")
+    else:
+        print(f"Performing {nrepeats} runs of each set of parameters")
+
+    variables = variables.repeat(nrepeats)
+
+    # working out the number of processes and threads...
+    from metawards.utils import guess_num_threads_and_procs
+    (nthreads, nprocs) = guess_num_threads_and_procs(
+                                            njobs=len(variables),
+                                            nthreads=args.nthreads,
+                                            nprocs=args.nprocs,
+                                            parallel_scheme=parallel_scheme)
+
+    print(f"Number of threads to use for each model run is {nthreads}")
+    print(f"Number of processes used to parallelise model runs is {nprocs}")
+
+    if nprocs > 1:
+        print(f"Parallelisation will be achieved using {parallel_scheme}")
 
     # load all of the parameters
     try:
@@ -630,53 +690,20 @@ def cli():
         profile = False
 
     # load the disease and starting-point input files
-    params.set_disease(args.disease)
+    if args.disease:
+        params.set_disease(args.disease)
+    else:
+        params.set_disease("ncov")
+
     params.set_input_files(args.input_data)
 
-    if args.input:
-        # get the line numbers of the input file to read
-        if args.line is None or len(args.line) == 0:
-            linenums = None
-            print(f"Using parameters from all lines of {args.input}")
-        else:
-            from metawards.utils import string_to_ints
-            linenums = string_to_ints(args.line)
-
-            if len(linenums) == 0:
-                print(f"You cannot read no lines from {args.input}?")
-                sys.exit(-1)
-            elif len(linenums) == 1:
-                print(f"Using parameters from line {linenums[0]} of "
-                      f"{args.input}")
-            else:
-                print(f"Using parameters from lines {linenums} of "
-                      f"{args.input}")
-
-        variables = params.read_variables(args.input, linenums)
-    else:
-        from metawards import VariableSets, VariableSet
-        # create a VariableSets with one null VariableSet
-        variables = VariableSets()
-        variables.append(VariableSet())
-
+    # read the additional seeds
     if args.additional is None or len(args.additional) == 0:
         print("Not using any additional seeds...")
     else:
         for additional in args.additional:
             print(f"Loading additional seeds from {additional}")
             params.add_seeds(additional)
-
-    nrepeats = args.repeats
-
-    if nrepeats is None or nrepeats < 1:
-        nrepeats = 1
-
-    if nrepeats == 1:
-        print("Performing a single run of each set of parameters")
-    else:
-        print(f"Performing {nrepeats} runs of each set of parameters")
-
-    variables = variables.repeat(nrepeats)
 
     # get the starting day and date
     start_day = args.start_day
@@ -717,25 +744,6 @@ def cli():
               f"{start_day_date.strftime('%A %B %d %Y')}")
     else:
         start_day_date = start_date
-
-    nthreads = args.nthreads
-
-    if nthreads is None or nthreads < 1:
-        from metawards.utils import get_available_num_threads
-        nthreads = get_available_num_threads()
-
-    print(f"Number of threads to use for each model run is {nthreads}")
-
-    nprocs = args.nprocs
-
-    if nprocs is None or nprocs < 1:
-        from metawards.utils import get_number_of_processes
-        nprocs = get_number_of_processes(parallel_scheme, nprocs)
-
-    print(f"Number of processes used to parallelise model runs is {nprocs}")
-
-    if nprocs > 1:
-        print(f"Parallelisation will be achieved using {parallel_scheme}")
 
     # extra parameters that are set
     params.UV = args.UV

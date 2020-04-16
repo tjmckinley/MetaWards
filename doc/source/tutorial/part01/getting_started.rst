@@ -2,4 +2,204 @@
 Getting Started
 ===============
 
+This tutorial assumes that you have installed ``metawards``. To check
+that you have, type the following into your console;
 
+.. code-block:: bash
+
+   metawards --version
+
+and then press return. You should see something similar to the below
+printed to your screen.
+
+::
+
+     *****************************************
+     metawards version 0.6.0+29.gae0c4d5.dirty
+     *****************************************
+
+              -- Source information --
+  repository: https://github.com/metawards/MetaWards
+             branch: feature_customise
+  revision: ae0c4d521ebcdb77084d001b54e265deee7cdae8
+      last modified: 2020-04-15T21:49:24+0100
+
+  WARNING: This version has not been committed to git,
+  WARNING: so you may not be able to recover the original
+  WARNING: source code that was used to generate this run!
+
+            -- Additional information --
+  Visit https://metawards.github.io for more informaion
+    about metawards, its authors and its license
+
+If you don't see this, or the output includes a warning about not being
+about to find `MetaWardsData`, then please try
+:doc:`installing MetaWards <../../install>` or
+:doc:`installing and configuring MetaWardsData <../../model_data>` again.
+
+Introducing the Lurgy
+---------------------
+
+`The Lurgy <https://en.wiktionary.org/wiki/lurgy>`__ is a
+**completely ficticious** disease that we will use throughout this
+tutorial. We can run a simulation of an outbreak of the lurgy using
+the ``--disease`` command line argument. Type the following;
+
+.. code-block:: bash
+
+   metawards --disease lurgy
+
+Press return and you should see a lot of output printed. Near the end
+of the output you will see these lines;
+
+::
+
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   0 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   1 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   2 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   3 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   4 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+  Infection died ... Ending on day 5
+
+.. note::
+   Do not worry if you don't see exactly this output. You may be using
+   a different version of ``metawards`` compared to the one used to write
+   this tutorial. The main thing to look for is the line
+   ``Infection died ... Ending on day 5``
+
+The ``--disease`` option also has the shorthand ``-d``. You can get the same
+output as above by typing;
+
+.. code-block:: bash
+
+   metawards -d lurgy
+
+.. note::
+   This time when you ran ``metawards`` it stopped to say that the output
+   directory already exists, and if you want to remove it.
+
+The ``metawards`` program takes care not to overwrite any of your output.
+By default a lot of output files from this run have been written to a
+directory called ``output`` (we will take a look at these files later).
+``metawards`` will ask you if you want to remove any existing output.
+Press ``y`` and hit return to do so. If you want to automatically
+remove existing output then use the ``--force-overwrite-output`` option,
+e.g.
+
+.. code-block:: bash
+
+   metawards -d lurgy --force-overwrite-output
+
+You can also set the output directory using the ``--output`` or ``-o``
+options, e.g.
+
+.. code-block:: bash
+
+   metawards -d lurgy -o output2
+
+Seeding an outbreak
+-------------------
+
+The key output from ``metawards`` are the lines which read;
+
+::
+
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   0 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   1 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   2 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   3 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+
+   4 0
+  S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+  Infection died ... Ending on day 5
+
+These tell you how long the outbreak lasted (in this case, 5 days),
+together with how many people were infected. These are the numbers next
+to the codes;
+
+* **S**: The number of the population who are *susceptible* to infection
+* **E**: The number of the population who are *latent*, meaning they are
+  infected, but not yet infectious.
+* **I**: The number of the population who are *infected*, meaning they
+  have symptoms and are infectious
+* **R**: The number of the population who are removed from the outbreak,
+  e.g. because they have recovered and are no longer susceptible to infection
+* **IW**: The number of the population who are *infected* and showing
+  stronger symptoms.
+
+For more information about these values, please
+`read <https://doi.org/10.1016/j.epidem.2009.11.002>`__
+`the <https://doi.org/10.1073/pnas.1000416107>`__
+`papers <https://doi.org/10.1101/2020.02.12.20022566>`__ detailed
+in the :doc:`scientific background <../../index>`.
+
+From this output it is clear that no-one has been infected by the lurgy.
+This is because we haven't yet seeded any outbreaks. We can seed an
+outbreak in a specific electoral ward by using an additional seeds file.
+In this case, we will seed an infection of the lurgy in London using
+the `ExtraSeedsLondon.dat <https://github.com/metawards/MetaWardsData/blob/master/extra_seeds/ExtraSeedsLondon.dat>`__
+file that comes in ``MetaWardsData``. You specify the additional seeds
+file to use via the ``--additional`` or ``-a`` options.
+
+Try typing the below into your console and press return;
+
+.. code-block:: bash
+
+   metawards -d lurgy -a ExtraSeedsLondon.dat
+
+Now the program will run for a long time (minutes), and you will see
+an outbreak move through the population. The final lines of your output
+may look something like this;
+
+::
+
+   190 1
+  S: 55748884    E: 1    I: 0    R: 333192    IW: 0   TOTAL POPULATION 56082076
+
+   191 1
+  S: 55748884    E: 1    I: 0    R: 333192    IW: 0   TOTAL POPULATION 56082076
+
+   192 1
+  S: 55748884    E: 1    I: 0    R: 333192    IW: 0   TOTAL POPULATION 56082076
+
+   193 1
+  S: 55748884    E: 1    I: 0    R: 333192    IW: 0   TOTAL POPULATION 56082076
+
+   194 1
+  S: 55748884    E: 0    I: 1    R: 333192    IW: 0   TOTAL POPULATION 56082077
+
+   195 1
+  S: 55748884    E: 0    I: 1    R: 333192    IW: 0   TOTAL POPULATION 56082077
+
+   196 1
+  S: 55748884    E: 0    I: 0    R: 333193    IW: 0   TOTAL POPULATION 56082077
+  Infection died ... Ending on day 197
+
+.. note::
+
+   Do not worry if your numbers are different. All will be explained :-)
+
+``metawards`` runs a stochastic simulation. This means that random numbers
+are used in the decisions on how individuals in the model are infected,
+and how quickly they progress through the infection. This means that
+every ``metawards`` run is different.
