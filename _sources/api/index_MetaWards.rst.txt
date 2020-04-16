@@ -69,6 +69,11 @@ The package centers around a few core objects:
     the numbers in each state for a single day in the outbreak,
     while :class:`~metawards.Populations` holds the full trajectory.
 
+:class:`~metawards.OutputFiles`
+    Manages all of the output files that are produced by the program.
+    This can be told to auto-compress (bzip2) all files as they
+    are being written.
+
 All of the above classes (and others in the top-level package) are
 described :doc:`in more detail here <index_api_MetaWards>`;
 

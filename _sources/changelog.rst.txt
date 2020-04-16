@@ -2,9 +2,6 @@
 Changelog
 =========
 
-.. toctree::
-   :maxdepth: 2
-
 `0.6.0 <https://github.com/metawards/MetaWards/compare/0.5.0...0.6.0>`__ - April 9th 2020
 -----------------------------------------------------------------------------------------
 

@@ -36,9 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="metawards.Parameters" href="metawards.Parameters.html" />
-    <link rel="prev" title="metawards.Nodes" href="metawards.Nodes.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,24 +94,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../model_data.html">Model data</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/tutorial.html">Tutorial</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_app.html">MetaWards.app</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../index_MetaWards.html">MetaWards</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../index_api_MetaWards.html">MetaWards API Detail</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="../index_api_MetaWards.html#classes">Classes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../index_api_MetaWards.html#functions">Functions</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_iterators.html">MetaWards.iterators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_utils.html">MetaWards.utils</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
@@ -165,12 +153,6 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../index.html">Documentation</a> &raquo;</li>
-        
-          <li><a href="../index_MetaWards.html">MetaWards</a> &raquo;</li>
-        
-          <li><a href="../index_api_MetaWards.html">MetaWards API Detail</a> &raquo;</li>
-        
       <li>metawards.OutputFiles</li>
     
     
@@ -195,9 +177,8 @@
 <dl class="class">
 <dt id="metawards.OutputFiles">
 <em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">OutputFiles</code><span class="sig-paren">(</span><em>output_dir: str = 'output'</em>, <em>check_empty: bool = True</em>, <em>force_empty: bool = False</em>, <em>prompt=&lt;built-in function input&gt;</em>, <em>auto_bzip: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_outputfiles.html#OutputFiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.OutputFiles" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>This is a class that manages all of the output files that</dt>
-<dd><p class="first">are written to during a model outbreak. This object is used
+<dd><p>This is a class that manages all of the output files that
+are written to during a model outbreak. This object is used
 to hold the ‘FILE’ objects for open files, and will
 ensure that these files are closed and written to disk
 as needed. It will also ensure that files are written
@@ -205,39 +186,25 @@ to the correct output directory, and that they are only
 opened when they are needed (e.g. only the first call
 to open the file will actually open it - subsequent
 calls will return the already-open file handler)</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">OutputFiles</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="n">check_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">OutputFiles</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="n">check_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;output.txt&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;some output</span>
-</pre></div>
-</div>
-</dd>
-<dt>“)</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;something.csv.bz2&quot;</span><span class="p">,</span> <span class="n">auto_bzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;something,else,is,here</span>
-</pre></div>
-</div>
-</dd>
-<dt>“)</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;some output</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;something.csv.bz2&quot;</span><span class="p">,</span> <span class="n">auto_bzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;something,else,is,here</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;output.txt&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;some more output</span>
-</pre></div>
-</div>
-</dd>
-<dt>“)</dt>
-<dd><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;some more output</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Note that you can also use OutputFiles in a contexthandler, to
 ensure that all output files are automatically closed, e.g.</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">OutputFiles</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">OutputFiles</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">FILE</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;output.txt&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;something</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;something</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-<p>“)</p>
 <dl class="method">
 <dt id="metawards.OutputFiles.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>output_dir: str = 'output'</em>, <em>check_empty: bool = True</em>, <em>force_empty: bool = False</em>, <em>prompt=&lt;built-in function input&gt;</em>, <em>auto_bzip: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_outputfiles.html#OutputFiles.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.OutputFiles.__init__" title="Permalink to this definition">¶</a></dt>
@@ -460,22 +427,13 @@ the output files will be written</p>
           </div>
           <footer>
   
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="metawards.Parameters.html" class="btn btn-neutral float-right" title="metawards.Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="metawards.Nodes.html" class="btn btn-neutral float-left" title="metawards.Nodes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 15, 2020.
+        Last updated on Apr 16, 2020.
       </span>
 
     </p>
