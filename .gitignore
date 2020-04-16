@@ -23,3 +23,4 @@ __pycache__
 /doc/source/api/generated
 /.coverage
 /doc/source/metawards_help.rst
+/doc/source/metawards_plot_help.rst

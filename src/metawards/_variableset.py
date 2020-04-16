@@ -373,6 +373,10 @@ class VariableSet:
                         params.disease_params.beta[varidx] = value
                     elif varname == "progress":
                         params.disease_params.progress[varidx] = value
+                    elif varname == "too_ill_to_move":
+                        params.disease_params.too_ill_to_move[varidx] = value
+                    elif varname == "contrib_foi":
+                        params.disease_params.contrib_foi[varidx] = value
                     else:
                         raise KeyError(
                             f"Cannot set unrecognised parameter {varname} "

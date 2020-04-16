@@ -102,9 +102,6 @@ extensions = [
     Extension("metawards.utils._assert_sane_network",
               ["src/metawards/utils/_assert_sane_network.pyx"],
               define_macros=define_macros),
-    Extension("metawards.utils._parallel",
-              ["src/metawards/utils/_parallel.pyx"],
-              define_macros=define_macros),
     Extension("metawards.utils._get_array_ptr",
               ["src/metawards/utils/_get_array_ptr.pyx"],
               define_macros=define_macros),
@@ -161,7 +158,8 @@ setup(
     },
     entry_points={
         "console_scripts": [
-           "metawards = metawards.app.run:cli"
+           "metawards = metawards.app.run:cli",
+           "metawards-plot = metawards.app.plot:cli"
         ]
     }
 )

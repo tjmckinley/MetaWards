@@ -137,6 +137,13 @@ class Disease:
         repository_branch = None
 
         if filename is None:
+            import os
+            if os.path.exists(disease):
+                filename = disease
+            elif os.path.exists(f"{disease}.json"):
+                filename = f"{disease}.json"
+
+        if filename is None:
             if repository is None:
                 repository = _os.getenv("METAWARDSDATA")
                 if repository is None:

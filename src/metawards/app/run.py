@@ -96,7 +96,7 @@ def parse_args():
                         help="Value for the UV parameter for the model "
                              "(default is 1.0)")
 
-    parser.add_argument('-d', '--disease', type=str, default="ncov",
+    parser.add_argument('-d', '--disease', type=str, default=None,
                         help="Name of the disease to model "
                              "(default is 'ncov')")
 
@@ -178,8 +178,13 @@ def parse_args():
                              "auto-detection fails.")
 
     parser.add_argument('--auto-bzip', action="store_true",
-                        default=False,
-                        help="Whether or not to automatically bz2 compress "
+                        default=None,
+                        help="Automatically bz2 compress "
+                             "all output files as they are written.")
+
+    parser.add_argument('--no-auto-bzip', action="store_true",
+                        default=None,
+                        help="Do not automatically bz2 compress "
                              "all output files as they are written.")
 
     parser.add_argument('--force-overwrite-output', action="store_true",
@@ -591,11 +596,17 @@ def cli():
 
     # This is now the code for the main process
 
-    # WE NEED ONE OF 'input' or 'nrepeats'
-    if (args.input is None) and (args.repeats is None):
-        print("ERROR: You must specify one of '--input' or '--repeats'")
+    # WE NEED ONE OF these listed options;
+    should_run = False
+
+    for arg in [args.input, args.repeats, args.disease, args.additional]:
+        if arg is not None:
+            should_run = True
+            break
+
+    if not should_run:
         parser.print_help(sys.stdout)
-        sys.exit(-1)
+        sys.exit(0)
 
     if args.repeats is None:
         args.repeats = 1
@@ -609,29 +620,6 @@ def cli():
 
     # also print the full command line used for this job
     print(f"Command used to run this job:\n{' '.join(sys.argv)}\n")
-
-    # load all of the parameters
-    try:
-        params = Parameters.load(parameters=args.parameters)
-    except Exception as e:
-        print(f"Unable to load parameter files. Make sure that you have "
-              f"cloned the MetaWardsData repository and have set the "
-              f"environment variable METAWARDSDATA to point to the "
-              f"local directory containing the repository, e.g. the "
-              f"default is $HOME/GitHub/MetaWardsData")
-        raise e
-
-    # should we profile the code? (default yes, as it doesn't cost anything)
-    profile = args.profile
-
-    if args.no_profile:
-        profile = False
-    elif profile is None:
-        profile = False
-
-    # load the disease and starting-point input files
-    params.set_disease(args.disease)
-    params.set_input_files(args.input_data)
 
     if args.input:
         # get the line numbers of the input file to read
@@ -652,19 +640,14 @@ def cli():
                 print(f"Using parameters from lines {linenums} of "
                       f"{args.input}")
 
-        variables = params.read_variables(args.input, linenums)
+        from metawards import VariableSets, VariableSet
+        variables = VariableSets.read(filename=args.input,
+                                      line_numbers=linenums)
     else:
         from metawards import VariableSets, VariableSet
         # create a VariableSets with one null VariableSet
         variables = VariableSets()
         variables.append(VariableSet())
-
-    if args.additional is None or len(args.additional) == 0:
-        print("Not using any additional seeds...")
-    else:
-        for additional in args.additional:
-            print(f"Loading additional seeds from {additional}")
-            params.add_seeds(additional)
 
     nrepeats = args.repeats
 
@@ -677,6 +660,30 @@ def cli():
         print(f"Performing {nrepeats} runs of each set of parameters")
 
     variables = variables.repeat(nrepeats)
+
+    # working out the number of processes and threads...
+    from metawards.utils import guess_num_threads_and_procs
+    (nthreads, nprocs) = guess_num_threads_and_procs(
+                                            njobs=len(variables),
+                                            nthreads=args.nthreads,
+                                            nprocs=args.nprocs,
+                                            parallel_scheme=parallel_scheme)
+
+    print(f"\nNumber of threads to use for each model run is {nthreads}")
+
+    if nprocs > 1:
+        print(f"Number of processes used to parallelise model "
+              f"runs is {nprocs}")
+        print(f"Parallelisation will be achieved using {parallel_scheme}")
+
+    # sort out the random number seed
+    seed = args.seed
+
+    if seed is None:
+        import random
+        seed = random.randint(10000, 99999999)
+
+    print(f"\nUsing random number seed {seed}")
 
     # get the starting day and date
     start_day = args.start_day
@@ -708,7 +715,7 @@ def cli():
         from datetime import date
         start_date = date.today()
 
-    print(f"Day zero is {start_date.strftime('%A %B %d %Y')}")
+    print(f"\nDay zero is {start_date.strftime('%A %B %d %Y')}")
 
     if start_day != 0:
         from datetime import timedelta
@@ -718,24 +725,93 @@ def cli():
     else:
         start_day_date = start_date
 
-    nthreads = args.nthreads
+    # now find the MetaWardsData repository as this will be needed
+    # for the repeat command line too
+    (repository, repository_version) = Parameters.get_repository(
+                                                        args.repository)
 
-    if nthreads is None or nthreads < 1:
-        from metawards.utils import get_available_num_threads
-        nthreads = get_available_num_threads()
+    print(f"\nUsing MetaWardsData at {repository}")
+    print(f"This is cloned from {repository_version['repository']}")
+    print(f"branch {repository_version['branch']}, version "
+          f"{repository_version['version']}")
 
-    print(f"Number of threads to use for each model run is {nthreads}")
+    if repository_version["is_dirty"]:
+        print("## WARNING - this repository is dirty, meaning that the data")
+        print("## WARNING - has not been committed to git. This may make ")
+        print("## WARNING - this calculation very difficult to reproduce")
 
-    nprocs = args.nprocs
+    # now work out the minimum command line needed to repeat this job
+    args.seed = seed
+    args.nprocs = nprocs
+    args.nthreads = nthreads
+    args.start_date = start_date.isoformat()
+    args.repository = repository
 
-    if nprocs is None or nprocs < 1:
-        from metawards.utils import get_number_of_processes
-        nprocs = get_number_of_processes(parallel_scheme, nprocs)
+    repeat_cmd = "metawards"
 
-    print(f"Number of processes used to parallelise model runs is {nprocs}")
+    for key, value in vars(args).items():
+        if value is not None:
+            k = key.replace("_", "-")
 
-    if nprocs > 1:
-        print(f"Parallelisation will be achieved using {parallel_scheme}")
+            if isinstance(value, bool):
+                if value:
+                    repeat_cmd += f" --{k}"
+            elif isinstance(value, list):
+                repeat_cmd += f" --{k}"
+                for val in value:
+                    v = str(val)
+                    if " " in v:
+                        repeat_cmd += f" '{v}''"
+                    else:
+                        repeat_cmd += f" {v}"
+            else:
+                v = str(value)
+                if " " in v:
+                    repeat_cmd += f" --{k} '{v}''"
+                else:
+                    repeat_cmd += f" --{k} {v}"
+
+    t = "*** To repeat this job use the command ***"
+
+    print("\n" + "*"*len(t))
+    print(t)
+    print("*"*len(t) + "\n")
+    print(repeat_cmd + "\n")
+
+    # load all of the parameters
+    try:
+        params = Parameters.load(parameters=args.parameters)
+    except Exception as e:
+        print(f"Unable to load parameter files. Make sure that you have "
+              f"cloned the MetaWardsData repository and have set the "
+              f"environment variable METAWARDSDATA to point to the "
+              f"local directory containing the repository, e.g. the "
+              f"default is $HOME/GitHub/MetaWardsData")
+        raise e
+
+    # should we profile the code? (default yes, as it doesn't cost anything)
+    profile = args.profile
+
+    if args.no_profile:
+        profile = False
+    elif profile is None:
+        profile = False
+
+    # load the disease and starting-point input files
+    if args.disease:
+        params.set_disease(args.disease)
+    else:
+        params.set_disease("ncov")
+
+    params.set_input_files(args.input_data)
+
+    # read the additional seeds
+    if args.additional is None or len(args.additional) == 0:
+        print("Not using any additional seeds...")
+    else:
+        for additional in args.additional:
+            print(f"Loading additional seeds from {additional}")
+            params.add_seeds(additional)
 
     # extra parameters that are set
     params.UV = args.UV
@@ -769,11 +845,18 @@ def cli():
     else:
         prompt = input
 
+    auto_bzip = True
+
+    if args.auto_bzip:
+        auto_bzip = True
+    elif args.no_auto_bzip:
+        auto_bzip = False
+
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
-                     auto_bzip=args.auto_bzip, prompt=prompt) as output_dir:
+                     auto_bzip=auto_bzip, prompt=prompt) as output_dir:
         result = run_models(network=network, variables=variables,
                             population=population, nprocs=nprocs,
-                            nthreads=nthreads, seed=args.seed,
+                            nthreads=nthreads, seed=seed,
                             nsteps=args.nsteps,
                             output_dir=output_dir,
                             profile=profile, parallel_scheme=parallel_scheme)
@@ -784,8 +867,8 @@ def cli():
 
         # write the result to a csv file that can be easily read by R or
         # pandas - this will be written compressed to save space
-        RESULTS = output_dir.open("results.csv", auto_bzip=True)
-        print(f"\nWriting a summary of all results into the compressed\n"
+        RESULTS = output_dir.open("results.csv", auto_bzip=auto_bzip)
+        print(f"\nWriting a summary of all results into the\n"
               f"csv file {output_dir.get_filename('results.csv')}.\n"
               f"You can use this to quickly look at statistics across\n"
               f"all runs using e.g. R or pandas")
@@ -804,9 +887,8 @@ def cli():
         else:
             datestring = ""
 
-        RESULTS.write(f"fingerprint,repeat,{varnames}{datestring}"
-                      f"day,susceptibles,latent,"
-                      f"total,n_inf_wards\n")
+        RESULTS.write(f"fingerprint,repeat,{varnames}"
+                      f"day,{datestring}S,E,I,R,IW\n")
         for varset, trajectory in result:
             varvals = varset.variable_values()
             if varvals is None or len(varvals) == 0:
@@ -824,7 +906,8 @@ def cli():
                     d = ""
 
                 RESULTS.write(f"{start}{pop.day},{d}{pop.susceptibles},"
-                              f"{pop.latent},{pop.total},{pop.n_inf_wards}\n")
+                              f"{pop.latent},{pop.total},"
+                              f"{pop.recovereds},{pop.n_inf_wards}\n")
 
     print("End of the run")
 

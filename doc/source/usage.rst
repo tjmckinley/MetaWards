@@ -253,3 +253,22 @@ For example, this output could be read into a pandas dataframe using
 
 We run a good online workshop on
 `how to use pandas for data analysis <https://milliams.com/courses/data_analysis_python/index.html>`__.
+
+metawards-plot
+--------------
+
+For quick and simple plots, ``metawards`` comes with the command-line
+program ``metawards-plot``. This can be used to create plots of the
+data in the ``output/results.csv.bz2`` file using, e.g.
+
+.. code-block:: bash
+
+   metawards-plot --input output/results.csv.bz2
+
+For full help on this program using ``metawards-plot --help``.
+The full help is :doc:`available here <metawards_plot_help>`.
+
+.. toctree::
+   :hidden:
+
+   metawards_plot_help
