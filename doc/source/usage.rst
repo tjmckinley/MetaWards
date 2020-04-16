@@ -2,9 +2,6 @@
 Usage
 =====
 
-.. toctree::
-   :maxdepth: 2
-
 metawards program
 =================
 
@@ -81,7 +78,12 @@ typing;
 
     metawards --help
 
-The full help is `available here <metawards_help.html>`__.
+The full help is :doc:`available here <metawards_help>`.
+
+.. toctree::
+   :hidden:
+
+   metawards_help
 
 Understanding the options
 =========================

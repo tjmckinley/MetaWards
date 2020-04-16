@@ -2,9 +2,6 @@
 Developer's guide
 =================
 
-.. toctree::
-   :maxdepth: 2
-
 The source code for MetaWards is available on
 `GitHub <https://github.com/metawards/MetaWards>`__.
 
