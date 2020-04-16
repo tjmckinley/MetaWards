@@ -14,6 +14,9 @@ To run this, type;
 
    metawards-plot --input output/results.csv.bz2
 
+Understanding the graphs
+------------------------
+
 This will create two sets of graphs;
 
 * ``output/overview.pdf``
@@ -38,6 +41,9 @@ This will create two sets of graphs;
     be similar in shape. The purpose of this type of modelling is not to
     make exact numerical predictions, but to instead understand trends
     and timelines.
+
+Jupyter notebooks
+-----------------
 
 The ``metawards-plot`` command can be used for quick-and-simple plots.
 If you want something more complex then you can take a look at the functions
