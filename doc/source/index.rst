@@ -75,6 +75,14 @@ Model Data
 
    model_data
 
+Tutorial
+========
+
+.. toctree::
+   :maxdepth: 2
+
+   tutorial/tutorial
+
 Usage
 =====
 
@@ -111,5 +119,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
-

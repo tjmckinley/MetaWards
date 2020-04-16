@@ -33,7 +33,6 @@ def advance_infprob_omp(network: Network, nthreads: int,
          Extra arguments that may be used by other advancers, but which
          are not used by advance_infprob
     """
-
     wards = network.nodes
     params = network.params
 
@@ -96,6 +95,20 @@ def advance_infprob_omp(network: Network, nthreads: int,
 
 
 def advance_infprob(**kwargs):
-    """Stubbded serial version of advance_infprob"""
+    """Advance the calculation of the day and night infection probabilities
+       for each ward. You need to call this function after you have
+       changed them, and before you use them in, e.g. advance_fixed
+       and advance_play. This is the serial version of this function
+
+       Parameters
+       ----------
+       network: Network
+         The network being modelled
+       profiler: Profiler
+         The profiler used to profile this calculation
+       kwargs:
+         Extra arguments that may be used by other advancers, but which
+         are not used by advance_infprob
+    """
     kwargs["nthreads"] = 1
     advance_infprob_omp(**kwargs)

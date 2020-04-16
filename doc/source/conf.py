@@ -38,9 +38,6 @@ with open("metawards_help.rst", "w") as FILE:
 Command line options
 ====================
 
-.. toctree::
-   :maxdepth: 2
-
 The full set of command line options for metawards is below;
 
 ::

@@ -13,7 +13,7 @@ Functions that advance the outbreak in different ways
     * :meth:`~metawards.iterators.advance_foi`
     * :meth:`~metawards.iterators.advance_additional`
     * :meth:`~metawards.iterators.advance_infprob`
-    * :meth:`~metawards.iterators.advance_work`
+    * :meth:`~metawards.iterators.advance_fixed`
     * :meth:`~metawards.iterators.advance_play`
 
 Functions that set up the different `advance_XXX` functions
