@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Usage" href="../../usage.html" />
+    <link rel="next" title="7. Custom Iterators" href="../part03/01_iterators.html" />
     <link rel="prev" title="5. Adjustable Variables" href="02_adjustable.html" /> 
 </head>
 
@@ -105,8 +105,11 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">6. Analysing the output</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#finding-peaks">6.1. Finding peaks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#plotting-the-output">6.2. Plotting the output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jupyter-notebook">6.3. Jupyter notebook</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../part03/01_iterators.html">7. Custom Iterators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../part04/01_extractors.html">8. Custom extractors</a></li>
 </ul>
 </li>
 </ul>
@@ -192,7 +195,7 @@
 <h1>6. Analysing the output<a class="headerlink" href="#analysing-the-output" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">results.csv.bz2</span></code> file contains all of the population trajectories
 from the nine model runs. You can explore this using Python pandas, R,
-or Excel <span class="xref std std-doc">as you did before</span>. Using
+or Excel <a class="reference internal" href="../part01/02_repeating.html"><span class="doc">as you did before</span></a>. Using
 ipython or Jupyter notebooks with pandas, we can load up the file;</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;output/results.csv.bz2&quot;</span><span class="p">)</span>
@@ -232,18 +235,18 @@ together. Then the <code class="docutils literal notranslate"><span class="pre">
 values of selected columns from each group, e.g.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">)[[</span><span class="s2">&quot;day&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;IW&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="go">           day       E        I    IW         R</span>
+<span class="go">fingerprint</span>
+<span class="go">3_0          175  155437   769541  8510   6369771</span>
+<span class="go">3_25         171  141362   698977  8493   5811758</span>
+<span class="go">3_5          185  170973   847554  8531   6998635</span>
+<span class="go">4_0          178  235224  1162678  8573   9251310</span>
+<span class="go">4_25         172  250029  1235252  8566   9808872</span>
+<span class="go">4_5          174  289890  1435946  8582  11322621</span>
+<span class="go">5_0          175  394132  1949529  8584  14703554</span>
+<span class="go">5_25         177  492045  2434433  8586  18009857</span>
+<span class="go">5_5          176  157752   779038  8522   6112471</span>
 </pre></div>
 </div>
-<p>fingerprint
-3_0          175  155437   769541  8510   6369771
-3_25         171  141362   698977  8493   5811758
-3_5          185  170973   847554  8531   6998635
-4_0          178  235224  1162678  8573   9251310
-4_25         172  250029  1235252  8566   9808872
-4_5          174  289890  1435946  8582  11322621
-5_0          175  394132  1949529  8584  14703554
-5_25         177  492045  2434433  8586  18009857
-5_5          176  157752   779038  8522   6112471</p>
 <p>From this, we can see that higher peaks occured for higher values
 of <strong>beta</strong>, which is expected. However, larger values of
 <strong>too_ill_to_move</strong> also seemed to slightly increase the peaks,
@@ -271,6 +274,22 @@ do this type;</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot -i output/results.csv.bz2
 </pre></div>
 </div>
+<p>As there are multiple fingerprints, this will produce multiple overview
+graphs (one overview per fingerprint, and if you have run multiple
+repeats, then one average per fingerprint too).</p>
+<p>The fingerprint value is included in the graph name, and they will
+all be plotted on the same axes. This means that tools that stack
+pages together, e.g. joining the PDFs, or merging images into a GIF,
+will let you animate between the different fingerprint values. For example,
+here is an animation of the overview graphs;</p>
+<img alt="Animated overview graphs from the parameter sweep" src="../../_images/tutorial_2_3.gif" />
+</div>
+<div class="section" id="jupyter-notebook">
+<h2>6.3. Jupyter notebook<a class="headerlink" href="#jupyter-notebook" title="Permalink to this headline">¶</a></h2>
+<p>In addition, to the <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code> command, we also have a
+<a class="reference download internal" download="" href="../../_downloads/9c074a8ab169b5e0fed845f059d0718a/2_3_analysis.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">notebook</span></code></a>
+which you can look at which breaks down exactly how <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code>
+uses pandas and matplotlib to render multi-fingerprint graphs.</p>
 </div>
 </div>
 
@@ -282,7 +301,7 @@ do this type;</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../part03/01_iterators.html" class="btn btn-neutral float-right" title="7. Custom Iterators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="02_adjustable.html" class="btn btn-neutral float-left" title="5. Adjustable Variables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -122,9 +122,9 @@ using this file via;
 
 .. note::
 
-``metawards`` automatically used your ``lurgy2.json`` file as it
-found the file in your current directory. You can pass a full path to
-your file, with or without the ``.json`` extension
+  ``metawards`` automatically used your ``lurgy2.json`` file as it
+  found the file in your current directory. You can pass a full path to
+  your file, with or without the ``.json`` extension
 
 This will run the ``metawards`` *model run* for your new version of the
 lurgy. Notice that near the top of the output you have your parameters

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.analysis.create_average_plot &mdash; MetaWards Documentation</title>
+  <title>7. Custom Iterators &mdash; MetaWards Documentation</title>
   
 
   
@@ -36,7 +36,9 @@
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="8. Custom extractors" href="../part04/01_extractors.html" />
+    <link rel="prev" title="6. Analysing the output" href="../part02/03_analysis.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,15 +95,25 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../model_data.html">Model data</a></li>
 </ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial/tutorial.html">Tutorial</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../part01/01_getting_started.html">1. Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../part01/02_repeating.html">2. Multiple model runs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../part01/03_plotting.html">3. Plotting outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../part02/01_disease.html">4. Refining the disease model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../part02/02_adjustable.html">5. Adjustable Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../part02/03_analysis.html">6. Analysing the output</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7. Custom Iterators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../part04/01_extractors.html">8. Custom extractors</a></li>
+</ul>
+</li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
@@ -153,13 +165,15 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-      <li>metawards.analysis.create_average_plot</li>
+          <li><a href="../tutorial.html">Tutorial</a> &raquo;</li>
+        
+      <li>7. Custom Iterators</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/api/generated/metawards.analysis.create_average_plot.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/tutorial/part03/01_iterators.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -172,38 +186,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="metawards-analysis-create-average-plot">
-<h1>metawards.analysis.create_average_plot<a class="headerlink" href="#metawards-analysis-create-average-plot" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="metawards.analysis.create_average_plot">
-<code class="descclassname">metawards.analysis.</code><code class="descname">create_average_plot</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/analysis/_summary_plot.html#create_average_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.analysis.create_average_plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an average plot of the result.csv data held in the
-passed pandas dataframe. This returns the figure for you
-to save if desired (or just call <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> to show
-it in Jupyter)</p>
-<p>Note that this won’t do anything unless there are multiple
-repeats of the model run in the output. In that case, it
-will return None</p>
-<p>If the dataframe contains multiple fingerprints, then this
-will return a dictionary of figures, one for each fingerprint,
-indexed by fingerprint</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>Pandas Dataframe</em>) – The pandas dataframe containing the data from results.csv.bz2</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The matplotlib figure containing the summary plot, or None
-if there are no repeats over which to average. A dictionary
-of figures will be returned if the dataframe contains multiple
-fingerprint - the dictionaries will be indexed by fingerprint</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">fig</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+  <div class="section" id="custom-iterators">
+<h1>7. Custom Iterators<a class="headerlink" href="#custom-iterators" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This section has not yet been written. The plan for this part
+of the tutorial is written below.</p>
+</div>
+<p>In the last section we created…</p>
+<p>Using <a class="reference internal" href="../../api/index_api_MetaWards_iterators.html#module-metawards.iterators" title="metawards.iterators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.iterators</span></code></a> to control how the disease is modelled
+each day, so that we can model a lockdown.</p>
+<ol class="arabic simple">
+<li>Understanding <a class="reference internal" href="../../api/generated/metawards.iterators.iterate_default.html#metawards.iterators.iterate_default" title="metawards.iterators.iterate_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.iterators.iterate_default</span></code></a></li>
+<li>Changing to a lockdown mode</li>
+<li>Setting lockdown to start at a specific date</li>
+<li>Modelling different levels of lockdown</li>
+<li>Setting lockdown to end at a specific date</li>
+<li>Setting lockdown to end when a condition is true</li>
+<li>Triggering differnet levels of lockdown to start and end according
+to set conditions</li>
+</ol>
 </div>
 
 
@@ -211,6 +213,15 @@ fingerprint - the dictionaries will be indexed by fingerprint</td>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../part04/01_extractors.html" class="btn btn-neutral float-right" title="8. Custom extractors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../part02/03_analysis.html" class="btn btn-neutral float-left" title="6. Analysing the output" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
