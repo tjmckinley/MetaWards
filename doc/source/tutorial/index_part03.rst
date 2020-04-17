@@ -25,3 +25,6 @@ In this third part of the tutorial you will:
    :maxdepth: 2
 
    part03/01_iterators
+   part03/02_weekend
+   part03/03_lockdown
+   part03/04_dynamic

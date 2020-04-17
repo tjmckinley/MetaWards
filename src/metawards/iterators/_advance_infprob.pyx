@@ -15,7 +15,9 @@ __all__ = ["advance_infprob", "advance_infprob_omp"]
 
 
 def advance_infprob_omp(network: Network, nthreads: int,
-                        profiler: Profiler, **kwargs):
+                        profiler: Profiler,
+                        scale_rate: float = 1.0,
+                        **kwargs):
     """Advance the calculation of the day and night infection probabilities
        for each ward. You need to call this function after you have
        changed them, and before you use them in, e.g. advance_fixed
@@ -29,6 +31,10 @@ def advance_infprob_omp(network: Network, nthreads: int,
          The number of threads over which to parallelise the calculation
        profiler: Profiler
          The profiler used to profile this calculation
+       scale_rate: float
+         Optional parameter to scale the calculated infection rates.
+         This can very bluntly model the impact of broad measures
+         to reduce the infection rate
        kwargs:
          Extra arguments that may be used by other advancers, but which
          are not used by advance_infprob
@@ -38,6 +44,10 @@ def advance_infprob_omp(network: Network, nthreads: int,
 
     # Copy arguments from Python into C cdef variables
     cdef double length_day = params.length_day
+    cdef double sclrate = scale_rate
+
+    if sclrate < 0:
+        sclrate = 0.0
 
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
@@ -80,7 +90,7 @@ def advance_infprob_omp(network: Network, nthreads: int,
 
             if denom != 0.0:
                 rate = (length_day * wards_day_foi[j]) / denom
-                wards_day_inf_prob[j] = rate_to_prob(rate)
+                wards_day_inf_prob[j] = sclrate * rate_to_prob(rate)
             else:
                 wards_day_inf_prob[j] = 0.0
 
@@ -88,7 +98,9 @@ def advance_infprob_omp(network: Network, nthreads: int,
 
             if denom != 0.0:
                 rate = (1.0 - length_day) * (wards_night_foi[j]) / denom
-                wards_night_inf_prob[j] = rate_to_prob(rate)
+                wards_night_inf_prob[j] = sclrate * rate_to_prob(rate)
+            else:
+                wards_night_inf_prob[j] = 0.0
         # end of loop over wards
     # end of parallel
     p = p.stop()
