@@ -15,7 +15,7 @@ printed to your screen.
 ::
 
               ***********************
-              metawards version 0.7.0
+              metawards version 0.7.1
               ***********************
 
               -- Source information --
@@ -35,7 +35,7 @@ about to find `MetaWardsData`, then please try
 
 .. warning::
 
-  This tutorial is written for ``metawards`` version 0.7.0 or
+  This tutorial is written for ``metawards`` version 0.7.1 or
   higher. If you are using an older version then please upgrade.
 
 Introducing the Lurgy
