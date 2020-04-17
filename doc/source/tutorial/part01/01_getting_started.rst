@@ -14,28 +14,29 @@ printed to your screen.
 
 ::
 
-     *****************************************
-     metawards version 0.6.0+29.gae0c4d5.dirty
-     *****************************************
+              ***********************
+              metawards version 0.7.0
+              ***********************
 
               -- Source information --
   repository: https://github.com/metawards/MetaWards
-             branch: feature_customise
-  revision: ae0c4d521ebcdb77084d001b54e265deee7cdae8
-      last modified: 2020-04-15T21:49:24+0100
-
-  WARNING: This version has not been committed to git,
-  WARNING: so you may not be able to recover the original
-  WARNING: source code that was used to generate this run!
+                   branch: master
+  revision: 7f6feed543105843e5967c7ccbeee9badfb78f5a
+      last modified: 2020-04-17T18:53:27+0100
 
             -- Additional information --
-  Visit https://metawards.github.io for more informaion
+  Visit https://metawards.github.io for more information
     about metawards, its authors and its license
 
 If you don't see this, or the output includes a warning about not being
 about to find `MetaWardsData`, then please try
 :doc:`installing MetaWards <../../install>` or
 :doc:`installing and configuring MetaWardsData <../../model_data>` again.
+
+.. warning::
+
+  This tutorial is written for ``metawards`` version 0.7.0 or
+  higher. If you are using an older version then please upgrade.
 
 Introducing the Lurgy
 ---------------------
