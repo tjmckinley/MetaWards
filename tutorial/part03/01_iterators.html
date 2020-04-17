@@ -235,40 +235,40 @@ to gain this very broad overview of how individuals move and interact.</p>
 <h2>What is a normal day?<a class="headerlink" href="#what-is-a-normal-day" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">metawards</span></code> uses an <code class="docutils literal notranslate"><span class="pre">iterator</span></code> to iterate the model outbreak forward
 day by day. All of the iterators are in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">metawards.iterator</span></code> module.
-The default iterator is <code class="xref py py-func docutils literal notranslate"><span class="pre">iterate_default()</span></code>.</p>
+The default iterator is <a class="reference internal" href="../../api/generated/metawards.iterators.iterate_default.html#metawards.iterators.iterate_default" title="metawards.iterators.iterate_default"><code class="xref py py-func docutils literal notranslate"><span class="pre">iterate_default()</span></code></a>.</p>
 <p>An iterator applies a sequence of functions that advance the disease step
 by step through each day. These <code class="docutils literal notranslate"><span class="pre">advance_functions</span></code> control exactly
 what happens in each electoral ward on each day.</p>
-<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">iterate_default()</span></code> iterator applies the
+<p>The <a class="reference internal" href="../../api/generated/metawards.iterators.iterate_default.html#metawards.iterators.iterate_default" title="metawards.iterators.iterate_default"><code class="xref py py-func docutils literal notranslate"><span class="pre">iterate_default()</span></code></a> iterator applies the
 following <code class="docutils literal notranslate"><span class="pre">advance_functions</span></code> in sequence;</p>
 <ol class="arabic simple">
-<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_additional()</span></code> is applied to
+<li><a class="reference internal" href="../../api/generated/metawards.iterators.advance_additional.html#metawards.iterators.advance_additional" title="metawards.iterators.advance_additional"><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_additional()</span></code></a> is applied to
 add any additional seeds of the disease in the ward,
 which leads to new infections. These additional seeds represent, e.g.
 new sources of infection arriving in the ward via outside travel.</li>
-<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_foi()</span></code> is applied to advance the
+<li><a class="reference internal" href="../../api/generated/metawards.iterators.advance_foi.html#metawards.iterators.advance_foi" title="metawards.iterators.advance_foi"><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_foi()</span></code></a> is applied to advance the
 calculation of the <em>force of infection (foi)</em> for each ward. This must
 be called at the beginning of the day after
-<code class="xref py py-func docutils literal notranslate"><span class="pre">advance_additional()</span></code>, as the <em>foi</em> parameters
+<a class="reference internal" href="../../api/generated/metawards.iterators.advance_additional.html#metawards.iterators.advance_additional" title="metawards.iterators.advance_additional"><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_additional()</span></code></a>, as the <em>foi</em> parameters
 are used to guide the path of the outbreak in each ward for the
 rest of the day.</li>
-<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_recovery()</span></code> is applied to all
+<li><a class="reference internal" href="../../api/generated/metawards.iterators.advance_recovery.html#metawards.iterators.advance_recovery" title="metawards.iterators.advance_recovery"><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_recovery()</span></code></a> is applied to all
 individuals in a ward who are infected. This will see whether an
 individual progresses from one stage of the disease to the next.
 This decision is based on the <strong>progress</strong> disease parameter for the stage
 that the individual is at.</li>
-<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_infprob()</span></code> is applied to recalculate
+<li><a class="reference internal" href="../../api/generated/metawards.iterators.advance_infprob.html#metawards.iterators.advance_infprob" title="metawards.iterators.advance_infprob"><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_infprob()</span></code></a> is applied to recalculate
 the infection probabilities needed to guide new infections. These are
 based on the <em>foi</em> parameters for each ward and the number of
 individuals who are at each stage of the disease (based on the
 <strong>contrib_foi</strong> disease parameter).</li>
-<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_fixed()</span></code> is applied to advance
+<li><a class="reference internal" href="../../api/generated/metawards.iterators.advance_fixed.html#metawards.iterators.advance_fixed" title="metawards.iterators.advance_fixed"><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_fixed()</span></code></a> is applied to advance
 all infections that are based on fixed (predictable) movements
 of individuals (the so-called “work” mode). Infected individuals
 continue to “work” unless they become too symptomatic
 (<strong>too_ill_to_move</strong>, based on the parameter for the stage of the
 disease at which the individual is at).</li>
-<li>Finally <code class="xref py py-func docutils literal notranslate"><span class="pre">advance_play()</span></code> is applied to
+<li>Finally <a class="reference internal" href="../../api/generated/metawards.iterators.advance_play.html#metawards.iterators.advance_play" title="metawards.iterators.advance_play"><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_play()</span></code></a> is applied to
 advance all infections that are based on random movements of
 individuals (the so-called “play” mode). Infected individuals
 continue to “play” unless they become too symptomatic

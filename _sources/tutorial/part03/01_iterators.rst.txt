@@ -41,47 +41,47 @@ What is a normal day?
 
 ``metawards`` uses an ``iterator`` to iterate the model outbreak forward
 day by day. All of the iterators are in the :mod:`metawards.iterator` module.
-The default iterator is :func:`~metawards.iterator.iterate_default`.
+The default iterator is :func:`~metawards.iterators.iterate_default`.
 
 An iterator applies a sequence of functions that advance the disease step
 by step through each day. These ``advance_functions`` control exactly
 what happens in each electoral ward on each day.
 
-The :func:`~metawards.iterator.iterate_default` iterator applies the
+The :func:`~metawards.iterators.iterate_default` iterator applies the
 following ``advance_functions`` in sequence;
 
-1. :func:`~metawards.iterator.advance_additional` is applied to
+1. :func:`~metawards.iterators.advance_additional` is applied to
    add any additional seeds of the disease in the ward,
    which leads to new infections. These additional seeds represent, e.g.
    new sources of infection arriving in the ward via outside travel.
 
-2. :func:`~metawards.iterator.advance_foi` is applied to advance the
+2. :func:`~metawards.iterators.advance_foi` is applied to advance the
    calculation of the *force of infection (foi)* for each ward. This must
    be called at the beginning of the day after
-   :func:`~metawards.iterator.advance_additional`, as the *foi* parameters
+   :func:`~metawards.iterators.advance_additional`, as the *foi* parameters
    are used to guide the path of the outbreak in each ward for the
    rest of the day.
 
-3. :func:`~metawards.iterator.advance_recovery` is applied to all
+3. :func:`~metawards.iterators.advance_recovery` is applied to all
    individuals in a ward who are infected. This will see whether an
    individual progresses from one stage of the disease to the next.
    This decision is based on the **progress** disease parameter for the stage
    that the individual is at.
 
-4. :func:`~metawards.iterator.advance_infprob` is applied to recalculate
+4. :func:`~metawards.iterators.advance_infprob` is applied to recalculate
    the infection probabilities needed to guide new infections. These are
    based on the *foi* parameters for each ward and the number of
    individuals who are at each stage of the disease (based on the
    **contrib_foi** disease parameter).
 
-5. :func:`~metawards.iterator.advance_fixed` is applied to advance
+5. :func:`~metawards.iterators.advance_fixed` is applied to advance
    all infections that are based on fixed (predictable) movements
    of individuals (the so-called "work" mode). Infected individuals
    continue to "work" unless they become too symptomatic
    (**too_ill_to_move**, based on the parameter for the stage of the
    disease at which the individual is at).
 
-6. Finally :func:`~metawards.iterator.advance_play` is applied to
+6. Finally :func:`~metawards.iterators.advance_play` is applied to
    advance all infections that are based on random movements of
    individuals (the so-called "play" mode). Infected individuals
    continue to "play" unless they become too symptomatic

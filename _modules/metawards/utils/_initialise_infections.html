@@ -182,7 +182,7 @@
            <span class="s2">&quot;initialise_play_infections&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">initialise_infections</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">):</span>
+<div class="viewcode-block" id="initialise_infections"><a class="viewcode-back" href="../../../api/generated/metawards.utils.initialise_infections.html#metawards.utils.initialise_infections">[docs]</a><span class="k">def</span> <span class="nf">initialise_infections</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Initialise the data structure used to store the infections&quot;&quot;&quot;</span>
 
     <span class="n">params</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">params</span>
@@ -202,10 +202,10 @@
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="n">infections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">create_int_array</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">nlinks</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">infections</span>
+    <span class="k">return</span> <span class="n">infections</span></div>
 
 
-<div class="viewcode-block" id="initialise_play_infections"><a class="viewcode-back" href="../../../api/generated/metawards.utils.initialise_play_infections.html#metawards.utils.initialise_play_infections">[docs]</a><span class="k">def</span> <span class="nf">initialise_play_infections</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">initialise_play_infections</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Initialise the space used to store the play infections&quot;&quot;&quot;</span>
 
     <span class="n">params</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">params</span>
@@ -225,7 +225,7 @@
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="n">infections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">create_int_array</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">nnodes</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">infections</span></div>
+    <span class="k">return</span> <span class="n">infections</span>
 </pre></div>
 
            </div>
