@@ -1,5 +1,7 @@
+#!/bin/env/python3
+#cython: linetrace=False
+# MUST ALWAYS DISABLE AS WAY TOO SLOW FOR ITERATE
 
-cimport cython
 from libc.stdio cimport FILE, fopen, fscanf, fclose, feof
 
 from .._parameters import Parameters
@@ -7,14 +9,15 @@ from .._network import Network
 from .._nodes import Nodes
 from .._links import Links
 
+from ._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
+
 from ._profiler import Profiler, NullProfiler
 
 __all__ = ["build_wards_network"]
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def build_wards_network(params: Parameters,
                         profiler: Profiler = None,
+                        nthreads: int = 1,
                         max_nodes:int = 10050,
                         max_links:int = 2414000):
     """Creates a network of wards using the information provided in
@@ -51,18 +54,20 @@ def build_wards_network(params: Parameters,
     cdef double weight = 0.0
     cdef int iweight = 0
 
-    cdef int [::1] nodes_label = nodes.label
-    cdef int [::1] nodes_begin_to = nodes.begin_to
-    cdef int [::1] nodes_end_to = nodes.end_to
-    cdef int [::1] nodes_self_w = nodes.self_w
+    cdef int * nodes_label = get_int_array_ptr(nodes.label)
+    cdef int * nodes_begin_to = get_int_array_ptr(nodes.begin_to)
+    cdef int * nodes_end_to = get_int_array_ptr(nodes.end_to)
+    cdef int * nodes_self_w = get_int_array_ptr(nodes.self_w)
 
-    cdef int [::1] links_ito = links.ito
-    cdef int [::1] links_ifrom = links.ifrom
-    cdef double [::1] links_weight = links.weight
-    cdef double [::1] links_suscept = links.suscept
+    cdef int * links_ito = get_int_array_ptr(links.ito)
+    cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
+    cdef double * links_weight = get_double_array_ptr(links.weight)
+    cdef double * links_suscept = get_double_array_ptr(links.suscept)
 
-    cdef double [::1] nodes_denominator_d = nodes.denominator_d
-    cdef double [::1] nodes_denominator_n = nodes.denominator_n
+    cdef double * nodes_denominator_d = get_double_array_ptr(
+                                                    nodes.denominator_d)
+    cdef double * nodes_denominator_n = get_double_array_ptr(
+                                                    nodes.denominator_n)
 
     p = p.start("read_work_file")
 
@@ -73,19 +78,22 @@ def build_wards_network(params: Parameters,
     cdef FILE* cfile
     cfile = fopen(fname, "r")
 
+    cdef int error_from = -1
+    cdef int error_to = -1
+
     if cfile == NULL:
         raise FileNotFoundError(f"No such file or directory: {filename}")
 
-    try:
+    with nogil:
         while not feof(cfile):
             fscanf(cfile, "%d %d %lf\n", &from_id, &to_id, &weight)
 
             iweight = <int>weight
 
             if from_id == 0 or to_id == 0:
-                raise ValueError(
-                            f"Zero in link list: ${from_id}-${to_id}! "
-                            f"Renumber files and start again")
+                error_from = from_id
+                error_to = to_id
+                break
 
             nlinks += 1
 
@@ -111,11 +119,11 @@ def build_wards_network(params: Parameters,
             nodes_denominator_d[to_id] += weight
 
         fclose(cfile)
-    except Exception as e:
-        fclose(cfile)
-        raise ValueError(f"{params.input_files.work} is corrupted or "
-                         f"unreadable? line = {line}, "
-                         f"Error = {e.__class__}: {e}")
+
+    if error_from != -1 or error_to != -1:
+        raise ValueError(f"{params.input_files.work} is corrupted! "
+                         f"Zero in link list: ${error_from}-${error_to}! "
+                         f"Renumber files and start again")
     p = p.stop()
 
     network = Network(nnodes=nnodes, nlinks=nlinks)

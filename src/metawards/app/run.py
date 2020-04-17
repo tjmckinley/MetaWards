@@ -66,7 +66,7 @@ def parse_args():
                              "the file is line 0. Ranges are inclusive, "
                              "so 3-5 is the same as 3 4 5")
 
-    parser.add_argument("-r", '--repeats', type=int, default=1,
+    parser.add_argument("-r", '--repeats', type=int, default=None,
                         help="The number of repeat runs of the model to "
                              "perform for each value of the adjustable "
                              "parameters. By default only a single "
@@ -96,13 +96,32 @@ def parse_args():
                         help="Value for the UV parameter for the model "
                              "(default is 1.0)")
 
-    parser.add_argument('-d', '--disease', type=str, default="ncov",
+    parser.add_argument('-d', '--disease', type=str, default=None,
                         help="Name of the disease to model "
                              "(default is 'ncov')")
 
     parser.add_argument('-I', '--input-data', type=str, default="2011Data",
                         help="Name of the input data set for the network "
                              "(default is '2011Data')")
+
+    parser.add_argument('--start-date', type=str, default=None,
+                        help="Date of the start of the model outbreak. "
+                             "This accepts dates either is iso-format, "
+                             "or fuzzy dates such as 'monday', 'tomorrow' "
+                             "etc. This is used to work out which days "
+                             "are weekends, or to make it easier to specify "
+                             "time-based events.")
+
+    parser.add_argument('--start-day', type=int, default=0,
+                        help="The start day of the model outbreak. By "
+                             "default the model outbreak starts on day "
+                             "zero (0), with each step of the model "
+                             "representing an additional day. Use this "
+                             "to start from a later day, which may be "
+                             "useful if you want to more quickly reach "
+                             "time based events. Note that the passed "
+                             "'--start-date' is always day 0, so day 10 "
+                             "has a date which is 10 days after start-date")
 
     parser.add_argument('-p', '--parameters', type=str, default="march29",
                         help="Name of the input parameter set used to "
@@ -123,6 +142,18 @@ def parse_args():
                              "simulation. Each step represents one day in the "
                              "outbreak (default is to run until the "
                              "outbreak has finished).")
+
+    parser.add_argument('--iterator', type=str, default=None,
+                        help="Name of the iterator to use to advance the "
+                             "outbreak at each step (day). For a full "
+                             "explanation see the tutorial at "
+                             "https://metawards.github.io")
+
+    parser.add_argument("--extractor", type=str, default=None,
+                        help="Name of the extractor to use to extract "
+                             "information during a model run. For a full "
+                             "explanation see the tutorial at "
+                             "https://metawards.github.io")
 
     parser.add_argument('--nthreads', type=int, default=None,
                         help="Number of threads over which parallelise an "
@@ -157,6 +188,26 @@ def parse_args():
                              "get this information from the cluster "
                              "queueing system. Use this option if the "
                              "auto-detection fails.")
+
+    parser.add_argument('--auto-bzip', action="store_true",
+                        default=None,
+                        help="Automatically bz2 compress "
+                             "all output files as they are written.")
+
+    parser.add_argument('--no-auto-bzip', action="store_true",
+                        default=None,
+                        help="Do not automatically bz2 compress "
+                             "all output files as they are written.")
+
+    parser.add_argument('--force-overwrite-output', action="store_true",
+                        default=False,
+                        help="Whether or not to force overwriting of any "
+                             "existing output. Using this option will "
+                             "tell metawards that it is safe to delete "
+                             "the contents of the output directory "
+                             "specified in by '--output' if it already "
+                             "exists. Dangerous as this can remove "
+                             "existing output files")
 
     parser.add_argument('--profile', action="store_true",
                         default=None, help="Enable profiling of the code")
@@ -514,8 +565,6 @@ def cli():
         print("STARTING SCOOP PROCESS")
 
     import sys
-    import bz2
-    import os
 
     args, parser = parse_args()
 
@@ -558,9 +607,21 @@ def cli():
             # supervisor and this is the main process
 
     # This is now the code for the main process
-    if args.input is None:
+
+    # WE NEED ONE OF these listed options;
+    should_run = False
+
+    for arg in [args.input, args.repeats, args.disease, args.additional]:
+        if arg is not None:
+            should_run = True
+            break
+
+    if not should_run:
         parser.print_help(sys.stdout)
         sys.exit(0)
+
+    if args.repeats is None:
+        args.repeats = 1
 
     # import the parameters here to speed up the display of help
     from metawards import Parameters, Network, Population, get_version_string
@@ -568,6 +629,166 @@ def cli():
     # print the version information first, so that there is enough
     # information to enable someone to reproduce this run
     print(get_version_string())
+
+    # also print the full command line used for this job
+    print(f"Command used to run this job:\n{' '.join(sys.argv)}\n")
+
+    if args.input:
+        # get the line numbers of the input file to read
+        if args.line is None or len(args.line) == 0:
+            linenums = None
+            print(f"Using parameters from all lines of {args.input}")
+        else:
+            from metawards.utils import string_to_ints
+            linenums = string_to_ints(args.line)
+
+            if len(linenums) == 0:
+                print(f"You cannot read no lines from {args.input}?")
+                sys.exit(-1)
+            elif len(linenums) == 1:
+                print(f"Using parameters from line {linenums[0]} of "
+                      f"{args.input}")
+            else:
+                print(f"Using parameters from lines {linenums} of "
+                      f"{args.input}")
+
+        from metawards import VariableSets, VariableSet
+        variables = VariableSets.read(filename=args.input,
+                                      line_numbers=linenums)
+    else:
+        from metawards import VariableSets, VariableSet
+        # create a VariableSets with one null VariableSet
+        variables = VariableSets()
+        variables.append(VariableSet())
+
+    nrepeats = args.repeats
+
+    if nrepeats is None or nrepeats < 1:
+        nrepeats = 1
+
+    if nrepeats == 1:
+        print("Performing a single run of each set of parameters")
+    else:
+        print(f"Performing {nrepeats} runs of each set of parameters")
+
+    variables = variables.repeat(nrepeats)
+
+    # working out the number of processes and threads...
+    from metawards.utils import guess_num_threads_and_procs
+    (nthreads, nprocs) = guess_num_threads_and_procs(
+                                            njobs=len(variables),
+                                            nthreads=args.nthreads,
+                                            nprocs=args.nprocs,
+                                            parallel_scheme=parallel_scheme)
+
+    print(f"\nNumber of threads to use for each model run is {nthreads}")
+
+    if nprocs > 1:
+        print(f"Number of processes used to parallelise model "
+              f"runs is {nprocs}")
+        print(f"Parallelisation will be achieved using {parallel_scheme}")
+
+    # sort out the random number seed
+    seed = args.seed
+
+    if seed is None:
+        import random
+        seed = random.randint(10000, 99999999)
+
+    print(f"\nUsing random number seed {seed}")
+
+    # get the starting day and date
+    start_day = args.start_day
+
+    if start_day < 0:
+        raise ValueError(f"You cannot use a start day {start_day} that is "
+                         f"less than zero!")
+
+    start_date = None
+
+    if args.start_date:
+        try:
+            from dateparser import parse
+            start_date = parse(args.start_date).date()
+        except Exception:
+            pass
+
+        if start_date is None:
+            from datetime import date
+            try:
+                start_date = date.fromisoformat(args.start_date)
+            except Exception as e:
+                raise ValueError(
+                        f"Cannot interpret a valid date from "
+                        f"'{args.start_date}'. Error is "
+                        f"{e.__class__} {e}")
+
+    if start_date is None:
+        from datetime import date
+        start_date = date.today()
+
+    print(f"\nDay zero is {start_date.strftime('%A %B %d %Y')}")
+
+    if start_day != 0:
+        from datetime import timedelta
+        start_day_date = start_date + timedelta(days=start_day)
+        print(f"Starting on day {start_day}, which is "
+              f"{start_day_date.strftime('%A %B %d %Y')}")
+    else:
+        start_day_date = start_date
+
+    # now find the MetaWardsData repository as this will be needed
+    # for the repeat command line too
+    (repository, repository_version) = Parameters.get_repository(
+                                                        args.repository)
+
+    print(f"\nUsing MetaWardsData at {repository}")
+    print(f"This is cloned from {repository_version['repository']}")
+    print(f"branch {repository_version['branch']}, version "
+          f"{repository_version['version']}")
+
+    if repository_version["is_dirty"]:
+        print("## WARNING - this repository is dirty, meaning that the data")
+        print("## WARNING - has not been committed to git. This may make ")
+        print("## WARNING - this calculation very difficult to reproduce")
+
+    # now work out the minimum command line needed to repeat this job
+    args.seed = seed
+    args.nprocs = nprocs
+    args.nthreads = nthreads
+    args.start_date = start_date.isoformat()
+    args.repository = repository
+
+    repeat_cmd = "metawards"
+
+    for key, value in vars(args).items():
+        if value is not None:
+            k = key.replace("_", "-")
+
+            if isinstance(value, bool):
+                if value:
+                    repeat_cmd += f" --{k}"
+            elif isinstance(value, list):
+                repeat_cmd += f" --{k}"
+                for val in value:
+                    v = str(val)
+                    if " " in v:
+                        repeat_cmd += f" '{v}''"
+                    else:
+                        repeat_cmd += f" {v}"
+            else:
+                v = str(value)
+                if " " in v:
+                    repeat_cmd += f" --{k} '{v}''"
+                else:
+                    repeat_cmd += f" --{k} {v}"
+
+    t = "*** To repeat this job use the command ***"
+
+    print("\n" + "*"*len(t))
+    print(t)
+    print("*"*len(t) + "\n")
+    print(repeat_cmd + "\n")
 
     # load all of the parameters
     try:
@@ -589,64 +810,20 @@ def cli():
         profile = False
 
     # load the disease and starting-point input files
-    params.set_disease(args.disease)
+    if args.disease:
+        params.set_disease(args.disease)
+    else:
+        params.set_disease("ncov")
+
     params.set_input_files(args.input_data)
 
-    # get the line numbers of the input file to read
-    if args.line is None or len(args.line) == 0:
-        linenums = None
-        print(f"Using parameters from all lines of {args.input}")
-    else:
-        from metawards.utils import string_to_ints
-        linenums = string_to_ints(args.line)
-
-        if len(linenums) == 0:
-            print(f"You cannot read no lines from {args.input}?")
-            sys.exit(-1)
-        elif len(linenums) == 1:
-            print(f"Using parameters from line {linenums[0]} of {args.input}")
-        else:
-            print(f"Using parameters from lines {linenums} of {args.input}")
-
-    variables = params.read_variables(args.input, linenums)
-
+    # read the additional seeds
     if args.additional is None or len(args.additional) == 0:
         print("Not using any additional seeds...")
     else:
         for additional in args.additional:
             print(f"Loading additional seeds from {additional}")
             params.add_seeds(additional)
-
-    nrepeats = args.repeats
-
-    if nrepeats is None or nrepeats < 1:
-        nrepeats = 1
-
-    if nrepeats == 1:
-        print("Performing a single run of each set of parameters")
-    else:
-        print(f"Performing {nrepeats} runs of each set of parameters")
-
-    variables = variables.repeat(nrepeats)
-
-    nthreads = args.nthreads
-
-    if nthreads is None or nthreads < 1:
-        from metawards.utils import get_available_num_threads
-        nthreads = get_available_num_threads()
-
-    print(f"Number of threads to use for each model run is {nthreads}")
-
-    nprocs = args.nprocs
-
-    if nprocs is None or nprocs < 1:
-        from metawards.utils import get_number_of_processes
-        nprocs = get_number_of_processes(parallel_scheme, nprocs)
-
-    print(f"Number of processes used to parallelise model runs is {nprocs}")
-
-    if nprocs > 1:
-        print(f"Parallelisation will be achieved using {parallel_scheme}")
 
     # extra parameters that are set
     params.UV = args.UV
@@ -658,39 +835,113 @@ def cli():
     params.daily_imports = 0.0
 
     # the size of the starting population
-    population = Population(initial=args.population)
+    population = Population(initial=args.population,
+                            date=start_day_date,
+                            day=start_day)
 
     print("\nBuilding the network...")
     network = Network.build(params=params, calculate_distances=True,
                             profile=profile)
 
     print("\nRun the model...")
+    from metawards import OutputFiles
     from metawards.utils import run_models
 
-    result = run_models(network=network, variables=variables,
-                        population=population, nprocs=nprocs,
-                        nthreads=nthreads, seed=args.seed,
-                        nsteps=args.nsteps, output_dir=args.output,
-                        profile=profile, parallel_scheme=parallel_scheme)
+    outdir = args.output
 
-    # write the result to a csv file that can be easily read by R or
-    # pandas - this will be written compressed to save space
-    results_file = os.path.join(args.output, "results.csv.bz2")
-    print(f"\nWriting a summary of all results into the compressed\n"
-          f"csv file {results_file}. You can use this to quickly\n"
-          f"look at statistics across all runs using e.g. R or pandas")
+    if outdir is None:
+        outdir = "output"
 
-    with bz2.open(results_file, "wt") as FILE:
-        FILE.write("variables,repeat,step,susceptibles,latent,"
-                   "total,n_inf_wards\n")
+    if args.force_overwrite_output:
+        prompt = None
+    else:
+        prompt = input
+
+    auto_bzip = True
+
+    if args.auto_bzip:
+        auto_bzip = True
+    elif args.no_auto_bzip:
+        auto_bzip = False
+
+    if args.iterator:
+        iterator = args.iterator
+        # eventually I should get the filename and function from this,
+        # and then convert it into an absolute path to make this safe
+        # on a cluster. Then I should copy the file into the output to
+        # make sure that the calculation is reproducible. Will do this
+        # when I copy this work to extractor
+    else:
+        iterator = None
+
+    if args.extractor:
+        extractor = args.extractor
+        # see above ;-)
+    else:
+        extractor = None
+
+    with OutputFiles(outdir, force_empty=args.force_overwrite_output,
+                     auto_bzip=auto_bzip, prompt=prompt) as output_dir:
+        result = run_models(network=network, variables=variables,
+                            population=population, nprocs=nprocs,
+                            nthreads=nthreads, seed=seed,
+                            nsteps=args.nsteps,
+                            output_dir=output_dir,
+                            iterator=iterator,
+                            extractor=extractor,
+                            profile=profile, parallel_scheme=parallel_scheme)
+
+        if result is None or len(result) == 0:
+            print("No output - end of run")
+            return 0
+
+        # write the result to a csv file that can be easily read by R or
+        # pandas - this will be written compressed to save space
+        RESULTS = output_dir.open("results.csv", auto_bzip=auto_bzip)
+        print(f"\nWriting a summary of all results into the\n"
+              f"csv file {output_dir.get_filename('results.csv')}.\n"
+              f"You can use this to quickly look at statistics across\n"
+              f"all runs using e.g. R or pandas")
+
+        varnames = result[0][0].variable_names()
+
+        if varnames is None or len(varnames) == 0:
+            varnames = ""
+        else:
+            varnames = ",".join(varnames) + ","
+
+        has_date = result[0][1][0].date
+
+        if has_date:
+            datestring = "date,"
+        else:
+            datestring = ""
+
+        RESULTS.write(f"fingerprint,repeat,{varnames}"
+                      f"day,{datestring}S,E,I,R,IW\n")
         for varset, trajectory in result:
-            start = f"{varset.fingerprint()},{varset.repeat_index()},"
+            varvals = varset.variable_values()
+            if varvals is None or len(varvals) == 0:
+                varvals = ""
+            else:
+                varvals = ",".join(map(str, varvals)) + ","
+
+            start = f"{varset.fingerprint()}," \
+                    f"{varset.repeat_index()},{varvals}"
 
             for i, pop in enumerate(trajectory):
-                FILE.write(f"{start}{i},{pop.susceptibles},"
-                           f"{pop.latent},{pop.total},{pop.n_inf_wards}\n")
+                if pop.date:
+                    d = pop.date.isoformat() + ","
+                else:
+                    d = ""
+
+                RESULTS.write(f"{start}{pop.day},{d}{pop.susceptibles},"
+                              f"{pop.latent},{pop.total},"
+                              f"{pop.recovereds},{pop.n_inf_wards}\n")
 
     print("End of the run")
+
+    return 0
 
 
 if __name__ == "__main__":

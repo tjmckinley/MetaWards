@@ -1,5 +1,4 @@
-.. _ref-MetaWards:
-
+=============
 MetaWards.app
 =============
 
@@ -14,8 +13,8 @@ main
     to perform calculations using a single computer. Key functions that are
     used in ``main`` mode are;
 
-    * `cli <generated/metawards.app.cli.html>`__: The main command line interface
-    * `parse_args <generated/metawards.app.parse_args.html>`__: Parse command line arguments
+    * :meth:`~metawards.app.cli`: The main command line interface
+    * :meth:`~metawards.app.parse_args`: Parse command line arguments
 
     This mode is used to run either single model runs, or to run multiple
     runs in parallel on the same computer via a
@@ -37,7 +36,7 @@ worker
 
     The key function used in ``worker`` mode is;
 
-    * `get_parallel_scheme <generated/metawards.app.get_parallel_scheme.html>`__ : Auto-detect scoop or mpi4py
+    * :meth:`~metawards.app.get_parallel_scheme` : Auto-detect scoop or mpi4py
 
 supervisor
     This is the mode used when ``metawards`` detects that it is being
@@ -55,14 +54,14 @@ supervisor
 
     Key functions used in ``supervisor`` mode are;
 
-    * `get_hostfile <generated/metawards.app.get_hostfile.html>`__ : Get the hostfile
-    * `get_cores_per_node <generated/metawards.app.get_cores_per_node.html>`__ : Work out the number of cores per compute node
-    * `get_threads_per_task <generated/metawards.app.get_threads_per_task.html>`__: Work out the number of threads per model run
-    * `scoop_supervisor <generated/metawards.app.scoop_supervisor.html>`__ : Run a scoop supervisor to start and manage jobs
-    * `mpi_supervisor <generated/metawards.app.mpi_supervisor.html>`__ : Run a mpi4py supervisor to start and manage jobs
+    * :meth:`~metawards.app.get_hostfile`: Get the hostfile
+    * :meth:`~metawards.app.get_cores_per_node`: Work out the number of cores per compute node
+    * :meth:`~metawards.app.get_threads_per_task`: Work out the number of threads per model run
+    * :meth:`~metawards.app.scoop_supervisor`: Run a scoop supervisor to start and manage jobs
+    * :meth:`~metawards.app.mpi_supervisor`: Run a mpi4py supervisor to start and manage jobs
 
 All of the above functions (and others in the metawards.app package) are
-described `in more detail here <index_api_MetaWards_app.html>`__;
+described :doc:`in more detail here <index_api_MetaWards_app>`;
 
 .. toctree::
    :maxdepth: 1

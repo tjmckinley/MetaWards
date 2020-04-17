@@ -1,19 +1,10 @@
-"""
-.. currentmodule:: metawards
 
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-"""
-
-from dataclasses import dataclass
-from typing import List
-from copy import deepcopy
-import pathlib
-import os
-import json
+from dataclasses import dataclass as _dataclass
+from typing import List as _List
+from copy import deepcopy as _deepcopy
+import pathlib as _pathlib
+import os as _os
+import json as _json
 
 from ._inputfiles import InputFiles
 from ._disease import Disease
@@ -22,8 +13,8 @@ from ._variableset import VariableSets, VariableSet
 
 __all__ = ["Parameters", "get_repository_version"]
 
-_default_parameters_path = os.path.join(pathlib.Path.home(),
-                                        "GitHub", "MetaWardsData")
+_default_parameters_path = _os.path.join(_pathlib.Path.home(),
+                                         "GitHub", "MetaWardsData")
 
 _default_folder_name = "parameters"
 
@@ -36,23 +27,34 @@ def generate_repository_version(repository):
        to generate the required 'version.txt' file
     """
     import subprocess
-    script = os.path.join(repository, "version")
+    script = _os.path.join(repository, "version")
     print(f"Regenerating version information using {script}")
     subprocess.run(script, cwd=repository)
 
 
-def get_repository_version(repository):
-    """Read and return the Git version of the passed repository"""
+def get_repository_version(repository: str):
+    """Read and return the Git version of the passed repository
+
+       Parameters
+       ----------
+       repository: str
+         The full path to the repository whose version should be obtained
+
+       Returns
+       -------
+       version_data: dict
+         A dictionary containing version information for the repository
+    """
     global _repositories
 
     if repository in _repositories:
         return _repositories[repository]
 
-    filename = os.path.join(repository, "version.txt")
+    filename = _os.path.join(repository, "version.txt")
 
     try:
         with open(filename) as FILE:
-            version = json.load(FILE)
+            version = _json.load(FILE)
             _repositories[repository] = version
             return version
     except Exception:
@@ -64,7 +66,7 @@ def get_repository_version(repository):
         generate_repository_version(repository)
 
         with open(filename) as FILE:
-            version = json.load(FILE)
+            version = _json.load(FILE)
             _repositories[repository] = version
             return version
     except Exception:
@@ -77,16 +79,39 @@ def get_repository_version(repository):
         return _repositories[repository]
 
 
-@dataclass
+@_dataclass
 class Parameters:
+    """The full set of Parameters that are used to control the model
+       outbreak over a Network. The combination of a Network and
+       a Parameters defines the model outbreak.
+
+       Load the Parameters using the Parameters.load function, and
+       then add extra data using the various "set" and "add" functions,
+       e.g.
+
+       Examples
+       --------
+       >>> params = Parameters.load("march29")
+       >>> params.set_disease("ncov")
+       >>> params.set_input_files("2011Data")
+       >>> params.add_seeds("ExtraSeedsBrighton.dat")
+    """
+    #: The set of input files that define the model Network
     input_files: InputFiles = None
+    #: The name of the UV file
     uv_filename: str = None
+    #: The set of parameters that define the disease
     disease_params: Disease = None
 
-    additional_seeds: List[str] = None
+    #: The set of files that contain additional seeds that
+    #: seed the outbreak during the model run
+    additional_seeds: _List[str] = None
 
+    #: The fraction of day considered "day" for work, e.g. 0.7 * 24 hours
     length_day: float = 0.7
+    #: The fraction of day considered "day" for play
     plength_day: float = 0.5
+    #: The number of initial infections
     initial_inf: int = 5
 
     static_play_at_home: float = 0.0
@@ -103,7 +128,8 @@ class Parameters:
     daily_ward_vaccination_capacity: int = 5
     neighbour_weight_threshold: float = 0.0
 
-    daily_imports: float = 0.0  # proportion of daily imports
+    #: proportion of daily imports
+    daily_imports: float = 0.0
     UV: float = 0.0
 
     _name: str = None
@@ -148,32 +174,89 @@ class Parameters:
                f"additional_seeds = {self.additional_seeds}\n\n"
 
     @staticmethod
+    def get_repository(repository: str = None):
+        """Return the repository location and version information
+           for the passed repository
+
+           Parameters
+           ----------
+           repository: str
+             Location on the filesystem of the repository. If this
+             is None then it will be searched for using first
+             the environment variable METAWARDSDATA, then
+             $HOME/GitHub/MetaWardsData, then ./METAWARDSDATA
+
+           Returns
+           -------
+           (repository, version): tuple
+             A tuple of the location on disk of the repository,
+             plus the version information (git ID etc)
+        """
+        if repository is None:
+            repository = _os.getenv("METAWARDSDATA")
+            if repository is None:
+                repository = _default_parameters_path
+
+        from pathlib import Path
+        import os
+        repository = os.path.expanduser(os.path.expandvars(repository))
+        repository = Path(repository).absolute().resolve()
+
+        if not os.path.exists(repository):
+            raise FileNotFoundError(
+                    f"Cannot find the MetaWardsData repository "
+                    f"at {repository}")
+
+        if not os.path.isdir(repository):
+            raise FileNotFoundError(
+                    f"Expected {repository} to be a directory containing "
+                    f"the MetaWardsData repository. It isn't?")
+
+        v = get_repository_version(repository)
+        return (repository, v)
+
+    @staticmethod
     def load(parameters: str = "march29",
              repository: str = None,
              folder: str = _default_folder_name,
              filename: str = None):
-        """ This will return a Parameters object containing all of the
-            parameters loaded from the parameters found in file
-            f"{repository}/{folder}/{parameters}.json"
+        """This will return a Parameters object containing all of the
+           parameters loaded from the parameters found in file
+           f"{repository}/{folder}/{parameters}.json"
 
-            By default this will load the march29 parameters from
-            $HOME/GitHub/model_data/2011Data/parameters/march29.json
+           By default this will load the march29 parameters from
+           $HOME/GitHub/model_data/2011Data/parameters/march29.json
 
-            Alternatively, you can provide the exact path to the
-            filename via the 'filename' argument
+           Alternatively, you can provide the exact path to the
+           filename via the 'filename' argument
+
+           Parameters
+           ----------
+           parameters: str
+             The name of the parameters to load. This is the name that
+             will be searched for in the METAWARDSDATA parameters directory
+           repository: str
+             The location of the cloned METAWARDSDATA repository
+           folder: str
+             The name of the folder within the METAWARDSDATA repository
+             that contains the parameters
+           filename: str
+             The name of the file to load the parameters from - this directly
+             loads this file without searching through the METAWARDSDATA
+             repository
+
+           Returns
+           -------
+           params: Parameters
+             The constructed and validated parameters
         """
         repository_version = None
         repository_branch = None
         repository_dir = None
 
         if filename is None:
-            if repository is None:
-                repository = os.getenv("METAWARDSDATA")
-                if repository is None:
-                    repository = _default_parameters_path
-
-            filename = os.path.join(repository, folder, f"{parameters}.json")
-            v = get_repository_version(repository)
+            (repository, v) = Parameters.get_repository(repository)
+            filename = _os.path.join(repository, folder, f"{parameters}.json")
             repository_dir = repository
             repository = v["repository"]
             repository_branch = v["branch"]
@@ -235,15 +318,20 @@ class Parameters:
         """Add an 'additional seeds' file that can be used to
            seed wards with new infections at different times and
            locations. Several additional_seed files can be added
+
+           Parameters
+           ----------
+           filename: str
+             Name of the file containing the additional seeds
         """
         # resolve the filename to the GitHub repo if possible...
         if self.additional_seeds is None:
             self.additional_seeds = []
 
-        if not os.path.exists(filename):
-            f = os.path.join(self._repository_dir, "extra_seeds", filename)
+        if not _os.path.exists(filename):
+            f = _os.path.join(self._repository_dir, "extra_seeds", filename)
 
-            if os.path.exists(f):
+            if _os.path.exists(f):
                 filename = f
             else:
                 raise FileExistsError(
@@ -255,6 +343,13 @@ class Parameters:
     def set_input_files(self, input_files: InputFiles):
         """Set the input files that are used to initialise the
            simulation
+
+           Parameters
+           ----------
+           input_files: InputFiles
+             The set of input files that will be used to load the Network.
+             If a string is passed then the InputFiles will be loaded
+             based on that string.
         """
         if isinstance(input_files, str):
             input_files = InputFiles.load(input_files,
@@ -263,10 +358,15 @@ class Parameters:
         print("Using input files:")
         print(input_files)
 
-        self.input_files = deepcopy(input_files)
+        self.input_files = _deepcopy(input_files)
 
     def set_disease(self, disease: Disease):
-        """"Set the disease that will be modelled"""
+        """"Set the disease that will be modelled
+
+            Parameters:
+              disease: The disease to be modelled. If a string is passed
+              then the disease will be loaded using that string
+        """
         if isinstance(disease, str):
             disease = Disease.load(disease,
                                    repository=self._repository_dir)
@@ -274,14 +374,25 @@ class Parameters:
         print("Using disease")
         print(disease)
 
-        self.disease_params = deepcopy(disease)
+        self.disease_params = _deepcopy(disease)
 
     def set_variables(self, variables: VariableSet):
         """This function sets the adjustable variable values to those
            specified in 'variables' in A COPY OF THIS PARAMETERS OBJECT.
            This returns the copy. It does not change this object
+
+           Parameters
+           ----------
+           variables: VariableSet
+             The variables that will be adjusted before the model run.
+             This adjusts the parameters and returns them in a deep copy
+
+           Returns
+           -------
+           params: Parameters
+             A copy of this set of parameters with the variables adjusted
         """
-        params = deepcopy(self)
+        params = _deepcopy(self)
 
         if isinstance(variables, dict):
             variables = VariableSet(variables)
@@ -291,60 +402,24 @@ class Parameters:
         return params
 
     @staticmethod
-    def read_variables(filename: str, line_numbers: List[int]):
+    def read_variables(filename: str, line_numbers: _List[int]):
         """Read in extra variable parameters from the specified line number(s)
            of the specified file, returning the list
            of the dictionaries of variables that have been
            read. You can then apply those variable parameters
            using the 'set_variables' function
+
+           Parameters
+           ----------
+           filename: str
+             The file from which to read the adjustable variables
+           line_numbers: List[int]
+             All of the line numbers from which to read. If this is
+             None then all lines will be read.
+
+           Returns
+           -------
+           variables: VariableSets
+             The VariableSets containing all of the adjustable variables
         """
-        variables = VariableSets()
-
-        if not isinstance(line_numbers, list):
-            if line_numbers is not None:
-                line_numbers = [line_numbers]
-
-        i = -1
-        with open(filename, "r") as FILE:
-            line = FILE.readline()
-            while line:
-                i += 1
-
-                if line_numbers is None or i in line_numbers:
-                    words = line.split(",")
-
-                    if len(words) != 5:
-                        raise ValueError(
-                            f"Corrupted input file. Expecting 5 values. "
-                            f"Received {line}")
-
-                    vals = []
-
-                    try:
-                        for word in words:
-                            vals.append(float(word))
-                    except Exception:
-                        raise ValueError(
-                                f"Corrupted input file. Expected 5 numbers. "
-                                f"Received {line}")
-
-                    variables.append({"beta2": vals[0],
-                                      "beta3": vals[1],
-                                      "progress1": vals[2],
-                                      "progress2": vals[3],
-                                      "progress3": vals[4]})
-
-                    if line_numbers is not None:
-                        if len(variables) == len(line_numbers):
-                            return variables
-
-                line = FILE.readline()
-
-        # get here if we can't find this line in the file (or if we
-        # are supposed to read all lines)
-        if line_numbers is None:
-            return variables
-        else:
-            raise ValueError(
-                    f"Cannot read parameters from line {line_numbers} "
-                    f"as the number of lines in the file is {i+1}")
+        return VariableSets.read(filename, line_numbers)

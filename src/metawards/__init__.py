@@ -1,14 +1,6 @@
 """
 .. currentmodule:: metawards
 
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-
-    get_version_string
-
 Classes
 =======
 
@@ -22,11 +14,20 @@ Classes
     Network
     Node
     Nodes
+    OutputFiles
     Parameters
     Population
     Populations
     VariableSet
     VariableSets
+
+Functions
+=========
+
+.. autosummary::
+    :toctree: generated/
+
+    get_version_string
 
 """
 
@@ -39,6 +40,7 @@ from ._node import *
 from ._link import *
 from ._population import *
 from ._network import *
+from ._outputfiles import *
 from ._variableset import *
 
 # import the pyx cython-compiled modules
@@ -48,6 +50,12 @@ from ._links import *
 from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
+
+from . import utils
+from . import iterators
+from . import extractors
+from . import app
+from . import analysis
 
 
 def get_version_string():
@@ -89,11 +97,13 @@ def get_version_string():
         lines.append("")
         lines.append("WARNING: This version has not been committed to git,")
         lines.append("WARNING: so you may not be able to recover the original")
-        lines.append("WARNING: source code that was used to generate this run!")
+        lines.append("WARNING: source code that was used to generate "
+                     "this run!")
 
     lines.append("")
     lines.append(center(f"-- Additional information --"))
-    lines.append(center(f"Visit https://metawards.github.io for more informaion"))
+    lines.append(center(f"Visit https://metawards.github.io for more "
+                        f"information"))
     lines.append(center(f"about metawards, its authors and its license"))
     lines.append("")
 

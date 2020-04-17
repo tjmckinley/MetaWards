@@ -2,9 +2,6 @@
 Model data
 ==========
 
-.. toctree::
-   :maxdepth: 2
-
 Getting the data
 ================
 

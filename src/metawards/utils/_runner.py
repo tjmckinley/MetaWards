@@ -1,13 +1,13 @@
 
-
 from .._network import Network
 from .._population import Population
-from ._profiler import Profiler
+from .._variableset import VariableSets
+from .._outputfiles import OutputFiles
 
-from contextlib import contextmanager
+from contextlib import contextmanager as _contextmanager
 
-import os
-import sys
+import os as _os
+import sys as _sys
 
 __all__ = ["get_number_of_processes", "run_models", "redirect_output"]
 
@@ -51,39 +51,75 @@ def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
             f"Unrecognised parallelisation scheme {parallel_scheme}")
 
 
-@contextmanager
+@_contextmanager
 def redirect_output(outdir):
     """Nice way to redirect stdout and stderr - thanks to
        Emil Stenström in
        https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python
     """
-    new_out = open(os.path.join(outdir, "output.txt"), "w")
-    old_out = sys.stdout
-    sys.stdout = new_out
+    new_out = open(_os.path.join(outdir, "output.txt"), "w")
+    old_out = _sys.stdout
+    _sys.stdout = new_out
 
-    new_err = open(os.path.join(outdir, "output.err"), "w")
-    old_err = sys.stderr
-    sys.stderr = new_err
+    new_err = open(_os.path.join(outdir, "output.err"), "w")
+    old_err = _sys.stderr
+    _sys.stderr = new_err
 
     try:
         yield new_out
     finally:
-        sys.stdout = old_out
-        sys.stderr = old_err
+        _sys.stdout = old_out
+        _sys.stderr = old_err
         new_out.close()
         new_err.close()
 
 
-def run_models(network: Network, variables, population: Population,
+def run_models(network: Network, variables: VariableSets,
+               population: Population,
                nprocs: int, nthreads: int, seed: int,
-               nsteps: int, output_dir: str, profile: Profiler,
-               parallel_scheme: str):
+               nsteps: int, output_dir: OutputFiles,
+               iterator: str, extractor: str,
+               profile: bool, parallel_scheme: str):
+    """Run all of the models on the passed Network that are described
+       by the passed VariableSets
+
+       Parameters
+       ----------
+       network: Network
+         The network to model
+       variables: VariableSets
+         The sets of VariableSet that represent all of the model
+         runs to perform
+       population: Population
+         The initial population for all of the model runs. This also
+         contains the starting date and day for the model outbreak
+       nprocs: int
+         The number of model runs to perform in parallel
+       nthreads: int
+         The number of threads to parallelise each model run over
+       seed: int
+         Random number seed which is used to generate random seeds
+         for all model runs
+       nsteps: int
+         The maximum number of steps to perform for each model - this
+         will run until the outbreak is over if this is None
+       output_dir: OutputFiles
+         The OutputFiles that represents the directory in which all
+         output should be placed
+       iterator: str
+         Iterator to load that will be used to iterate the outbreak
+       extractor: str
+         Extractor to load that will be used to extract information
+       profile: bool
+         Whether or not to profile the model run and print out live
+         timing (useful for performance debugging)
+       parallel_scheme: str
+         Which parallel scheme (multiprocessing, mpi4py or scoop) to use
+         to run multiple model runs in parallel
+    """
 
     # this variable is used to pick out some of the additional seeds?
     s = -1
-
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
 
     if len(variables) == 1:
         # no need to do anything complex - just a single run
@@ -94,6 +130,8 @@ def run_models(network: Network, variables, population: Population,
         trajectory = network.run(population=population, seed=seed,
                                  s=s, nsteps=nsteps,
                                  output_dir=output_dir,
+                                 iterator=iterator,
+                                 extractor=extractor,
                                  profile=profile,
                                  nthreads=nthreads)
 
@@ -129,7 +167,7 @@ def run_models(network: Network, variables, population: Population,
 
     for v in variables:
         f = v.fingerprint(include_index=True)
-        d = os.path.join(output_dir, f)
+        d = _os.path.join(output_dir.get_path(), f)
         outdirs.append(d)
 
     outputs = []
@@ -143,35 +181,36 @@ def run_models(network: Network, variables, population: Population,
             seed = seeds[i]
             outdir = outdirs[i]
 
-            if not os.path.exists(outdir):
-                os.mkdir(outdir)
+            with output_dir.open_subdir(outdir) as subdir:
+                print(f"\nRunning parameter set {i+1} of {len(variables)} "
+                      f"using seed {seed}")
+                print(f"All output written to {subdir.get_path()}")
 
-            print(f"\nRunning parameter set {i+1} of {len(variables)} "
-                  f"using seed {seed}")
-            print(f"All output written to {outdir}...")
+                with redirect_output(subdir.get_path()):
+                    print(f"Running variable set {i+1}")
+                    print(f"Variables: {variable}")
+                    print(f"Random seed: {seed}")
+                    print(f"nthreads: {nthreads}")
 
-            with redirect_output(outdir):
-                print(f"Running variable set {i+1}")
-                print(f"Variables: {variable}")
-                print(f"Random seed: {seed}")
-                print(f"nthreads: {nthreads}")
+                    # no need to do anything complex - just a single run
+                    params = network.params.set_variables(variable)
 
-                # no need to do anything complex - just a single run
-                params = network.params.set_variables(variable)
+                    network.update(params, profile=profile)
 
-                network.update(params, profile=profile)
+                    output = network.run(population=population, seed=seed,
+                                         s=s, nsteps=nsteps,
+                                         output_dir=subdir,
+                                         iterator=iterator,
+                                         extractor=extractor,
+                                         profile=profile,
+                                         nthreads=nthreads)
 
-                output = network.run(population=population, seed=seed,
-                                     s=s, nsteps=nsteps,
-                                     output_dir=outdir,
-                                     profile=profile,
-                                     nthreads=nthreads)
+                    outputs.append((variable, output))
 
-                outputs.append((variable, output))
-
-            print(f"Completed job {i+1} of {len(variables)}")
-            print(variable)
-            print(output[-1])
+                print(f"Completed job {i+1} of {len(variables)}")
+                print(variable)
+                print(output[-1])
+            # end of OutputDirs context manager
         # end of loop over variable sets
     else:
         from ._worker import run_worker
@@ -187,9 +226,12 @@ def run_models(network: Network, variables, population: Population,
                 "params": network.params.set_variables(variable),
                 "options": {"seed": seed,
                             "output_dir": outdir,
+                            "auto_bzip": output_dir.auto_bzip(),
                             "population": population,
                             "s": s,
                             "nsteps": nsteps,
+                            "iterator": iterator,
+                            "extractor": extractor,
                             "profile": profile,
                             "nthreads": nthreads}
             })

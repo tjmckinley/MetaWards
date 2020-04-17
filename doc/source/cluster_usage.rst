@@ -2,9 +2,6 @@
 Running on a cluster
 ====================
 
-.. toctree::
-   :maxdepth: 2
-
 One of the reasons for this Python port is to make it easier to run
 MetaWards analyses at scale on a HPC cluster. MetaWards supports
 parallelisation using MPI (via `mpi4py <https://mpi4py.readthedocs.io>`__)

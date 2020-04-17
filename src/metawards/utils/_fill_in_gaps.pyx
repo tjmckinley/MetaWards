@@ -1,12 +1,9 @@
 
-cimport cython
 from .._network import Network
 
 __all__ = ["fill_in_gaps"]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 def fill_in_gaps(network: Network):
     """Fills in gaps in the network"""
     nodes = network.nodes

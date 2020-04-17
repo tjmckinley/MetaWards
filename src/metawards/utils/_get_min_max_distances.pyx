@@ -1,14 +1,13 @@
 
-cimport cython
-
 from .._network import Network
+
+from ._profiler import Profiler
 
 __all__ = ["get_min_max_distances"]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-def get_min_max_distances(network: Network):
+def get_min_max_distances(network: Network, nthreads: int = 1,
+                          profiler: Profiler = None):
     """Return the minimum and maximum distances recorded in the network"""
     links = network.to_links
 
@@ -32,11 +31,5 @@ def get_min_max_distances(network: Network):
                 mindist = dist
 
     print(f"maxdist {maxdist} mindist {mindist}")
-
-    if mindist > 0:
-        print(f"The original code always gives a minimum distance of zero, "
-              f"so setting {mindist} to zero... (check if this is correct)")
-
-    mindist = 0
 
     return (mindist, maxdist)

@@ -14,6 +14,21 @@ except Exception:
 
 cflags = '-O3 -march=native -Wall -fopenmp'
 
+nbuilders = int(os.getenv("CYTHON_NBUILDERS", 2))
+
+compiler_directives = {"language_level": 3, "embedsignature": True,
+                       "boundscheck": False, "cdivision": True,
+                       "initializedcheck": False, "cdivision_warnings": False,
+                       "wraparound": False, "binding": False,
+                       "nonecheck": False, "overflowcheck": False}
+
+if os.getenv("CYTHON_LINETRACE", 0):
+    print("Compiling with Cython line-tracing support - will be SLOW")
+    define_macros = [("CYTHON_TRACE", "1")]
+    compiler_directives["linetrace"] = True
+else:
+    define_macros = []
+
 random_sources = ["src/metawards/ran_binomial/mt19937.c",
                   "src/metawards/ran_binomial/distributions.c"]
 
@@ -42,54 +57,76 @@ def no_cythonize(extensions, **_ignore):
 
 
 extensions = [
-    Extension("metawards._nodes", ["src/metawards/_nodes.pyx"]),
-    Extension("metawards._links", ["src/metawards/_links.pyx"]),
-    Extension("metawards.utils._run_model",
-              ["src/metawards/utils/_run_model.pyx"]),
+    Extension("metawards._nodes", ["src/metawards/_nodes.pyx"],
+              define_macros=define_macros),
+    Extension("metawards._links", ["src/metawards/_links.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._workspace",
-              ["src/metawards/utils/_workspace.pyx"]),
+              ["src/metawards/utils/_workspace.pyx"],
+              define_macros=define_macros),
+    Extension("metawards.utils._clear_all_infections",
+              ["src/metawards/utils/_clear_all_infections.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._build_wards_network",
-              ["src/metawards/utils/_build_wards_network.pyx"]),
+              ["src/metawards/utils/_build_wards_network.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._add_wards_network_distance",
-              ["src/metawards/utils/_add_wards_network_distance.pyx"]),
+              ["src/metawards/utils/_add_wards_network_distance.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._get_min_max_distances",
-              ["src/metawards/utils/_get_min_max_distances.pyx"]),
+              ["src/metawards/utils/_get_min_max_distances.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._reset_everything",
-              ["src/metawards/utils/_reset_everything.pyx"]),
+              ["src/metawards/utils/_reset_everything.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._rescale_matrix",
-              ["src/metawards/utils/_rescale_matrix.pyx"]),
+              ["src/metawards/utils/_rescale_matrix.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._recalculate_denominators",
-              ["src/metawards/utils/_recalculate_denominators.pyx"]),
+              ["src/metawards/utils/_recalculate_denominators.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._move_population",
-              ["src/metawards/utils/_move_population.pyx"]),
+              ["src/metawards/utils/_move_population.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._fill_in_gaps",
-              ["src/metawards/utils/_fill_in_gaps.pyx"]),
+              ["src/metawards/utils/_fill_in_gaps.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._build_play_matrix",
-              ["src/metawards/utils/_build_play_matrix.pyx"]),
-    Extension("metawards.utils._array", ["src/metawards/utils/_array.pyx"]),
-    Extension("metawards.utils._iterate",
-              ["src/metawards/utils/_iterate.pyx"]+random_sources),
-    Extension("metawards.utils._iterate_weekend",
-              ["src/metawards/utils/_iterate_weekend.pyx"]),
-    Extension("metawards.utils._extract_data",
-              ["src/metawards/utils/_extract_data.pyx"]),
-    Extension("metawards.utils._extract_data_for_graphics",
-              ["src/metawards/utils/_extract_data_for_graphics.pyx"]),
-    Extension("metawards.utils._import_infection",
-              ["src/metawards/utils/_import_infection.pyx"]+random_sources),
+              ["src/metawards/utils/_build_play_matrix.pyx"],
+              define_macros=define_macros),
+    Extension("metawards.utils._array", ["src/metawards/utils/_array.pyx"],
+              define_macros=define_macros),
     Extension("metawards.utils._ran_binomial",
-              ["src/metawards/utils/_ran_binomial.pyx"]+random_sources),
+              ["src/metawards/utils/_ran_binomial.pyx"]+random_sources,
+              define_macros=define_macros),
     Extension("metawards.utils._assert_sane_network",
-              ["src/metawards/utils/_assert_sane_network.pyx"]),
-    Extension("metawards.utils._parallel",
-              ["src/metawards/utils/_parallel.pyx"]),
+              ["src/metawards/utils/_assert_sane_network.pyx"],
+              define_macros=define_macros),
+    Extension("metawards.utils._get_array_ptr",
+              ["src/metawards/utils/_get_array_ptr.pyx"],
+              define_macros=define_macros),
+    Extension("metawards.iterators._advance_play",
+              ["src/metawards/iterators/_advance_play.pyx"]+random_sources,
+              define_macros=define_macros),
+    Extension("metawards.iterators._advance_fixed",
+              ["src/metawards/iterators/_advance_fixed.pyx"]+random_sources,
+              define_macros=define_macros),
+    Extension("metawards.iterators._advance_infprob",
+              ["src/metawards/iterators/_advance_infprob.pyx"]+random_sources,
+              define_macros=define_macros),
+    Extension("metawards.iterators._advance_recovery",
+              ["src/metawards/iterators/_advance_recovery.pyx"]+random_sources,
+              define_macros=define_macros),
+    Extension("metawards.iterators._advance_foi",
+              ["src/metawards/iterators/_advance_foi.pyx"]+random_sources,
+              define_macros=define_macros),
+    Extension("metawards.iterators._advance_imports",
+              ["src/metawards/iterators/_advance_imports.pyx"]+random_sources,
+              define_macros=define_macros),
+    Extension("metawards.extractors._output_default",
+              ["src/metawards/extractors/_output_default.pyx"],
+              define_macros=define_macros),
 ]
-
-# disable bounds checking and wraparound globally as the code already
-# checks for this and doesn't use negative indexing. It can be
-# turned on as needed in the modules
-for e in extensions:
-    e.cython_directives = {"boundscheck": False, "wraparound": False}
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
 
@@ -99,8 +136,8 @@ if not have_cython:
 os.environ['CFLAGS'] = cflags
 
 if CYTHONIZE:
-    compiler_directives = {"language_level": 3, "embedsignature": True}
-    extensions = cythonize(extensions, compiler_directives=compiler_directives)
+    extensions = cythonize(extensions, compiler_directives=compiler_directives,
+                           nthreads=nbuilders)
 else:
     extensions = no_cythonize(extensions)
 
@@ -121,7 +158,8 @@ setup(
     },
     entry_points={
         "console_scripts": [
-           "metawards = metawards.app.run:cli"
+           "metawards = metawards.app.run:cli",
+           "metawards-plot = metawards.app.plot:cli"
         ]
     }
 )

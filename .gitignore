@@ -7,6 +7,10 @@ src/metawards/*.c
 src/metawards/utils/*.c
 src/metawards/*.so
 src/metawards/utils/*.so
+src/metawards/iterators/*.c
+src/metawards/iterators/*.so
+src/metawards/extractors/*.c
+src/metawards/extractors/*.so
 __pycache__
 /dist
 /src/metawards.egg-info
@@ -19,3 +23,4 @@ __pycache__
 /doc/source/api/generated
 /.coverage
 /doc/source/metawards_help.rst
+/doc/source/metawards_plot_help.rst

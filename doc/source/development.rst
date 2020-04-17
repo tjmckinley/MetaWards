@@ -2,9 +2,6 @@
 Developer's guide
 =================
 
-.. toctree::
-   :maxdepth: 2
-
 The source code for MetaWards is available on
 `GitHub <https://github.com/metawards/MetaWards>`__.
 
@@ -261,18 +258,26 @@ below the current directory, collects the tests together, then runs
 them. Pytest uses name matching to locate the tests. Valid names start
 or end with *test*\ , e.g.:
 
-.. code-block:: python
+::
 
    # Files:
    test_file.py       file_test.py
 
+.. code-block:: python
+
    # Functions:
-   def test_func():   def func_test():
+   def test_func():
+      # code to perform tests...
+      return
+
+   def func_test():
+      # code to perform tests...
+      return
 
 We use the convention of ``test_*`` when naming files and functions.
 
 Running tests
-^^^^^^^^^^^^^
+-------------
 
 To run the full test suite, simply type:
 
@@ -434,7 +439,7 @@ Here we have marked the test function with the attribute ``slow`` in order to
 indicate that it takes a while to run. From the command line it is possible
 to run or skip tests with a particular mark.
 
-.. code-block:: python
+.. code-block:: bash
 
    pytest mypkg -m "slow"        # only run the slow tests
    pytest mypkg -m "not slow"    # skip the slow tests
@@ -485,6 +490,7 @@ If your edits don't change the MetaWards source code, or documentation,
 e.g. fixing typos, then please add ``ci skip`` to your commit message, e.g.
 
 .. code-block:: bash
+
    git commit -a -m "Updating docs [ci skip]"
 
 This will avoid unnecessarily running the

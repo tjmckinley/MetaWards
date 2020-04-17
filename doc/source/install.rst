@@ -2,9 +2,6 @@
 Installation instructions
 =========================
 
-.. toctree::
-   :maxdepth: 2
-
 Dependencies
 ============
 

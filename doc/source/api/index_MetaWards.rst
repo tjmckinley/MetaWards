@@ -1,5 +1,4 @@
-.. _ref-MetaWards:
-
+=========
 MetaWards
 =========
 
@@ -8,17 +7,17 @@ build and run MetaWards models.
 
 The package centers around a few core objects:
 
-`Nodes <generated/metawards.Nodes.html>`__ / `Node <generated/metawards.Node.html>`__
+:class:`~metawards.Nodes` / :class:`~metawards.Node`
     These represent the individual electoral wards in
     which progress of the disease is tracked.
 
-`Links <generated/metawards.Links.html>`__ / `Link <generated/metawards.Link.html>`__
+:class:`~metawards.Links` / :class:`~metawards.Link`
     These represent the connections between electoral wards,
     including how people commute between wards for work. These
     therefore provide the routes via which the disease
     can spread.
 
-`Parameters <generated/metawards.Parameters.html>`__
+:class:`~metawards.Parameters`
     This is the holder of all model parameters that can describe,
     e.g. the proportion of day versus night, cutoff distance
     for transmission between wards etc.
@@ -26,47 +25,57 @@ The package centers around a few core objects:
     `MetaWardsData <https://github.com/metawards/MetaWardsData>`__
     repository.
 
-`Disease <generated/metawards.Disease.html>`__
+:class:`~metawards.Disease`
     This is the holder of disease parameters, used to change the model
     to represent different types of disease outbreaks. Different
     disease models are held in the
     `MetaWardsData <https://github.com/metawards/MetaWardsData>`__
     repository.
 
-`InputFiles <generated/metawards.InputFiles.html>`__
+:class:`~metawards.InputFiles`
     This holds information about all of the input files that are
     used to build the network of wards and links. All of the
     input data is held in the
     `MetaWardsData <https://github.com/metawards/MetaWardsData>`__
     repository.
 
-`Network <generated/metawards.NetWork.html>`__
-    This is the complete network of Nodes and Links built using
-    the data loaded from the InputFiles, set up to model the
-    disease whose parameters are in a Disease, using model run
-    parameters held in a Parameters object. A Network is
-    self-contained, containing everything needed for a model run.
-    The Network.run function runs the model.
+:class:`~metawards.Network`
+    This is the complete network of :class:`~metawards.Nodes` and
+    :class:`~metawards.Links` built using
+    the data loaded from the :class:`~metawards.InputFiles`,
+    set up to model the
+    disease whose parameters are in a
+    :class:`~metawards.Disease`, using model run
+    parameters held in a :class:`~metawards.Parameters` object.
+    A Network is self-contained, containing everything needed for a model run.
+    The :meth:`~metawards.Network.run` function runs the model.
 
-`VariableSet <generated/metawards.VariableSet.html>`__ / `VariableSets <generated/metawards.VariableSets.html>`__
+:class:`~metawards.VariableSet` / :class:`~metawards.VariableSets`
     The model contains adjustable variables,
     which must be adjusted so that the model can match observed
-    real-life data. A VariableSet contains a set of variables to
-    be adjusted, while VariableSets is a collection of such
+    real-life data. A :class:`~metawards.VariableSet` contains a set
+    of variables to
+    be adjusted, while :class:`~metawards.VariableSets` is a collection of such
     changes that should be explored over multiple model runs.
 
-`Population <generated/metawards.Population.html>`__ / `Populations <generated/metawards.Populations.html>`__
+:class:`~metawards.Population` / :class:`~metawards.Populations`
     A model run will result in a trajectory of
     changes in populations of people who have progressed along
     different stages of the disease (e.g. from being
     *susceptible to infection* (S), to being
     *removed from the outbreak* (R) - either because they
-    have recovered or have sadly perished). A Population holds
+    have recovered or have sadly perished). A
+    :class:`~metawards.Population` holds
     the numbers in each state for a single day in the outbreak,
-    while Populations holds the full trajectory.
+    while :class:`~metawards.Populations` holds the full trajectory.
+
+:class:`~metawards.OutputFiles`
+    Manages all of the output files that are produced by the program.
+    This can be told to auto-compress (bzip2) all files as they
+    are being written.
 
 All of the above classes (and others in the top-level package) are
-described `in more detail here <index_api_MetaWards.html>`__;
+described :doc:`in more detail here <index_api_MetaWards>`;
 
 .. toctree::
    :maxdepth: 1

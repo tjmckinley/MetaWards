@@ -2,9 +2,6 @@
 Usage
 =====
 
-.. toctree::
-   :maxdepth: 2
-
 metawards program
 =================
 
@@ -81,7 +78,12 @@ typing;
 
     metawards --help
 
-The full help is `available here <metawards_help.html>`__.
+The full help is :doc:`available here <metawards_help>`.
+
+.. toctree::
+   :hidden:
+
+   metawards_help
 
 Understanding the options
 =========================
@@ -123,6 +125,21 @@ are;
   given the same input, same random number seed, and run over the
   same number of threads.
 
+* ``--start-date`` : specify the date of *day zero* of the model outbreak.
+  If this isn't specified then this defaults to the current date. This
+  recognises any date that is understood by
+  `dateparser <https://dateparser.readthedocs.io/en/latest/#usage>`__,
+  which includes dates like *today*, *tomorrow*, *Monday*, *Jan 2020* etc.
+  The start date is used to trigger events based on day of week or
+  date within a model outbreak (e.g. is the day a weekend)
+
+* ``--start-day`` : specify the day of the outbreak, e.g. the default
+  is ``0`` for *day zero*. This is useful if you want to start the
+  model run from a later day than the start date. Note that the
+  start date passed via ``--start-date`` is the date of *day zero*,
+  so the first day modelled will be ``--start-day`` days
+  after ``--start-date``.
+
 * ``--nthreads`` : specify the number of threads over which to perform a
   model run. The sequence of random numbers drawn in parallel is
   deterministic for a given number of threads, but will be different
@@ -162,16 +179,34 @@ Understanding the input
 =======================
 
 The input file for ``metawards`` is a simple set of lines containing
-five comma-separated values per line, e.g.
+five comma-separated or space-separated values per line, e.g.
 
 ::
 
   0.95,0.95,0.19,0.91,0.91
   0.90,0.93,0.18,0.92,0.90
 
+or
+
+::
+
+  0.90 0.93 0.18 0.92 0.90
+
 These five values per line adjust the ``beta[2]``, ``beta[3]``,
 ``progress[1]``, ``progress[2]`` and ``progress[3]`` parameters of
 the ``disease`` model as described in `Model Data <model_data.html>`__.
+
+You can optionally choose which parameters will be varied by adding
+a title line, e.g.
+
+::
+
+  beta[2]   progress[2]   progress[3]
+    0.90        0.92         0.90
+    0.85        0.91         0.92
+
+specifies that you want to adjust the ``beta[2]``, ``progress[2]`` and
+``progress[3]`` parameters to the specified values.
 
 Understanding the output
 ========================
@@ -214,7 +249,26 @@ For example, this output could be read into a pandas dataframe using
 
     df = pd.read_csv("output/results.csv.bz2")
 
-    df.... # perform analysis
+    df # perform analysis
 
 We run a good online workshop on
 `how to use pandas for data analysis <https://milliams.com/courses/data_analysis_python/index.html>`__.
+
+metawards-plot
+--------------
+
+For quick and simple plots, ``metawards`` comes with the command-line
+program ``metawards-plot``. This can be used to create plots of the
+data in the ``output/results.csv.bz2`` file using, e.g.
+
+.. code-block:: bash
+
+   metawards-plot --input output/results.csv.bz2
+
+For full help on this program using ``metawards-plot --help``.
+The full help is :doc:`available here <metawards_plot_help>`.
+
+.. toctree::
+   :hidden:
+
+   metawards_plot_help
