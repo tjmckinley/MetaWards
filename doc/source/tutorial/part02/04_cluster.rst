@@ -21,9 +21,9 @@ Installing on a cluster
 
 The first thing to do is to get ``metawards`` installed on your cluster.
 A good option is to use a Python environment, as this should help make
-it easier to return to a previous ``metawards`` installation, if you
+it easier to return to a previous ``metawards`` installation if you
 need to repeat a job.
-:doc:`Take a look here <../../development#virtual-environments>` to learn
+:doc:`Take a look here <../../development>` to learn
 how to install ``metawards`` into a Python environment.
 
 Setting up the job
