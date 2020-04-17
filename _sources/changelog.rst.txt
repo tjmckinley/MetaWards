@@ -2,6 +2,11 @@
 Changelog
 =========
 
+`0.7.1 <https://github.com/metawards/MetaWards/compare/0.6.0...0.7.1>`__ - April 17th 2020
+------------------------------------------------------------------------------------------
+
+* Small bugfixes to support all of the examples in part 3 of the tutorial
+
 `0.7.0 <https://github.com/metawards/MetaWards/compare/0.6.0...0.7.0>`__ - April 17th 2020
 ------------------------------------------------------------------------------------------
 
