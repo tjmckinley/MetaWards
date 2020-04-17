@@ -156,9 +156,9 @@ The job will take a while. 99 *model runs* with 16 repeats each is
 1584 total runs, so you may want to go to lunch or leave this running
 overnight.
 
-In my case, the job took 95 minutes in total to run. Once complete, the
+In my case, the job took 2 hours in total to run. Once complete, the
 ``results.csv.bz2`` file contains all of the population trajectories
-and can be analysed in an identical was as before. If you want, you can
+and can be analysed in an identical way as before. If you want, you can
 :download:`my results.csv.bz2 file here <output1/results.csv.bz2>`.
 
 You can then produce graphs and animations using;
@@ -170,6 +170,6 @@ You can then produce graphs and animations using;
 
 The resulting animation of the overview plots is shown below.
 
-.. image:: ../../images/tutorial_2_4_overview1.gif
+.. image:: ../../images/tutorial_2_4.gif
    :alt: Overview animation of the outbreak of the lurgy
 

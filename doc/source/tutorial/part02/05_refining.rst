@@ -130,7 +130,74 @@ I submitted usig the command;
 
   qsub jobscript.sh
 
-Analysing the output
---------------------
+Processing the output
+---------------------
 
-Analysis of the output will be described here.
+The job will take a while. In my case, the job took 2 hours to run.
+Once complete, the ``results.csv.bz2`` file contains all of the
+population trajectories and can be analysed in an identical way
+as before. If you want, you can
+:download:`my results.csv.bz2 file here <output2/results.csv.bz2>`.
+
+You can then produce graphs and animations using;
+
+.. code-block:: bash
+
+   metawards-plot -i output/results.csv.bz2 --format jpg --dpi 150
+   metawards-plot --animate output/overview*.jpg
+
+The resulting animation of the overview plots is shown below.
+
+.. image:: ../../images/tutorial_2_5.gif
+   :alt: Overview animation of the outbreak of the lurgy
+
+Conclusion from experiment
+--------------------------
+
+It is clear from these graphs that the rate of progress through the new
+stage of the lurgy we added has a dramatic impact on the form of the
+outbreak. Lower value of **progress** in the new infectious and
+asymptomatic stage of the lurgy which we added lead to wider outbreak
+that moves more quickly through the population.
+
+The (fictional) lurgy is a mild yet very infectious disease that doesn't
+cause too many symptoms. From the graphs, it is clear that this is best
+modelled using a high value of **beta** and a low value of **progress**
+for the new stage we added. We will leave the value of
+**too_ill_to_move** at 0.0 to capture asymptomatic nature of this
+stage. With this choice made,
+please create a new version of the lurgy disease parameters called
+``lurgy3.json`` and copy in the below;
+
+::
+
+  { "name"             : "The Lurgy",
+    "version"          : "April 17th 2020",
+    "author(s)"        : "Christopher Woods",
+    "contact(s)"       : "christopher.woods@bristol.ac.uk",
+    "reference(s)"     : "Completely ficticious disease - no references",
+    "beta"             : [0.0, 0.0, 0.7, 0.5, 0.5, 0.0],
+    "progress"         : [1.0, 1.0, 0.2, 0.5, 0.5, 0.0],
+    "too_ill_to_move"  : [0.0, 0.0, 0.0, 0.5, 0.8, 1.0],
+    "contrib_foi"      : [1.0, 1.0, 1.0, 1.0, 1.0, 0.0]
+  }
+
+Once you have this, verify that you can run a ``metawards`` simulation,
+and then plot the graphs using;
+
+.. code-block:: bash
+
+   metawards -d lurgy3.json --additional ExtraSeedsLondon.dat
+   metawards-plot -i output/results.csv --format jpg --dpi 150
+
+If it works, then you should obtain a graph that looks something like this;
+
+.. image:: ../../images/tutorial_2_5_2.jpg
+   :alt: Overview from a run using the refined parameters
+
+.. warning::
+
+  Remember that this is a completely fictional disease and is not
+  related to any real outbreak. The graphs above are purely
+  illustrative and chosen so that people following this tutorial
+  can quickly see the impact of their work.
