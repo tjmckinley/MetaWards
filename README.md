@@ -94,7 +94,7 @@ You can generate the docs using
 
 ```
 cd docs
-make html
+make
 ```
 
 ## Running
@@ -136,12 +136,9 @@ or [scoop](http://scoop.readthedocs.io) for multi-node cluster jobs.
 
 ### Next stages...
 
-The next stages of the program include more code cleaning, making all
-docs and imports obey the [coding style](https://metawards.github.io/MetaWards/development.html#coding-style), finishing up the parallelisation and
-optimisation (including optimising the random number generator),
-and then breaking apart the
-[iterate function](https://metawards.github.io/MetaWards/api/generated/metawards.utils.iterate.html) so that it is easier to customise and control
-the different events that can occur during the model outbreak.
+The next stages of the program includes finishing up the custom extractor
+code, improving some of the analysis, providing more integrators,
+optimising the random number generator and finishing up the tutorial.
 
 In addition, we plan to integrate the software into the Bayesian / MCMC
 package [PyMC3](https://docs.pymc.io).

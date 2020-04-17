@@ -1,11 +1,12 @@
 
-__all__ = ["iterate_custom", "build_custom_iterator"]
+__all__ = ["iterate_custom",
+           "build_custom_iterator"]
 
 from ._iterate_core import iterate_core
 from ._iterate_default import iterator_needs_setup
 
 
-def build_custom_iterator(custom_function):
+def build_custom_iterator(custom_function, parent_name="__main__"):
     """Build and return a custom iterator from the passed
        function. This will wrap 'iterate_custom' around
        the function to double-check that the custom
@@ -25,6 +26,10 @@ def build_custom_iterator(custom_function):
             find the function in that file (either the first function
             called 'iterateXXX' or the specified function if
             custom_function is in the form module::function)
+
+        parent_name: str
+          This should be the __name__ of the calling function, e.g.
+          call this function as build_custom_iterator(func, __name__)
 
         Returns
         -------
@@ -53,6 +58,13 @@ def build_custom_iterator(custom_function):
         except Exception:
             pass
 
+        # how about the __name__ namespace of the caller
+        try:
+            func = getattr(sys.modules[parent_name], custom_function)
+            return build_custom_iterator(func)
+        except Exception:
+            pass
+
         # how about the __main__ namespace (e.g. if this was loaded
         # in a script)
         try:
@@ -76,6 +88,19 @@ def build_custom_iterator(custom_function):
             module = importlib.import_module(func_module)
         except Exception:
             module = None
+
+        if module is None:
+            try:
+                import importlib.util
+                spec = importlib.util.spec_from_file_location(
+                                                func_module,
+                                                f"{func_module}.py")
+
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                print(f"Loaded iterator from {func_module}.py")
+            except Exception:
+                module = None
 
         if module is None:
             # we cannot find the iterator

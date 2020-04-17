@@ -77,8 +77,9 @@ def redirect_output(outdir):
 def run_models(network: Network, variables: VariableSets,
                population: Population,
                nprocs: int, nthreads: int, seed: int,
-               nsteps: int, output_dir: OutputFiles, profile: bool,
-               parallel_scheme: str):
+               nsteps: int, output_dir: OutputFiles,
+               iterator: str, extractor: str,
+               profile: bool, parallel_scheme: str):
     """Run all of the models on the passed Network that are described
        by the passed VariableSets
 
@@ -105,6 +106,10 @@ def run_models(network: Network, variables: VariableSets,
        output_dir: OutputFiles
          The OutputFiles that represents the directory in which all
          output should be placed
+       iterator: str
+         Iterator to load that will be used to iterate the outbreak
+       extractor: str
+         Extractor to load that will be used to extract information
        profile: bool
          Whether or not to profile the model run and print out live
          timing (useful for performance debugging)
@@ -125,6 +130,8 @@ def run_models(network: Network, variables: VariableSets,
         trajectory = network.run(population=population, seed=seed,
                                  s=s, nsteps=nsteps,
                                  output_dir=output_dir,
+                                 iterator=iterator,
+                                 extractor=extractor,
                                  profile=profile,
                                  nthreads=nthreads)
 
@@ -193,6 +200,8 @@ def run_models(network: Network, variables: VariableSets,
                     output = network.run(population=population, seed=seed,
                                          s=s, nsteps=nsteps,
                                          output_dir=subdir,
+                                         iterator=iterator,
+                                         extractor=extractor,
                                          profile=profile,
                                          nthreads=nthreads)
 
@@ -221,6 +230,8 @@ def run_models(network: Network, variables: VariableSets,
                             "population": population,
                             "s": s,
                             "nsteps": nsteps,
+                            "iterator": iterator,
+                            "extractor": extractor,
                             "profile": profile,
                             "nthreads": nthreads}
             })

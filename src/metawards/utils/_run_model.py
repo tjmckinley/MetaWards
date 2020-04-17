@@ -77,9 +77,15 @@ def run_model(network: Network,
     """
     if iterator is None:
         iterator = iterate_default
+    elif isinstance(iterator, str):
+        from ..iterators._iterate_custom import build_custom_iterator
+        iterator = build_custom_iterator(iterator, __name__)
 
     if extractor is None:
         extractor = extract_default
+    elif isinstance(iterator, str):
+        from ..extractors._extract_custom import build_custom_extractor
+        extractor = build_custom_extractor(extractor, __name__)
 
     if profile:
         if profiler:

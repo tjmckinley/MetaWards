@@ -143,6 +143,18 @@ def parse_args():
                              "outbreak (default is to run until the "
                              "outbreak has finished).")
 
+    parser.add_argument('--iterator', type=str, default=None,
+                        help="Name of the iterator to use to advance the "
+                             "outbreak at each step (day). For a full "
+                             "explanation see the tutorial at "
+                             "https://metawards.github.io")
+
+    parser.add_argument("--extractor", type=str, default=None,
+                        help="Name of the extractor to use to extract "
+                             "information during a model run. For a full "
+                             "explanation see the tutorial at "
+                             "https://metawards.github.io")
+
     parser.add_argument('--nthreads', type=int, default=None,
                         help="Number of threads over which parallelise an "
                              "individual model run. The total number of "
@@ -852,6 +864,22 @@ def cli():
     elif args.no_auto_bzip:
         auto_bzip = False
 
+    if args.iterator:
+        iterator = args.iterator
+        # eventually I should get the filename and function from this,
+        # and then convert it into an absolute path to make this safe
+        # on a cluster. Then I should copy the file into the output to
+        # make sure that the calculation is reproducible. Will do this
+        # when I copy this work to extractor
+    else:
+        iterator = None
+
+    if args.extractor:
+        extractor = args.extractor
+        # see above ;-)
+    else:
+        extractor = None
+
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
                      auto_bzip=auto_bzip, prompt=prompt) as output_dir:
         result = run_models(network=network, variables=variables,
@@ -859,6 +887,8 @@ def cli():
                             nthreads=nthreads, seed=seed,
                             nsteps=args.nsteps,
                             output_dir=output_dir,
+                            iterator=iterator,
+                            extractor=extractor,
                             profile=profile, parallel_scheme=parallel_scheme)
 
         if result is None or len(result) == 0:

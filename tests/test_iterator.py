@@ -69,7 +69,7 @@ def test_iterator():
 
     from metawards.iterators import build_custom_iterator
 
-    iterator = build_custom_iterator(my_iterator)
+    iterator = build_custom_iterator(my_iterator, __name__)
 
     print("Run the model...")
     outdir = os.path.join(script_dir, "test_integrator_output")
