@@ -1,8 +1,18 @@
 
-__all__ = ["iterate_custom"]
+__all__ = ["iterate_custom", "build_custom_iterator"]
 
 from ._iterate_core import iterate_core
 from ._iterate_default import iterator_needs_setup
+
+
+def build_custom_iterator(custom_function):
+    """Build and return a custom iterator from the passed
+       function. This will wrap 'iterate_custom' around
+       the function to double-check that the custom
+       function is doing everything correctly
+    """
+    return lambda **kwargs: iterate_custom(custom_function=custom_function,
+                                           **kwargs)
 
 
 def iterate_custom(custom_function,
@@ -51,10 +61,22 @@ def iterate_custom(custom_function,
     # make sure that the core functions are called, and that
     # their call is before the custom function (unless the user
     # has moved them, which we hope was for a good reason!)
+    if core_funcs is None or len(core_funcs) == 0:
+        if custom_funcs is None:
+            return []
+        else:
+            return custom_funcs
 
-    for i in range(len(custom_funcs)-1, -1, -1):
-        # move backwards so that the first custom function is prepended last
-        if core_funcs[i] not in custom_funcs:
-            custom_funcs.insert(0, core_funcs[i])
+    elif custom_funcs is None or len(custom_funcs) == 0:
+        return core_funcs
 
-    return custom_funcs
+    else:
+        for i in range(len(core_funcs)-1, -1, -1):
+            # move backwards so that the first custom function
+            # is prepended last
+            if core_funcs[i] not in custom_funcs:
+                custom_funcs.insert(0, core_funcs[i])
+
+        print(custom_funcs)
+
+        return custom_funcs

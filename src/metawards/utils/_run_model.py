@@ -22,8 +22,8 @@ def run_model(network: Network,
               profile: bool = True,
               profiler: Profiler = None,
               nthreads: int = None,
-              get_advance_functions=iterate_default,
-              get_output_functions=extract_default):
+              iterator=None,
+              extractor=None):
     """Actually run the model... Real work happens here. The model
        will run until completion or until 'nsteps' have been
        completed (whichever happens first)
@@ -60,17 +60,27 @@ def run_model(network: Network,
             Index of the seeding parameter to use
         nthreads: int
             Number of threads over which to parallelise this model run
-        get_advance_functions: function
+        iterator: function
             Function that will be used to dynamically get the functions
-            that will be used to advance the model at each iteration.
-            Any additional files or parameters needed by these functions
-            should be included in the `network.params` object.
+            that will be used at each iteration to advance the
+            model. Any additional files or parameters needed by these
+            functions should be included in the `network.params` object.
+        extractor: function
+            Function that will be used to dynamically get the functions
+            that will be used at each iteration to extract data from
+            the model run
 
         Returns
         -------
         trajectory: Populations
             The trajectory of the population for every day of the model run
     """
+    if iterator is None:
+        iterator = iterate_default
+
+    if extractor is None:
+        extractor = extract_default
+
     if profile:
         if profiler:
             p = profiler
@@ -101,14 +111,14 @@ def run_model(network: Network,
     # get and call all of the functions that need to be called to set
     # up the model run
     p = p.start("setup_funcs")
-    setup_funcs = get_advance_functions(nthreads=nthreads, setup=True)
+    setup_funcs = iterator(nthreads=nthreads, setup=True)
 
     for setup_func in setup_funcs:
         setup_func(network=network, population=population,
                    infections=infections, play_infections=play_infections,
                    rngs=rngs, profiler=p, nthreads=nthreads)
 
-    setup_funcs = get_output_functions(nthreads=nthreads, setup=True)
+    setup_funcs = extractor(nthreads=nthreads, setup=True)
 
     for setup_func in setup_funcs:
         setup_func(network=network, population=population,
@@ -125,7 +135,7 @@ def run_model(network: Network,
     extract_data(network=network, population=population, workspace=workspace,
                  output_dir=output_dir, infections=infections,
                  play_infections=play_infections,
-                 rngs=rngs, get_output_functions=get_output_functions,
+                 rngs=rngs, get_output_functions=extractor,
                  nthreads=nthreads, profiler=p)
     p = p.stop()
 
@@ -149,7 +159,7 @@ def run_model(network: Network,
 
         iterate(network=network, population=population,
                 infections=infections, play_infections=play_infections,
-                rngs=rngs, get_advance_functions=get_advance_functions,
+                rngs=rngs, get_advance_functions=iterator,
                 nthreads=nthreads, profiler=p2)
 
         print(f"\n {population.day} {infecteds}")
@@ -158,7 +168,7 @@ def run_model(network: Network,
         extract_data(network=network, population=population,
                      workspace=workspace, output_dir=output_dir,
                      infections=infections, play_infections=play_infections,
-                     rngs=rngs, get_output_functions=get_output_functions,
+                     rngs=rngs, get_output_functions=extractor,
                      nthreads=nthreads, profiler=p2)
         p2 = p2.stop()
 
