@@ -2,11 +2,6 @@
 Part 3 - Customising the outbreak
 =================================
 
-.. warning::
-
-  This section has not yet been written. The plan for this part
-  of the tutorial is written below.
-
 In this third part of the tutorial you will:
 
 * Understand the purpose of `metawards.iterators.iterate_default`
