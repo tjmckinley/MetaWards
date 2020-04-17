@@ -2,11 +2,6 @@
 Part 3 - Customising the outbreak
 =================================
 
-.. warning::
-
-  This section has not yet been written. The plan for this part
-  of the tutorial is written below.
-
 In this third part of the tutorial you will:
 
 * Understand the purpose of `metawards.iterators.iterate_default`
@@ -25,3 +20,6 @@ In this third part of the tutorial you will:
    :maxdepth: 2
 
    part03/01_iterators
+   part03/02_weekend
+   part03/03_lockdown
+   part03/04_dynamic
