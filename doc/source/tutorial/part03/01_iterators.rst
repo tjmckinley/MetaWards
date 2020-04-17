@@ -12,12 +12,14 @@ Work and play
 ``metawards`` models disease transmission via two main modes;
 
 1. Infections at "work"
+
   These are random infections that individuals acquire in the electoral
   ward in which they "work", based on random interactions with others
   who are also in that "work" ward. In this nomenclature, "work" means
   any regular (daily), predictable travel that an individual makes.
 
 2. Infections at "play"
+
   These are random infections that individuals acquire in the
   electoral ward in which they live, based on random interactions
   with others who are also in their ward. In this nomenclature, "play"

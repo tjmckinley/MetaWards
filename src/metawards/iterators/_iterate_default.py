@@ -17,6 +17,8 @@ def iterator_needs_setup(iterator):
 def iterate_default(setup=False, **kwargs):
     """This returns the default list of 'advance_XXX' functions that
        are called in sequence for each iteration of the model run.
+       This is the default iterator. It models every day as though
+       it is a working day.
 
        Parameters
        ----------
@@ -33,15 +35,17 @@ def iterate_default(setup=False, **kwargs):
          The list of functions that ```iterate``` will call in sequence
     """
 
+    kwargs["setup"] = setup
+
     if setup:
         # Return the functions needed to initialise this iterator
-        funcs = iterate_core(setup=True)
+        funcs = iterate_core(**kwargs)
 
         # Does 'iterate_weekday' need to be setup?
         if iterator_needs_setup(iterate_weekday):
-            funcs += iterate_weekday(setup=True)
+            funcs += iterate_weekday(**kwargs)
 
     else:
-        funcs = iterate_core() + iterate_weekday()
+        funcs = iterate_core(**kwargs) + iterate_weekday(**kwargs)
 
     return funcs

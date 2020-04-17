@@ -43,8 +43,12 @@ def iterate(network: Network, population: Population,
 
     p = profiler.start("iterate")
 
-    advance_functions = get_advance_functions(population=population,
-                                              nthreads=nthreads)
+    advance_functions = get_advance_functions(network=network,
+                                              population=population,
+                                              infections=infections,
+                                              play_infections=play_infections,
+                                              rngs=rngs, nthreads=nthreads,
+                                              profiler=p)
 
     for advance_function in advance_functions:
         advance_function(network=network,
