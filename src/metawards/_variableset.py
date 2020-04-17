@@ -297,6 +297,68 @@ class VariableSet:
 
         return v
 
+    @staticmethod
+    def extract_values(fingerprint: str):
+        """Return the original values from the passed fingerprint
+           or filename. This assumes that the fingerprint
+           was created using the 'fingerprint' function, namely
+           that any integers are actually 0.INTEGER
+
+           Parameters
+           ----------
+           fingerprint: str
+             The fingerprint (or filename) to decode
+
+           Returns
+           -------
+           (values, repeat): (List[float], int)
+             The list of values of the variables and the repeat
+             index. The repeat index is None if it wasn't included
+             in the fingerprint
+        """
+        from pathlib import Path
+
+        # if this is a filename then extract only the fingerprint
+        fingerprint = Path(Path(fingerprint).name)
+        for suffix in fingerprint.suffixes:
+            fingerprint = str(fingerprint).replace(suffix, "")
+
+        # does this have a repeat index - if so, this is the last
+        # value at the end after the hyphen (negative numbers are ~)
+        parts = fingerprint.split("-")
+
+        if len(parts) > 1:
+            repeat_index = int(parts[-1])
+            fingerprint = "-".join(parts[0:-1])
+        else:
+            repeat_index = None
+
+        # now get the values
+        values = []
+
+        for part in fingerprint.split("_"):
+            try:
+                if part.startswith("~"):
+                    scl = -1.0
+                    part = part[1:]
+                else:
+                    scl = 1.0
+
+                if part.find(".") != -1:
+                    # this is already a floating point number
+                    value = float(part)
+                else:
+                    # this is an integer, which represents 0.INT
+                    part = f"0.{part}"
+                    value = float(part)
+
+                values.append(value)
+            except Exception:
+                # this is not part of the fingerprint
+                pass
+
+        return (values, repeat_index)
+
     def fingerprint(self, include_index: bool = False):
         """Return a fingerprint for this VariableSet. This can be
            used to quickly identify and distinguish the values of
@@ -320,10 +382,16 @@ class VariableSet:
             f = None
             for val in self._vals:
                 v = str(val)
+                if v.startswith("-"):
+                    v = v[1:]
                 if v.startswith("0"):
                     v = v[1:]
                 if v.startswith("."):
                     v = v[1:]
+
+                if val < 0:
+                    # use `~` for negative numbers
+                    v = "~" + v
 
                 if f is None:
                     f = v

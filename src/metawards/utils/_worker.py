@@ -57,7 +57,12 @@ def run_worker(arguments):
     """Ask the worker to run a model using the passed variables and
        options. This will write to options['output_dir'] and will
        also return the population object that contains the final
-       population data
+       population data.
+
+       WARNING - the iterator and extractor arguments rely on the
+       workers starting in the same directory as the main process,
+       so that they can load the same python files (if the user
+       is using a custom iterator or extractor)
     """
     params = arguments["params"]
     options = arguments["options"]

@@ -264,6 +264,8 @@ class Network:
             profile: bool = True,
             s: int = None,
             nthreads: int = None,
+            iterator=None,
+            extractor=None,
             profiler=None):
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
@@ -301,6 +303,12 @@ class Network:
              Index of the seeding parameter to use
            nthreads: int
              Number of threads over which to parallelise this model run
+           iterator: function
+             Function that is called at each iteration to get the functions
+             that are used to advance the model
+           extractor: function
+             Function that is called at each iteration to get the functions
+             that are used to extract data for analysis or writing to files
         """
         # Create the random number generator
         from .utils._ran_binomial import seed_ran_binomial, ran_binomial
@@ -341,6 +349,7 @@ class Network:
                                rngs=rngs, s=s, output_dir=output_dir,
                                nsteps=nsteps,
                                profile=profile, nthreads=nthreads,
-                               profiler=profiler)
+                               profiler=profiler,
+                               iterator=iterator, extractor=extractor)
 
         return population

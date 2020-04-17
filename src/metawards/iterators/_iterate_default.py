@@ -1,18 +1,27 @@
 
-__all__ = ["iterate_default"]
+__all__ = ["iterate_default", "iterator_needs_setup"]
+
+from ._iterate_core import iterate_core
+from ._iterate_weekday import iterate_weekday
 
 
-def iterate_default(nthreads: int = 1, setup=False, **kwargs):
+def iterator_needs_setup(iterator):
+    """Return whether or not the passed iterator function has
+       a "setup" argument, and thus needs to be setup before
+       it can be used
+    """
+    import inspect
+    return "setup" in inspect.signature(iterator).parameters
+
+
+def iterate_default(setup=False, **kwargs):
     """This returns the default list of 'advance_XXX' functions that
        are called in sequence for each iteration of the model run.
+       This is the default iterator. It models every day as though
+       it is a working day.
 
        Parameters
        ----------
-       nthreads: int
-         The number of threads that will be used for each function.
-         If this is 1, then the serial versions of the functions will
-         be returned, else the parallel (OpenMP) versions will be
-         returned
        setup: bool
          Whether or not to return the functions used to setup the
          space and input for the advance_XXX functions returned by
@@ -26,41 +35,17 @@ def iterate_default(nthreads: int = 1, setup=False, **kwargs):
          The list of functions that ```iterate``` will call in sequence
     """
 
+    kwargs["setup"] = setup
+
     if setup:
         # Return the functions needed to initialise this iterator
-        from ._setup_imports import setup_seed_wards
-        from ._advance_additional import setup_additional_seeds
+        funcs = iterate_core(**kwargs)
 
-        funcs = [setup_seed_wards,
-                 setup_additional_seeds]
+        # Does 'iterate_weekday' need to be setup?
+        if iterator_needs_setup(iterate_weekday):
+            funcs += iterate_weekday(**kwargs)
 
-    elif nthreads is None or nthreads == 1:
-        from ._advance_additional import advance_additional
-        from ._advance_foi import advance_foi
-        from ._advance_recovery import advance_recovery
-        from ._advance_infprob import advance_infprob
-        from ._advance_fixed import advance_fixed
-        from ._advance_play import advance_play
-
-        funcs = [advance_additional,
-                 advance_foi,
-                 advance_recovery,
-                 advance_infprob,
-                 advance_fixed,
-                 advance_play]
     else:
-        from ._advance_additional import advance_additional_omp
-        from ._advance_foi import advance_foi_omp
-        from ._advance_recovery import advance_recovery_omp
-        from ._advance_infprob import advance_infprob_omp
-        from ._advance_fixed import advance_fixed_omp
-        from ._advance_play import advance_play_omp
-
-        funcs = [advance_additional_omp,
-                 advance_foi_omp,
-                 advance_recovery_omp,
-                 advance_infprob_omp,
-                 advance_fixed_omp,
-                 advance_play_omp]
+        funcs = iterate_core(**kwargs) + iterate_weekday(**kwargs)
 
     return funcs

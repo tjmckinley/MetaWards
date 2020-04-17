@@ -60,7 +60,6 @@ def create_overview_plot(df, match_axes=True):
          dictionary of figures if there are multiple fingerprints
     """
     _, plt = import_graphics_modules()
-    import datetime
 
     fingerprints = df["fingerprint"].unique()
 
