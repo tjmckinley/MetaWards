@@ -1,6 +1,6 @@
-================
-Custom Iterators
-================
+=====================
+How a day is modelled
+=====================
 
 You have now used multiple *model runs* to refine the disease parameters
 for the lurgy. However, these parameters have been refined for the
@@ -92,15 +92,3 @@ complete. The statistics for the day, e.g. numbers of individuals
 who are in the **S**, **E**, **I**, **IW**, and **R** states are
 collected and printed, and then the next day begins and all of
 these functions are applied again.
-
-Where is the weekend?
----------------------
-
-It may not have escaped your attention that every day is a work day
-in this model. While this may seem unrealistic, we must remember that
-these are random, imperfect models, based on very noisy data.
-Adding more "realism" may be counter-productive, especially as
-modern working patterns mean that there is blurring of the line between
-work days and weekends.
-
-We can model weekends.

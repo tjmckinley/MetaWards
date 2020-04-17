@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Custom Iterators" href="part03/01_iterators.html" />
+    <link rel="next" title="How a day is modelled" href="part03/01_iterators.html" />
     <link rel="prev" title="Refining the model" href="part02/05_refining.html" /> 
 </head>
 
@@ -100,7 +100,10 @@
 <li class="toctree-l2"><a class="reference internal" href="index_part01.html">Part 1 - Modelling outbreaks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_part02.html">Part 2 - Refining the model</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Part 3 - Customising the outbreak</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="part03/01_iterators.html">Custom Iterators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="part03/01_iterators.html">How a day is modelled</a></li>
+<li class="toctree-l3"><a class="reference internal" href="part03/02_weekend.html">Where is the weekend?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="part03/03_lockdown.html">Custom advance functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="part03/04_dynamic.html">Responding to changing conditions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="index_part04.html">Part 4 - Customising the output</a></li>
@@ -208,10 +211,26 @@ response to changing conditions</li>
 </ul>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="part03/01_iterators.html">Custom Iterators</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="part03/01_iterators.html">How a day is modelled</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="part03/01_iterators.html#work-and-play">Work and play</a></li>
 <li class="toctree-l2"><a class="reference internal" href="part03/01_iterators.html#what-is-a-normal-day">What is a normal day?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="part03/01_iterators.html#where-is-the-weekend">Where is the weekend?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part03/02_weekend.html">Where is the weekend?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part03/02_weekend.html#creating-the-weekend">Creating the weekend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part03/02_weekend.html#advancing-the-outbreak">Advancing the outbreak</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part03/02_weekend.html#changing-iterators-with-time">Changing iterators with time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part03/03_lockdown.html">Custom advance functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part03/03_lockdown.html#creating-advance-lockdown">Creating advance_lockdown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part03/03_lockdown.html#scaling-the-infection-rate">Scaling the infection rate</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part03/04_dynamic.html">Responding to changing conditions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part03/04_dynamic.html#releasing-lockdown">Releasing lockdown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part03/04_dynamic.html#relaxing-not-removing-lockdown">Relaxing, not removing lockdown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part03/04_dynamic.html#returning-to-work">Returning to work</a></li>
 </ul>
 </li>
 </ul>
@@ -226,7 +245,7 @@ response to changing conditions</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="part03/01_iterators.html" class="btn btn-neutral float-right" title="Custom Iterators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="part03/01_iterators.html" class="btn btn-neutral float-right" title="How a day is modelled" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="part02/05_refining.html" class="btn btn-neutral float-left" title="Refining the model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

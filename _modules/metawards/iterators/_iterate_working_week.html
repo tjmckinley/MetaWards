@@ -176,16 +176,13 @@
 <span></span>
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;iterate_working_week&quot;</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">._iterate_core</span> <span class="kn">import</span> <span class="n">iterate_core</span>
 <span class="kn">from</span> <span class="nn">._iterate_weekday</span> <span class="kn">import</span> <span class="n">iterate_weekday</span>
 <span class="kn">from</span> <span class="nn">._iterate_weekend</span> <span class="kn">import</span> <span class="n">iterate_weekend</span>
-<span class="kn">from</span> <span class="nn">._iterate_default</span> <span class="kn">import</span> <span class="n">iterator_needs_setup</span>
 
 <span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span>
 
 
-<div class="viewcode-block" id="iterate_working_week"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.iterate_working_week.html#metawards.iterators.iterate_working_week">[docs]</a><span class="k">def</span> <span class="nf">iterate_working_week</span><span class="p">(</span><span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
-                         <span class="n">setup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="iterate_working_week"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.iterate_working_week.html#metawards.iterators.iterate_working_week">[docs]</a><span class="k">def</span> <span class="nf">iterate_working_week</span><span class="p">(</span><span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This returns the default list of &#39;advance_XXX&#39; functions that</span>
 <span class="sd">       are called in sequence for each iteration of the model run.</span>
 <span class="sd">       This iterator understands the concept of a traditional working week,</span>
@@ -197,12 +194,6 @@
 <span class="sd">       population: Population</span>
 <span class="sd">         The population experiencing the outbreak. This includes</span>
 <span class="sd">         information about the day and date of the outbreak</span>
-<span class="sd">       setup: bool</span>
-<span class="sd">         Whether or not to return the functions used to setup the</span>
-<span class="sd">         space and input for the advance_XXX functions returned by</span>
-<span class="sd">         this iterator. This is called once at the start of a run</span>
-<span class="sd">         to return the functions that must be called to setup the</span>
-<span class="sd">         model</span>
 
 <span class="sd">       Returns</span>
 <span class="sd">       -------</span>
@@ -211,38 +202,22 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">population</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;setup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">setup</span>
 
-    <span class="k">if</span> <span class="n">setup</span><span class="p">:</span>
-        <span class="c1"># Return the functions needed to initialise this iterator</span>
-        <span class="n">funcs</span> <span class="o">=</span> <span class="n">iterate_core</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># Does &#39;iterate_weekday&#39; need to be setup?</span>
-        <span class="k">if</span> <span class="n">iterator_needs_setup</span><span class="p">(</span><span class="n">iterate_weekday</span><span class="p">):</span>
-            <span class="n">funcs</span> <span class="o">+=</span> <span class="n">iterate_weekday</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># Does &#39;iterate_weekend&#39; need to be setup?</span>
-        <span class="k">if</span> <span class="n">iterator_needs_setup</span><span class="p">(</span><span class="n">iterate_weekend</span><span class="p">):</span>
-            <span class="n">funcs</span> <span class="o">+=</span> <span class="n">iterate_weekend</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
+    <span class="c1"># is this a weekday or a weekend?</span>
+    <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># have to guess from the day - assume day zero was a Monday</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">day</span> <span class="o">%</span> <span class="mi">7</span>
+        <span class="c1"># 0-4 is a weekday, 5 and 6 are weekend</span>
+        <span class="n">is_weekend</span> <span class="o">=</span> <span class="p">(</span><span class="n">day</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># is this a weekday or a weekend?</span>
-        <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># have to guess from the day - assume day zero was a Monday</span>
-            <span class="n">day</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">day</span> <span class="o">%</span> <span class="mi">7</span>
-            <span class="c1"># 0-4 is a weekday, 5 and 6 are weekend</span>
-            <span class="n">is_weekend</span> <span class="o">=</span> <span class="p">(</span><span class="n">day</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">day</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">weekday</span><span class="p">()</span>
-            <span class="c1"># 0-4 is a weekday, 5 and 6 are weekend</span>
-            <span class="n">is_weekend</span> <span class="o">=</span> <span class="p">(</span><span class="n">day</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">weekday</span><span class="p">()</span>
+        <span class="c1"># 0-4 is a weekday, 5 and 6 are weekend</span>
+        <span class="n">is_weekend</span> <span class="o">=</span> <span class="p">(</span><span class="n">day</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">is_weekend</span><span class="p">:</span>
-            <span class="n">funcs</span> <span class="o">=</span> <span class="n">iterate_core</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="n">iterate_weekend</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">funcs</span> <span class="o">=</span> <span class="n">iterate_core</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="n">iterate_weekday</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">funcs</span></div>
+    <span class="k">if</span> <span class="n">is_weekend</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">iterate_weekend</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">iterate_weekday</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
