@@ -194,6 +194,7 @@
                  [-o OUTPUT] [-u UV] [-d DISEASE] [-I INPUT_DATA]
                  [--start-date START_DATE] [--start-day START_DAY]
                  [-p PARAMETERS] [-R REPOSITORY] [-P POPULATION] [-n NSTEPS]
+                 [--iterator ITERATOR] [--extractor EXTRACTOR]
                  [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
                  [--cores-per-node CORES_PER_NODE] [--auto-bzip]
                  [--no-auto-bzip] [--force-overwrite-output] [--profile]
@@ -272,6 +273,13 @@ optional arguments:
                         simulation. Each step represents one day in the
                         outbreak (default is to run until the outbreak has
                         finished).
+  --iterator ITERATOR   Name of the iterator to use to advance the outbreak at
+                        each step (day). For a full explanation see the
+                        tutorial at https://metawards.github.io
+  --extractor EXTRACTOR
+                        Name of the extractor to use to extract information
+                        during a model run. For a full explanation see the
+                        tutorial at https://metawards.github.io
   --nthreads NTHREADS   Number of threads over which parallelise an individual
                         model run. The total number of cores used by metawards
                         will be nprocesses x nthreads
@@ -332,7 +340,7 @@ optional arguments:
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

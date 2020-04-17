@@ -439,6 +439,8 @@
             <span class="n">profile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">iterator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run the model simulation for the passed population.</span>
 <span class="sd">           The random number seed is given in &#39;seed&#39;. If this</span>
@@ -476,6 +478,12 @@
 <span class="sd">             Index of the seeding parameter to use</span>
 <span class="sd">           nthreads: int</span>
 <span class="sd">             Number of threads over which to parallelise this model run</span>
+<span class="sd">           iterator: function</span>
+<span class="sd">             Function that is called at each iteration to get the functions</span>
+<span class="sd">             that are used to advance the model</span>
+<span class="sd">           extractor: function</span>
+<span class="sd">             Function that is called at each iteration to get the functions</span>
+<span class="sd">             that are used to extract data for analysis or writing to files</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create the random number generator</span>
         <span class="kn">from</span> <span class="nn">.utils._ran_binomial</span> <span class="kn">import</span> <span class="n">seed_ran_binomial</span><span class="p">,</span> <span class="n">ran_binomial</span>
@@ -516,7 +524,8 @@
                                <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
                                <span class="n">nsteps</span><span class="o">=</span><span class="n">nsteps</span><span class="p">,</span>
                                <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
-                               <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
+                               <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">,</span>
+                               <span class="n">iterator</span><span class="o">=</span><span class="n">iterator</span><span class="p">,</span> <span class="n">extractor</span><span class="o">=</span><span class="n">extractor</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">population</span></div></div>
 </pre></div>
@@ -532,7 +541,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

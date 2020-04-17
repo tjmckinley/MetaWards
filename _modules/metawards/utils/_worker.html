@@ -232,7 +232,12 @@
     <span class="sd">&quot;&quot;&quot;Ask the worker to run a model using the passed variables and</span>
 <span class="sd">       options. This will write to options[&#39;output_dir&#39;] and will</span>
 <span class="sd">       also return the population object that contains the final</span>
-<span class="sd">       population data</span>
+<span class="sd">       population data.</span>
+
+<span class="sd">       WARNING - the iterator and extractor arguments rely on the</span>
+<span class="sd">       workers starting in the same directory as the main process,</span>
+<span class="sd">       so that they can load the same python files (if the user</span>
+<span class="sd">       is using a custom iterator or extractor)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">arguments</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
     <span class="n">options</span> <span class="o">=</span> <span class="n">arguments</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">]</span>
@@ -271,7 +276,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

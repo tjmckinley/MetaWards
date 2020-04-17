@@ -252,8 +252,9 @@
 <span class="k">def</span> <span class="nf">run_models</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">VariableSets</span><span class="p">,</span>
                <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
                <span class="n">nprocs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-               <span class="n">nsteps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">OutputFiles</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-               <span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+               <span class="n">nsteps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">OutputFiles</span><span class="p">,</span>
+               <span class="n">iterator</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extractor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+               <span class="n">profile</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Run all of the models on the passed Network that are described</span>
 <span class="sd">       by the passed VariableSets</span>
 
@@ -280,6 +281,10 @@
 <span class="sd">       output_dir: OutputFiles</span>
 <span class="sd">         The OutputFiles that represents the directory in which all</span>
 <span class="sd">         output should be placed</span>
+<span class="sd">       iterator: str</span>
+<span class="sd">         Iterator to load that will be used to iterate the outbreak</span>
+<span class="sd">       extractor: str</span>
+<span class="sd">         Extractor to load that will be used to extract information</span>
 <span class="sd">       profile: bool</span>
 <span class="sd">         Whether or not to profile the model run and print out live</span>
 <span class="sd">         timing (useful for performance debugging)</span>
@@ -300,6 +305,8 @@
         <span class="n">trajectory</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
                                  <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">nsteps</span><span class="o">=</span><span class="n">nsteps</span><span class="p">,</span>
                                  <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+                                 <span class="n">iterator</span><span class="o">=</span><span class="n">iterator</span><span class="p">,</span>
+                                 <span class="n">extractor</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span>
                                  <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
                                  <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
 
@@ -368,6 +375,8 @@
                     <span class="n">output</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
                                          <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">nsteps</span><span class="o">=</span><span class="n">nsteps</span><span class="p">,</span>
                                          <span class="n">output_dir</span><span class="o">=</span><span class="n">subdir</span><span class="p">,</span>
+                                         <span class="n">iterator</span><span class="o">=</span><span class="n">iterator</span><span class="p">,</span>
+                                         <span class="n">extractor</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span>
                                          <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
                                          <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
 
@@ -396,6 +405,8 @@
                             <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="n">population</span><span class="p">,</span>
                             <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>
                             <span class="s2">&quot;nsteps&quot;</span><span class="p">:</span> <span class="n">nsteps</span><span class="p">,</span>
+                            <span class="s2">&quot;iterator&quot;</span><span class="p">:</span> <span class="n">iterator</span><span class="p">,</span>
+                            <span class="s2">&quot;extractor&quot;</span><span class="p">:</span> <span class="n">extractor</span><span class="p">,</span>
                             <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="n">profile</span><span class="p">,</span>
                             <span class="s2">&quot;nthreads&quot;</span><span class="p">:</span> <span class="n">nthreads</span><span class="p">}</span>
             <span class="p">})</span>
@@ -457,7 +468,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

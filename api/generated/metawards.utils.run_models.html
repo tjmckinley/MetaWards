@@ -176,7 +176,7 @@
 <h1>metawards.utils.run_models<a class="headerlink" href="#metawards-utils-run-models" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.run_models">
-<code class="descclassname">metawards.utils.</code><code class="descname">run_models</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>variables: metawards._variableset.VariableSets</em>, <em>population: metawards._population.Population</em>, <em>nprocs: int</em>, <em>nthreads: int</em>, <em>seed: int</em>, <em>nsteps: int</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>profile: bool</em>, <em>parallel_scheme: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_runner.html#run_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_models" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">run_models</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>variables: metawards._variableset.VariableSets</em>, <em>population: metawards._population.Population</em>, <em>nprocs: int</em>, <em>nthreads: int</em>, <em>seed: int</em>, <em>nsteps: int</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>iterator: str</em>, <em>extractor: str</em>, <em>profile: bool</em>, <em>parallel_scheme: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_runner.html#run_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_models" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run all of the models on the passed Network that are described
 by the passed VariableSets</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -197,6 +197,8 @@ for all model runs</li>
 will run until the outbreak is over if this is None</li>
 <li><strong>output_dir</strong> (<a class="reference internal" href="metawards.OutputFiles.html#metawards.OutputFiles" title="metawards.OutputFiles"><em>OutputFiles</em></a>) – The OutputFiles that represents the directory in which all
 output should be placed</li>
+<li><strong>iterator</strong> (<em>str</em>) – Iterator to load that will be used to iterate the outbreak</li>
+<li><strong>extractor</strong> (<em>str</em>) – Extractor to load that will be used to extract information</li>
 <li><strong>profile</strong> (<em>bool</em>) – Whether or not to profile the model run and print out live
 timing (useful for performance debugging)</li>
 <li><strong>parallel_scheme</strong> (<em>str</em>) – Which parallel scheme (multiprocessing, mpi4py or scoop) to use
@@ -222,7 +224,7 @@ to run multiple model runs in parallel</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

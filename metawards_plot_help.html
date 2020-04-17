@@ -192,8 +192,9 @@
   <div class="section" id="command-line-options">
 <h1>Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h1>
 <p>The full set of command line options for metawards-plot is below;</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">usage</span><span class="p">:</span> <span class="n">metawards</span><span class="o">-</span><span class="n">plot</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">version</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">]</span>
-                      <span class="p">[</span><span class="o">--</span><span class="nb">format</span> <span class="n">FORMAT</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">usage</span><span class="p">:</span> <span class="n">metawards</span><span class="o">-</span><span class="n">plot</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">version</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">a</span> <span class="p">[</span><span class="n">ANIMATE</span> <span class="p">[</span><span class="n">ANIMATE</span> <span class="o">...</span><span class="p">]]]</span>
+                      <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">format</span> <span class="n">FORMAT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">dpi</span> <span class="n">DPI</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">delay</span> <span class="n">DELAY</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">ordering</span> <span class="n">ORDERING</span><span class="p">]</span>
 
 <span class="n">MetaWards</span> <span class="n">simple</span> <span class="n">plotting</span> <span class="n">program</span> <span class="o">-</span> <span class="n">see</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">metawards</span><span class="o">/</span><span class="n">metawards</span>
 <span class="k">for</span> <span class="n">more</span> <span class="n">information</span>
@@ -204,13 +205,21 @@
   <span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span><span class="p">,</span> <span class="o">--</span><span class="nb">input</span> <span class="n">INPUT</span>
                         <span class="n">Full</span> <span class="n">path</span> <span class="n">to</span> <span class="n">the</span> <span class="s1">&#39;results.csv.bz2&#39;</span> <span class="n">file</span> <span class="n">that</span> <span class="n">you</span> <span class="n">want</span>
                         <span class="n">to</span> <span class="n">quickly</span> <span class="n">plot</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">a</span> <span class="p">[</span><span class="n">ANIMATE</span> <span class="p">[</span><span class="n">ANIMATE</span> <span class="o">...</span><span class="p">]],</span> <span class="o">--</span><span class="n">animate</span> <span class="p">[</span><span class="n">ANIMATE</span> <span class="p">[</span><span class="n">ANIMATE</span> <span class="o">...</span><span class="p">]]</span>
+                        <span class="n">Full</span> <span class="n">path</span> <span class="n">to</span> <span class="n">the</span> <span class="nb">set</span> <span class="n">of</span> <span class="n">plots</span> <span class="n">that</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">animate</span>
+                        <span class="n">together</span> <span class="n">into</span> <span class="n">an</span> <span class="n">animated</span> <span class="n">gif</span>
   <span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">,</span> <span class="o">--</span><span class="n">output</span> <span class="n">OUTPUT</span>
-                        <span class="n">Directory</span> <span class="ow">in</span> <span class="n">which</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">place</span> <span class="n">the</span> <span class="n">graphs</span><span class="o">.</span> <span class="n">By</span>
-                        <span class="n">default</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">same</span> <span class="n">directory</span> <span class="k">as</span> <span class="n">contains</span> <span class="n">the</span>
-                        <span class="s1">&#39;results.csv.bz2&#39;</span> <span class="n">file</span>
+                        <span class="n">Location</span> <span class="k">for</span> <span class="n">the</span> <span class="n">output</span><span class="o">.</span> <span class="n">By</span> <span class="n">default</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">inferred</span>
+                        <span class="kn">from</span> <span class="nn">the</span> <span class="nb">input</span>
   <span class="o">--</span><span class="nb">format</span> <span class="n">FORMAT</span>       <span class="n">Desired</span> <span class="nb">format</span> <span class="n">of</span> <span class="n">the</span> <span class="n">graphs</span> <span class="n">that</span> <span class="n">are</span> <span class="n">produced</span><span class="o">.</span> <span class="n">Good</span>
                         <span class="n">formats</span> <span class="n">are</span> <span class="s1">&#39;pdf&#39;</span> <span class="k">for</span> <span class="n">publication</span> <span class="n">graphics</span> <span class="ow">and</span> <span class="s1">&#39;png&#39;</span>
-                        <span class="ow">or</span> <span class="s1">&#39;jpeg&#39;</span> <span class="k">for</span> <span class="n">webpages</span><span class="o">.</span>
+                        <span class="ow">or</span> <span class="s1">&#39;jpeg&#39;</span> <span class="k">for</span> <span class="n">webpages</span>
+  <span class="o">--</span><span class="n">dpi</span> <span class="n">DPI</span>             <span class="n">Resolution</span> <span class="n">to</span> <span class="n">use</span> <span class="n">when</span> <span class="n">creating</span> <span class="n">bitmap</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span>
+                        <span class="n">jpg</span><span class="p">,</span> <span class="n">png</span> <span class="n">etc</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">delay</span> <span class="n">DELAY</span>         <span class="n">The</span> <span class="n">delay</span> <span class="ow">in</span> <span class="n">milliseconds</span> <span class="n">between</span> <span class="n">animation</span> <span class="n">frames</span> <span class="k">if</span>
+                        <span class="n">an</span> <span class="n">animation</span> <span class="ow">is</span> <span class="n">being</span> <span class="n">produced</span>
+  <span class="o">--</span><span class="n">ordering</span> <span class="n">ORDERING</span>   <span class="n">Ordering</span> <span class="n">to</span> <span class="n">use</span> <span class="k">for</span> <span class="n">the</span> <span class="n">frames</span><span class="o">.</span> <span class="n">This</span> <span class="n">can</span> <span class="n">be</span>
+                        <span class="n">fingerprint</span><span class="p">,</span> <span class="n">filename</span> <span class="ow">or</span> <span class="n">custom</span>
 </pre></div>
 </div>
 </div>
@@ -236,7 +245,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

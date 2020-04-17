@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>7. Custom Iterators &mdash; MetaWards Documentation</title>
+  <title>Custom Iterators &mdash; MetaWards Documentation</title>
   
 
   
@@ -37,8 +37,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="8. Custom extractors" href="../part04/01_extractors.html" />
-    <link rel="prev" title="6. Analysing the output" href="../part02/03_analysis.html" /> 
+    <link rel="next" title="Part 4 - Customising the output" href="../index_part04.html" />
+    <link rel="prev" title="Part 3 - Customising the outbreak" href="../index_part03.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,14 +97,18 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../part01/01_getting_started.html">1. Getting Started</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part01/02_repeating.html">2. Multiple model runs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part01/03_plotting.html">3. Plotting outputs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part02/01_disease.html">4. Refining the disease model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part02/02_adjustable.html">5. Adjustable Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part02/03_analysis.html">6. Analysing the output</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">7. Custom Iterators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part04/01_extractors.html">8. Custom extractors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part01.html">Part 1 - Modelling outbreaks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part02.html">Part 2 - Refining the model</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index_part03.html">Part 3 - Customising the outbreak</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Custom Iterators</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#work-and-play">Work and play</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-a-normal-day">What is a normal day?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#where-is-the-weekend">Where is the weekend?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part04.html">Part 4 - Customising the output</a></li>
 </ul>
 </li>
 </ul>
@@ -167,7 +171,9 @@
         
           <li><a href="../tutorial.html">Tutorial</a> &raquo;</li>
         
-      <li>7. Custom Iterators</li>
+          <li><a href="../index_part03.html">Part 3 - Customising the outbreak</a> &raquo;</li>
+        
+      <li>Custom Iterators</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -187,25 +193,101 @@
            <div itemprop="articleBody">
             
   <div class="section" id="custom-iterators">
-<h1>7. Custom Iterators<a class="headerlink" href="#custom-iterators" title="Permalink to this headline">¶</a></h1>
+<h1>Custom Iterators<a class="headerlink" href="#custom-iterators" title="Permalink to this headline">¶</a></h1>
+<p>You have now used multiple <em>model runs</em> to refine the disease parameters
+for the lurgy. However, these parameters have been refined for the
+model that <code class="docutils literal notranslate"><span class="pre">metawards</span></code> uses to represent interactions of individuals.</p>
+<div class="section" id="work-and-play">
+<h2>Work and play<a class="headerlink" href="#work-and-play" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">metawards</span></code> models disease transmission via two main modes;</p>
+<ol class="arabic simple">
+<li>Infections at “work”</li>
+</ol>
+<blockquote>
+<div>These are random infections that individuals acquire in the electoral
+ward in which they “work”, based on random interactions with others
+who are also in that “work” ward. In this nomenclature, “work” means
+any regular (daily), predictable travel that an individual makes.</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Infections at “play”</li>
+</ol>
+<blockquote>
+<div>These are random infections that individuals acquire in the
+electoral ward in which they live, based on random interactions
+with others who are also in their ward. In this nomenclature, “play”
+means random, unpredictable interactions that are not regular.</div></blockquote>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">This section has not yet been written. The plan for this part
-of the tutorial is written below.</p>
+<p class="last">Do not read too much into the definitions of “work” and “play”. They
+have very broad meanings in <code class="docutils literal notranslate"><span class="pre">metawards</span></code>, and, in essence, capture
+the difference between predicatable daily travel and interactions
+(commuting, colleagues in an office, students in a school), and
+the random interations (partying, shopping, playing in the park).
+Most of the hard data science behind <code class="docutils literal notranslate"><span class="pre">metawards</span></code> is constructing
+the information in
+<a class="reference external" href="https://github.com/metawards/MetaWardsData">MetaWardsData</a>
+to gain this very broad overview of how individuals move and interact.</p>
 </div>
-<p>In the last section we created…</p>
-<p>Using <a class="reference internal" href="../../api/index_api_MetaWards_iterators.html#module-metawards.iterators" title="metawards.iterators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.iterators</span></code></a> to control how the disease is modelled
-each day, so that we can model a lockdown.</p>
+</div>
+<div class="section" id="what-is-a-normal-day">
+<h2>What is a normal day?<a class="headerlink" href="#what-is-a-normal-day" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">metawards</span></code> uses an <code class="docutils literal notranslate"><span class="pre">iterator</span></code> to iterate the model outbreak forward
+day by day. All of the iterators are in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">metawards.iterator</span></code> module.
+The default iterator is <code class="xref py py-func docutils literal notranslate"><span class="pre">iterate_default()</span></code>.</p>
+<p>An iterator applies a sequence of functions that advance the disease step
+by step through each day. These <code class="docutils literal notranslate"><span class="pre">advance_functions</span></code> control exactly
+what happens in each electoral ward on each day.</p>
+<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">iterate_default()</span></code> iterator applies the
+following <code class="docutils literal notranslate"><span class="pre">advance_functions</span></code> in sequence;</p>
 <ol class="arabic simple">
-<li>Understanding <a class="reference internal" href="../../api/generated/metawards.iterators.iterate_default.html#metawards.iterators.iterate_default" title="metawards.iterators.iterate_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.iterators.iterate_default</span></code></a></li>
-<li>Changing to a lockdown mode</li>
-<li>Setting lockdown to start at a specific date</li>
-<li>Modelling different levels of lockdown</li>
-<li>Setting lockdown to end at a specific date</li>
-<li>Setting lockdown to end when a condition is true</li>
-<li>Triggering differnet levels of lockdown to start and end according
-to set conditions</li>
+<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_additional()</span></code> is applied to
+add any additional seeds of the disease in the ward,
+which leads to new infections. These additional seeds represent, e.g.
+new sources of infection arriving in the ward via outside travel.</li>
+<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_foi()</span></code> is applied to advance the
+calculation of the <em>force of infection (foi)</em> for each ward. This must
+be called at the beginning of the day after
+<code class="xref py py-func docutils literal notranslate"><span class="pre">advance_additional()</span></code>, as the <em>foi</em> parameters
+are used to guide the path of the outbreak in each ward for the
+rest of the day.</li>
+<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_recovery()</span></code> is applied to all
+individuals in a ward who are infected. This will see whether an
+individual progresses from one stage of the disease to the next.
+This decision is based on the <strong>progress</strong> disease parameter for the stage
+that the individual is at.</li>
+<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_infprob()</span></code> is applied to recalculate
+the infection probabilities needed to guide new infections. These are
+based on the <em>foi</em> parameters for each ward and the number of
+individuals who are at each stage of the disease (based on the
+<strong>contrib_foi</strong> disease parameter).</li>
+<li><code class="xref py py-func docutils literal notranslate"><span class="pre">advance_fixed()</span></code> is applied to advance
+all infections that are based on fixed (predictable) movements
+of individuals (the so-called “work” mode). Infected individuals
+continue to “work” unless they become too symptomatic
+(<strong>too_ill_to_move</strong>, based on the parameter for the stage of the
+disease at which the individual is at).</li>
+<li>Finally <code class="xref py py-func docutils literal notranslate"><span class="pre">advance_play()</span></code> is applied to
+advance all infections that are based on random movements of
+individuals (the so-called “play” mode). Infected individuals
+continue to “play” unless they become too symptomatic
+(again controlled by the <strong>too_ill_to_move</strong> disease parameters).</li>
 </ol>
+<p>Once all of these functions have been applied, then a day is considered
+complete. The statistics for the day, e.g. numbers of individuals
+who are in the <strong>S</strong>, <strong>E</strong>, <strong>I</strong>, <strong>IW</strong>, and <strong>R</strong> states are
+collected and printed, and then the next day begins and all of
+these functions are applied again.</p>
+</div>
+<div class="section" id="where-is-the-weekend">
+<h2>Where is the weekend?<a class="headerlink" href="#where-is-the-weekend" title="Permalink to this headline">¶</a></h2>
+<p>It may not have escaped your attention that every day is a work day
+in this model. While this may seem unrealistic, we must remember that
+these are random, imperfect models, based on very noisy data.
+Adding more “realism” may be counter-productive, especially as
+modern working patterns mean that there is blurring of the line between
+work days and weekends.</p>
+<p>We can model weekends.</p>
+</div>
 </div>
 
 
@@ -216,10 +298,10 @@ to set conditions</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../part04/01_extractors.html" class="btn btn-neutral float-right" title="8. Custom extractors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../index_part04.html" class="btn btn-neutral float-right" title="Part 4 - Customising the output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../part02/03_analysis.html" class="btn btn-neutral float-left" title="6. Analysing the output" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index_part03.html" class="btn btn-neutral float-left" title="Part 3 - Customising the outbreak" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -229,7 +311,7 @@ to set conditions</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

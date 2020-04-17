@@ -2,6 +2,24 @@
 Changelog
 =========
 
+`0.7.0 <https://github.com/metawards/MetaWards/compare/0.6.0...0.7.0>`__ - April 17th 2020
+------------------------------------------------------------------------------------------
+
+* Lots of progress with the project website, including a detailed tutorial
+* Support fully customisable disease models, and can adjust any disease
+  parameter using a more flexible input file format
+* Can record the date in a model run, plus set the starting day and date
+* Broken up the iterate function into :mod:`metawards.iterators`, and
+  can now have the user create their own custom iterators. Tutorial on
+  how to do this will appear soon.
+* Broken up the extract_data function into :mod:`metawards.extractors`,
+  and will soon enable a user to create their own. Tutorial on how
+  to do this will appear soon.
+* Added metawards-plot to create simple plots and animations. This is
+  particularly useful when working through the tutorial.
+* General code cleaning, documentation improvements and nice-to-haves
+  that make the code easier to use.
+
 `0.6.0 <https://github.com/metawards/MetaWards/compare/0.5.0...0.6.0>`__ - April 9th 2020
 -----------------------------------------------------------------------------------------
 

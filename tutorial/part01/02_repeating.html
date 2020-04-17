@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>2. Multiple model runs &mdash; MetaWards Documentation</title>
+  <title>Multiple model runs &mdash; MetaWards Documentation</title>
   
 
   
@@ -37,8 +37,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="3. Plotting outputs" href="03_plotting.html" />
-    <link rel="prev" title="1. Getting Started" href="01_getting_started.html" /> 
+    <link rel="next" title="Plotting outputs" href="03_plotting.html" />
+    <link rel="prev" title="Getting Started" href="01_getting_started.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,18 +97,19 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="01_getting_started.html">1. Getting Started</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">2. Multiple model runs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#performing-multiple-model-runs">2.1. Performing multiple model runs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-results-csv-bz2-file">2.2. The results.csv.bz2 file</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index_part01.html">Part 1 - Modelling outbreaks</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="01_getting_started.html">Getting Started</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Multiple model runs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#performing-multiple-model-runs">Performing multiple model runs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-results-csv-bz2-file">The results.csv.bz2 file</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="03_plotting.html">3. Plotting outputs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part02/01_disease.html">4. Refining the disease model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part02/02_adjustable.html">5. Adjustable Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part02/03_analysis.html">6. Analysing the output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part03/01_iterators.html">7. Custom Iterators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part04/01_extractors.html">8. Custom extractors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03_plotting.html">Plotting outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part02.html">Part 2 - Refining the model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part03.html">Part 3 - Customising the outbreak</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part04.html">Part 4 - Customising the output</a></li>
 </ul>
 </li>
 </ul>
@@ -171,7 +172,9 @@
         
           <li><a href="../tutorial.html">Tutorial</a> &raquo;</li>
         
-      <li>2. Multiple model runs</li>
+          <li><a href="../index_part01.html">Part 1 - Modelling outbreaks</a> &raquo;</li>
+        
+      <li>Multiple model runs</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -191,7 +194,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="multiple-model-runs">
-<h1>2. Multiple model runs<a class="headerlink" href="#multiple-model-runs" title="Permalink to this headline">¶</a></h1>
+<h1>Multiple model runs<a class="headerlink" href="#multiple-model-runs" title="Permalink to this headline">¶</a></h1>
 <p>In the last page you successfully performed a single run modelling
 an outbreak of the lurgy that started in London. This run
 (which we call a <em>model run</em>) is stochastic, meaning that the results
@@ -199,7 +202,7 @@ will be slightly different every time it is performed.</p>
 <p>To gain confidence in any predictions, we need to perform a <em>model run</em>
 multiple times, and average over the results.</p>
 <div class="section" id="performing-multiple-model-runs">
-<h2>2.1. Performing multiple model runs<a class="headerlink" href="#performing-multiple-model-runs" title="Permalink to this headline">¶</a></h2>
+<h2>Performing multiple model runs<a class="headerlink" href="#performing-multiple-model-runs" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">metawards</span></code> has the command line option <code class="docutils literal notranslate"><span class="pre">--repeats</span></code> (or <code class="docutils literal notranslate"><span class="pre">-r</span></code>) to
 set the number of times a <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">run</span></code> should be repeated. For example,
 run the below command to repeat the <em>model run</em> four times;</p>
@@ -255,7 +258,7 @@ number of the population who progressed to the ‘<strong>R</strong>’ state wa
 1.3M to 2.5M.</p>
 </div>
 <div class="section" id="the-results-csv-bz2-file">
-<h2>2.2. The results.csv.bz2 file<a class="headerlink" href="#the-results-csv-bz2-file" title="Permalink to this headline">¶</a></h2>
+<h2>The results.csv.bz2 file<a class="headerlink" href="#the-results-csv-bz2-file" title="Permalink to this headline">¶</a></h2>
 <p>The day-by-day progress of each the outbreak for each <em>model run</em> is
 recorded in the output file <code class="docutils literal notranslate"><span class="pre">results.csv.bz2</span></code>. This is a comma-separated
 file that has been compressed using <a class="reference external" href="https://en.wikipedia.org/wiki/Bzip2">bzip2</a>.</p>
@@ -310,10 +313,10 @@ later.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="03_plotting.html" class="btn btn-neutral float-right" title="3. Plotting outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="03_plotting.html" class="btn btn-neutral float-right" title="Plotting outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="01_getting_started.html" class="btn btn-neutral float-left" title="1. Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="01_getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -323,7 +326,7 @@ later.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

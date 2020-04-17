@@ -89,17 +89,34 @@ do this type;
 
 .. code-block:: bash
 
-  metawards-plot -i output/results.csv.bz2
+  metawards-plot -i output/results.csv.bz2 --format jpg --dpi 300
+
+.. note::
+   We have used the 'jpg' image format here are we want to create animations.
+   You can choose from many different formats, e.g. 'pdf' for publication
+   quality graphs, 'png' etc. Use the ``--dpi`` option to set the
+   resolution when creating bitmap (png, jpg) images.
 
 As there are multiple fingerprints, this will produce multiple overview
 graphs (one overview per fingerprint, and if you have run multiple
 repeats, then one average per fingerprint too).
 
 The fingerprint value is included in the graph name, and they will
-all be plotted on the same axes. This means that tools that stack
-pages together, e.g. joining the PDFs, or merging images into a GIF,
-will let you animate between the different fingerprint values. For example,
-here is an animation of the overview graphs;
+all be plotted on the same axes. This means that they could be joined
+together into an animation. As well as plotting, ``metawards-plot`` has
+an animation mode that can be used to join images together. To run this,
+use;
+
+.. code-block:: bash
+
+  metawards-plot --animate output/overview*.jpg
+
+.. note::
+   You can only animate image files (e.g. jpg, png). You can't animate
+   pdfs (yet - although
+   `pull requests welcome <https://github.com/metawards/MetaWards/pulls>`__)
+
+Here is the animation.
 
 .. image:: ../../images/tutorial_2_3.gif
    :alt: Animated overview graphs from the parameter sweep

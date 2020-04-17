@@ -197,8 +197,8 @@
               <span class="n">profile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
               <span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">get_advance_functions</span><span class="o">=</span><span class="n">iterate_default</span><span class="p">,</span>
-              <span class="n">get_output_functions</span><span class="o">=</span><span class="n">extract_default</span><span class="p">):</span>
+              <span class="n">iterator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Actually run the model... Real work happens here. The model</span>
 <span class="sd">       will run until completion or until &#39;nsteps&#39; have been</span>
 <span class="sd">       completed (whichever happens first)</span>
@@ -235,17 +235,33 @@
 <span class="sd">            Index of the seeding parameter to use</span>
 <span class="sd">        nthreads: int</span>
 <span class="sd">            Number of threads over which to parallelise this model run</span>
-<span class="sd">        get_advance_functions: function</span>
+<span class="sd">        iterator: function</span>
 <span class="sd">            Function that will be used to dynamically get the functions</span>
-<span class="sd">            that will be used to advance the model at each iteration.</span>
-<span class="sd">            Any additional files or parameters needed by these functions</span>
-<span class="sd">            should be included in the `network.params` object.</span>
+<span class="sd">            that will be used at each iteration to advance the</span>
+<span class="sd">            model. Any additional files or parameters needed by these</span>
+<span class="sd">            functions should be included in the `network.params` object.</span>
+<span class="sd">        extractor: function</span>
+<span class="sd">            Function that will be used to dynamically get the functions</span>
+<span class="sd">            that will be used at each iteration to extract data from</span>
+<span class="sd">            the model run</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        trajectory: Populations</span>
 <span class="sd">            The trajectory of the population for every day of the model run</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">iterator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterate_default</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..iterators._iterate_custom</span> <span class="kn">import</span> <span class="n">build_custom_iterator</span>
+        <span class="n">iterator</span> <span class="o">=</span> <span class="n">build_custom_iterator</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">extractor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">extractor</span> <span class="o">=</span> <span class="n">extract_default</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..extractors._extract_custom</span> <span class="kn">import</span> <span class="n">build_custom_extractor</span>
+        <span class="n">extractor</span> <span class="o">=</span> <span class="n">build_custom_extractor</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">profiler</span><span class="p">:</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">profiler</span>
@@ -276,14 +292,14 @@
     <span class="c1"># get and call all of the functions that need to be called to set</span>
     <span class="c1"># up the model run</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;setup_funcs&quot;</span><span class="p">)</span>
-    <span class="n">setup_funcs</span> <span class="o">=</span> <span class="n">get_advance_functions</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">setup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">setup_funcs</span> <span class="o">=</span> <span class="n">iterator</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">setup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">setup_func</span> <span class="ow">in</span> <span class="n">setup_funcs</span><span class="p">:</span>
         <span class="n">setup_func</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
                    <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span> <span class="n">play_infections</span><span class="o">=</span><span class="n">play_infections</span><span class="p">,</span>
                    <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
 
-    <span class="n">setup_funcs</span> <span class="o">=</span> <span class="n">get_output_functions</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">setup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">setup_funcs</span> <span class="o">=</span> <span class="n">extractor</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">setup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">setup_func</span> <span class="ow">in</span> <span class="n">setup_funcs</span><span class="p">:</span>
         <span class="n">setup_func</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
@@ -300,7 +316,7 @@
     <span class="n">extract_data</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span>
                  <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span>
                  <span class="n">play_infections</span><span class="o">=</span><span class="n">play_infections</span><span class="p">,</span>
-                 <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_output_functions</span><span class="o">=</span><span class="n">get_output_functions</span><span class="p">,</span>
+                 <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_output_functions</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span>
                  <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
@@ -324,7 +340,7 @@
 
         <span class="n">iterate</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
                 <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span> <span class="n">play_infections</span><span class="o">=</span><span class="n">play_infections</span><span class="p">,</span>
-                <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_advance_functions</span><span class="o">=</span><span class="n">get_advance_functions</span><span class="p">,</span>
+                <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_advance_functions</span><span class="o">=</span><span class="n">iterator</span><span class="p">,</span>
                 <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p2</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">infecteds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -333,7 +349,7 @@
         <span class="n">extract_data</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
                      <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
                      <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span> <span class="n">play_infections</span><span class="o">=</span><span class="n">play_infections</span><span class="p">,</span>
-                     <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_output_functions</span><span class="o">=</span><span class="n">get_output_functions</span><span class="p">,</span>
+                     <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_output_functions</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span>
                      <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p2</span><span class="p">)</span>
         <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
@@ -383,7 +399,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

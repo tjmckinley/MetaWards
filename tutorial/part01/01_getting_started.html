@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>1. Getting Started &mdash; MetaWards Documentation</title>
+  <title>Getting Started &mdash; MetaWards Documentation</title>
   
 
   
@@ -37,8 +37,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="2. Multiple model runs" href="02_repeating.html" />
-    <link rel="prev" title="Tutorial" href="../tutorial.html" /> 
+    <link rel="next" title="Multiple model runs" href="02_repeating.html" />
+    <link rel="prev" title="Part 1 - Modelling outbreaks" href="../index_part01.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,19 +97,20 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">1. Getting Started</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#introducing-the-lurgy">1.1. Introducing the Lurgy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#seeding-an-outbreak">1.2. Seeding an outbreak</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#repeating-a-calculation">1.3. Repeating a calculation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index_part01.html">Part 1 - Modelling outbreaks</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introducing-the-lurgy">Introducing the Lurgy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#seeding-an-outbreak">Seeding an outbreak</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#repeating-a-calculation">Repeating a calculation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="02_repeating.html">2. Multiple model runs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="03_plotting.html">3. Plotting outputs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part02/01_disease.html">4. Refining the disease model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part02/02_adjustable.html">5. Adjustable Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part02/03_analysis.html">6. Analysing the output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part03/01_iterators.html">7. Custom Iterators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part04/01_extractors.html">8. Custom extractors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02_repeating.html">Multiple model runs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03_plotting.html">Plotting outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part02.html">Part 2 - Refining the model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part03.html">Part 3 - Customising the outbreak</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part04.html">Part 4 - Customising the output</a></li>
 </ul>
 </li>
 </ul>
@@ -172,7 +173,9 @@
         
           <li><a href="../tutorial.html">Tutorial</a> &raquo;</li>
         
-      <li>1. Getting Started</li>
+          <li><a href="../index_part01.html">Part 1 - Modelling outbreaks</a> &raquo;</li>
+        
+      <li>Getting Started</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -192,7 +195,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="getting-started">
-<h1>1. Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
 <p>This tutorial assumes that you have installed <code class="docutils literal notranslate"><span class="pre">metawards</span></code>. To check
 that you have, type the following into your console;</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards --version
@@ -224,7 +227,7 @@ about to find <em class="xref py py-obj">MetaWardsData</em>, then please try
 <a class="reference internal" href="../../install.html"><span class="doc">installing MetaWards</span></a> or
 <a class="reference internal" href="../../model_data.html"><span class="doc">installing and configuring MetaWardsData</span></a> again.</p>
 <div class="section" id="introducing-the-lurgy">
-<h2>1.1. Introducing the Lurgy<a class="headerlink" href="#introducing-the-lurgy" title="Permalink to this headline">¶</a></h2>
+<h2>Introducing the Lurgy<a class="headerlink" href="#introducing-the-lurgy" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://en.wiktionary.org/wiki/lurgy">The Lurgy</a> is a
 <strong>completely ficticious</strong> disease that we will use throughout this
 tutorial. We can run a simulation of an outbreak of the lurgy using
@@ -287,7 +290,7 @@ options, e.g.</p>
 </div>
 </div>
 <div class="section" id="seeding-an-outbreak">
-<h2>1.2. Seeding an outbreak<a class="headerlink" href="#seeding-an-outbreak" title="Permalink to this headline">¶</a></h2>
+<h2>Seeding an outbreak<a class="headerlink" href="#seeding-an-outbreak" title="Permalink to this headline">¶</a></h2>
 <p>The key output from <code class="docutils literal notranslate"><span class="pre">metawards</span></code> are the lines which read;</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">S</span><span class="p">:</span> <span class="mi">56082077</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
 
@@ -370,7 +373,7 @@ may look something like this;</p>
 </div>
 </div>
 <div class="section" id="repeating-a-calculation">
-<h2>1.3. Repeating a calculation<a class="headerlink" href="#repeating-a-calculation" title="Permalink to this headline">¶</a></h2>
+<h2>Repeating a calculation<a class="headerlink" href="#repeating-a-calculation" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">metawards</span></code> runs a stochastic simulation. This means that random numbers
 are used in the decisions on how individuals in the model are infected,
 and how quickly they progress through the infection. This means that
@@ -404,10 +407,10 @@ you find you cannot repeat a run.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="02_repeating.html" class="btn btn-neutral float-right" title="2. Multiple model runs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="02_repeating.html" class="btn btn-neutral float-right" title="Multiple model runs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index_part01.html" class="btn btn-neutral float-left" title="Part 1 - Modelling outbreaks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -417,7 +420,7 @@ you find you cannot repeat a run.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

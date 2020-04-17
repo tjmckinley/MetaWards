@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>4. Refining the disease model &mdash; MetaWards Documentation</title>
+  <title>Refining the disease model &mdash; MetaWards Documentation</title>
   
 
   
@@ -37,8 +37,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="5. Adjustable Variables" href="02_adjustable.html" />
-    <link rel="prev" title="3. Plotting outputs" href="../part01/03_plotting.html" /> 
+    <link rel="next" title="Adjustable Variables" href="02_adjustable.html" />
+    <link rel="prev" title="Part 2 - Refining the model" href="../index_part02.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,18 +97,21 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../part01/01_getting_started.html">1. Getting Started</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part01/02_repeating.html">2. Multiple model runs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part01/03_plotting.html">3. Plotting outputs</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">4. Refining the disease model</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#understanding-the-disease-file">4.1. Understanding the disease file</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#modifying-the-disease-file">4.2. Modifying the disease file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part01.html">Part 1 - Modelling outbreaks</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index_part02.html">Part 2 - Refining the model</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Refining the disease model</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#understanding-the-disease-file">Understanding the disease file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modifying-the-disease-file">Modifying the disease file</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="02_adjustable.html">5. Adjustable Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="03_analysis.html">6. Analysing the output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part03/01_iterators.html">7. Custom Iterators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../part04/01_extractors.html">8. Custom extractors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02_adjustable.html">Adjustable Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03_analysis.html">Analysing the output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04_cluster.html">Running on a cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="05_refining.html">Refining the model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part03.html">Part 3 - Customising the outbreak</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part04.html">Part 4 - Customising the output</a></li>
 </ul>
 </li>
 </ul>
@@ -171,7 +174,9 @@
         
           <li><a href="../tutorial.html">Tutorial</a> &raquo;</li>
         
-      <li>4. Refining the disease model</li>
+          <li><a href="../index_part02.html">Part 2 - Refining the model</a> &raquo;</li>
+        
+      <li>Refining the disease model</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -191,7 +196,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="refining-the-disease-model">
-<h1>4. Refining the disease model<a class="headerlink" href="#refining-the-disease-model" title="Permalink to this headline">¶</a></h1>
+<h1>Refining the disease model<a class="headerlink" href="#refining-the-disease-model" title="Permalink to this headline">¶</a></h1>
 <p>In the last part of the tutorial you plotted graphs that showed the progress
 of the lurgy across four <em>model runs</em> of the outbreak which were seeded
 in London.</p>
@@ -199,7 +204,7 @@ in London.</p>
 possibly poor model of the lurgy. Our next step is to customise the
 <code class="docutils literal notranslate"><span class="pre">disease</span> <span class="pre">file</span></code> to build a more representative model.</p>
 <div class="section" id="understanding-the-disease-file">
-<h2>4.1. Understanding the disease file<a class="headerlink" href="#understanding-the-disease-file" title="Permalink to this headline">¶</a></h2>
+<h2>Understanding the disease file<a class="headerlink" href="#understanding-the-disease-file" title="Permalink to this headline">¶</a></h2>
 <p>The model of the lurgy is based on the
 <a class="reference external" href="https://github.com/metawards/MetaWardsData/blob/master/diseases/lurgy.json">disease file</a>
 contained in the
@@ -267,7 +272,7 @@ but the final stage, when they are removed from the outbreak.</li>
 </ul>
 </div>
 <div class="section" id="modifying-the-disease-file">
-<h2>4.2. Modifying the disease file<a class="headerlink" href="#modifying-the-disease-file" title="Permalink to this headline">¶</a></h2>
+<h2>Modifying the disease file<a class="headerlink" href="#modifying-the-disease-file" title="Permalink to this headline">¶</a></h2>
 <p>With the current model, the lurgy only becomes infectious when
 the infected individual are already showing symptoms and have
 reduced mobility. For the lurgy that we want to model we need to
@@ -364,10 +369,10 @@ model of the lurgy.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="02_adjustable.html" class="btn btn-neutral float-right" title="5. Adjustable Variables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="02_adjustable.html" class="btn btn-neutral float-right" title="Adjustable Variables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../part01/03_plotting.html" class="btn btn-neutral float-left" title="3. Plotting outputs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index_part02.html" class="btn btn-neutral float-left" title="Part 2 - Refining the model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -377,7 +382,7 @@ model of the lurgy.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>

@@ -7,8 +7,9 @@ The full set of command line options for metawards-plot is below;
 
 ::
 
-      usage: metawards-plot [-h] [--version] [-i INPUT] [-o OUTPUT]
-                        [--format FORMAT]
+      usage: metawards-plot [-h] [--version] [-i INPUT] [-a [ANIMATE [ANIMATE ...]]]
+                        [-o OUTPUT] [--format FORMAT] [--dpi DPI]
+                        [--delay DELAY] [--ordering ORDERING]
   
   MetaWards simple plotting program - see https://github.com/metawards/metawards
   for more information
@@ -19,10 +20,18 @@ The full set of command line options for metawards-plot is below;
     -i INPUT, --input INPUT
                           Full path to the 'results.csv.bz2' file that you want
                           to quickly plot.
+    -a [ANIMATE [ANIMATE ...]], --animate [ANIMATE [ANIMATE ...]]
+                          Full path to the set of plots that you want to animate
+                          together into an animated gif
     -o OUTPUT, --output OUTPUT
-                          Directory in which you want to place the graphs. By
-                          default this is the same directory as contains the
-                          'results.csv.bz2' file
+                          Location for the output. By default this is inferred
+                          from the input
     --format FORMAT       Desired format of the graphs that are produced. Good
                           formats are 'pdf' for publication graphics and 'png'
-                          or 'jpeg' for webpages.
+                          or 'jpeg' for webpages
+    --dpi DPI             Resolution to use when creating bitmap outputs, e.g.
+                          jpg, png etc.
+    --delay DELAY         The delay in milliseconds between animation frames if
+                          an animation is being produced
+    --ordering ORDERING   Ordering to use for the frames. This can be
+                          fingerprint, filename or custom

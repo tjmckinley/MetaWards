@@ -180,7 +180,11 @@
 <dd><p>Ask the worker to run a model using the passed variables and
 options. This will write to options[‘output_dir’] and will
 also return the population object that contains the final
-population data</p>
+population data.</p>
+<p>WARNING - the iterator and extractor arguments rely on the
+workers starting in the same directory as the main process,
+so that they can load the same python files (if the user
+is using a custom iterator or extractor)</p>
 </dd></dl>
 
 </div>
@@ -197,7 +201,7 @@ population data</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 16, 2020.
+        Last updated on Apr 17, 2020.
       </span>
 
     </p>
