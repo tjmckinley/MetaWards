@@ -34,6 +34,10 @@ def parse_args():
                              "publication graphics and 'png' or 'jpeg' "
                              "for webpages")
 
+    parser.add_argument("--dpi", type=int, default=300,
+                        help="Resolution to use when creating bitmap "
+                             "outputs, e.g. jpg, png etc.")
+
     parser.add_argument("--delay", type=int, default=500,
                         help="The delay in milliseconds between animation "
                              "frames if an animation is being produced")
@@ -66,6 +70,7 @@ def cli():
         filenames = save_summary_plots(results=args.input,
                                        output_dir=args.output,
                                        format=args.format,
+                                       dpi=args.dpi,
                                        verbose=True)
 
         print(f"Written graphs to {', '.join(filenames)}")
