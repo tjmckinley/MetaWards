@@ -19,16 +19,28 @@ def parse_args():
                         help="Full path to the 'results.csv.bz2' file "
                              "that you want to quickly plot.")
 
+    parser.add_argument("-a", "--animate", type=str, nargs="*",
+                        help="Full path to the set of plots that you "
+                             "want to animate together into an animated "
+                             "gif")
+
     parser.add_argument("-o", "--output", type=str, default=None,
-                        help="Directory in which you want to place the "
-                             "graphs. By default this is the same directory "
-                             "as contains the 'results.csv.bz2' file")
+                        help="Location for the output. By default "
+                             "this is inferred from the input")
 
     parser.add_argument("--format", type=str, default="pdf",
                         help="Desired format of the graphs that are "
                              "produced. Good formats are 'pdf' for "
                              "publication graphics and 'png' or 'jpeg' "
-                             "for webpages.")
+                             "for webpages")
+
+    parser.add_argument("--delay", type=int, default=500,
+                        help="The delay in milliseconds between animation "
+                             "frames if an animation is being produced")
+
+    parser.add_argument("--ordering", type=str, default="fingerprint",
+                        help="Ordering to use for the frames. This "
+                             "can be fingerprint, filename or custom")
 
     args = parser.parse_args()
 
@@ -46,24 +58,32 @@ def cli():
        data. The aim is to make visualisation of the data as quick
        and painless as possible.
     """
-    import sys
-
     args, parser = parse_args()
 
-    output_csv = args.input
+    if args.input:
+        from metawards.analysis import save_summary_plots
 
-    if output_csv is None:
+        filenames = save_summary_plots(results=args.input,
+                                       output_dir=args.output,
+                                       format=args.format,
+                                       verbose=True)
+
+        print(f"Written graphs to {', '.join(filenames)}")
+
+    elif args.animate is not None and len(args.animate) > 0:
+        from metawards.analysis import animate_plots
+
+        filename = animate_plots(plots=args.animate,
+                                 output=args.output,
+                                 delay=args.delay,
+                                 ordering=args.ordering,
+                                 verbose=True)
+
+        print(f"Written animation to {filename}")
+    else:
+        import sys
         parser.print_help()
         sys.exit(0)
-
-    from metawards.analysis import save_summary_plots
-
-    filenames = save_summary_plots(results=output_csv,
-                                   output_dir=args.output,
-                                   format=args.format,
-                                   verbose=True)
-
-    print(f"Written graphs to {', '.join(filenames)}")
 
 
 if __name__ == "__main__":
