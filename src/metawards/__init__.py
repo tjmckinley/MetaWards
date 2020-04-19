@@ -47,8 +47,15 @@ from ._variableset import *
 from ._nodes import *
 from ._links import *
 
+__manual_version__ = "0.7.2"
+
 from ._version import get_versions
-__version__ = get_versions()['version']
+_v = get_versions()
+__version__ = _v['version']
+__branch__ = _v['branch']
+__repository__ = _v['repository']
+__revisionid__ = _v['full-revisionid']
+del _v
 del get_versions
 
 from . import utils
@@ -64,6 +71,12 @@ def get_version_string():
     """
     from ._version import get_versions
     v = get_versions()
+
+    if v['version'].find("untagged") != -1:
+        # the version couldn't be found - this is likely because this
+        # is run as part of github actions or in a disconnected repo.
+        # We need to drop back to '__manual_version__'
+        v['version'] = __manual_version__
 
     header = f"metawards version {v['version']}"
     stars = "*" * len(header)
