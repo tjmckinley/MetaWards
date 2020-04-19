@@ -17,21 +17,7 @@ type;
 This prints out the version of ``metawards``, which should look something
 like this;
 
-::
-
-             ***********************
-             metawards version 0.5.0
-             ***********************
-
-             -- Source information --
- repository: https://github.com/metawards/MetaWards
-                  branch: master
- revision: 25a79c5a8401afd3aa9b6a3a218edcd41a582263
-     last modified: 2020-04-08T19:37:17+0100
-
-           -- Additional information --
- Visit https://metawards.github.io for more informaion
-   about metawards, its authors and its license
+.. program-output:: metawards --version
 
 This version information gives you the provenance of this executable which
 should help in reproducing output. It is written to the top of all

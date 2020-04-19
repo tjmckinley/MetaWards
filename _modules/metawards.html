@@ -220,8 +220,15 @@
 <span class="kn">from</span> <span class="nn">._nodes</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">._links</span> <span class="kn">import</span> <span class="o">*</span>
 
+<span class="n">__manual_version__</span> <span class="o">=</span> <span class="s2">&quot;0.7.2&quot;</span>
+
 <span class="kn">from</span> <span class="nn">._version</span> <span class="kn">import</span> <span class="n">get_versions</span>
-<span class="n">__version__</span> <span class="o">=</span> <span class="n">get_versions</span><span class="p">()[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+<span class="n">_v</span> <span class="o">=</span> <span class="n">get_versions</span><span class="p">()</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+<span class="n">__branch__</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="s1">&#39;branch&#39;</span><span class="p">]</span>
+<span class="n">__repository__</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">]</span>
+<span class="n">__revisionid__</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="s1">&#39;full-revisionid&#39;</span><span class="p">]</span>
+<span class="k">del</span> <span class="n">_v</span>
 <span class="k">del</span> <span class="n">get_versions</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
@@ -237,6 +244,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">._version</span> <span class="kn">import</span> <span class="n">get_versions</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">get_versions</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;untagged&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># the version couldn&#39;t be found - this is likely because this</span>
+        <span class="c1"># is run as part of github actions or in a disconnected repo.</span>
+        <span class="c1"># We need to drop back to &#39;__manual_version__&#39;</span>
+        <span class="n">v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">__manual_version__</span>
 
     <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;metawards version </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">stars</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
@@ -294,7 +307,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 17, 2020.
+        Last updated on Apr 19, 2020.
       </span>
 
     </p>

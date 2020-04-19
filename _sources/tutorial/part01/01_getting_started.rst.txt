@@ -12,21 +12,7 @@ that you have, type the following into your console;
 and then press return. You should see something similar to the below
 printed to your screen.
 
-::
-
-              ***********************
-              metawards version 0.7.1
-              ***********************
-
-              -- Source information --
-  repository: https://github.com/metawards/MetaWards
-                   branch: master
-  revision: 7f6feed543105843e5967c7ccbeee9badfb78f5a
-      last modified: 2020-04-17T18:53:27+0100
-
-            -- Additional information --
-  Visit https://metawards.github.io for more information
-    about metawards, its authors and its license
+.. command-output:: metawards --version
 
 If you don't see this, or the output includes a warning about not being
 about to find `MetaWardsData`, then please try
