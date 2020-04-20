@@ -17,7 +17,7 @@ def test_integration_ncov(prompt=None):
     seed = 15324
     inputfile = ncovparams_csv
     line_num = 0
-    UV = 1.0
+    UV = 0.0
 
     # load all of the parameters
     try:
@@ -62,7 +62,7 @@ def test_integration_ncov(prompt=None):
     with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
         trajectory = network.run(population=population, seed=seed,
                                  output_dir=output_dir,
-                                 s=-1, nsteps=29, profile=True,
+                                 s=-1, nsteps=30, profile=True,
                                  nthreads=1)
 
     OutputFiles.remove(outdir, prompt=None)
@@ -73,12 +73,12 @@ def test_integration_ncov(prompt=None):
 
     # The original C code has this expected population after 47 steps
     expected = Population(initial=57104043,
-                          susceptibles=56081764,
-                          latent=122,
-                          total=43,
-                          recovereds=148,
-                          n_inf_wards=34,
-                          day=29)
+                          susceptibles=56081540,
+                          latent=220,
+                          total=70,
+                          recovereds=247,
+                          n_inf_wards=56,
+                          day=30)
 
     print(f"Expect output: {expected}")
 
@@ -180,3 +180,4 @@ if __name__ == "__main__":
         test_integration_ncov(input)
     else:
         test_integration_ncov(input)
+

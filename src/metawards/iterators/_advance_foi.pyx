@@ -118,7 +118,7 @@ def advance_foi_omp(network: Network, population: Population,
 
     cdef double uv = params.UV
     cdef int ts = population.day
-    cdef double uvscale = (1.0-uv/2.0 + cos(2.0*pi*ts/365.0)/2.0)
+    cdef double uvscale = (1.0-uv/2.0 + uv*cos(2.0*pi*ts/365.0)/2.0)
 
     # Copy arguments from Python into C cdef variables
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
