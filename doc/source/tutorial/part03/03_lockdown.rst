@@ -42,9 +42,9 @@ Creating advance_lockdown
 -------------------------
 
 We can write a custom advance function that represents a lockdown. To do
-this we will assume that there are no new infections during a lockdown.
+this we will assume that there are no new work infections during a lockdown.
 We want to create an iterator that advances normally before the lockdown
-is triggered, and then advances using the lockdown function afterwards.
+is triggered, and then advances using only the play function afterwards.
 
 To do this, create a new python file called ``lockdown.py``, and copy in;
 

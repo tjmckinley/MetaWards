@@ -28,13 +28,13 @@ def parse_args():
                         help="Location for the output. By default "
                              "this is inferred from the input")
 
-    parser.add_argument("--format", type=str, default="pdf",
+    parser.add_argument("--format", type=str, default="jpg",
                         help="Desired format of the graphs that are "
                              "produced. Good formats are 'pdf' for "
                              "publication graphics and 'png' or 'jpeg' "
                              "for webpages")
 
-    parser.add_argument("--dpi", type=int, default=300,
+    parser.add_argument("--dpi", type=int, default=150,
                         help="Resolution to use when creating bitmap "
                              "outputs, e.g. jpg, png etc.")
 

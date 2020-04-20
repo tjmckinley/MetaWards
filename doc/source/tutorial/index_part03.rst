@@ -23,3 +23,4 @@ In this third part of the tutorial you will:
    part03/02_weekend
    part03/03_lockdown
    part03/04_dynamic
+   part03/05_scanning

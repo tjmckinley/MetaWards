@@ -100,53 +100,45 @@ should have output that looks similar to this;
 
 ::
 
-  ******************************************
-  *** To repeat this job use the command ***
-  ******************************************
-
-  metawards --input lurgyparams.csv --repeats 1 --seed 91914880 --additional ExtraSeedsLondon.dat --output output --UV 1.0 --disease lurgy2 --input-data 2011Data --start-date 2020-04-16 --start-day 0 --parameters march29 --repository /Users/chris/GitHub/MetaWardsData --population 57104043 --nthreads 1 --nprocs 4
-
-  [truncated]
-
   Running 9 jobs using 4 process(es)
 
   Running jobs in parallel using a multiprocessing pool...
 
   Completed job 1 of 9
   (beta[2]=0.3, too_ill_to_move[2]=0.0)[repeat 1]
-  2020-10-08: DAY: 175 S: 49712306    E: 0    I: 0    R: 6369771    IW: 0   TOTAL POPULATION 56082077
+  2020-11-10: DAY: 204 S: 7976329    E: 0    I: 0    R: 48105748    IW: 0   TOTAL POPULATION 56082077
 
   Completed job 2 of 9
   (beta[2]=0.4, too_ill_to_move[2]=0.0)[repeat 1]
-  2020-10-11: DAY: 178 S: 46830767    E: 0    I: 0    R: 9251310    IW: 0   TOTAL POPULATION 56082077
+  2020-10-29: DAY: 192 S: 7039360    E: 0    I: 0    R: 49042717    IW: 0   TOTAL POPULATION 56082077
 
   Completed job 3 of 9
   (beta[2]=0.5, too_ill_to_move[2]=0.0)[repeat 1]
-  2020-10-08: DAY: 175 S: 41378523    E: 0    I: 0    R: 14703554    IW: 0   TOTAL POPULATION 56082077
+  2020-10-12: DAY: 175 S: 6224108    E: 0    I: 0    R: 49857969    IW: 0   TOTAL POPULATION 56082077
 
   Completed job 4 of 9
   (beta[2]=0.3, too_ill_to_move[2]=0.25)[repeat 1]
-  2020-10-04: DAY: 171 S: 50270319    E: 0    I: 0    R: 5811758    IW: 0   TOTAL POPULATION 56082077
+  2020-11-11: DAY: 205 S: 8005734    E: 0    I: 0    R: 48076343    IW: 0   TOTAL POPULATION 56082077
 
   Completed job 5 of 9
   (beta[2]=0.4, too_ill_to_move[2]=0.25)[repeat 1]
-  2020-10-05: DAY: 172 S: 46273205    E: 0    I: 0    R: 9808872    IW: 0   TOTAL POPULATION 56082077
+  2020-11-16: DAY: 210 S: 7073043    E: 0    I: 0    R: 49009034    IW: 0   TOTAL POPULATION 56082077
 
   Completed job 6 of 9
   (beta[2]=0.5, too_ill_to_move[2]=0.25)[repeat 1]
-  2020-10-10: DAY: 177 S: 38072220    E: 0    I: 0    R: 18009857    IW: 0   TOTAL POPULATION 56082077
+  2020-10-20: DAY: 183 S: 6260111    E: 0    I: 0    R: 49821966    IW: 1   TOTAL POPULATION 56082077
 
   Completed job 7 of 9
   (beta[2]=0.3, too_ill_to_move[2]=0.5)[repeat 1]
-  2020-10-18: DAY: 185 S: 49083442    E: 0    I: 0    R: 6998635    IW: 0   TOTAL POPULATION 56082077
+  2020-11-21: DAY: 215 S: 8045175    E: 0    I: 0    R: 48036902    IW: 0   TOTAL POPULATION 56082077
 
   Completed job 8 of 9
   (beta[2]=0.4, too_ill_to_move[2]=0.5)[repeat 1]
-  2020-10-07: DAY: 174 S: 44759456    E: 0    I: 0    R: 11322621    IW: 0   TOTAL POPULATION 56082077
+  2020-11-06: DAY: 200 S: 7106554    E: 0    I: 0    R: 48975523    IW: 1   TOTAL POPULATION 56082077
 
   Completed job 9 of 9
   (beta[2]=0.5, too_ill_to_move[2]=0.5)[repeat 1]
-  2020-10-09: DAY: 176 S: 49969606    E: 0    I: 0    R: 6112471    IW: 0   TOTAL POPULATION 56082077
+  2020-10-13: DAY: 176 S: 6304109    E: 0    I: 0    R: 49777968    IW: 0   TOTAL POPULATION 56082077
 
   Writing a summary of all results into the
   csv file /Users/chris/GitHub/tutorial/output/results.csv.bz2.

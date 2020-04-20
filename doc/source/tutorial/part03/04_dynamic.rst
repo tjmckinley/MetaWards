@@ -24,9 +24,7 @@ To do this, edit your ``lockdown.py`` script and copy in the following;
       advance_play(**kwargs)
 
   def iterate_lockdown(population, **kwargs):
-      try:
-          population.lockdown_state
-      except Exception:
+      if not hasattr(population, "lockdown_state"):
           population.lockdown_state = "before"
           population.is_locked_down = False
 
@@ -43,9 +41,11 @@ To do this, edit your ``lockdown.py`` script and copy in the following;
                                       **kwargs)
 
 The first thing we do here is see if the ``population`` has a
-``lockdown_state`` variable. This won't exist on the first call
-to ``iterate_lockdown``, meaning that a Python Exception will be
-raised. We catch this, and set the ``lockdown_state`` to ``before``
+``lockdown_state`` variable using the standard Python
+`hasattr function <https://docs.python.org/3/library/functions.html#hasattr>`__.
+This variable won't exist on the first call to
+to ``iterate_lockdown``, and so here we
+set the ``lockdown_state`` to ``before``
 and set the flag ``population.is_locked_down`` to ``False``.
 
 Next, we check if the lockdown is in the ``before`` state. If it is,
@@ -81,6 +81,7 @@ infected population drops below 2000. To do this, edit your ``lockdown.py``
 file to read;
 
 .. code-block:: python
+
   from metawards.iterators import iterate_working_week, \
                                   advance_infprob, \
                                   advance_fixed, \
@@ -92,9 +93,7 @@ file to read;
       advance_play(**kwargs)
 
   def iterate_lockdown(population, **kwargs):
-      try:
-          population.lockdown_state
-      except Exception:
+      if not hasattr(population, "lockdown_state"):
           population.lockdown_state = "before"
           population.is_locked_down = False
 
