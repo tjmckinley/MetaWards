@@ -92,9 +92,9 @@ def parse_args():
                              "adjustable parameter sets or repeats "
                              "are used.")
 
-    parser.add_argument('-u', '--UV', type=float, default=1.0,
+    parser.add_argument('-u', '--UV', type=float, default=0.0,
                         help="Value for the UV parameter for the model "
-                             "(default is 1.0)")
+                             "(default is 0.0)")
 
     parser.add_argument('-d', '--disease', type=str, default=None,
                         help="Name of the disease to model "

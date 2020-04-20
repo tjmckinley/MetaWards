@@ -132,6 +132,9 @@ class Parameters:
     daily_imports: float = 0.0
     UV: float = 0.0
 
+    #: User parameters
+    user_params = {}
+
     _name: str = None
     _version: str = None
     _authors: str = None

@@ -5,6 +5,70 @@ from typing import Dict as _Dict
 __all__ = ["VariableSets", "VariableSet"]
 
 
+def _set_beta(params, name: str, index: int, value: float):
+    params.disease_params.beta[index] = value
+
+
+def _set_progress(params, name: str, index: int, value: float):
+    params.disease_params.progress[index] = value
+
+
+def _set_too_ill_to_move(params, name: str, index: int, value: float):
+    params.disease_params.too_ill_to_move[index] = value
+
+
+def _set_contrib_foi(params, name: str, index: int, value: float):
+    params.disease_params.contrib_foi[index] = value
+
+
+def _set_lengthday(params, name: str, index: int, value: float):
+    if index is not None:
+        raise IndexError("You cannot index the lengthday")
+
+    params.length_day = value
+
+
+def _set_plengthday(params, name: str, index: int, value: float):
+    if index is not None:
+        raise IndexError("You cannot index the lengthday")
+
+    params.plength_day = value
+
+
+def _set_uv(params, name: str, index: int, value: float):
+    if index is not None:
+        raise IndexError("You cannot index the UV parameter")
+
+    params.UV = value
+
+
+def _set_user_params(params, name: str, index: int, value: float):
+    if name.startswith("user."):
+        name = name[5:]
+
+    if index is None:
+        params.user_params[name] = value
+    else:
+        if name not in params.user_params:
+            params.user_params[name] = []
+
+        while len(params.user_params[name]) <= index:
+            params.user_params[name].append(None)
+
+        params.user_params[name][index] = value
+
+
+_adjustable = {}
+_adjustable["beta"] = _set_beta
+_adjustable["progress"] = _set_progress
+_adjustable["too_ill_to_move"] = _set_too_ill_to_move
+_adjustable["contrib_foi"] = _set_contrib_foi
+_adjustable["user"] = _set_user_params
+_adjustable["length_day"] = _set_lengthday
+_adjustable["plength_day"] = _set_plengthday
+_adjustable["UV"] = _set_uv
+
+
 class VariableSet:
     """This class holds a single set of adjustable variables that
        are used to adjust the variables as part of a model run
@@ -165,18 +229,25 @@ class VariableSet:
         name = name.strip()
 
         # look for 'variable[index]'
-        m = re.search(r"(\w+)\[(\d+)\]", name)
+        m = re.search(r"([\.\w]+)\[(\d+)\]", name)
 
         if m:
-            self._varnames.append(m.group(1))
-            self._varidxs.append(int(m.group(2)))
-            self._names.append(name)
-            self._vals.append(float(value))
+            varname = m.group(1)
+            index = int(m.group(2))
+            value = float(value)
         else:
-            self._varnames.append(name)
-            self._varidxs.append(None)
-            self._names.append(name)
-            self._vals.append(float(value))
+            varname = name
+            index = None
+            value = float(value)
+
+        if not (varname.startswith("user.") or varname in _adjustable):
+            raise KeyError(f"It is not possible to adjust the variable "
+                           f"{name} to equal {value}")
+
+        self._varnames.append(varname)
+        self._varidxs.append(index)
+        self._names.append(name)
+        self._vals.append(value)
 
     def variable_names(self):
         """Return the names of the variables that will be adjusted
@@ -352,7 +423,7 @@ class VariableSet:
                     part = f"0.{part}"
                     value = float(part)
 
-                values.append(value)
+                values.append(scl * value)
             except Exception:
                 # this is not part of the fingerprint
                 pass
@@ -436,19 +507,20 @@ class VariableSet:
         try:
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
-                if value is not None:
-                    if varname == "beta":
-                        params.disease_params.beta[varidx] = value
-                    elif varname == "progress":
-                        params.disease_params.progress[varidx] = value
-                    elif varname == "too_ill_to_move":
-                        params.disease_params.too_ill_to_move[varidx] = value
-                    elif varname == "contrib_foi":
-                        params.disease_params.contrib_foi[varidx] = value
-                    else:
-                        raise KeyError(
-                            f"Cannot set unrecognised parameter {varname} "
-                            f"to {value}")
+                if varname.startswith("user."):
+                    _adjustable["user"](params=params,
+                                        name=varname,
+                                        index=varidx,
+                                        value=value)
+                elif varname in _adjustable:
+                    _adjustable[varname](params=params,
+                                         name=varname,
+                                         index=varidx,
+                                         value=value)
+                else:
+                    raise KeyError(
+                        f"Cannot set unrecognised parameter {varname} "
+                        f"to {value}")
         except Exception as e:
             raise ValueError(
                 f"Unable to set parameters from {self}. Error "

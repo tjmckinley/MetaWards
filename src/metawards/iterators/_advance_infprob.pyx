@@ -90,7 +90,7 @@ def advance_infprob_omp(network: Network, nthreads: int,
 
             if denom != 0.0:
                 rate = (length_day * wards_day_foi[j]) / denom
-                wards_day_inf_prob[j] = sclrate * rate_to_prob(rate)
+                wards_day_inf_prob[j] = rate_to_prob(sclrate * rate)
             else:
                 wards_day_inf_prob[j] = 0.0
 
