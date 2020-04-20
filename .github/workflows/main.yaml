@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Print branch information
-      - run: echo ${{github.ref}}
+        run: echo ${{github.ref}}
       - name: Install Python dependencies
         run: pip install -r requirements-dev.txt
       - name: Install MetaWards package
