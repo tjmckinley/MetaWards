@@ -4,7 +4,6 @@ import sys
 import os
 import subprocess
 import shlex
-import tempfile
 
 branch = metawards.__branch__
 release = metawards.__version__
