@@ -174,7 +174,7 @@
             
   <h1>Source code for metawards.utils._parallel</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">array</span> <span class="k">import</span> <span class="n">array</span>
+<span class="kn">from</span> <span class="nn">array</span> <span class="kn">import</span> <span class="n">array</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;guess_num_threads_and_procs&quot;</span><span class="p">,</span>
            <span class="s2">&quot;get_available_num_threads&quot;</span><span class="p">,</span>
@@ -227,7 +227,7 @@
     <span class="k">if</span> <span class="n">nprocs</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">parallel_scheme</span> <span class="o">!=</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">:</span>
         <span class="c1"># we have been told the number of processes to use by</span>
         <span class="c1"># the scoop or mpi4py scheduler</span>
-        <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="k">import</span> <span class="n">get_number_of_processes</span>
+        <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">get_number_of_processes</span>
         <span class="n">nprocs</span> <span class="o">=</span> <span class="n">get_number_of_processes</span><span class="p">(</span><span class="n">parallel_scheme</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">ncores</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -300,11 +300,11 @@
     <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">nthreads</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">rngs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">._ran_binomial</span> <span class="k">import</span> <span class="n">seed_ran_binomial</span><span class="p">,</span> <span class="n">ran_int</span>
+        <span class="kn">from</span> <span class="nn">._ran_binomial</span> <span class="kn">import</span> <span class="n">seed_ran_binomial</span><span class="p">,</span> <span class="n">ran_int</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">):</span>
             <span class="n">seed</span> <span class="o">=</span> <span class="n">ran_int</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Random seed for thread </span><span class="si">{i}</span><span class="s2"> equals </span><span class="si">{seed}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Random seed for thread </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> equals </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">rngs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="p">))</span>
 
     <span class="c1"># need to return these as an array so that they are more easily</span>

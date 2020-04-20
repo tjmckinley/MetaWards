@@ -174,7 +174,7 @@
             
   <h1>Source code for metawards._outputfiles</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span> <span class="k">as</span> <span class="n">_Path</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span> <span class="k">as</span> <span class="n">_Path</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;OutputFiles&quot;</span><span class="p">]</span>
 
@@ -214,17 +214,17 @@
 
     <span class="c1"># first, check for removing important directories such as $HOME or root</span>
     <span class="k">if</span> <span class="n">directory</span> <span class="o">==</span> <span class="n">_Path</span><span class="o">.</span><span class="n">home</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;We WILL NOT remove your &quot;</span>
-                              <span class="n">f</span><span class="s2">&quot;home directory $</span><span class="si">{directory}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We WILL NOT remove your &quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;home directory $</span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">directory</span> <span class="o">==</span> <span class="n">_Path</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;We WILL NOT remove the root directory &quot;</span>
-                              <span class="n">f</span><span class="s2">&quot;</span><span class="si">{directory}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We WILL NOT remove the root directory &quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># get the directory containing &#39;$HOME&#39;</span>
     <span class="k">if</span> <span class="n">directory</span> <span class="o">==</span> <span class="n">_Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;We WILL NOT remove the users/home &quot;</span>
-                              <span class="n">f</span><span class="s2">&quot;directory </span><span class="si">{directory}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We WILL NOT remove the users/home &quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;directory </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">directory</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
         <span class="n">directory</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
@@ -234,10 +234,10 @@
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
             <span class="n">_rmdir</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;removing file </span><span class="si">{item}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;removing file </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">item</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;removing directory </span><span class="si">{directory}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;removing directory </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">directory</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span>
 
 
@@ -246,25 +246,25 @@
 <span class="sd">       giving them the option to continue, quit or remove all files</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">prompt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Cannot continue as </span><span class="si">{outdir}</span><span class="s2"> already exists!&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot continue as </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists!&quot;</span><span class="p">)</span>
 
-    <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{outdir}</span><span class="s2"> already exists.</span><span class="se">\n</span><span class="s2">Do you want to remove it? (y/n) &quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists.</span><span class="se">\n</span><span class="s2">Do you want to remove it? (y/n) &quot;</span><span class="p">)</span>
 
     <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Removing all files in </span><span class="si">{outdir}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing all files in </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">_rmdir</span><span class="p">(</span><span class="n">_Path</span><span class="p">(</span><span class="n">outdir</span><span class="p">))</span>
         <span class="k">return</span>
 
-    <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Continuing with this run will mix its output with</span><span class="se">\n</span><span class="s2">&quot;</span>
-               <span class="n">f</span><span class="s2">&quot;the files already in </span><span class="si">{outdir}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-               <span class="n">f</span><span class="s2">&quot;Do you want to continue with this run? (y/n) &quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Continuing with this run will mix its output with</span><span class="se">\n</span><span class="s2">&quot;</span>
+               <span class="sa">f</span><span class="s2">&quot;the files already in </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+               <span class="sa">f</span><span class="s2">&quot;Do you want to continue with this run? (y/n) &quot;</span><span class="p">)</span>
 
     <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y</span> <span class="o">!=</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Exiting the program as we cannot run any more.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exiting the program as we cannot run any more.&quot;</span><span class="p">)</span>
         <span class="kn">import</span> <span class="nn">sys</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
@@ -279,16 +279,16 @@
         <span class="k">return</span>
 
     <span class="k">if</span> <span class="n">prompt</span><span class="p">:</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{outdir}</span><span class="s2"> already exists.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                   <span class="n">f</span><span class="s2">&quot;Do you want to remove it? (y/n) &quot;</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;Do you want to remove it? (y/n) &quot;</span><span class="p">)</span>
 
         <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y</span> <span class="o">!=</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
-                <span class="n">f</span><span class="s2">&quot;Cannot continue as </span><span class="si">{outdir}</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot continue as </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Removing all files in </span><span class="si">{outdir}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing all files in </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">_rmdir</span><span class="p">(</span><span class="n">_Path</span><span class="p">(</span><span class="n">outdir</span><span class="p">))</span>
 
 
@@ -328,7 +328,7 @@
 <span class="sd">       &gt;&gt;&gt;     FILE = output.open(&quot;output.txt&quot;)</span>
 <span class="sd">       &gt;&gt;&gt;     FILE.write(&quot;something\\n&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="OutputFiles.__init__"><a class="viewcode-back" href="../../api/generated/metawards.OutputFiles.html#metawards.OutputFiles.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;output&quot;</span><span class="p">,</span>
+<div class="viewcode-block" id="OutputFiles.__init__"><a class="viewcode-back" href="../../api/generated/metawards.OutputFiles.html#metawards.OutputFiles.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;output&quot;</span><span class="p">,</span>
                  <span class="n">check_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">force_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">prompt</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span>
@@ -378,11 +378,11 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_open_dir</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_open_dir</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">exc_traceback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">exc_traceback</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_close_dir</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_open_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -416,8 +416,8 @@
                         <span class="k">pass</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Cannot open </span><span class="si">{outdir}</span><span class="s2"> as it is not a directory!&quot;</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{outdir}</span><span class="s2"> is an existing file!&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot open </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> as it is not a directory!&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> is an existing file!&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
@@ -443,8 +443,8 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Could not close </span><span class="si">{filename}</span><span class="s2">: &quot;</span>
-                              <span class="n">f</span><span class="s2">&quot;</span><span class="si">{e.__class__}</span><span class="s2"> </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not close </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: &quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_open</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_open_files</span> <span class="o">=</span> <span class="p">{}</span>
@@ -524,9 +524,9 @@
 
         <span class="n">prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonprefix</span><span class="p">([</span><span class="n">outdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">prefix</span> <span class="o">!=</span> <span class="n">outdir</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;You cannot try to open </span><span class="si">{filename}</span><span class="s2"> as &quot;</span>
-                             <span class="n">f</span><span class="s2">&quot;this is not in the output directory &quot;</span>
-                             <span class="n">f</span><span class="s2">&quot;</span><span class="si">{outdir}</span><span class="s2"> - common prefix is </span><span class="si">{prefix}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You cannot try to open </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> as &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;this is not in the output directory &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> - common prefix is </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open_files</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open_files</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span>
@@ -543,12 +543,12 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-            <span class="n">FILE</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{filename}{suffix}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;w</span><span class="si">{mode}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">FILE</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;w</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_open_files</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">FILE</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_filenames</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{filename}{suffix}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filenames</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">return</span> <span class="n">FILE</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">FILE</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;w</span><span class="si">{mode}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">FILE</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;w</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_open_files</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">FILE</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_filenames</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span>
             <span class="k">return</span> <span class="n">FILE</span></div>
@@ -582,9 +582,9 @@
 
         <span class="n">prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonprefix</span><span class="p">([</span><span class="n">outdir</span><span class="p">,</span> <span class="n">subdir</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">prefix</span> <span class="o">!=</span> <span class="n">outdir</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;You cannot try to open </span><span class="si">{dirname}</span><span class="s2"> as &quot;</span>
-                             <span class="n">f</span><span class="s2">&quot;this is not in the output directory &quot;</span>
-                             <span class="n">f</span><span class="s2">&quot;</span><span class="si">{outdir}</span><span class="s2"> - common prefix is </span><span class="si">{prefix}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You cannot try to open </span><span class="si">{</span><span class="n">dirname</span><span class="si">}</span><span class="s2"> as &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;this is not in the output directory &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> - common prefix is </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">OutputFiles</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="n">subdir</span><span class="p">,</span> <span class="n">check_empty</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_empty</span><span class="p">,</span>
                            <span class="n">force_empty</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_force_empty</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prompt</span><span class="p">,</span>
@@ -615,7 +615,7 @@
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filenames</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filenames</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;No open file </span><span class="si">{filename}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No open file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="OutputFiles.close"><a class="viewcode-back" href="../../api/generated/metawards.OutputFiles.html#metawards.OutputFiles.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close all of the files and this directory&quot;&quot;&quot;</span>

@@ -202,9 +202,9 @@
 from the nine model runs. You can explore this using Python pandas, R,
 or Excel <a class="reference internal" href="../part01/02_repeating.html"><span class="doc">as you did before</span></a>. Using
 ipython or Jupyter notebooks with pandas, we can load up the file;</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;output/results.csv.bz2&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="go">       fingerprint  repeat  beta[2]  too_ill_to_move[2]  day  ...         S  E  I        R  IW</span>
 <span class="go">  0            3_0       1      0.3                 0.0    0  ...  56082077  0  0        0   0</span>
 <span class="go">  1            3_0       1      0.3                 0.0    1  ...  56082077  0  0        0   0</span>
@@ -309,7 +309,7 @@ pdfs (yet - although
 <div class="section" id="jupyter-notebook">
 <h2>Jupyter notebook<a class="headerlink" href="#jupyter-notebook" title="Permalink to this headline">¶</a></h2>
 <p>In addition, to the <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code> command, we also have a
-<a class="reference download internal" download="" href="../../_downloads/624998a4f4fd96fd6b2eec36609bf2d5/2_3_analysis.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">notebook</span></code></a>
+<a class="reference download internal" download="" href="../../_downloads/9c074a8ab169b5e0fed845f059d0718a/2_3_analysis.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">notebook</span></code></a>
 which you can look at which breaks down exactly how <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code>
 uses pandas and matplotlib to render multi-fingerprint graphs.</p>
 </div>

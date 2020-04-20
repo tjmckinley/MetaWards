@@ -239,13 +239,13 @@ for us.</p>
 <span class="n">i1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
 <span class="n">idel</span> <span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;beta[2]  too_ill_to_move[2]&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;beta[2]  too_ill_to_move[2]&quot;</span><span class="p">)</span>
 
 <span class="n">b</span> <span class="o">=</span> <span class="n">b0</span>
 <span class="k">while</span> <span class="n">b</span> <span class="o">&lt;=</span> <span class="n">b1</span><span class="p">:</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">i0</span>
     <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">i1</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;  </span><span class="si">%.2f</span><span class="s2">     </span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  </span><span class="si">%.2f</span><span class="s2">     </span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
         <span class="n">i</span> <span class="o">+=</span> <span class="n">idel</span>
     <span class="n">b</span> <span class="o">+=</span> <span class="n">bdel</span>
 </pre></div>
@@ -333,7 +333,7 @@ overnight.</p>
 <p>In my case, the job took 2 hours in total to run. Once complete, the
 <code class="docutils literal notranslate"><span class="pre">results.csv.bz2</span></code> file contains all of the population trajectories
 and can be analysed in an identical way as before. If you want, you can
-<a class="reference download internal" download="" href="../../_downloads/595c46ad30004395dad35e4abf1e367b/results.csv.bz2"><code class="xref download docutils literal notranslate"><span class="pre">my</span> <span class="pre">results.csv.bz2</span> <span class="pre">file</span> <span class="pre">here</span></code></a>.</p>
+<a class="reference download internal" download="" href="../../_downloads/e02a18b3a96a8e9ef3402b9022c2bd35/results.csv.bz2"><code class="xref download docutils literal notranslate"><span class="pre">my</span> <span class="pre">results.csv.bz2</span> <span class="pre">file</span> <span class="pre">here</span></code></a>.</p>
 <p>You can then produce graphs and animations using;</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot -i output/results.csv.bz2 --format jpg --dpi <span class="m">150</span>
 metawards-plot --animate output/overview*.jpg

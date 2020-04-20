@@ -206,43 +206,47 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get_version_string&quot;</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">._parameters</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">._disease</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">._inputfiles</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">._node</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">._link</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">._population</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">._network</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">._outputfiles</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">._variableset</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._parameters</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._disease</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._inputfiles</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._node</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._link</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._population</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._network</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._outputfiles</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._variableset</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># import the pyx cython-compiled modules</span>
-<span class="kn">from</span> <span class="nn">._nodes</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">._links</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._nodes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._links</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="n">__manual_version__</span> <span class="o">=</span> <span class="s2">&quot;0.7.2&quot;</span>
+<span class="n">__manual_version__</span> <span class="o">=</span> <span class="s2">&quot;0.7.2b&quot;</span>
 
-<span class="kn">from</span> <span class="nn">._version</span> <span class="k">import</span> <span class="n">get_versions</span>
+<span class="kn">from</span> <span class="nn">._version</span> <span class="kn">import</span> <span class="n">get_versions</span>
 <span class="n">_v</span> <span class="o">=</span> <span class="n">get_versions</span><span class="p">()</span>
 <span class="n">__version__</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">__version__</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;untagged&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+    <span class="n">__version__</span> <span class="o">=</span> <span class="n">__manual_version__</span>
+
 <span class="n">__branch__</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="s1">&#39;branch&#39;</span><span class="p">]</span>
 <span class="n">__repository__</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">]</span>
 <span class="n">__revisionid__</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="s1">&#39;full-revisionid&#39;</span><span class="p">]</span>
 <span class="k">del</span> <span class="n">_v</span>
 <span class="k">del</span> <span class="n">get_versions</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">iterators</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">extractors</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">app</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">analysis</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">iterators</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">extractors</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">app</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">analysis</span>
 
 
 <div class="viewcode-block" id="get_version_string"><a class="viewcode-back" href="../api/index_api_MetaWards.html#metawards.get_version_string">[docs]</a><span class="k">def</span> <span class="nf">get_version_string</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Return a version string for metawards which can be printed</span>
 <span class="sd">       into a file or written out to the screen</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">._version</span> <span class="k">import</span> <span class="n">get_versions</span>
+    <span class="kn">from</span> <span class="nn">._version</span> <span class="kn">import</span> <span class="n">get_versions</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">get_versions</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;untagged&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -251,7 +255,7 @@
         <span class="c1"># We need to drop back to &#39;__manual_version__&#39;</span>
         <span class="n">v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">__manual_version__</span>
 
-    <span class="n">header</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;metawards version </span><span class="si">{v[&#39;version&#39;]}</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;metawards version </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">stars</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">48</span><span class="p">):</span>
@@ -273,11 +277,11 @@
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stars</span><span class="p">)</span>
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;-- Source information --&quot;</span><span class="p">))</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;repository: </span><span class="si">{v[&#39;repository&#39;]}</span><span class="s2">&quot;</span><span class="p">))</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;branch: </span><span class="si">{v[&#39;branch&#39;]}</span><span class="s2">&quot;</span><span class="p">))</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;revision: </span><span class="si">{v[&#39;full-revisionid&#39;]}</span><span class="s2">&quot;</span><span class="p">))</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;last modified: </span><span class="si">{v[&#39;date&#39;]}</span><span class="s2">&quot;</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-- Source information --&quot;</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;repository: </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;branch: </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;branch&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;revision: </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;full-revisionid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;last modified: </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;dirty&quot;</span><span class="p">]:</span>
         <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -287,10 +291,10 @@
                      <span class="s2">&quot;this run!&quot;</span><span class="p">)</span>
 
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;-- Additional information --&quot;</span><span class="p">))</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Visit https://metawards.github.io for more &quot;</span>
-                        <span class="n">f</span><span class="s2">&quot;information&quot;</span><span class="p">))</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;about metawards, its authors and its license&quot;</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-- Additional information --&quot;</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Visit https://metawards.github.io for more &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;information&quot;</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">center</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;about metawards, its authors and its license&quot;</span><span class="p">))</span>
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">newline</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>

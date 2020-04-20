@@ -209,7 +209,7 @@ number of individuals who are detected as infected in the model.</p>
                                 <span class="n">advance_play</span>
 
 <span class="k">def</span> <span class="nf">advance_lockdown</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;We are on lockdown&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We are on lockdown&quot;</span><span class="p">)</span>
     <span class="n">advance_infprob</span><span class="p">(</span><span class="n">scale_rate</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">advance_play</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -218,13 +218,13 @@ number of individuals who are detected as infected in the model.</p>
         <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">=</span> <span class="s2">&quot;before&quot;</span>
-        <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">==</span> <span class="s2">&quot;before&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">=</span> <span class="s2">&quot;lockdown&quot;</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_started</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">day</span>
-            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">advance_lockdown</span><span class="p">]</span>
@@ -317,7 +317,7 @@ edit your <code class="docutils literal notranslate"><span class="pre">lockdown.
                                 <span class="n">advance_play</span>
 
 <span class="k">def</span> <span class="nf">advance_lockdown</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;We are on lockdown ({population.lockdown_scale_rate})&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We are on lockdown (</span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">lockdown_scale_rate</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
     <span class="n">advance_infprob</span><span class="p">(</span><span class="n">scale_rate</span><span class="o">=</span><span class="n">population</span><span class="o">.</span><span class="n">lockdown_scale_rate</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">advance_play</span><span class="p">(</span><span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -327,21 +327,21 @@ edit your <code class="docutils literal notranslate"><span class="pre">lockdown.
         <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">=</span> <span class="s2">&quot;before&quot;</span>
-        <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">population</span><span class="o">.</span><span class="n">lockdown_scale_rate</span> <span class="o">=</span> <span class="mf">0.25</span>
 
     <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">==</span> <span class="s2">&quot;before&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">=</span> <span class="s2">&quot;lockdown&quot;</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_started</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">day</span>
-            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">elif</span> <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">==</span> <span class="s2">&quot;lockdown&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">total</span> <span class="o">&lt;</span> <span class="mi">2000</span><span class="p">:</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">=</span> <span class="s2">&quot;relaxed_lockdown&quot;</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_ended</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">day</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_scale_rate</span> <span class="o">=</span> <span class="mf">0.5</span>
-            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">elif</span> <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">==</span> <span class="s2">&quot;relaxed_lockdown&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">total</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
@@ -398,8 +398,8 @@ Copy the below into your <code class="docutils literal notranslate"><span class=
                                 <span class="n">advance_play</span>
 
 <span class="k">def</span> <span class="nf">advance_lockdown</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;We are on lockdown ({population.lockdown_scale_rate})&quot;</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;is_work_locked_down == {population.is_work_locked_down}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We are on lockdown (</span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">lockdown_scale_rate</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_work_locked_down == </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">is_work_locked_down</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">advance_infprob</span><span class="p">(</span><span class="n">scale_rate</span><span class="o">=</span><span class="n">population</span><span class="o">.</span><span class="n">lockdown_scale_rate</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -413,27 +413,27 @@ Copy the below into your <code class="docutils literal notranslate"><span class=
         <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">=</span> <span class="s2">&quot;before&quot;</span>
-        <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">population</span><span class="o">.</span><span class="n">lockdown_scale_rate</span> <span class="o">=</span> <span class="mf">0.25</span>
-        <span class="n">population</span><span class="o">.</span><span class="n">is_work_locked_down</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">population</span><span class="o">.</span><span class="n">is_work_locked_down</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">==</span> <span class="s2">&quot;before&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">=</span> <span class="s2">&quot;lockdown&quot;</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_started</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">day</span>
-            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="n">population</span><span class="o">.</span><span class="n">is_work_locked_down</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">population</span><span class="o">.</span><span class="n">is_work_locked_down</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">elif</span> <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">==</span> <span class="s2">&quot;lockdown&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">total</span> <span class="o">&lt;</span> <span class="mi">2000</span><span class="p">:</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">=</span> <span class="s2">&quot;relaxed_lockdown&quot;</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_ended</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">day</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_scale_rate</span> <span class="o">=</span> <span class="mf">0.5</span>
-            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="n">population</span><span class="o">.</span><span class="n">is_work_locked_down</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">population</span><span class="o">.</span><span class="n">is_locked_down</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">population</span><span class="o">.</span><span class="n">is_work_locked_down</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">elif</span> <span class="n">population</span><span class="o">.</span><span class="n">lockdown_state</span> <span class="o">==</span> <span class="s2">&quot;relaxed_lockdown&quot;</span><span class="p">:</span>
-        <span class="n">population</span><span class="o">.</span><span class="n">is_work_locked_down</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">population</span><span class="o">.</span><span class="n">is_work_locked_down</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">total</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
             <span class="n">population</span><span class="o">.</span><span class="n">lockdown_scale_rate</span> <span class="o">=</span> <span class="mf">0.75</span>

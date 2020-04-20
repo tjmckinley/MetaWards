@@ -174,7 +174,7 @@
             
   <h1>Source code for metawards.analysis._animate_plots</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;animate_plots&quot;</span><span class="p">,</span> <span class="s2">&quot;import_animate_modules&quot;</span><span class="p">]</span>
 
@@ -189,7 +189,7 @@
 <span class="sd">         The PIL.Image and PIL.ImageDraw modules</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span>
+        <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not import Python Pillow to create animated plot.&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Please install using &#39;pip install Pillow&gt;=6.2.1&#39;&quot;</span><span class="p">)</span>
@@ -225,7 +225,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">ordering</span> <span class="o">==</span> <span class="s2">&quot;fingerprint&quot;</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">.._variableset</span> <span class="k">import</span> <span class="n">VariableSet</span>
+        <span class="kn">from</span> <span class="nn">.._variableset</span> <span class="kn">import</span> <span class="n">VariableSet</span>
 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Arranging into fingerprint order...&quot;</span><span class="p">)</span>
@@ -237,8 +237,8 @@
                 <span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">repeat_idx</span><span class="p">)</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="o">.</span><span class="n">extract_values</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="n">f</span><span class="s2">&quot;Could not extract a fingerprint from &#39;</span><span class="si">{plot}</span><span class="s2">&#39;. &quot;</span>
-                    <span class="n">f</span><span class="s2">&quot;Error was </span><span class="si">{e.__class__}</span><span class="s2"> </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;Could not extract a fingerprint from &#39;</span><span class="si">{</span><span class="n">plot</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Error was </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">repeat_idx</span><span class="p">:</span>
                 <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">repeat_idx</span><span class="p">)</span>
@@ -267,8 +267,8 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using the user-supplied order...&quot;</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Could not recognise ordering scheme </span><span class="si">{ordering}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unrecognised ordering scheme </span><span class="si">{ordering}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not recognise ordering scheme </span><span class="si">{</span><span class="n">ordering</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised ordering scheme </span><span class="si">{</span><span class="n">ordering</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">output</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">os</span>
@@ -276,16 +276,16 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)):</span>
             <span class="n">common</span> <span class="o">+=</span> <span class="s2">&quot;_&quot;</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{common}</span><span class="s2">animate.gif&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">common</span><span class="si">}</span><span class="s2">animate.gif&quot;</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Animating the below frame in this order, with a delay &quot;</span>
-              <span class="n">f</span><span class="s2">&quot;between frames of </span><span class="si">{delay}</span><span class="s2"> ms.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Animating the below frame in this order, with a delay &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;between frames of </span><span class="si">{</span><span class="n">delay</span><span class="si">}</span><span class="s2"> ms.&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">plot</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plots</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{i+1}: </span><span class="si">{plot}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">plot</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Output will be written to </span><span class="si">{output}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output will be written to </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># open all of the images</span>
     <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
@@ -300,7 +300,7 @@
 
     <span class="c1"># now try to optimize the gif</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">pygifsicle</span> <span class="k">import</span> <span class="n">optimize</span>
+        <span class="kn">from</span> <span class="nn">pygifsicle</span> <span class="kn">import</span> <span class="n">optimize</span>
         <span class="n">have_optimize</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">have_optimize</span> <span class="o">=</span> <span class="kc">False</span>

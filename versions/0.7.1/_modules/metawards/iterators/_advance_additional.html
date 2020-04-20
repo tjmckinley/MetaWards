@@ -174,9 +174,9 @@
             
   <h1>Source code for metawards.iterators._advance_additional</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">.._network</span> <span class="k">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">.._population</span> <span class="k">import</span> <span class="n">Population</span>
-<span class="kn">from</span> <span class="nn">..utils._profiler</span> <span class="k">import</span> <span class="n">Profiler</span>
+<span class="kn">from</span> <span class="nn">.._network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">..utils._profiler</span> <span class="kn">import</span> <span class="n">Profiler</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;setup_additional_seeds&quot;</span><span class="p">,</span>
            <span class="s2">&quot;advance_additional&quot;</span><span class="p">,</span>
@@ -187,7 +187,7 @@
     <span class="sd">&quot;&quot;&quot;Load additional seeds from the passed filename. This returns</span>
 <span class="sd">       the added seeds</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Loading additional seeds from </span><span class="si">{filename}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading additional seeds from </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -278,10 +278,10 @@
     <span class="k">for</span> <span class="n">seed</span> <span class="ow">in</span> <span class="n">_additional_seeds</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">seed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">wards</span><span class="o">.</span><span class="n">play_suscept</span><span class="p">[</span><span class="n">seed</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">&lt;</span> <span class="n">seed</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Not enough susceptibles in ward for seeding&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not enough susceptibles in ward for seeding&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">wards</span><span class="o">.</span><span class="n">play_suscept</span><span class="p">[</span><span class="n">seed</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-=</span> <span class="n">seed</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;seeding play_infections[0][</span><span class="si">{seed[1]}</span><span class="s2">] += </span><span class="si">{seed[2]}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;seeding play_infections[0][</span><span class="si">{</span><span class="n">seed</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">] += </span><span class="si">{</span><span class="n">seed</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">play_infections</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">seed</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">seed</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 
