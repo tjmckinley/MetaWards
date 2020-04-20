@@ -6,3 +6,5 @@ numpy >= 1.17.2
 sphinx == 1.8.0
 sphinx_issues
 sphinx_rtd_theme
+sphinxcontrib-programoutput
+
