@@ -47,11 +47,15 @@ from ._variableset import *
 from ._nodes import *
 from ._links import *
 
-__manual_version__ = "0.7.2"
+__manual_version__ = "0.7.2b"
 
 from ._version import get_versions
 _v = get_versions()
 __version__ = _v['version']
+
+if __version__.find("untagged") != -1:
+    __version__ = __manual_version__
+
 __branch__ = _v['branch']
 __repository__ = _v['repository']
 __revisionid__ = _v['full-revisionid']

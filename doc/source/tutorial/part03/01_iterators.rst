@@ -18,7 +18,7 @@ Work and play
   who are also in that "work" ward. In this nomenclature, "work" means
   any regular (daily), predictable travel that an individual makes.
 
-2. Infections at "play"
+1. Infections at "play"
 
   These are random infections that individuals acquire in the
   electoral ward in which they live, based on random interactions
