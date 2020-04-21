@@ -825,8 +825,9 @@ def cli():
 
     # load the user-defined custom parameters
     if args.user_variables:
-        variables = VariableSet.load(args.user_variables)
-        variables.adjust(params)
+        custom = VariableSet.read(args.user_variables)
+        print(f"Adjusting variables to {custom}")
+        custom.adjust(params)
 
     # read the additional seeds
     if args.additional is None or len(args.additional) == 0:
