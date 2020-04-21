@@ -34,6 +34,15 @@ def parse_args():
                              "publication graphics and 'png' or 'jpeg' "
                              "for webpages")
 
+    parser.add_argument("--align-axes", action="store_true", default=None,
+                        help="Whether to align the axes of all graphs "
+                             "so that they are all plotted on the same "
+                             "scale (default true)")
+
+    parser.add_argument("--no-align-axes", action="store_true", default=None,
+                        help="Disable alignment of the axes of graphs. "
+                             "Each graph will be drawn using its own scale")
+
     parser.add_argument("--dpi", type=int, default=150,
                         help="Resolution to use when creating bitmap "
                              "outputs, e.g. jpg, png etc.")
@@ -67,10 +76,18 @@ def cli():
     if args.input:
         from metawards.analysis import save_summary_plots
 
+        align_axes = True
+
+        if args.align_axes:
+            align_axes = True
+        elif args.no_align_axes:
+            align_axes = False
+
         filenames = save_summary_plots(results=args.input,
                                        output_dir=args.output,
                                        format=args.format,
                                        dpi=args.dpi,
+                                       align_axes=align_axes,
                                        verbose=True)
 
         print(f"Written graphs to {', '.join(filenames)}")

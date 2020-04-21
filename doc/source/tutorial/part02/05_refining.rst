@@ -155,14 +155,14 @@ Conclusion from experiment
 --------------------------
 
 It is clear from these graphs that the rate of progress through the new
-stage of the lurgy we added has a dramatic impact on the form of the
-outbreak. Lower value of **progress** in the new infectious and
-asymptomatic stage of the lurgy which we added lead to wider outbreak
-that moves more quickly through the population.
+stage of the lurgy we added has an impact on the form of the
+outbreak. The lower value of **progress** in the new infectious and
+asymptomatic stage leads to a wider outbreak that moves more quickly
+through the population.
 
-The (fictional) lurgy is a mild yet very infectious disease that doesn't
+The (fictional) lurgy is a mild and mildly infectious disease that doesn't
 cause too many symptoms. From the graphs, it is clear that this is best
-modelled using a high value of **beta** and a low value of **progress**
+modelled using a low value of **beta** and a low value of **progress**
 for the new stage we added. We will leave the value of
 **too_ill_to_move** at 0.0 to capture asymptomatic nature of this
 stage. With this choice made,
@@ -176,7 +176,7 @@ please create a new version of the lurgy disease parameters called
     "author(s)"        : "Christopher Woods",
     "contact(s)"       : "christopher.woods@bristol.ac.uk",
     "reference(s)"     : "Completely ficticious disease - no references",
-    "beta"             : [0.0, 0.0, 0.7, 0.5, 0.5, 0.0],
+    "beta"             : [0.0, 0.0, 0.4, 0.5, 0.5, 0.0],
     "progress"         : [1.0, 1.0, 0.2, 0.5, 0.5, 0.0],
     "too_ill_to_move"  : [0.0, 0.0, 0.0, 0.5, 0.8, 1.0],
     "contrib_foi"      : [1.0, 1.0, 1.0, 1.0, 1.0, 0.0]
