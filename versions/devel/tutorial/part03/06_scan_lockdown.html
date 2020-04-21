@@ -399,9 +399,39 @@ are useful to help your future self understand what you were doing</p>
 <p>Copy all of the files onto a cluster and submit the job where you
 repeat each adjustable variable set 16 times. I used the PBS
 job script;</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#PBS -l walltime=12:00:00</span>
+<span class="c1">#PBS -l select=4:ncpus=64</span>
+<span class="c1"># The above sets 4 nodes with 64 cores each</span>
+
+<span class="c1"># source the version of metawards we want to use</span>
+<span class="nb">source</span> <span class="nv">$HOME</span>/envs/metawards-0.8.0/bin/activate
+
+<span class="c1"># change into the directory from which this job was submitted</span>
+<span class="nb">cd</span> <span class="nv">$PBS_O_WORKDIR</span>
+
+metawards --additional ExtraSeedsLondon.dat <span class="se">\</span>
+        --disease lurgy3 -u lockdown.inp <span class="se">\</span>
+        --iterator lockdown <span class="se">\</span>
+        --input scan.csv --repeats <span class="m">16</span> --nthreads <span class="m">8</span> <span class="se">\</span>
+        --force-overwrite-output
 </pre></div>
 </div>
+<p>Submit your job (e.g. <code class="docutils literal notranslate"><span class="pre">qsub</span> <span class="pre">jobscript.sh</span></code>) and then wait for it to
+finish. Once it has completed, generate the overview and average
+graphs via;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot -i output/results.csv.bz2
+metawards-plot --animate output/overview*.jpg
+metawards-plot --animate output/average*.jpg
+</pre></div>
+</div>
+<p>What do you see?</p>
+<p>I get a range of scenarios, from outbreaks that are controlled until
+they die out, through oscillating outbreaks where the population is
+forever moved between the “green” and “yellow” lockdown states,
+through to outbreaks that grow despite lockdown. These can all
+be seen here;</p>
+<img alt="Overview image of a lockdown with custom parameters" src="../../_images/tutorial_3_6.gif" />
 </div>
 </div>
 

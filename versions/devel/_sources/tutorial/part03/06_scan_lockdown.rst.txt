@@ -226,3 +226,40 @@ job script;
 
 .. code-block:: bash
 
+    #!/bin/bash
+    #PBS -l walltime=12:00:00
+    #PBS -l select=4:ncpus=64
+    # The above sets 4 nodes with 64 cores each
+
+    # source the version of metawards we want to use
+    source $HOME/envs/metawards-0.8.0/bin/activate
+
+    # change into the directory from which this job was submitted
+    cd $PBS_O_WORKDIR
+
+    metawards --additional ExtraSeedsLondon.dat \
+            --disease lurgy3 -u lockdown.inp \
+            --iterator lockdown \
+            --input scan.csv --repeats 16 --nthreads 8 \
+            --force-overwrite-output
+
+Submit your job (e.g. ``qsub jobscript.sh``) and then wait for it to
+finish. Once it has completed, generate the overview and average
+graphs via;
+
+.. code-block:: bash
+
+   metawards-plot -i output/results.csv.bz2
+   metawards-plot --animate output/overview*.jpg
+   metawards-plot --animate output/average*.jpg
+
+What do you see?
+
+I get a range of scenarios, from outbreaks that are controlled until
+they die out, through oscillating outbreaks where the population is
+forever moved between the "green" and "yellow" lockdown states,
+through to outbreaks that grow despite lockdown. These can all
+be seen here;
+
+.. image:: ../../images/tutorial_3_6.gif
+   :alt: Overview image of a lockdown with custom parameters
