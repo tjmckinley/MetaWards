@@ -53,26 +53,26 @@ be printed;
 
   Completed job 1 of 4
   (NO_CHANGE)[repeat 1]
-  2020-09-28: DAY: 165 S: 54742423    E: 0    I: 0    R: 1339654    IW: 0   TOTAL POPULATION 56082077
+  2020-12-19: DAY: 243 S: 11776504    E: 0    I: 0    R: 44305573    IW: 1   TOTAL POPULATION 56082077
 
   Completed job 2 of 4
   (NO_CHANGE)[repeat 2]
-  2020-10-02: DAY: 169 S: 53748971    E: 0    I: 0    R: 2333106    IW: 0   TOTAL POPULATION 56082077
+  2020-12-16: DAY: 240 S: 11787147    E: 0    I: 0    R: 44294930    IW: 0   TOTAL POPULATION 56082077
 
   Completed job 3 of 4
   (NO_CHANGE)[repeat 3]
-  2020-10-04: DAY: 171 S: 53918096    E: 0    I: 0    R: 2163981    IW: 0   TOTAL POPULATION 56082077
+  2020-11-25: DAY: 219 S: 11789948    E: 0    I: 0    R: 44292129    IW: 0   TOTAL POPULATION 56082077
 
   Completed job 4 of 4
   (NO_CHANGE)[repeat 4]
-  2020-10-01: DAY: 168 S: 53577372    E: 0    I: 0    R: 2504705    IW: 0   TOTAL POPULATION 56082077
+  2020-12-04: DAY: 228 S: 11782418    E: 0    I: 0    R: 44299659    IW: 1   TOTAL POPULATION 56082077
 
   Writing a summary of all results into the
-  csv file /Users/chris/GitHub/MetaWards/output/results.csv.bz2.
+  csv file /Users/chris/GitHub/tutorial/output/results.csv.bz2.
 
-In this case, all four outbreaks completed within 165-171 days, while the
-number of the population who progressed to the '**R**' state was between
-1.3M to 2.5M.
+In this case, all four outbreaks completed within 219-243 days, while the
+number of the population who progressed to the '**R**' state were all
+around 44.3 million.
 
 The results.csv.bz2 file
 ------------------------
@@ -95,20 +95,20 @@ file via an `ipython <https://ipython.org>`__ or
   >>> import pandas as pd
   >>> df = pd.read_csv("output/results.csv.bz2")
   >>> df
-      fingerprint  repeat      day        date         S  E  I        R  IW
-  0     NO_CHANGE       1        0  2020-04-16  56082077  0  0        0   0
-  1     NO_CHANGE       1        1  2020-04-17  56082077  0  0        0   0
-  2     NO_CHANGE       1        2  2020-04-18  56082072  5  0        0   0
-  3     NO_CHANGE       1        3  2020-04-19  56082072  0  5        0   0
-  4     NO_CHANGE       1        4  2020-04-20  56082069  0  5        3   3
-  ..          ...     ...      ...         ...       ... .. ..      ...  ..
-  672   NO_CHANGE       4      164  2020-09-27  53577372  0  1  2504704   0
-  673   NO_CHANGE       4      165  2020-09-28  53577372  0  1  2504704   0
-  674   NO_CHANGE       4      166  2020-09-29  53577372  0  1  2504704   0
-  675   NO_CHANGE       4      167  2020-09-30  53577372  0  1  2504704   0
-  676   NO_CHANGE       4      168  2020-10-01  53577372  0  0  2504705   0
+      fingerprint  repeat  day        date         S  E  I         R  IW
+  0     NO_CHANGE       1    0  2020-04-20  56082077  0  0         0   0
+  1     NO_CHANGE       1    1  2020-04-21  56082077  0  0         0   0
+  2     NO_CHANGE       1    2  2020-04-22  56082072  5  0         0   0
+  3     NO_CHANGE       1    3  2020-04-23  56082072  0  5         0   0
+  4     NO_CHANGE       1    4  2020-04-24  56082068  0  5         4   4
+  ..          ...     ...  ...         ...       ... .. ..       ...  ..
+  929   NO_CHANGE       4  224  2020-11-30  11782419  0  4  44299654   0
+  930   NO_CHANGE       4  225  2020-12-01  11782419  0  3  44299655   0
+  931   NO_CHANGE       4  226  2020-12-02  11782419  0  1  44299657   0
+  932   NO_CHANGE       4  227  2020-12-03  11782419  0  1  44299657   0
+  933   NO_CHANGE       4  228  2020-12-04  11782418  0  0  44299659   1
 
-  [677 rows x 9 columns]
+  [934 rows x 9 columns]
 
 Each repeat is given its own number, which is in the ``repeat`` column.
 The day of the outbreak is given in the ``day`` column. This counts up

@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -174,12 +174,12 @@
             
   <h1>Source code for metawards.utils._runner</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">.._network</span> <span class="k">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">.._population</span> <span class="k">import</span> <span class="n">Population</span>
-<span class="kn">from</span> <span class="nn">.._variableset</span> <span class="k">import</span> <span class="n">VariableSets</span>
-<span class="kn">from</span> <span class="nn">.._outputfiles</span> <span class="k">import</span> <span class="n">OutputFiles</span>
+<span class="kn">from</span> <span class="nn">.._network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">.._variableset</span> <span class="kn">import</span> <span class="n">VariableSets</span>
+<span class="kn">from</span> <span class="nn">.._outputfiles</span> <span class="kn">import</span> <span class="n">OutputFiles</span>
 
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">contextmanager</span> <span class="k">as</span> <span class="n">_contextmanager</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span> <span class="k">as</span> <span class="n">_contextmanager</span>
 
 <span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
 <span class="kn">import</span> <span class="nn">sys</span> <span class="k">as</span> <span class="nn">_sys</span>
@@ -187,7 +187,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get_number_of_processes&quot;</span><span class="p">,</span> <span class="s2">&quot;run_models&quot;</span><span class="p">,</span> <span class="s2">&quot;redirect_output&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">get_number_of_processes</span><span class="p">(</span><span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_number_of_processes"><a class="viewcode-back" href="../../../api/generated/metawards.utils.get_number_of_processes.html#metawards.utils.get_number_of_processes">[docs]</a><span class="k">def</span> <span class="nf">get_number_of_processes</span><span class="p">(</span><span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function works out how many processes have been set</span>
 <span class="sd">       by the paralellisation system called &#39;parallel_scheme&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -195,21 +195,21 @@
         <span class="k">if</span> <span class="n">parallel_scheme</span> <span class="o">==</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">1</span>
         <span class="k">elif</span> <span class="n">parallel_scheme</span> <span class="o">==</span> <span class="s2">&quot;mpi4py&quot;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="k">import</span> <span class="n">MPI</span>
+            <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
             <span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
             <span class="n">nprocs</span> <span class="o">=</span> <span class="n">comm</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">nprocs</span>
         <span class="k">elif</span> <span class="n">parallel_scheme</span> <span class="o">==</span> <span class="s2">&quot;scoop&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="n">f</span><span class="s2">&quot;You must specify the number of processes for &quot;</span>
-                    <span class="n">f</span><span class="s2">&quot;scoop to parallelise over&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;You must specify the number of processes for &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;scoop to parallelise over&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="n">f</span><span class="s2">&quot;You must specify the number of processes to &quot;</span>
-                    <span class="n">f</span><span class="s2">&quot;use for parallel scheme &#39;</span><span class="si">{parallel_scheme}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;You must specify the number of processes to &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;use for parallel scheme &#39;</span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">parallel_scheme</span> <span class="o">==</span> <span class="s2">&quot;mpi4py&quot;</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="k">import</span> <span class="n">MPI</span>
+        <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
         <span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">comm</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span>
 
@@ -223,10 +223,10 @@
         <span class="k">return</span> <span class="n">nprocs</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="n">f</span><span class="s2">&quot;Unrecognised parallelisation scheme </span><span class="si">{parallel_scheme}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="sa">f</span><span class="s2">&quot;Unrecognised parallelisation scheme </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="redirect_output"><a class="viewcode-back" href="../../../api/generated/metawards.utils.redirect_output.html#metawards.utils.redirect_output">[docs]</a><span class="nd">@_contextmanager</span>
+<span class="nd">@_contextmanager</span>
 <span class="k">def</span> <span class="nf">redirect_output</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Nice way to redirect stdout and stderr - thanks to</span>
 <span class="sd">       Emil Stenström in</span>
@@ -246,7 +246,7 @@
         <span class="n">_sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">old_out</span>
         <span class="n">_sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">old_err</span>
         <span class="n">new_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">new_err</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">new_err</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">run_models</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">VariableSets</span><span class="p">,</span>
@@ -329,7 +329,7 @@
             <span class="n">seeds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">15324</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">._ran_binomial</span> <span class="k">import</span> <span class="n">seed_ran_binomial</span><span class="p">,</span> <span class="n">ran_int</span>
+        <span class="kn">from</span> <span class="nn">._ran_binomial</span> <span class="kn">import</span> <span class="n">seed_ran_binomial</span><span class="p">,</span> <span class="n">ran_int</span>
         <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
         <span class="c1"># seed the rngs used for the sub-processes using this rng</span>
@@ -347,7 +347,7 @@
 
     <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running {len(variables)} jobs using </span><span class="si">{nprocs}</span><span class="s2"> process(es)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span><span class="si">}</span><span class="s2"> jobs using </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2"> process(es)&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">nprocs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1"># no need to use a pool, as we will repeat this calculation</span>
@@ -357,15 +357,15 @@
             <span class="n">outdir</span> <span class="o">=</span> <span class="n">outdirs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
             <span class="k">with</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">open_subdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span> <span class="k">as</span> <span class="n">subdir</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running parameter set {i+1} of {len(variables)} &quot;</span>
-                      <span class="n">f</span><span class="s2">&quot;using seed </span><span class="si">{seed}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;All output written to {subdir.get_path()}&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running parameter set </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;using seed </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All output written to </span><span class="si">{</span><span class="n">subdir</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
                 <span class="k">with</span> <span class="n">redirect_output</span><span class="p">(</span><span class="n">subdir</span><span class="o">.</span><span class="n">get_path</span><span class="p">()):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Running variable set {i+1}&quot;</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Variables: </span><span class="si">{variable}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Random seed: </span><span class="si">{seed}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;nthreads: </span><span class="si">{nthreads}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running variable set </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variables: </span><span class="si">{</span><span class="n">variable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Random seed: </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nthreads: </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
                     <span class="c1"># no need to do anything complex - just a single run</span>
                     <span class="n">params</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">set_variables</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
@@ -382,13 +382,13 @@
 
                     <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">variable</span><span class="p">,</span> <span class="n">output</span><span class="p">))</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Completed job {i+1} of {len(variables)}&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Completed job </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="c1"># end of OutputDirs context manager</span>
         <span class="c1"># end of loop over variable sets</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">._worker</span> <span class="k">import</span> <span class="n">run_worker</span>
+        <span class="kn">from</span> <span class="nn">._worker</span> <span class="kn">import</span> <span class="n">run_worker</span>
 
         <span class="c1"># create all of the parameters and options to run</span>
         <span class="n">arguments</span> <span class="o">=</span> <span class="p">[]</span>
@@ -414,12 +414,12 @@
         <span class="k">if</span> <span class="n">parallel_scheme</span> <span class="o">==</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">:</span>
             <span class="c1"># run jobs using a multiprocessing pool</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running jobs in parallel using a multiprocessing pool...&quot;</span><span class="p">)</span>
-            <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span>
+            <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
             <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">nprocs</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
                 <span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">run_worker</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Completed job {i+1} of {len(variables)}&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Completed job </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="nb">print</span><span class="p">(</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                     <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                     <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">result</span><span class="p">))</span>
@@ -427,12 +427,12 @@
         <span class="k">elif</span> <span class="n">parallel_scheme</span> <span class="o">==</span> <span class="s2">&quot;mpi4py&quot;</span><span class="p">:</span>
             <span class="c1"># run jobs using a mpi4py pool</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running jobs in parallel using a mpi4py pool...&quot;</span><span class="p">)</span>
-            <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="k">import</span> <span class="n">futures</span>
+            <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">futures</span>
             <span class="k">with</span> <span class="n">futures</span><span class="o">.</span><span class="n">MPIPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">nprocs</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
                 <span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">run_worker</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Completed job {i+1} of {len(variables)}&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Completed job </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="nb">print</span><span class="p">(</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                     <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                     <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">result</span><span class="p">))</span>
@@ -440,19 +440,19 @@
         <span class="k">elif</span> <span class="n">parallel_scheme</span> <span class="o">==</span> <span class="s2">&quot;scoop&quot;</span><span class="p">:</span>
             <span class="c1"># run jobs using a scoop pool</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running jobs in parallel using a scoop pool...&quot;</span><span class="p">)</span>
-            <span class="kn">from</span> <span class="nn">scoop</span> <span class="k">import</span> <span class="n">futures</span>
+            <span class="kn">from</span> <span class="nn">scoop</span> <span class="kn">import</span> <span class="n">futures</span>
 
             <span class="n">results</span> <span class="o">=</span> <span class="n">futures</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">run_worker</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Completed job {i+1} of {len(variables)}&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Completed job </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                 <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">result</span><span class="p">))</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unrecognised parallelisation scheme &quot;</span>
-                             <span class="n">f</span><span class="s2">&quot;</span><span class="si">{parallel_scheme}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised parallelisation scheme &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">outputs</span>
 </pre></div>
@@ -468,7 +468,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

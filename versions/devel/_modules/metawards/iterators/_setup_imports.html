@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -174,8 +174,8 @@
             
   <h1>Source code for metawards.iterators._setup_imports</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">.._network</span> <span class="k">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">.._population</span> <span class="k">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">.._network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;setup_seed_specified_ward&quot;</span><span class="p">,</span>
            <span class="s2">&quot;setup_seed_all_wards&quot;</span><span class="p">,</span>
@@ -208,7 +208,7 @@
     <span class="n">seed_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">ward_seed_index</span><span class="p">)</span>
     <span class="n">seed</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">to_seed</span><span class="p">[</span><span class="n">seed_index</span><span class="p">]</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Setup by seeding the ward at index </span><span class="si">{seed}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setup by seeding the ward at index </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -239,7 +239,7 @@
     <span class="n">wards</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">nodes</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">params</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Setup by seeding all wards&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setup by seeding all wards&quot;</span><span class="p">)</span>
 
     <span class="n">frac</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">daily_imports</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">initial</span><span class="p">)</span>
 
@@ -291,7 +291,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

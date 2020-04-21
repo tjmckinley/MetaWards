@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -210,7 +210,9 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="n">plt</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="create_overview_plot"><a class="viewcode-back" href="../../../api/generated/metawards.analysis.create_overview_plot.html#metawards.analysis.create_overview_plot">[docs]</a><span class="k">def</span> <span class="nf">create_overview_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">match_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="create_overview_plot"><a class="viewcode-back" href="../../../api/generated/metawards.analysis.create_overview_plot.html#metawards.analysis.create_overview_plot">[docs]</a><span class="k">def</span> <span class="nf">create_overview_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;jpg&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span>
+                         <span class="n">align_axes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create a summary plot of the result.csv data held in the</span>
 <span class="sd">       passed pandas dataframe. This returns the figure for you</span>
 <span class="sd">       to save if desired (or just call ``plt.show()`` to show</span>
@@ -224,15 +226,30 @@
 <span class="sd">       ----------</span>
 <span class="sd">       df : Pandas Dataframe</span>
 <span class="sd">         The pandas dataframe containing the data from results.csv.bz2</span>
-<span class="sd">       match_axes: bool</span>
+<span class="sd">       output_dir: str</span>
+<span class="sd">         The name of the directory in which to draw the graphs. If this</span>
+<span class="sd">         is set then the graphs are written to files as they are generated</span>
+<span class="sd">         and the filenames of the figures are returned. This is necessary</span>
+<span class="sd">         when the number of graphs to draw is high and you don&#39;t want</span>
+<span class="sd">         to waste too much memory</span>
+<span class="sd">       format: str</span>
+<span class="sd">         Format to save the figures in if output_dir is supplied</span>
+<span class="sd">       dpi: int</span>
+<span class="sd">         dpi (dots per inch) resolution to save the figures with if</span>
+<span class="sd">         a bitmap format is used and output_dir is supplied</span>
+<span class="sd">       align_axes: bool</span>
 <span class="sd">         If true (default) then this will ensure that all of the plots</span>
 <span class="sd">         for different fingerprints are put on the same axis scale</span>
+<span class="sd">       verbose: bool</span>
+<span class="sd">         Whether or not to print progress to the screen</span>
 
 <span class="sd">       Returns</span>
 <span class="sd">       -------</span>
 <span class="sd">       fig</span>
 <span class="sd">         The matplotlib figure containing the summary plot, or a</span>
-<span class="sd">         dictionary of figures if there are multiple fingerprints</span>
+<span class="sd">         dictionary of figures if there are multiple fingerprints,</span>
+<span class="sd">         or the filename if output_dir was supplied, or a dictionary</span>
+<span class="sd">         of multiple filenames indexed by fingerprint</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">plt</span> <span class="o">=</span> <span class="n">import_graphics_modules</span><span class="p">()</span>
 
@@ -247,7 +264,9 @@
 
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;IW&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fingerprints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">match_axes</span><span class="p">:</span>
+    <span class="n">nfigs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fingerprints</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fingerprints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">align_axes</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">fingerprint</span> <span class="ow">in</span> <span class="n">fingerprints</span><span class="p">:</span>
             <span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fingerprint</span><span class="p">]</span>
 
@@ -290,12 +309,12 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">get_legend</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Population&quot;</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fingerprints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">match_axes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fingerprints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">align_axes</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">min_date</span><span class="p">,</span> <span class="n">max_date</span><span class="p">)</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">min_y</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="mf">1.1</span><span class="o">*</span><span class="n">max_y</span><span class="p">[</span><span class="n">column</span><span class="p">])</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fingerprints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{fingerprint}</span><span class="s2"> : </span><span class="si">{column}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
 
@@ -305,7 +324,28 @@
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">figs</span><span class="p">[</span><span class="n">fingerprint</span><span class="p">]</span> <span class="o">=</span> <span class="n">fig</span>
+
+        <span class="k">if</span> <span class="n">output_dir</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">os</span>
+
+            <span class="k">if</span> <span class="n">nfigs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;overview.</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span>
+                                        <span class="sa">f</span><span class="s2">&quot;overview_</span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving figure </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">figs</span><span class="p">[</span><span class="n">fingerprint</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created the figure for </span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">figs</span><span class="p">[</span><span class="n">fingerprint</span><span class="p">]</span> <span class="o">=</span> <span class="n">fig</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -315,7 +355,9 @@
         <span class="k">return</span> <span class="n">figs</span></div>
 
 
-<div class="viewcode-block" id="create_average_plot"><a class="viewcode-back" href="../../../api/generated/metawards.analysis.create_average_plot.html#metawards.analysis.create_average_plot">[docs]</a><span class="k">def</span> <span class="nf">create_average_plot</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<div class="viewcode-block" id="create_average_plot"><a class="viewcode-back" href="../../../api/generated/metawards.analysis.create_average_plot.html#metawards.analysis.create_average_plot">[docs]</a><span class="k">def</span> <span class="nf">create_average_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;jpg&quot;</span><span class="p">,</span>
+                        <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span> <span class="n">align_axes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create an average plot of the result.csv data held in the</span>
 <span class="sd">       passed pandas dataframe. This returns the figure for you</span>
 <span class="sd">       to save if desired (or just call ``plt.show()`` to show</span>
@@ -333,18 +375,36 @@
 <span class="sd">       ----------</span>
 <span class="sd">       df : Pandas Dataframe</span>
 <span class="sd">         The pandas dataframe containing the data from results.csv.bz2</span>
+<span class="sd">       output_dir: str</span>
+<span class="sd">         The name of the directory in which to draw the graphs. If this</span>
+<span class="sd">         is set then the graphs are written to files as they are generated</span>
+<span class="sd">         and the filenames of the figures are returned. This is necessary</span>
+<span class="sd">         when the number of graphs to draw is high and you don&#39;t want</span>
+<span class="sd">         to waste too much memory</span>
+<span class="sd">       format: str</span>
+<span class="sd">         Format to save the figures in if output_dir is supplied</span>
+<span class="sd">       dpi: int</span>
+<span class="sd">         dpi (dots per inch) resolution to save the figures with if</span>
+<span class="sd">         a bitmap format is used and output_dir is supplied</span>
+<span class="sd">       align_axes: bool</span>
+<span class="sd">         If true (default) then this will ensure that all of the plots</span>
+<span class="sd">         for different fingerprints are put on the same axis scale</span>
+<span class="sd">       verbose: bool</span>
+<span class="sd">         Whether or not to print progress to the screen</span>
 
 <span class="sd">       Returns</span>
 <span class="sd">       -------</span>
 <span class="sd">       fig</span>
-<span class="sd">         The matplotlib figure containing the summary plot, or None</span>
-<span class="sd">         if there are no repeats over which to average. A dictionary</span>
-<span class="sd">         of figures will be returned if the dataframe contains multiple</span>
-<span class="sd">         fingerprint - the dictionaries will be indexed by fingerprint</span>
+<span class="sd">         The matplotlib figure containing the average plot, or a</span>
+<span class="sd">         dictionary of figures if there are multiple fingerprints,</span>
+<span class="sd">         or the filename if output_dir was supplied, or a dictionary</span>
+<span class="sd">         of multiple filenames indexed by fingerprint</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fingerprints</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
 
     <span class="n">figs</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">nfigs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fingerprints</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">fingerprint</span> <span class="ow">in</span> <span class="n">fingerprints</span><span class="p">:</span>
         <span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fingerprint</span><span class="p">]</span>
@@ -376,7 +436,28 @@
                     <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">figs</span><span class="p">[</span><span class="n">fingerprint</span><span class="p">]</span> <span class="o">=</span> <span class="n">fig</span>
+
+            <span class="k">if</span> <span class="n">output_dir</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">os</span>
+
+                <span class="k">if</span> <span class="n">nfigs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;average.</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span>
+                                            <span class="sa">f</span><span class="s2">&quot;average_</span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving figure </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">figs</span><span class="p">[</span><span class="n">fingerprint</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created the figure for </span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="n">figs</span><span class="p">[</span><span class="n">fingerprint</span><span class="p">]</span> <span class="o">=</span> <span class="n">fig</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -387,7 +468,8 @@
 
 
 <div class="viewcode-block" id="save_summary_plots"><a class="viewcode-back" href="../../../api/generated/metawards.analysis.save_summary_plots.html#metawards.analysis.save_summary_plots">[docs]</a><span class="k">def</span> <span class="nf">save_summary_plots</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                       <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+                       <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;jpg&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span>
+                       <span class="n">align_axes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create summary plots of the data contained in the passed</span>
 <span class="sd">       &#39;results.csv.bz2&#39; file that was produced by metawards</span>
@@ -406,6 +488,8 @@
 <span class="sd">       dpi: int</span>
 <span class="sd">         The dots-per-inch to use when saving bitmap graphics (e.g.</span>
 <span class="sd">         png, jpg etc)</span>
+<span class="sd">       align_axes: bool</span>
+<span class="sd">         Whether or not to plot all graphs in a set on the same axes</span>
 <span class="sd">       verbose: bool</span>
 <span class="sd">         Whether or not to print progress to the screen</span>
 
@@ -418,7 +502,7 @@
     <span class="kn">import</span> <span class="nn">os</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Reading data from </span><span class="si">{results}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading data from </span><span class="si">{</span><span class="n">results</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
@@ -431,49 +515,28 @@
     <span class="n">filenames</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Creating overview plot(s)...&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating overview plot(s)...&quot;</span><span class="p">)</span>
 
-    <span class="n">figs</span> <span class="o">=</span> <span class="n">create_overview_plot</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">figs</span> <span class="o">=</span> <span class="n">create_overview_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+                                <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span>
+                                <span class="n">align_axes</span><span class="o">=</span><span class="n">align_axes</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">figs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">figs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">:</span> <span class="n">figs</span><span class="p">}</span>
-
-    <span class="k">for</span> <span class="n">fingerprint</span><span class="p">,</span> <span class="n">fig</span> <span class="ow">in</span> <span class="n">figs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;overview.</span><span class="si">{format}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span>
-                                    <span class="n">f</span><span class="s2">&quot;overview_</span><span class="si">{fingerprint}</span><span class="s2">.</span><span class="si">{format}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Saving to </span><span class="si">{filename}</span><span class="s2">...&quot;</span><span class="p">)</span>
-
-        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
-        <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">figs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">filenames</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">figs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="n">figs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Creating average plot(s)...&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating average plot(s)...&quot;</span><span class="p">)</span>
 
-    <span class="n">figs</span> <span class="o">=</span> <span class="n">create_average_plot</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">figs</span> <span class="o">=</span> <span class="n">create_average_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+                               <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span>
+                               <span class="n">align_axes</span><span class="o">=</span><span class="n">align_axes</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">figs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nothing to plot&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">figs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">figs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">:</span> <span class="n">figs</span><span class="p">}</span>
-
-        <span class="k">for</span> <span class="n">fingerprint</span><span class="p">,</span> <span class="n">fig</span> <span class="ow">in</span> <span class="n">figs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;average.</span><span class="si">{format}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span>
-                                        <span class="n">f</span><span class="s2">&quot;average_</span><span class="si">{fingerprint}</span><span class="s2">.</span><span class="si">{format}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Saving to </span><span class="si">{filename}</span><span class="s2">...&quot;</span><span class="p">)</span>
-
-            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
-            <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">figs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">filenames</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">figs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="n">figs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">filenames</span></div>
 </pre></div>
@@ -489,7 +552,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -241,7 +241,7 @@ copy into this;</p>
 <span class="n">p1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
 <span class="n">pdel</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;beta[2]  too_ill_to_move[2]  progress[2]&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;beta[2]  too_ill_to_move[2]  progress[2]&quot;</span><span class="p">)</span>
 
 <span class="n">b</span> <span class="o">=</span> <span class="n">b0</span>
 <span class="k">while</span> <span class="n">b</span> <span class="o">&lt;=</span> <span class="n">b1</span><span class="p">:</span>
@@ -249,7 +249,7 @@ copy into this;</p>
     <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">i1</span><span class="p">:</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p0</span>
         <span class="k">while</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="n">p1</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;  </span><span class="si">%.2f</span><span class="s2">     </span><span class="si">%.2f</span><span class="s2">    </span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  </span><span class="si">%.2f</span><span class="s2">     </span><span class="si">%.2f</span><span class="s2">    </span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
             <span class="n">p</span> <span class="o">+=</span> <span class="n">pdel</span>
 
         <span class="n">i</span> <span class="o">+=</span> <span class="n">idel</span>
@@ -318,7 +318,7 @@ metawards --additional ExtraSeedsLondon.dat <span class="se">\</span>
 Once complete, the <code class="docutils literal notranslate"><span class="pre">results.csv.bz2</span></code> file contains all of the
 population trajectories and can be analysed in an identical way
 as before. If you want, you can
-<a class="reference download internal" download="" href="../../_downloads/cae9ccb0479830da93836a7ea4bfe3e1/results.csv.bz2"><code class="xref download docutils literal notranslate"><span class="pre">my</span> <span class="pre">results.csv.bz2</span> <span class="pre">file</span> <span class="pre">here</span></code></a>.</p>
+<a class="reference download internal" download="" href="../../_downloads/5a44c0e178c83875f58aadb34b8b75ba/results.csv.bz2"><code class="xref download docutils literal notranslate"><span class="pre">my</span> <span class="pre">results.csv.bz2</span> <span class="pre">file</span> <span class="pre">here</span></code></a>.</p>
 <p>You can then produce graphs and animations using;</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot -i output/results.csv.bz2 --format jpg --dpi <span class="m">150</span>
 metawards-plot --animate output/overview*.jpg
@@ -330,13 +330,13 @@ metawards-plot --animate output/overview*.jpg
 <div class="section" id="conclusion-from-experiment">
 <h2>Conclusion from experiment<a class="headerlink" href="#conclusion-from-experiment" title="Permalink to this headline">¶</a></h2>
 <p>It is clear from these graphs that the rate of progress through the new
-stage of the lurgy we added has a dramatic impact on the form of the
-outbreak. Lower value of <strong>progress</strong> in the new infectious and
-asymptomatic stage of the lurgy which we added lead to wider outbreak
-that moves more quickly through the population.</p>
-<p>The (fictional) lurgy is a mild yet very infectious disease that doesn’t
+stage of the lurgy we added has an impact on the form of the
+outbreak. The lower value of <strong>progress</strong> in the new infectious and
+asymptomatic stage leads to a wider outbreak that moves more quickly
+through the population.</p>
+<p>The (fictional) lurgy is a mild and mildly infectious disease that doesn’t
 cause too many symptoms. From the graphs, it is clear that this is best
-modelled using a high value of <strong>beta</strong> and a low value of <strong>progress</strong>
+modelled using a low value of <strong>beta</strong> and a low value of <strong>progress</strong>
 for the new stage we added. We will leave the value of
 <strong>too_ill_to_move</strong> at 0.0 to capture asymptomatic nature of this
 stage. With this choice made,
@@ -347,7 +347,7 @@ please create a new version of the lurgy disease parameters called
   <span class="s2">&quot;author(s)&quot;</span>        <span class="p">:</span> <span class="s2">&quot;Christopher Woods&quot;</span><span class="p">,</span>
   <span class="s2">&quot;contact(s)&quot;</span>       <span class="p">:</span> <span class="s2">&quot;christopher.woods@bristol.ac.uk&quot;</span><span class="p">,</span>
   <span class="s2">&quot;reference(s)&quot;</span>     <span class="p">:</span> <span class="s2">&quot;Completely ficticious disease - no references&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;beta&quot;</span>             <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+  <span class="s2">&quot;beta&quot;</span>             <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
   <span class="s2">&quot;progress&quot;</span>         <span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
   <span class="s2">&quot;too_ill_to_move&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
   <span class="s2">&quot;contrib_foi&quot;</span>      <span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
@@ -393,7 +393,7 @@ can quickly see the impact of their work.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

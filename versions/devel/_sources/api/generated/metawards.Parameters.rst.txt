@@ -47,6 +47,7 @@ metawards.Parameters
       ~Parameters.play_to_work
       ~Parameters.plength_day
       ~Parameters.static_play_at_home
+      ~Parameters.user_params
       ~Parameters.uv_filename
       ~Parameters.work_to_play
    

@@ -188,20 +188,20 @@ one after another, to advance the outbreak. If you now run
 you will see that the outbreak now advances throughout the population.
 However, each day now only progresses new infections using the "play" mode
 :meth:`~metawards.iterators.advance_play`. The "work" mode
-:meth:`~metawards.iterators.advance_fixed`, meaning each day
-is more like a weekend.
+:meth:`~metawards.iterators.advance_fixed`, is not used, meaning
+that every day is now modelled as like a weekend.
 
 Create an overview graph of your "weekend only" run and compare it to
 the results from the "weekday only" runs in
-:doc:`part 2 <../part02/05_refining`. Do you see a difference?
+:doc:`part 2 <../part02/05_refining>`. Do you see a difference?
 
 My graph is shown below;
 
 .. image:: ../../images/tutorial_3_2_1_overview.jpg
    :alt: Overview image of a weekend only run
 
-It is clear that the outbreak is now much smaller, peaking at 4 million
-as opposed to over 20 million. The peak is also significantly broadened
+It is clear that the outbreak is now much smaller, peaking at 7 million
+as opposed to nearly 20 million. The peak is also broadened
 out, with the outbreak lasting months rather than weeks.
 
 Changing iterators with time

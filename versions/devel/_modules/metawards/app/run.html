@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -190,7 +190,7 @@
            <span class="s2">&quot;cli&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
+<div class="viewcode-block" id="get_parallel_scheme"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_parallel_scheme.html#metawards.app.get_parallel_scheme">[docs]</a><span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;This function tries to work out which of the different parallel</span>
 <span class="sd">       methods we should use to distribute work between multiple processes.</span>
 
@@ -204,10 +204,10 @@
     <span class="k">elif</span> <span class="s2">&quot;scoop&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;scoop&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span></div>
 
 
-<span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../api/generated/metawards.app.parse_args.html#metawards.app.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Parse all of the command line arguments&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">argparse</span>
     <span class="kn">import</span> <span class="nn">sys</span>
@@ -267,10 +267,6 @@
                              <span class="s2">&quot;adjustable parameter sets or repeats &quot;</span>
                              <span class="s2">&quot;are used.&quot;</span><span class="p">)</span>
 
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-u&#39;</span><span class="p">,</span> <span class="s1">&#39;--UV&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Value for the UV parameter for the model &quot;</span>
-                             <span class="s2">&quot;(default is 1.0)&quot;</span><span class="p">)</span>
-
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--disease&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the disease to model &quot;</span>
                              <span class="s2">&quot;(default is &#39;ncov&#39;)&quot;</span><span class="p">)</span>
@@ -312,11 +308,17 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-P&#39;</span><span class="p">,</span> <span class="s1">&#39;--population&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">57104043</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Initial population (default 57104043)&quot;</span><span class="p">)</span>
 
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--nsteps&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--nsteps&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">730</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Maximum number of steps (days) to run for the &quot;</span>
                              <span class="s2">&quot;simulation. Each step represents one day in the &quot;</span>
-                             <span class="s2">&quot;outbreak (default is to run until the &quot;</span>
-                             <span class="s2">&quot;outbreak has finished).&quot;</span><span class="p">)</span>
+                             <span class="s2">&quot;outbreak (default is to run for a maximum &quot;</span>
+                             <span class="s2">&quot;of two years - 730 days)&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-u&#39;</span><span class="p">,</span> <span class="s1">&#39;--user-variables&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the file containing user-defined &quot;</span>
+                             <span class="s2">&quot;custom variables. These provide extra &quot;</span>
+                             <span class="s2">&quot;information that can be read by the &quot;</span>
+                             <span class="s2">&quot;custom integrators or custom extractors.&quot;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--iterator&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the iterator to use to advance the &quot;</span>
@@ -329,6 +331,10 @@
                              <span class="s2">&quot;information during a model run. For a full &quot;</span>
                              <span class="s2">&quot;explanation see the tutorial at &quot;</span>
                              <span class="s2">&quot;https://metawards.github.io&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--UV&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Value for the UV parameter for the model &quot;</span>
+                             <span class="s2">&quot;(default is 0.0)&quot;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--nthreads&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of threads over which parallelise an &quot;</span>
@@ -404,14 +410,14 @@
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">metawards</span> <span class="k">import</span> <span class="n">get_version_string</span>
+        <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">get_version_string</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">get_version_string</span><span class="p">())</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_hostfile</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="get_hostfile"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_hostfile.html#metawards.app.get_hostfile">[docs]</a><span class="k">def</span> <span class="nf">get_hostfile</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Attempt to find the name of the hostfile used to specify the hosts</span>
 <span class="sd">       to use in a cluster</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -432,10 +438,10 @@
     <span class="k">if</span> <span class="n">hostfile</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">hostfile</span>
 
-    <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cores_per_node"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_cores_per_node.html#metawards.app.get_cores_per_node">[docs]</a><span class="k">def</span> <span class="nf">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the number of cores per node in the cluster&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cores_per_node</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">cores_per_node</span>
@@ -453,10 +459,10 @@
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must specify the number of cores per node &quot;</span>
                      <span class="s2">&quot;using --cores-per-node or by setting the &quot;</span>
-                     <span class="s2">&quot;environment variable METAWARDS_CORES_PER_NODE&quot;</span><span class="p">)</span>
+                     <span class="s2">&quot;environment variable METAWARDS_CORES_PER_NODE&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="get_threads_per_task"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_threads_per_task.html#metawards.app.get_threads_per_task">[docs]</a><span class="k">def</span> <span class="nf">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span>
 
@@ -478,10 +484,10 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must specify the number of threads per task &quot;</span>
                      <span class="s2">&quot;using --nthreads or by setting the &quot;</span>
                      <span class="s2">&quot;environment variables METAWARDS_THREADS_PER_TASK &quot;</span>
-                     <span class="s2">&quot;or OMP_NUM_THREADS&quot;</span><span class="p">)</span>
+                     <span class="s2">&quot;or OMP_NUM_THREADS&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="scoop_supervisor"><a class="viewcode-back" href="../../../api/generated/metawards.app.scoop_supervisor.html#metawards.app.scoop_supervisor">[docs]</a><span class="k">def</span> <span class="nf">scoop_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">scoop_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Function used by the scoop supervisor to get the information needed to</span>
 <span class="sd">       form the scoop call to run a scoop version of the program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -496,19 +502,19 @@
 
     <span class="n">cores_per_node</span> <span class="o">=</span> <span class="n">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Will run jobs assuming </span><span class="si">{cores_per_node}</span><span class="s2"> cores per compute node&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Will run jobs assuming </span><span class="si">{</span><span class="n">cores_per_node</span><span class="si">}</span><span class="s2"> cores per compute node&quot;</span><span class="p">)</span>
 
     <span class="c1"># based on the number of threads requested and the number of cores</span>
     <span class="c1"># per node, we can work out the number of scoop processes to start,</span>
     <span class="c1"># and can write a hostfile that will create the right layout</span>
     <span class="n">nthreads</span> <span class="o">=</span> <span class="n">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Will use </span><span class="si">{nthreads}</span><span class="s2"> OpenMP threads per model run...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Will use </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2"> OpenMP threads per model run...&quot;</span><span class="p">)</span>
 
     <span class="n">tasks_per_node</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cores_per_node</span> <span class="o">/</span> <span class="n">nthreads</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;...meaning that the number of model runs per node will be &quot;</span>
-          <span class="n">f</span><span class="s2">&quot;</span><span class="si">{tasks_per_node}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;...meaning that the number of model runs per node will be &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tasks_per_node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Next, read the hostfile to get a unique list of hostnames</span>
     <span class="n">hostnames</span> <span class="o">=</span> <span class="p">{}</span>
@@ -523,7 +529,7 @@
     <span class="n">hostnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">hostnames</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="n">hostnames</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Number of compute nodes equals {len(hostnames)}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of compute nodes equals </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hostnames</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hostnames</span><span class="p">))</span>
 
     <span class="c1"># how many tasks can we perform in parallel?</span>
@@ -531,18 +537,18 @@
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">nprocs</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">nprocs</span> <span class="o">!=</span> <span class="n">args</span><span class="o">.</span><span class="n">nprocs</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;WARNING: You are using a not-recommended number of &quot;</span>
-                  <span class="n">f</span><span class="s2">&quot;processes </span><span class="si">{args.nprocs}</span><span class="s2"> for the cluster </span><span class="si">{nprocs}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: You are using a not-recommended number of &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;processes </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">nprocs</span><span class="si">}</span><span class="s2"> for the cluster </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
         <span class="n">nprocs</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nprocs</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Total number of parallel processes to run will be </span><span class="si">{nprocs}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Total number of cores in use will be {nprocs*nthreads}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total number of parallel processes to run will be </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total number of cores in use will be </span><span class="si">{</span><span class="n">nprocs</span><span class="o">*</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Now write a new hostfile that round-robins the MPI tasks over</span>
     <span class="c1"># the nodes for &#39;tasks_per_node&#39; runs</span>
     <span class="n">hostfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;hostfile&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Writing hostfile to </span><span class="si">{hostfile}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing hostfile to </span><span class="si">{</span><span class="n">hostfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
@@ -567,23 +573,23 @@
 
     <span class="c1"># also need to tell the main program the number of processes</span>
     <span class="c1"># as it can&#39;t work it out itself</span>
-    <span class="n">cmd</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{pyexe}</span><span class="s2"> -m scoop --hostfile </span><span class="si">{hostfile}</span><span class="s2"> -n </span><span class="si">{nprocs}</span><span class="s2"> &quot;</span> \
-          <span class="n">f</span><span class="s2">&quot;</span><span class="si">{script}</span><span class="s2"> --already-supervised </span><span class="si">{args}</span><span class="s2"> --nprocs </span><span class="si">{nprocs}</span><span class="s2">&quot;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pyexe</span><span class="si">}</span><span class="s2"> -m scoop --hostfile </span><span class="si">{</span><span class="n">hostfile</span><span class="si">}</span><span class="s2"> -n </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2"> &quot;</span> \
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">script</span><span class="si">}</span><span class="s2"> --already-supervised </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2"> --nprocs </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Executing scoop job using &#39;</span><span class="si">{cmd}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing scoop job using &#39;</span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">check_returncode</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Something went wrong!&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{e.__class__}</span><span class="s2">: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scoop processes completed successfully&quot;</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scoop processes completed successfully&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">mpi_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="mpi_supervisor"><a class="viewcode-back" href="../../../api/generated/metawards.app.mpi_supervisor.html#metawards.app.mpi_supervisor">[docs]</a><span class="k">def</span> <span class="nf">mpi_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Function used by the MPI supervisor to get the information needed to</span>
 <span class="sd">       form the mpiexec call to run an MPI version of the program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -598,19 +604,19 @@
 
     <span class="n">cores_per_node</span> <span class="o">=</span> <span class="n">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Will run jobs assuming </span><span class="si">{cores_per_node}</span><span class="s2"> cores per compute node&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Will run jobs assuming </span><span class="si">{</span><span class="n">cores_per_node</span><span class="si">}</span><span class="s2"> cores per compute node&quot;</span><span class="p">)</span>
 
     <span class="c1"># based on the number of threads requested and the number of cores</span>
     <span class="c1"># per node, we can work out the number of mpi processes to start,</span>
     <span class="c1"># and can write a hostfile that will create the right layout</span>
     <span class="n">nthreads</span> <span class="o">=</span> <span class="n">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Will use </span><span class="si">{nthreads}</span><span class="s2"> OpenMP threads per model run...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Will use </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2"> OpenMP threads per model run...&quot;</span><span class="p">)</span>
 
     <span class="n">tasks_per_node</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cores_per_node</span> <span class="o">/</span> <span class="n">nthreads</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;...meaning that the number of model runs per node will be &quot;</span>
-          <span class="n">f</span><span class="s2">&quot;</span><span class="si">{tasks_per_node}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;...meaning that the number of model runs per node will be &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tasks_per_node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Next, read the hostfile to get a unique list of hostnames</span>
     <span class="n">hostnames</span> <span class="o">=</span> <span class="p">{}</span>
@@ -625,7 +631,7 @@
     <span class="n">hostnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">hostnames</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="n">hostnames</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Number of compute nodes equals {len(hostnames)}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of compute nodes equals </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hostnames</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hostnames</span><span class="p">))</span>
 
     <span class="c1"># how many tasks can we perform in parallel?</span>
@@ -633,18 +639,18 @@
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">nprocs</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">nprocs</span> <span class="o">!=</span> <span class="n">args</span><span class="o">.</span><span class="n">nprocs</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;WARNING: You are using an unrecommended number of &quot;</span>
-                  <span class="n">f</span><span class="s2">&quot;processes </span><span class="si">{args.nprocs}</span><span class="s2"> for the cluster </span><span class="si">{nprocs}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: You are using an unrecommended number of &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;processes </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">nprocs</span><span class="si">}</span><span class="s2"> for the cluster </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
         <span class="n">nprocs</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nprocs</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Total number of parallel processes to run will be </span><span class="si">{nprocs}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Total number of cores in use will be {nprocs*nthreads}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total number of parallel processes to run will be </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total number of cores in use will be </span><span class="si">{</span><span class="n">nprocs</span><span class="o">*</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Now write a new hostfile that round-robins the MPI tasks over</span>
     <span class="c1"># the nodes for &#39;tasks_per_node&#39; runs</span>
     <span class="n">hostfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;hostfile&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Writing hostfile to </span><span class="si">{hostfile}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing hostfile to </span><span class="si">{</span><span class="n">hostfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
@@ -669,40 +675,40 @@
     <span class="kn">import</span> <span class="nn">shlex</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{mpiexec}</span><span class="s2"> -v&quot;</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mpiexec</span><span class="si">}</span><span class="s2"> -v&quot;</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
                            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{mpiexec}</span><span class="s2"> -v =&gt; </span><span class="si">{v}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mpiexec</span><span class="si">}</span><span class="s2"> -v =&gt; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;HPE HMPT&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;metawards needs a more modern MPI library than HPE&#39;s, &quot;</span>
                 <span class="s2">&quot;so please compile to another MPI and use that.&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;[ERROR] </span><span class="si">{e.__class__}</span><span class="s2"> </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[ERROR] </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">pyexe</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span>
     <span class="n">script</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
-    <span class="n">cmd</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{mpiexec}</span><span class="s2"> -np </span><span class="si">{nprocs}</span><span class="s2"> -hostfile </span><span class="si">{hostfile}</span><span class="s2"> &quot;</span> \
-          <span class="n">f</span><span class="s2">&quot;</span><span class="si">{pyexe}</span><span class="s2"> -m mpi4py </span><span class="si">{script}</span><span class="s2"> --already-supervised </span><span class="si">{args}</span><span class="s2">&quot;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mpiexec</span><span class="si">}</span><span class="s2"> -np </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2"> -hostfile </span><span class="si">{</span><span class="n">hostfile</span><span class="si">}</span><span class="s2"> &quot;</span> \
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pyexe</span><span class="si">}</span><span class="s2"> -m mpi4py </span><span class="si">{</span><span class="n">script</span><span class="si">}</span><span class="s2"> --already-supervised </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Executing MPI job using &#39;</span><span class="si">{cmd}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing MPI job using &#39;</span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">check_returncode</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Something went wrong!&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{e.__class__}</span><span class="s2">: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MPI processes completed successfully&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MPI processes completed successfully&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
+<div class="viewcode-block" id="cli"><a class="viewcode-back" href="../../../api/generated/metawards.app.cli.html#metawards.app.cli">[docs]</a><span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Main function for the command line interface. This does one of three</span>
 <span class="sd">       things:</span>
 
@@ -723,7 +729,7 @@
     <span class="n">parallel_scheme</span> <span class="o">=</span> <span class="n">get_parallel_scheme</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">parallel_scheme</span> <span class="o">==</span> <span class="s2">&quot;mpi4py&quot;</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="k">import</span> <span class="n">MPI</span>
+        <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
         <span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
         <span class="n">nprocs</span> <span class="o">=</span> <span class="n">comm</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span>
         <span class="n">rank</span> <span class="o">=</span> <span class="n">comm</span><span class="o">.</span><span class="n">Get_rank</span><span class="p">()</span>
@@ -731,7 +737,7 @@
         <span class="k">if</span> <span class="n">rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># this is a worker process, so should not do anything</span>
             <span class="c1"># more until it is given work in the pool</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Starting worker process {rank+1} of {nprocs-1}...&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting worker process </span><span class="si">{</span><span class="n">rank</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">nprocs</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting main process...&quot;</span><span class="p">)</span>
@@ -799,39 +805,39 @@
         <span class="n">args</span><span class="o">.</span><span class="n">repeats</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># import the parameters here to speed up the display of help</span>
-    <span class="kn">from</span> <span class="nn">metawards</span> <span class="k">import</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Network</span><span class="p">,</span> <span class="n">Population</span><span class="p">,</span> <span class="n">get_version_string</span>
+    <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Network</span><span class="p">,</span> <span class="n">Population</span><span class="p">,</span> <span class="n">get_version_string</span>
 
     <span class="c1"># print the version information first, so that there is enough</span>
     <span class="c1"># information to enable someone to reproduce this run</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">get_version_string</span><span class="p">())</span>
 
     <span class="c1"># also print the full command line used for this job</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Command used to run this job:</span><span class="se">\n</span><span class="s2">{&#39; &#39;.join(sys.argv)}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Command used to run this job:</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">:</span>
         <span class="c1"># get the line numbers of the input file to read</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">line</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">linenums</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Using parameters from all lines of </span><span class="si">{args.input}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using parameters from all lines of </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="k">import</span> <span class="n">string_to_ints</span>
+            <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">string_to_ints</span>
             <span class="n">linenums</span> <span class="o">=</span> <span class="n">string_to_ints</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">line</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">linenums</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;You cannot read no lines from </span><span class="si">{args.input}</span><span class="s2">?&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You cannot read no lines from </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">)</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">linenums</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Using parameters from line </span><span class="si">{linenums[0]}</span><span class="s2"> of &quot;</span>
-                      <span class="n">f</span><span class="s2">&quot;</span><span class="si">{args.input}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using parameters from line </span><span class="si">{</span><span class="n">linenums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> of &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Using parameters from lines </span><span class="si">{linenums}</span><span class="s2"> of &quot;</span>
-                      <span class="n">f</span><span class="s2">&quot;</span><span class="si">{args.input}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using parameters from lines </span><span class="si">{</span><span class="n">linenums</span><span class="si">}</span><span class="s2"> of &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="kn">from</span> <span class="nn">metawards</span> <span class="k">import</span> <span class="n">VariableSets</span><span class="p">,</span> <span class="n">VariableSet</span>
+        <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">VariableSets</span><span class="p">,</span> <span class="n">VariableSet</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="n">VariableSets</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">,</span>
                                       <span class="n">line_numbers</span><span class="o">=</span><span class="n">linenums</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">metawards</span> <span class="k">import</span> <span class="n">VariableSets</span><span class="p">,</span> <span class="n">VariableSet</span>
+        <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">VariableSets</span><span class="p">,</span> <span class="n">VariableSet</span>
         <span class="c1"># create a VariableSets with one null VariableSet</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="n">VariableSets</span><span class="p">()</span>
         <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VariableSet</span><span class="p">())</span>
@@ -844,24 +850,24 @@
     <span class="k">if</span> <span class="n">nrepeats</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Performing a single run of each set of parameters&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Performing </span><span class="si">{nrepeats}</span><span class="s2"> runs of each set of parameters&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Performing </span><span class="si">{</span><span class="n">nrepeats</span><span class="si">}</span><span class="s2"> runs of each set of parameters&quot;</span><span class="p">)</span>
 
     <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">nrepeats</span><span class="p">)</span>
 
     <span class="c1"># working out the number of processes and threads...</span>
-    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="k">import</span> <span class="n">guess_num_threads_and_procs</span>
+    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">guess_num_threads_and_procs</span>
     <span class="p">(</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">)</span> <span class="o">=</span> <span class="n">guess_num_threads_and_procs</span><span class="p">(</span>
                                             <span class="n">njobs</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">),</span>
                                             <span class="n">nthreads</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nthreads</span><span class="p">,</span>
                                             <span class="n">nprocs</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nprocs</span><span class="p">,</span>
                                             <span class="n">parallel_scheme</span><span class="o">=</span><span class="n">parallel_scheme</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Number of threads to use for each model run is </span><span class="si">{nthreads}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Number of threads to use for each model run is </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">nprocs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Number of processes used to parallelise model &quot;</span>
-              <span class="n">f</span><span class="s2">&quot;runs is </span><span class="si">{nprocs}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Parallelisation will be achieved using </span><span class="si">{parallel_scheme}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of processes used to parallelise model &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;runs is </span><span class="si">{</span><span class="n">nprocs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallelisation will be achieved using </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># sort out the random number seed</span>
     <span class="n">seed</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">seed</span>
@@ -870,45 +876,45 @@
         <span class="kn">import</span> <span class="nn">random</span>
         <span class="n">seed</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">99999999</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using random number seed </span><span class="si">{seed}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using random number seed </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># get the starting day and date</span>
     <span class="n">start_day</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">start_day</span>
 
     <span class="k">if</span> <span class="n">start_day</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;You cannot use a start day </span><span class="si">{start_day}</span><span class="s2"> that is &quot;</span>
-                         <span class="n">f</span><span class="s2">&quot;less than zero!&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You cannot use a start day </span><span class="si">{</span><span class="n">start_day</span><span class="si">}</span><span class="s2"> that is &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;less than zero!&quot;</span><span class="p">)</span>
 
     <span class="n">start_date</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">start_date</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">dateparser</span> <span class="k">import</span> <span class="n">parse</span>
+            <span class="kn">from</span> <span class="nn">dateparser</span> <span class="kn">import</span> <span class="n">parse</span>
             <span class="n">start_date</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">start_date</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
 
         <span class="k">if</span> <span class="n">start_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span>
+            <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">start_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">start_date</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="n">f</span><span class="s2">&quot;Cannot interpret a valid date from &quot;</span>
-                        <span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{args.start_date}</span><span class="s2">&#39;. Error is &quot;</span>
-                        <span class="n">f</span><span class="s2">&quot;</span><span class="si">{e.__class__}</span><span class="s2"> </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="sa">f</span><span class="s2">&quot;Cannot interpret a valid date from &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">start_date</span><span class="si">}</span><span class="s2">&#39;. Error is &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">start_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span>
+        <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
         <span class="n">start_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Day zero is {start_date.strftime(&#39;%A %B </span><span class="si">%d</span><span class="s2"> %Y&#39;)}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Day zero is </span><span class="si">{</span><span class="n">start_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%A %B </span><span class="si">%d</span><span class="s1"> %Y&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">start_day</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span>
+        <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
         <span class="n">start_day_date</span> <span class="o">=</span> <span class="n">start_date</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">start_day</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Starting on day </span><span class="si">{start_day}</span><span class="s2">, which is &quot;</span>
-              <span class="n">f</span><span class="s2">&quot;{start_day_date.strftime(&#39;%A %B </span><span class="si">%d</span><span class="s2"> %Y&#39;)}&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting on day </span><span class="si">{</span><span class="n">start_day</span><span class="si">}</span><span class="s2">, which is &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start_day_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%A %B </span><span class="si">%d</span><span class="s1"> %Y&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">start_day_date</span> <span class="o">=</span> <span class="n">start_date</span>
 
@@ -917,10 +923,10 @@
     <span class="p">(</span><span class="n">repository</span><span class="p">,</span> <span class="n">repository_version</span><span class="p">)</span> <span class="o">=</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">get_repository</span><span class="p">(</span>
                                                         <span class="n">args</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using MetaWardsData at </span><span class="si">{repository}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;This is cloned from </span><span class="si">{repository_version[&#39;repository&#39;]}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;branch </span><span class="si">{repository_version[&#39;branch&#39;]}</span><span class="s2">, version &quot;</span>
-          <span class="n">f</span><span class="s2">&quot;</span><span class="si">{repository_version[&#39;version&#39;]}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using MetaWardsData at </span><span class="si">{</span><span class="n">repository</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is cloned from </span><span class="si">{</span><span class="n">repository_version</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;branch </span><span class="si">{</span><span class="n">repository_version</span><span class="p">[</span><span class="s1">&#39;branch&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, version &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">repository_version</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">repository_version</span><span class="p">[</span><span class="s2">&quot;is_dirty&quot;</span><span class="p">]:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;## WARNING - this repository is dirty, meaning that the data&quot;</span><span class="p">)</span>
@@ -942,21 +948,21 @@
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
-                    <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot; --</span><span class="si">{k}</span><span class="s2">&quot;</span>
+                    <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot; --</span><span class="si">{k}</span><span class="s2">&quot;</span>
+                <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
                     <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
                     <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-                        <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot; &#39;</span><span class="si">{v}</span><span class="s2">&#39;&#39;&quot;</span>
+                        <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; &#39;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&#39;&#39;&quot;</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot; </span><span class="si">{v}</span><span class="s2">&quot;</span>
+                        <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-                    <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot; --</span><span class="si">{k}</span><span class="s2"> &#39;</span><span class="si">{v}</span><span class="s2">&#39;&#39;&quot;</span>
+                    <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> &#39;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&#39;&#39;&quot;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="n">f</span><span class="s2">&quot; --</span><span class="si">{k}</span><span class="s2"> </span><span class="si">{v}</span><span class="s2">&quot;</span>
+                    <span class="n">repeat_cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; --</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="n">t</span> <span class="o">=</span> <span class="s2">&quot;*** To repeat this job use the command ***&quot;</span>
 
@@ -969,20 +975,20 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unable to load parameter files. Make sure that you have &quot;</span>
-              <span class="n">f</span><span class="s2">&quot;cloned the MetaWardsData repository and have set the &quot;</span>
-              <span class="n">f</span><span class="s2">&quot;environment variable METAWARDSDATA to point to the &quot;</span>
-              <span class="n">f</span><span class="s2">&quot;local directory containing the repository, e.g. the &quot;</span>
-              <span class="n">f</span><span class="s2">&quot;default is $HOME/GitHub/MetaWardsData&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to load parameter files. Make sure that you have &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;cloned the MetaWardsData repository and have set the &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;environment variable METAWARDSDATA to point to the &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;local directory containing the repository, e.g. the &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;default is $HOME/GitHub/MetaWardsData&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span>
 
-    <span class="c1"># should we profile the code? (default yes, as it doesn&#39;t cost anything)</span>
-    <span class="n">profile</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">profile</span>
+    <span class="c1"># should we profile the code? (default no as it prints a lot)</span>
+    <span class="n">profile</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">no_profile</span><span class="p">:</span>
         <span class="n">profile</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">elif</span> <span class="n">profile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">profile</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">profile</span><span class="p">:</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="c1"># load the disease and starting-point input files</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">disease</span><span class="p">:</span>
@@ -992,12 +998,18 @@
 
     <span class="n">params</span><span class="o">.</span><span class="n">set_input_files</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input_data</span><span class="p">)</span>
 
+    <span class="c1"># load the user-defined custom parameters</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">user_variables</span><span class="p">:</span>
+        <span class="n">custom</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">user_variables</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusting variables to </span><span class="si">{</span><span class="n">custom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">custom</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
     <span class="c1"># read the additional seeds</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">additional</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">additional</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not using any additional seeds...&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">additional</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">additional</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Loading additional seeds from </span><span class="si">{additional}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading additional seeds from </span><span class="si">{</span><span class="n">additional</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">params</span><span class="o">.</span><span class="n">add_seeds</span><span class="p">(</span><span class="n">additional</span><span class="p">)</span>
 
     <span class="c1"># extra parameters that are set</span>
@@ -1019,8 +1031,8 @@
                             <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Run the model...&quot;</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">metawards</span> <span class="k">import</span> <span class="n">OutputFiles</span>
-    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="k">import</span> <span class="n">run_models</span>
+    <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">OutputFiles</span>
+    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">run_models</span>
 
     <span class="n">outdir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
 
@@ -1073,10 +1085,10 @@
         <span class="c1"># write the result to a csv file that can be easily read by R or</span>
         <span class="c1"># pandas - this will be written compressed to save space</span>
         <span class="n">RESULTS</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;results.csv&quot;</span><span class="p">,</span> <span class="n">auto_bzip</span><span class="o">=</span><span class="n">auto_bzip</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Writing a summary of all results into the</span><span class="se">\n</span><span class="s2">&quot;</span>
-              <span class="n">f</span><span class="s2">&quot;csv file {output_dir.get_filename(&#39;results.csv&#39;)}.</span><span class="se">\n</span><span class="s2">&quot;</span>
-              <span class="n">f</span><span class="s2">&quot;You can use this to quickly look at statistics across</span><span class="se">\n</span><span class="s2">&quot;</span>
-              <span class="n">f</span><span class="s2">&quot;all runs using e.g. R or pandas&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Writing a summary of all results into the</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;csv file </span><span class="si">{</span><span class="n">output_dir</span><span class="o">.</span><span class="n">get_filename</span><span class="p">(</span><span class="s1">&#39;results.csv&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;You can use this to quickly look at statistics across</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;all runs using e.g. R or pandas&quot;</span><span class="p">)</span>
 
         <span class="n">varnames</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span>
 
@@ -1092,8 +1104,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">datestring</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-        <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;fingerprint,repeat,</span><span class="si">{varnames}</span><span class="s2">&quot;</span>
-                      <span class="n">f</span><span class="s2">&quot;day,</span><span class="si">{datestring}</span><span class="s2">S,E,I,R,IW</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fingerprint,repeat,</span><span class="si">{</span><span class="n">varnames</span><span class="si">}</span><span class="s2">&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;day,</span><span class="si">{</span><span class="n">datestring</span><span class="si">}</span><span class="s2">S,E,I,R,IW</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">varset</span><span class="p">,</span> <span class="n">trajectory</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
             <span class="n">varvals</span> <span class="o">=</span> <span class="n">varset</span><span class="o">.</span><span class="n">variable_values</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">varvals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">varvals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1101,8 +1113,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">varvals</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">varvals</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
 
-            <span class="n">start</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;{varset.fingerprint()},&quot;</span> \
-                    <span class="n">f</span><span class="s2">&quot;{varset.repeat_index()},</span><span class="si">{varvals}</span><span class="s2">&quot;</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">varset</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">()</span><span class="si">}</span><span class="s2">,&quot;</span> \
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">varset</span><span class="o">.</span><span class="n">repeat_index</span><span class="p">()</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">varvals</span><span class="si">}</span><span class="s2">&quot;</span>
 
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pop</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">trajectory</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">pop</span><span class="o">.</span><span class="n">date</span><span class="p">:</span>
@@ -1110,13 +1122,13 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">d</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-                <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{start}{pop.day}</span><span class="s2">,</span><span class="si">{d}{pop.susceptibles}</span><span class="s2">,&quot;</span>
-                              <span class="n">f</span><span class="s2">&quot;</span><span class="si">{pop.latent}</span><span class="s2">,</span><span class="si">{pop.total}</span><span class="s2">,&quot;</span>
-                              <span class="n">f</span><span class="s2">&quot;</span><span class="si">{pop.recovereds}</span><span class="s2">,</span><span class="si">{pop.n_inf_wards}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">d</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">susceptibles</span><span class="si">}</span><span class="s2">,&quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">latent</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2">,&quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">recovereds</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">n_inf_wards</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;End of the run&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -1125,7 +1137,7 @@
 <span class="k">else</span><span class="p">:</span>
     <span class="c1"># this is one of the worker processes - make sure that they</span>
     <span class="c1"># have imported metawards</span>
-    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="k">import</span> <span class="n">run_worker</span>
+    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">run_worker</span>
 </pre></div>
 
            </div>
@@ -1139,7 +1151,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

@@ -213,8 +213,8 @@ The codes mean;
 
 * `S` : number who are susceptible to infection (and not infected)
 * `E` : number who are infected but not yet infectious (latent)
-* `I` : number who are infected, infectious and mildly symptomatic
-* `IW` : number who are infected, infectious and symptomatic
+* `I` : number who are infected, infectious and symptomatic
+* `IW` : number of wards that have at least one infected individual
 * `R` : number who are recovered from the infection and thus immune
 
 As well as being printed to the screen, this data is also written

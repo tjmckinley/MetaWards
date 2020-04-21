@@ -18,6 +18,7 @@ metawards.VariableSet
       ~VariableSet.extract_values
       ~VariableSet.fingerprint
       ~VariableSet.make_compatible_with
+      ~VariableSet.read
       ~VariableSet.repeat_index
       ~VariableSet.variable_names
       ~VariableSet.variable_values

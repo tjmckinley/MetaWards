@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -176,9 +176,9 @@
 <h1>metawards.iterators.advance_fixed<a class="headerlink" href="#metawards-iterators-advance-fixed" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.iterators.advance_fixed">
-<code class="descclassname">metawards.iterators.</code><code class="descname">advance_fixed</code><span class="sig-paren">(</span><em>network: Network</em>, <em>infections</em>, <em>rngs</em>, <em>profiler: Profiler</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.iterators.advance_fixed" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.iterators.</code><code class="descname">advance_fixed</code><span class="sig-paren">(</span><em>nthreads: int</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#metawards.iterators.advance_fixed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Advance the model by triggering infections related to fixed
-‘work’ movements (serial version of the function)</p>
+‘work’ movements (parallel version of the function)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -187,6 +187,7 @@
 <li><strong>network</strong> (<a class="reference internal" href="metawards.Network.html#metawards.Network" title="metawards.Network"><em>Network</em></a>) – The network being modelled</li>
 <li><strong>infections</strong> – The space that holds all of the “work” infections</li>
 <li><strong>rngs</strong> – The list of thread-safe random number generators, one per thread</li>
+<li><strong>nthreads</strong> (<em>int</em>) – The number of threads over which to parallelise the calculation</li>
 <li><strong>profiler</strong> (<a class="reference internal" href="metawards.utils.Profiler.html#metawards.utils.Profiler" title="metawards.utils.Profiler"><em>Profiler</em></a>) – The profiler used to profile this calculation</li>
 <li><strong>kwargs</strong> – Extra arguments that may be used by other advancers, but which
 are not used by advance_play</li>
@@ -211,7 +212,7 @@ are not used by advance_play</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

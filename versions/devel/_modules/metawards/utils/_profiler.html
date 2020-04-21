@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -181,13 +181,13 @@
 
 <div class="viewcode-block" id="NullProfiler"><a class="viewcode-back" href="../../../api/generated/metawards.utils.NullProfiler.html#metawards.utils.NullProfiler">[docs]</a><span class="k">class</span> <span class="nc">NullProfiler</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This is a null profiler that does nothing&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="NullProfiler.__init__"><a class="viewcode-back" href="../../../api/generated/metawards.utils.NullProfiler.html#metawards.utils.NullProfiler.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="NullProfiler.__init__"><a class="viewcode-back" href="../../../api/generated/metawards.utils.NullProfiler.html#metawards.utils.NullProfiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
     <span class="k">def</span> <span class="nf">is_null</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;No profiling data collected&quot;</span>
 
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -202,7 +202,7 @@
 <span class="sd">       instrumenting of the code. It is used for sub-function</span>
 <span class="sd">       profiling.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Profiler.__init__"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Profiler.__init__"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_children</span> <span class="o">=</span> <span class="p">[]</span>
@@ -235,21 +235,21 @@
                 <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%.3f</span><span class="s2"> ms&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._name}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._name}</span><span class="s2">: still timing...&quot;</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">: still timing...&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">:</span>
             <span class="n">clines</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">_to_string</span><span class="p">()</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;  </span><span class="se">\\</span><span class="s2">-</span><span class="si">{clines[0]}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="se">\\</span><span class="s2">-</span><span class="si">{</span><span class="n">clines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clines</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">clines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;    </span><span class="si">{l}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">lines</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the results of profiling as a report&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_string</span><span class="p">())</span>
 
@@ -311,11 +311,11 @@
         <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time_ns</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;WARNING: You cannot stop profiler </span><span class="si">{self._name}</span><span class="s2"> as &quot;</span>
-                  <span class="n">f</span><span class="s2">&quot;it has not been started!&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: You cannot stop profiler </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> as &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;it has not been started!&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;WARNING: You cannot stop profiler </span><span class="si">{self._name}</span><span class="s2"> as &quot;</span>
-                  <span class="n">f</span><span class="s2">&quot;it has already been stopped!&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: You cannot stop profiler </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> as &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;it has already been stopped!&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_end</span> <span class="o">=</span> <span class="n">end</span>
 
@@ -337,7 +337,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

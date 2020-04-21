@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -174,16 +174,16 @@
             
   <h1>Source code for metawards.utils._run_model</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">.._network</span> <span class="k">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">.._outputfiles</span> <span class="k">import</span> <span class="n">OutputFiles</span>
-<span class="kn">from</span> <span class="nn">._workspace</span> <span class="k">import</span> <span class="n">Workspace</span>
-<span class="kn">from</span> <span class="nn">.._population</span> <span class="k">import</span> <span class="n">Population</span><span class="p">,</span> <span class="n">Populations</span>
-<span class="kn">from</span> <span class="nn">._profiler</span> <span class="k">import</span> <span class="n">Profiler</span><span class="p">,</span> <span class="n">NullProfiler</span>
-<span class="kn">from</span> <span class="nn">._iterate</span> <span class="k">import</span> <span class="n">iterate</span>
-<span class="kn">from</span> <span class="nn">..iterators._iterate_default</span> <span class="k">import</span> <span class="n">iterate_default</span>
-<span class="kn">from</span> <span class="nn">..extractors._extract_default</span> <span class="k">import</span> <span class="n">extract_default</span>
-<span class="kn">from</span> <span class="nn">._clear_all_infections</span> <span class="k">import</span> <span class="n">clear_all_infections</span>
-<span class="kn">from</span> <span class="nn">._extract_data</span> <span class="k">import</span> <span class="n">extract_data</span>
+<span class="kn">from</span> <span class="nn">.._network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">.._outputfiles</span> <span class="kn">import</span> <span class="n">OutputFiles</span>
+<span class="kn">from</span> <span class="nn">._workspace</span> <span class="kn">import</span> <span class="n">Workspace</span>
+<span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span><span class="p">,</span> <span class="n">Populations</span>
+<span class="kn">from</span> <span class="nn">._profiler</span> <span class="kn">import</span> <span class="n">Profiler</span><span class="p">,</span> <span class="n">NullProfiler</span>
+<span class="kn">from</span> <span class="nn">._iterate</span> <span class="kn">import</span> <span class="n">iterate</span>
+<span class="kn">from</span> <span class="nn">..iterators._iterate_default</span> <span class="kn">import</span> <span class="n">iterate_default</span>
+<span class="kn">from</span> <span class="nn">..extractors._extract_default</span> <span class="kn">import</span> <span class="n">extract_default</span>
+<span class="kn">from</span> <span class="nn">._clear_all_infections</span> <span class="kn">import</span> <span class="n">clear_all_infections</span>
+<span class="kn">from</span> <span class="nn">._extract_data</span> <span class="kn">import</span> <span class="n">extract_data</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;run_model&quot;</span><span class="p">]</span>
 
@@ -253,13 +253,13 @@
     <span class="k">if</span> <span class="n">iterator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterate_default</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..iterators._iterate_custom</span> <span class="k">import</span> <span class="n">build_custom_iterator</span>
+        <span class="kn">from</span> <span class="nn">..iterators._iterate_custom</span> <span class="kn">import</span> <span class="n">build_custom_iterator</span>
         <span class="n">iterator</span> <span class="o">=</span> <span class="n">build_custom_iterator</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">extractor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">extractor</span> <span class="o">=</span> <span class="n">extract_default</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..extractors._extract_custom</span> <span class="k">import</span> <span class="n">build_custom_extractor</span>
+        <span class="kn">from</span> <span class="nn">..extractors._extract_custom</span> <span class="kn">import</span> <span class="n">build_custom_extractor</span>
         <span class="n">extractor</span> <span class="o">=</span> <span class="n">build_custom_extractor</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
@@ -277,7 +277,7 @@
     <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">population</span>
 
-    <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+    <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
     <span class="n">population</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
 
     <span class="c1"># create space to hold the population trajectory</span>
@@ -336,14 +336,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">p2</span> <span class="o">=</span> <span class="n">NullProfiler</span><span class="p">()</span>
 
-        <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;timing for day </span><span class="si">{population.day}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;timing for day </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">iterate</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
                 <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span> <span class="n">play_infections</span><span class="o">=</span><span class="n">play_infections</span><span class="p">,</span>
                 <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_advance_functions</span><span class="o">=</span><span class="n">iterator</span><span class="p">,</span>
                 <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p2</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> </span><span class="si">{population.day}</span><span class="s2"> </span><span class="si">{infecteds}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">infecteds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;extract_data&quot;</span><span class="p">)</span>
         <span class="n">extract_data</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
@@ -359,19 +359,19 @@
         <span class="n">population</span><span class="o">.</span><span class="n">day</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">date</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span>
+            <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
             <span class="n">population</span><span class="o">.</span><span class="n">date</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">nsteps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">iteration_count</span> <span class="o">&gt;=</span> <span class="n">nsteps</span><span class="p">:</span>
                 <span class="n">trajectory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Exiting model run early at nsteps = </span><span class="si">{nsteps}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exiting model run early at nsteps = </span><span class="si">{</span><span class="n">nsteps</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
 
         <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">p2</span><span class="o">.</span><span class="n">is_null</span><span class="p">():</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{p2}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">p2</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># save the population trajectory</span>
         <span class="n">trajectory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
@@ -381,9 +381,9 @@
     <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">is_null</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">OVERALL MODEL TIMING</span><span class="se">\n</span><span class="si">{p}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">OVERALL MODEL TIMING</span><span class="se">\n</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Infection died ... Ending on day </span><span class="si">{population.day}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Infection died ... Ending on day </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">trajectory</span></div>
 </pre></div>
@@ -399,7 +399,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

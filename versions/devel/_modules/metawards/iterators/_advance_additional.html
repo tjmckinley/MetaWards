@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -174,12 +174,13 @@
             
   <h1>Source code for metawards.iterators._advance_additional</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">.._network</span> <span class="k">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">.._population</span> <span class="k">import</span> <span class="n">Population</span>
-<span class="kn">from</span> <span class="nn">..utils._profiler</span> <span class="k">import</span> <span class="n">Profiler</span>
+<span class="kn">from</span> <span class="nn">.._network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">..utils._profiler</span> <span class="kn">import</span> <span class="n">Profiler</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;setup_additional_seeds&quot;</span><span class="p">,</span>
            <span class="s2">&quot;advance_additional&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;advance_additional_serial&quot;</span><span class="p">,</span>
            <span class="s2">&quot;advance_additional_omp&quot;</span><span class="p">]</span>
 
 
@@ -187,7 +188,7 @@
     <span class="sd">&quot;&quot;&quot;Load additional seeds from the passed filename. This returns</span>
 <span class="sd">       the added seeds</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Loading additional seeds from </span><span class="si">{filename}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading additional seeds from </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -243,11 +244,11 @@
     <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="advance_additional"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.advance_additional.html#metawards.iterators.advance_additional">[docs]</a><span class="k">def</span> <span class="nf">advance_additional</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span>
-                       <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
-                       <span class="n">infections</span><span class="p">,</span> <span class="n">play_infections</span><span class="p">,</span>
-                       <span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span><span class="p">,</span>
-                       <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">advance_additional_serial</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span>
+                              <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
+                              <span class="n">infections</span><span class="p">,</span> <span class="n">play_infections</span><span class="p">,</span>
+                              <span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span><span class="p">,</span>
+                              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Advance the infection by infecting additional wards based</span>
 <span class="sd">       on a pre-determined pattern based on the additional seeds</span>
 
@@ -278,12 +279,12 @@
     <span class="k">for</span> <span class="n">seed</span> <span class="ow">in</span> <span class="n">_additional_seeds</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">seed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">wards</span><span class="o">.</span><span class="n">play_suscept</span><span class="p">[</span><span class="n">seed</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">&lt;</span> <span class="n">seed</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Not enough susceptibles in ward for seeding&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not enough susceptibles in ward for seeding&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">wards</span><span class="o">.</span><span class="n">play_suscept</span><span class="p">[</span><span class="n">seed</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-=</span> <span class="n">seed</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;seeding play_infections[0][</span><span class="si">{seed[1]}</span><span class="s2">] += </span><span class="si">{seed[2]}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;seeding play_infections[0][</span><span class="si">{</span><span class="n">seed</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">] += </span><span class="si">{</span><span class="n">seed</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">play_infections</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">seed</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">seed</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+    <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="advance_additional_omp"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.advance_additional_omp.html#metawards.iterators.advance_additional_omp">[docs]</a><span class="k">def</span> <span class="nf">advance_additional_omp</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -309,6 +310,33 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;nthreads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">advance_additional</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="advance_additional"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.advance_additional.html#metawards.iterators.advance_additional">[docs]</a><span class="k">def</span> <span class="nf">advance_additional</span><span class="p">(</span><span class="n">nthreads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Advance the infection by infecting additional wards based</span>
+<span class="sd">       on a pre-determined pattern based on the additional seeds</span>
+<span class="sd">       (parallel version)</span>
+
+<span class="sd">       Parameters</span>
+<span class="sd">       ----------</span>
+<span class="sd">       network: Network</span>
+<span class="sd">         The network being modelled</span>
+<span class="sd">       population: Population</span>
+<span class="sd">         The population experiencing the outbreak - also contains the day</span>
+<span class="sd">         of the outbreak</span>
+<span class="sd">       infections</span>
+<span class="sd">         Space to hold the &#39;work&#39; infections</span>
+<span class="sd">       play_infections</span>
+<span class="sd">         Space to hold the &#39;play&#39; infections</span>
+<span class="sd">       profiler: Profiler</span>
+<span class="sd">         Used to profile this function</span>
+<span class="sd">       kwargs</span>
+<span class="sd">         Arguments that aren&#39;t used by this advancer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">nthreads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">advance_additional_serial</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">advance_additional_omp</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -322,7 +350,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

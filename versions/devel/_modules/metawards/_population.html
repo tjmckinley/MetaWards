@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -174,10 +174,10 @@
             
   <h1>Source code for metawards._population</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="k">import</span> <span class="n">dataclass</span> <span class="k">as</span> <span class="n">_dataclass</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span> <span class="k">as</span> <span class="n">_date</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span> <span class="k">as</span> <span class="n">_dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span> <span class="k">as</span> <span class="n">_date</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Population&quot;</span><span class="p">,</span> <span class="s2">&quot;Populations&quot;</span><span class="p">]</span>
 
@@ -216,17 +216,17 @@
         <span class="sd">&quot;&quot;&quot;The number who are infected across all wards&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">latent</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;DAY: </span><span class="si">{self.day}</span><span class="s2"> &quot;</span> \
-            <span class="n">f</span><span class="s2">&quot;S: </span><span class="si">{self.susceptibles}</span><span class="s2">    &quot;</span> \
-            <span class="n">f</span><span class="s2">&quot;E: </span><span class="si">{self.latent}</span><span class="s2">    &quot;</span> \
-            <span class="n">f</span><span class="s2">&quot;I: </span><span class="si">{self.total}</span><span class="s2">    &quot;</span> \
-            <span class="n">f</span><span class="s2">&quot;R: </span><span class="si">{self.recovereds}</span><span class="s2">    &quot;</span> \
-            <span class="n">f</span><span class="s2">&quot;IW: </span><span class="si">{self.n_inf_wards}</span><span class="s2">   &quot;</span> \
-            <span class="n">f</span><span class="s2">&quot;TOTAL POPULATION </span><span class="si">{self.population}</span><span class="s2">&quot;</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;DAY: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2"> &quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;S: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">susceptibles</span><span class="si">}</span><span class="s2">    &quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;E: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">latent</span><span class="si">}</span><span class="s2">    &quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;I: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2">    &quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;R: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">recovereds</span><span class="si">}</span><span class="s2">    &quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;IW: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_inf_wards</span><span class="si">}</span><span class="s2">   &quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;TOTAL POPULATION </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;{self.date.isoformat()}: </span><span class="si">{s}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">s</span></div>
 
@@ -239,20 +239,20 @@
     <span class="c1">#: The trajectory of Population objects</span>
     <span class="n">_trajectory</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="n">Population</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;Populations:empty&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;Latest: </span><span class="si">{self._trajectory[-1]}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Latest: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the ith Population in the trajectory&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;No trajectory data collected&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
@@ -286,7 +286,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

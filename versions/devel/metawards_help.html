@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -191,11 +191,12 @@
 <p>The full set of command line options for metawards is below;</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: metawards [-h] [--version] [-i INPUT] [-l [LINE [LINE ...]]]
                  [-r REPEATS] [-s SEED] [-a [ADDITIONAL [ADDITIONAL ...]]]
-                 [-o OUTPUT] [-u UV] [-d DISEASE] [-I INPUT_DATA]
+                 [-o OUTPUT] [-d DISEASE] [-I INPUT_DATA]
                  [--start-date START_DATE] [--start-day START_DAY]
                  [-p PARAMETERS] [-R REPOSITORY] [-P POPULATION] [-n NSTEPS]
-                 [--iterator ITERATOR] [--extractor EXTRACTOR]
-                 [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
+                 [-u USER_VARIABLES] [--iterator ITERATOR]
+                 [--extractor EXTRACTOR] [--UV UV] [--nthreads NTHREADS]
+                 [--nprocs NPROCS] [--hostfile HOSTFILE]
                  [--cores-per-node CORES_PER_NODE] [--auto-bzip]
                  [--no-auto-bzip] [--force-overwrite-output] [--profile]
                  [--no-profile] [--mpi] [--scoop]
@@ -237,8 +238,6 @@ optional arguments:
                         files (default &#39;output&#39;). This directory will be
                         subdivided if multiple adjustable parameter sets or
                         repeats are used.
-  -u UV, --UV UV        Value for the UV parameter for the model (default is
-                        1.0)
   -d DISEASE, --disease DISEASE
                         Name of the disease to model (default is &#39;ncov&#39;)
   -I INPUT_DATA, --input-data INPUT_DATA
@@ -271,8 +270,12 @@ optional arguments:
   -n NSTEPS, --nsteps NSTEPS
                         Maximum number of steps (days) to run for the
                         simulation. Each step represents one day in the
-                        outbreak (default is to run until the outbreak has
-                        finished).
+                        outbreak (default is to run for a maximum of two years
+                        - 730 days)
+  -u USER_VARIABLES, --user-variables USER_VARIABLES
+                        Name of the file containing user-defined custom
+                        variables. These provide extra information that can be
+                        read by the custom integrators or custom extractors.
   --iterator ITERATOR   Name of the iterator to use to advance the outbreak at
                         each step (day). For a full explanation see the
                         tutorial at https://metawards.github.io
@@ -280,6 +283,8 @@ optional arguments:
                         Name of the extractor to use to extract information
                         during a model run. For a full explanation see the
                         tutorial at https://metawards.github.io
+  --UV UV               Value for the UV parameter for the model (default is
+                        0.0)
   --nthreads NTHREADS   Number of threads over which parallelise an individual
                         model run. The total number of cores used by metawards
                         will be nprocesses x nthreads
@@ -340,7 +345,7 @@ optional arguments:
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

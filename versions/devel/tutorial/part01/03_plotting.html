@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -227,6 +227,17 @@ look something like this;</dd>
 </li>
 </ul>
 <img alt="Overview image of the outbreak of the lurgy" src="../../_images/tutorial_1_3_average.jpg" />
+<p>The <strong>E</strong> graph shows the total number of latent infections. It should be
+slightly ahead of and of a similar shape to the <strong>I</strong> graph, which shows
+the total number of infections.</p>
+<p>The <strong>IW</strong> graph shows the number of wards with at least one infection.
+This cannot grow to more than the total number of wards, hence why
+you see this graph topping out at ~8588, as this is the number of wards.</p>
+<p>The <strong>R</strong> graph shows the number of individuals removed from the epidemic
+(e.g. as they may have recovered). This should have an “S” shape,
+showing exponential growth in the initial stage of the epidemic that
+tails off as the number of individuals susceptible to infection is
+reduced (e.g. as immunity in the population is built up).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Your graphs may look a little different in the exact numbers, but should
@@ -240,7 +251,7 @@ and timelines.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code> command can be used for quick-and-simple plots.
 If you want something more complex then you can take a look at the functions
 in the <a class="reference internal" href="../../api/index_api_MetaWards_analysis.html#module-metawards.analysis" title="metawards.analysis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.analysis</span></code></a> module. In addition, we have a
-<a class="reference download internal" download="" href="../../_downloads/33cfeb7dbd654138cbe046d84fb3c7e2/1_3_plotting.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">notebook</span></code></a>
+<a class="reference download internal" download="" href="../../_downloads/0a4b2ec193ed97e2aad7418818ebb69f/1_3_plotting.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">notebook</span></code></a>
 which you can look at which breaks down exactly how <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code>
 uses pandas and matplotlib to render these two graphs.</p>
 </div>
@@ -267,7 +278,7 @@ uses pandas and matplotlib to render these two graphs.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

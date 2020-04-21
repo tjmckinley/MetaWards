@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -174,10 +174,10 @@
             
   <h1>Source code for metawards.utils._iterate</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">.._network</span> <span class="k">import</span> <span class="n">Network</span>
-<span class="kn">from</span> <span class="nn">.._population</span> <span class="k">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">.._network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span>
 
-<span class="kn">from</span> <span class="nn">._profiler</span> <span class="k">import</span> <span class="n">Profiler</span><span class="p">,</span> <span class="n">NullProfiler</span>
+<span class="kn">from</span> <span class="nn">._profiler</span> <span class="kn">import</span> <span class="n">Profiler</span><span class="p">,</span> <span class="n">NullProfiler</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;iterate&quot;</span><span class="p">]</span>
 
@@ -226,12 +226,14 @@
                                               <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">advance_function</span> <span class="ow">in</span> <span class="n">advance_functions</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">advance_function</span><span class="p">))</span>
         <span class="n">advance_function</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span>
                          <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
                          <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span>
                          <span class="n">play_infections</span><span class="o">=</span><span class="n">play_infections</span><span class="p">,</span>
                          <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
                          <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
     <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 </pre></div>
@@ -247,7 +249,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -202,23 +202,23 @@
 from the nine model runs. You can explore this using Python pandas, R,
 or Excel <a class="reference internal" href="../part01/02_repeating.html"><span class="doc">as you did before</span></a>. Using
 ipython or Jupyter notebooks with pandas, we can load up the file;</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;output/results.csv.bz2&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="go">       fingerprint  repeat  beta[2]  too_ill_to_move[2]  day  ...         S  E  I        R  IW</span>
-<span class="go">  0            3_0       1      0.3                 0.0    0  ...  56082077  0  0        0   0</span>
-<span class="go">  1            3_0       1      0.3                 0.0    1  ...  56082077  0  0        0   0</span>
-<span class="go">  2            3_0       1      0.3                 0.0    2  ...  56082072  5  0        0   0</span>
-<span class="go">  3            3_0       1      0.3                 0.0    3  ...  56082072  0  5        0   0</span>
-<span class="go">  4            3_0       1      0.3                 0.0    4  ...  56082070  0  5        2   2</span>
-<span class="go">  ...          ...     ...      ...                 ...  ...  ...       ... .. ..      ...  ..</span>
-<span class="go">  1587         5_5       1      0.5                 0.5  172  ...  49969606  0  2  6112469   0</span>
-<span class="go">  1588         5_5       1      0.5                 0.5  173  ...  49969606  0  2  6112469   0</span>
-<span class="go">  1589         5_5       1      0.5                 0.5  174  ...  49969606  0  2  6112469   0</span>
-<span class="go">  1590         5_5       1      0.5                 0.5  175  ...  49969606  0  1  6112470   0</span>
-<span class="go">  1591         5_5       1      0.5                 0.5  176  ...  49969606  0  0  6112471   0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="go">     fingerprint  repeat  beta[2]  too_ill_to_move[2]  day  ...         S  E  I         R  IW</span>
+<span class="go">0            3_0       1      0.3                 0.0    0  ...  56082077  0  0         0   0</span>
+<span class="go">1            3_0       1      0.3                 0.0    1  ...  56082077  0  0         0   0</span>
+<span class="go">2            3_0       1      0.3                 0.0    2  ...  56082072  5  0         0   0</span>
+<span class="go">3            3_0       1      0.3                 0.0    3  ...  56082072  0  5         0   0</span>
+<span class="go">4            3_0       1      0.3                 0.0    4  ...  56082071  0  5         1   1</span>
+<span class="gp">... </span>         <span class="o">...</span>     <span class="o">...</span>      <span class="o">...</span>                 <span class="o">...</span>  <span class="o">...</span>  <span class="o">...</span>       <span class="o">...</span> <span class="o">..</span> <span class="o">..</span>       <span class="o">...</span>  <span class="o">..</span>
+<span class="go">1764         5_5       1      0.5                 0.5  172  ...   6304109  0  5  49777963   0</span>
+<span class="go">1765         5_5       1      0.5                 0.5  173  ...   6304109  0  4  49777964   0</span>
+<span class="go">1766         5_5       1      0.5                 0.5  174  ...   6304109  0  3  49777965   0</span>
+<span class="go">1767         5_5       1      0.5                 0.5  175  ...   6304109  0  1  49777967   0</span>
+<span class="go">1768         5_5       1      0.5                 0.5  176  ...   6304109  0  0  49777968   0</span>
 
-<span class="go">  [1592 rows x 11 columns]</span>
+<span class="go">[1769 rows x 11 columns]</span>
 </pre></div>
 </div>
 <p>This is very similar to before, except now we have extra columns giving
@@ -239,32 +239,26 @@ while <code class="docutils literal notranslate"><span class="pre">0.5</span> <s
 together. Then the <code class="docutils literal notranslate"><span class="pre">.max</span></code> function can be used to show the maximum
 values of selected columns from each group, e.g.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">)[[</span><span class="s2">&quot;day&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;IW&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-<span class="go">           day       E        I    IW         R</span>
-<span class="go">fingerprint</span>
-<span class="go">3_0          175  155437   769541  8510   6369771</span>
-<span class="go">3_25         171  141362   698977  8493   5811758</span>
-<span class="go">3_5          185  170973   847554  8531   6998635</span>
-<span class="go">4_0          178  235224  1162678  8573   9251310</span>
-<span class="go">4_25         172  250029  1235252  8566   9808872</span>
-<span class="go">4_5          174  289890  1435946  8582  11322621</span>
-<span class="go">5_0          175  394132  1949529  8584  14703554</span>
-<span class="go">5_25         177  492045  2434433  8586  18009857</span>
-<span class="go">5_5          176  157752   779038  8522   6112471</span>
+<span class="go">              day        E         I    IW         R</span>
+<span class="go"> fingerprint</span>
+<span class="go"> 3_0          204  1767303   8665472  8588  48105748</span>
+<span class="go"> 3_25         205  1908160   9296754  8588  48076343</span>
+<span class="go"> 3_5          215  1844377   9024418  8588  48036902</span>
+<span class="go"> 4_0          192  1947245   9532789  8588  49042717</span>
+<span class="go"> 4_25         210  1965166   9614400  8588  49009034</span>
+<span class="go"> 4_5          200  2095342  10179621  8588  48975523</span>
+<span class="go"> 5_0          175  2207896  10714530  8588  49857969</span>
+<span class="go"> 5_25         183  2120481  10326984  8588  49821966</span>
+<span class="go"> 5_5          176  2117730  10330952  8588  49777968</span>
 </pre></div>
 </div>
 <p>From this, we can see that higher peaks occured for higher values
-of <strong>beta</strong>, which is expected. However, larger values of
-<strong>too_ill_to_move</strong> also seemed to slightly increase the peaks,
-which seems counter-intuitive. If is only for the high <strong>beta</strong>
-value of 0.5 that the increased <strong>too_ill_to_move</strong> of 0.5 has
-resulted in a much smaller peak.</p>
+of <strong>beta</strong>, which is expected. However, different values of
+<strong>too_ill_to_move</strong> had little impact on the peaks.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">Do not over-interpret the results of single runs, such as the above.
-The result for 5_0 here has a peak in infections of 14.7 million.
-The peak for the <a class="reference internal" href="01_disease.html"><span class="doc">last job</span></a> which used the
-same disease parameters, but a different random number seed,
-had a peak in infections of ~20 million. There is a lot of random
+There is a lot of random
 error in these calculations and multiple <em>model runs</em> must be
 averaged over to gain a good understanding.</p>
 </div>
@@ -276,7 +270,7 @@ that you use a tool such as R, Pandas or Excel to create the plots that
 will let you explore the data in full. For a quick set of plots, you
 can again use <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code> to generate some overview plots. To
 do this type;</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot -i output/results.csv.bz2 --format jpg --dpi <span class="m">300</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot -i output/results.csv.bz2 --format jpg --dpi <span class="m">150</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -309,7 +303,7 @@ pdfs (yet - although
 <div class="section" id="jupyter-notebook">
 <h2>Jupyter notebook<a class="headerlink" href="#jupyter-notebook" title="Permalink to this headline">¶</a></h2>
 <p>In addition, to the <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code> command, we also have a
-<a class="reference download internal" download="" href="../../_downloads/624998a4f4fd96fd6b2eec36609bf2d5/2_3_analysis.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">notebook</span></code></a>
+<a class="reference download internal" download="" href="../../_downloads/9c074a8ab169b5e0fed845f059d0718a/2_3_analysis.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">notebook</span></code></a>
 which you can look at which breaks down exactly how <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code>
 uses pandas and matplotlib to render multi-fingerprint graphs.</p>
 </div>
@@ -336,7 +330,7 @@ uses pandas and matplotlib to render multi-fingerprint graphs.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

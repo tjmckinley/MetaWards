@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -205,15 +205,15 @@ that you have, type the following into your console;</p>
 printed to your screen.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ metawards --version
 
-      ************************************
-      metawards version 0.7.0b+17.g6b076dc
-      ************************************
+      ***********************************
+      metawards version 0.7.1+31.gd4a7485
+      ***********************************
 
             -- Source information --
 repository: https://github.com/metawards/MetaWards
                  branch: devel
-revision: 6b076dcd2d3aa82ddf7ef96120f456f3e31c294f
-    last modified: 2020-04-20T10:36:23+0100
+revision: d4a748546f76cd7559a7044d237041b809bc60cc
+    last modified: 2020-04-21T20:45:50+0100
 
           -- Additional information --
 Visit https://metawards.github.io for more information
@@ -325,8 +325,8 @@ infected, but not yet infectious.</li>
 have symptoms and are infectious</li>
 <li><strong>R</strong>: The number of the population who are removed from the outbreak,
 e.g. because they have recovered and are no longer susceptible to infection</li>
-<li><strong>IW</strong>: The number of the population who are <em>infected</em> and showing
-stronger symptoms.</li>
+<li><strong>IW</strong>: The number electoral wards that contain at least one infected
+individual.</li>
 </ul>
 <p>For more information about these values, please
 <a class="reference external" href="https://doi.org/10.1016/j.epidem.2009.11.002">read</a>
@@ -347,27 +347,30 @@ file to use via the <code class="docutils literal notranslate"><span class="pre"
 <p>Now the program will run for a long time (minutes), and you will see
 an outbreak move through the population. The final lines of your output
 may look something like this;</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="mi">190</span> <span class="mi">1</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">55748884</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">333192</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082076</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">217</span> <span class="mi">9</span>
+<span class="n">S</span><span class="p">:</span> <span class="mi">11772514</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">7</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44309556</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">1</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
 
- <span class="mi">191</span> <span class="mi">1</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">55748884</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">333192</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082076</span>
+<span class="mi">218</span> <span class="mi">7</span>
+<span class="n">S</span><span class="p">:</span> <span class="mi">11772513</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">7</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44309556</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">1</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082076</span>
 
- <span class="mi">192</span> <span class="mi">1</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">55748884</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">333192</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082076</span>
+<span class="mi">219</span> <span class="mi">8</span>
+<span class="n">S</span><span class="p">:</span> <span class="mi">11772512</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">5</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44309559</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">1</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082076</span>
 
- <span class="mi">193</span> <span class="mi">1</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">55748884</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">333192</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082076</span>
+<span class="mi">220</span> <span class="mi">6</span>
+<span class="n">S</span><span class="p">:</span> <span class="mi">11772512</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">5</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44309559</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082076</span>
 
- <span class="mi">194</span> <span class="mi">1</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">55748884</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">333192</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
+<span class="mi">221</span> <span class="mi">6</span>
+<span class="n">S</span><span class="p">:</span> <span class="mi">11772512</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">3</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44309562</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
 
- <span class="mi">195</span> <span class="mi">1</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">55748884</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">333192</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
+<span class="mi">222</span> <span class="mi">3</span>
+<span class="n">S</span><span class="p">:</span> <span class="mi">11772512</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">2</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44309563</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
 
- <span class="mi">196</span> <span class="mi">1</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">55748884</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">333193</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
-<span class="n">Infection</span> <span class="n">died</span> <span class="o">...</span> <span class="n">Ending</span> <span class="n">on</span> <span class="n">day</span> <span class="mi">197</span>
+<span class="mi">223</span> <span class="mi">2</span>
+<span class="n">S</span><span class="p">:</span> <span class="mi">11772512</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">2</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44309563</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
+
+<span class="mi">224</span> <span class="mi">2</span>
+<span class="n">S</span><span class="p">:</span> <span class="mi">11772512</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44309565</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
+<span class="n">Infection</span> <span class="n">died</span> <span class="o">...</span> <span class="n">Ending</span> <span class="n">on</span> <span class="n">day</span> <span class="mi">225</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -387,7 +390,7 @@ to enable a job to be repeated. Look the for line the reads;</p>
 <span class="o">***</span> <span class="n">To</span> <span class="n">repeat</span> <span class="n">this</span> <span class="n">job</span> <span class="n">use</span> <span class="n">the</span> <span class="n">command</span> <span class="o">***</span>
 <span class="o">******************************************</span>
 
-<span class="n">metawards</span> <span class="o">--</span><span class="n">repeats</span> <span class="mi">1</span> <span class="o">--</span><span class="n">seed</span> <span class="mi">17294186</span> <span class="o">--</span><span class="n">additional</span> <span class="n">ExtraSeedsLondon</span><span class="o">.</span><span class="n">dat</span> <span class="o">--</span><span class="n">output</span> <span class="n">output</span> <span class="o">--</span><span class="n">UV</span> <span class="mf">1.0</span> <span class="o">--</span><span class="n">disease</span> <span class="n">lurgy</span> <span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="n">data</span> <span class="mi">2011</span><span class="n">Data</span> <span class="o">--</span><span class="n">start</span><span class="o">-</span><span class="n">date</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">16</span> <span class="o">--</span><span class="n">start</span><span class="o">-</span><span class="n">day</span> <span class="mi">0</span> <span class="o">--</span><span class="n">parameters</span> <span class="n">march29</span> <span class="o">--</span><span class="n">repository</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">chris</span><span class="o">/</span><span class="n">GitHub</span><span class="o">/</span><span class="n">MetaWardsData</span> <span class="o">--</span><span class="n">population</span> <span class="mi">57104043</span> <span class="o">--</span><span class="n">nthreads</span> <span class="mi">4</span> <span class="o">--</span><span class="n">nprocs</span> <span class="mi">1</span>
+<span class="n">metawards</span> <span class="o">--</span><span class="n">repeats</span> <span class="mi">1</span> <span class="o">--</span><span class="n">seed</span> <span class="mi">20460833</span> <span class="o">--</span><span class="n">additional</span> <span class="n">ExtraSeedsLondon</span><span class="o">.</span><span class="n">dat</span> <span class="o">--</span><span class="n">output</span> <span class="n">output</span> <span class="o">--</span><span class="n">UV</span> <span class="mf">0.0</span> <span class="o">--</span><span class="n">disease</span> <span class="n">lurgy</span> <span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="n">data</span> <span class="mi">2011</span><span class="n">Data</span> <span class="o">--</span><span class="n">start</span><span class="o">-</span><span class="n">date</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">20</span> <span class="o">--</span><span class="n">start</span><span class="o">-</span><span class="n">day</span> <span class="mi">0</span> <span class="o">--</span><span class="n">parameters</span> <span class="n">march29</span> <span class="o">--</span><span class="n">repository</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">chris</span><span class="o">/</span><span class="n">GitHub</span><span class="o">/</span><span class="n">MetaWardsData</span> <span class="o">--</span><span class="n">population</span> <span class="mi">57104043</span> <span class="o">--</span><span class="n">nthreads</span> <span class="mi">4</span> <span class="o">--</span><span class="n">nprocs</span> <span class="mi">1</span>
 </pre></div>
 </div>
 <p>This is the command line that you can use to repeat a job (note that
@@ -423,7 +426,7 @@ you find you cannot repeat a run.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>

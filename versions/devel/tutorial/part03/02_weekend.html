@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.7.0b
+                0.7.1
               </div>
             
           
@@ -109,6 +109,8 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="03_lockdown.html">Custom advance functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="04_dynamic.html">Responding to changing conditions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="05_scanning.html">Custom variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06_scan_lockdown.html">Scanning lockdown</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../index_part04.html">Part 4 - Customising the output</a></li>
@@ -213,7 +215,7 @@ for each model day.</p>
 create a new file called <code class="docutils literal notranslate"><span class="pre">weekend.py</span></code>, and copy into it the below
 code.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iterate_weekend</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Hello iterate_weekend&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello iterate_weekend&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">[]</span>
 </pre></div>
@@ -225,10 +227,10 @@ unspecified number of
 is print <code class="docutils literal notranslate"><span class="pre">Hello</span> <span class="pre">iterate_weekend</span></code> to the screen.</p>
 <p>You can run this function by starting <code class="docutils literal notranslate"><span class="pre">ipython</span></code> in this directory
 and typing;</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">weekend</span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">weekend</span><span class="o">.</span><span class="n">iterate_weekend</span><span class="p">()</span>
-<span class="n">Hello</span> <span class="n">iterate_weekend</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="p">[]</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span>In [1]: import weekend
+In [2]: weekend.iterate_weekend()
+Hello iterate_weekend
+Out[2]: []
 </pre></div>
 </div>
 <p>You can tell <code class="docutils literal notranslate"><span class="pre">metawards</span></code> to call this function every iteration
@@ -305,13 +307,13 @@ module whose name started with <code class="docutils literal notranslate"><span 
 <p>You can name your function whatever you want, e.g. edit <code class="docutils literal notranslate"><span class="pre">weekend.py</span></code>
 to read;</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">another_function</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Hello another_function&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello another_function&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">[]</span>
 
 
 <span class="k">def</span> <span class="nf">iterate_weekend</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Hello iterate_weekend&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello iterate_weekend&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">[]</span>
 </pre></div>
@@ -341,7 +343,7 @@ advance an outbreak (so-called <code class="docutils literal notranslate"><span 
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">metawards.iterators</span> <span class="kn">import</span> <span class="n">advance_infprob</span><span class="p">,</span> <span class="n">advance_play</span>
 
 <span class="k">def</span> <span class="nf">iterate_weekend</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Hello iterate_weekend&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello iterate_weekend&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">[</span><span class="n">advance_infprob</span><span class="p">,</span> <span class="n">advance_play</span><span class="p">]</span>
 </pre></div>
@@ -358,15 +360,15 @@ one after another, to advance the outbreak. If you now run
 <p>you will see that the outbreak now advances throughout the population.
 However, each day now only progresses new infections using the “play” mode
 <a class="reference internal" href="../../api/generated/metawards.iterators.advance_play.html#metawards.iterators.advance_play" title="metawards.iterators.advance_play"><code class="xref py py-meth docutils literal notranslate"><span class="pre">advance_play()</span></code></a>. The “work” mode
-<a class="reference internal" href="../../api/generated/metawards.iterators.advance_fixed.html#metawards.iterators.advance_fixed" title="metawards.iterators.advance_fixed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">advance_fixed()</span></code></a>, meaning each day
-is more like a weekend.</p>
+<a class="reference internal" href="../../api/generated/metawards.iterators.advance_fixed.html#metawards.iterators.advance_fixed" title="metawards.iterators.advance_fixed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">advance_fixed()</span></code></a>, is not used, meaning
+that every day is now modelled as like a weekend.</p>
 <p>Create an overview graph of your “weekend only” run and compare it to
 the results from the “weekday only” runs in
-<span class="xref std std-doc">part 2 &lt;../part02/05_refining</span>. Do you see a difference?</p>
+<a class="reference internal" href="../part02/05_refining.html"><span class="doc">part 2</span></a>. Do you see a difference?</p>
 <p>My graph is shown below;</p>
 <img alt="Overview image of a weekend only run" src="../../_images/tutorial_3_2_1_overview.jpg" />
-<p>It is clear that the outbreak is now much smaller, peaking at 4 million
-as opposed to over 20 million. The peak is also significantly broadened
+<p>It is clear that the outbreak is now much smaller, peaking at 7 million
+as opposed to nearly 20 million. The peak is also broadened
 out, with the outbreak lasting months rather than weeks.</p>
 </div>
 <div class="section" id="changing-iterators-with-time">
@@ -384,15 +386,15 @@ it the code below;</p>
 <span class="k">def</span> <span class="nf">iterate_week</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">date</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">date</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Creating functions for {date}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating functions for </span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">weekday</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;This is a weekday&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is a weekday&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">advance_infprob</span><span class="p">,</span>
                 <span class="n">advance_fixed</span><span class="p">,</span>
                 <span class="n">advance_play</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;This is a weekend&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is a weekend&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">advance_infprob</span><span class="p">,</span>
                 <span class="n">advance_play</span><span class="p">]</span>
 </pre></div>
@@ -464,7 +466,7 @@ command line option.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 20, 2020.
+        Last updated on Apr 21, 2020.
       </span>
 
     </p>
