@@ -137,11 +137,11 @@ def parse_args():
     parser.add_argument('-P', '--population', type=int, default=57104043,
                         help="Initial population (default 57104043)")
 
-    parser.add_argument('-n', '--nsteps', type=int, default=None,
+    parser.add_argument('-n', '--nsteps', type=int, default=730,
                         help="Maximum number of steps (days) to run for the "
                              "simulation. Each step represents one day in the "
-                             "outbreak (default is to run until the "
-                             "outbreak has finished).")
+                             "outbreak (default is to run for a maximum "
+                             "of two years - 730 days)")
 
     parser.add_argument('--iterator', type=str, default=None,
                         help="Name of the iterator to use to advance the "
