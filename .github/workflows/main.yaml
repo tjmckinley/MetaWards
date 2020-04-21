@@ -6,7 +6,9 @@ on:
   pull_request:
     branches: [master, devel]
   tags:
-    - *
+    - 0.*
+    - 1.*
+    - 2.*
 
 jobs:
   build:
