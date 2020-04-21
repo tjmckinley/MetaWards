@@ -195,7 +195,7 @@ def test_set_custom():
 
     assert v == h
 
-    assert v[".something"][1] == 5.0
-    assert v["user.another"][2] == 100.0
+    assert v[".something[1]"] == 5.0
+    assert v["user.another[2]"] == 100.0
     assert v[".flag"] == 1.0
-    assert v["beta"][3] == 0.5
+    assert v["beta[3]"] == 0.5

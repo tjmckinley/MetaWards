@@ -13,7 +13,7 @@ def test_adjustable():
     variables["user.something[5]"] = 0.5
     variables["user.something[2]"] = 0.3
     variables["user.another[1]"] = 0.8
-    variables["user.flag"] = True  # this will be converted to 1.0
+    variables["user.flag"] = True   # this will be converted to 1.0
 
     variables["beta[2]"] = 0.2
     variables["too_ill_to_move[1]"] = 0.15

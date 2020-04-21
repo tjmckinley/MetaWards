@@ -48,6 +48,9 @@ def _set_user_params(params, name: str, index: int, value: float):
     elif name.startswith("."):
         name = name[1:]
 
+    if params.user_params is None:
+        params.user_params = {}
+
     if index is None:
         params.user_params[name] = value
     else:
@@ -214,6 +217,9 @@ class VariableSet:
     def __getitem__(self, key):
         if self._vals is None:
             raise KeyError(f"No adjustable parameter {key} in an empty set")
+
+        if key.startswith("user."):
+            key = key[4:]
 
         for i, name in enumerate(self._names):
             if key == name:
@@ -543,49 +549,45 @@ class VariableSet:
             while line:
                 line = line.strip()
 
-                if len(line) == 0:
+                if line.startswith("#") or len(line) == 0:
                     line = FILE.readline()
                     continue
 
                 if first_line is None:
-                    if len(line) > 0:
-                        # this is a valid first line - what separator
-                        # should we use?
-                        if line.find(",") != -1:
-                            separator = ","
-                        else:
-                            separator = None  # spaces
-
-                        first_line = line
-
-                        words = [_clean(x) for x in line.split(separator)]
-
-                        try:
-                            float(words[0])
-                            is_title_line = False
-                            is_vertical = False
-                        except Exception:
-                            is_title_line = True
-
-                        if is_title_line:
-                            is_vertical = False
-                            is_title_line = True
-
-                            for i in range(1, len(words)):
-                                try:
-                                    float(words[i])
-                                    is_vertical = True
-                                    is_title_line = False
-                                    titles = None
-                                    break
-                                except Exception:
-                                    pass
-
-                        if is_title_line:
-                            titles = words
-                            line = FILE.readline()
-                            continue
+                    # this is a valid first line - what separator
+                    # should we use?
+                    if line.find(",") != -1:
+                        separator = ","
                     else:
+                        separator = None  # spaces
+
+                    first_line = line
+
+                    words = [_clean(x) for x in line.split(separator)]
+
+                    try:
+                        float(words[0])
+                        is_title_line = False
+                        is_vertical = False
+                    except Exception:
+                        is_title_line = True
+
+                    if is_title_line:
+                        is_vertical = False
+                        is_title_line = True
+
+                        for i in range(1, len(words)):
+                            try:
+                                float(words[i])
+                                is_vertical = True
+                                is_title_line = False
+                                titles = None
+                                break
+                            except Exception:
+                                pass
+
+                    if is_title_line:
+                        titles = words
                         line = FILE.readline()
                         continue
 
@@ -870,30 +872,30 @@ class VariableSets:
 
                 line = line.strip()
 
+                if line.startswith("#") or len(line) == 0:
+                    line = FILE.readline()
+                    continue
+
                 if first_line is None:
-                    if len(line) > 0:
-                        # this is a valid first line - what separator
-                        # should we use?
-                        if line.find(",") != -1:
-                            separator = ","
-                        else:
-                            separator = None  # spaces
-
-                        first_line = line
-
-                        words = line.split(separator)
-
-                        try:
-                            float(words[0])
-                            is_title_line = False
-                        except Exception:
-                            is_title_line = True
-
-                        if is_title_line:
-                            titles = words
-                            line = FILE.readline()
-                            continue
+                    # this is a valid first line - what separator
+                    # should we use?
+                    if line.find(",") != -1:
+                        separator = ","
                     else:
+                        separator = None  # spaces
+
+                    first_line = line
+
+                    words = line.split(separator)
+
+                    try:
+                        float(words[0])
+                        is_title_line = False
+                    except Exception:
+                        is_title_line = True
+
+                    if is_title_line:
+                        titles = words
                         line = FILE.readline()
                         continue
 

@@ -1,6 +1,6 @@
 
 from dataclasses import dataclass as _dataclass
-from typing import List as _List
+from typing import List as _List, Dict as _Dict
 from copy import deepcopy as _deepcopy
 import pathlib as _pathlib
 import os as _os
@@ -130,10 +130,12 @@ class Parameters:
 
     #: proportion of daily imports
     daily_imports: float = 0.0
+
+    #: Seasonality parameter
     UV: float = 0.0
 
     #: User parameters
-    user_params = {}
+    user_params: _Dict[str, float] = None
 
     _name: str = None
     _version: str = None
