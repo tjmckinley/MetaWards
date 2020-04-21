@@ -13,7 +13,8 @@ from ..utils._ran_binomial cimport _ran_binomial, \
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
-__all__ = ["advance_play", "advance_play_omp"]
+__all__ = ["advance_play", "advance_play_omp",
+           "advance_play_serial"]
 
 
 def advance_play_omp(network: Network, play_infections, rngs,
@@ -162,8 +163,8 @@ def advance_play_omp(network: Network, play_infections, rngs,
     p.stop()
 
 
-def advance_play(network: Network, play_infections, rngs,
-                 profiler: Profiler, **kwargs):
+def advance_play_serial(network: Network, play_infections, rngs,
+                        profiler: Profiler, **kwargs):
     """Advance the model by triggering infections related to random
        'play' movements (serial version of the function)
 
@@ -186,3 +187,29 @@ def advance_play(network: Network, play_infections, rngs,
     kwargs["nthreads"] = 1
     advance_play_omp(network=network, play_infections=play_infections,
                      rngs=rngs, profiler=profiler, **kwargs)
+
+
+def advance_play(nthreads: int, **kwargs):
+    """Advance the model by triggering infections related to random
+       'play' movements (parallel version of the function)
+
+       Parameters
+       ----------
+       network: Network
+         The network being modelled
+       play_infections:
+         The space that holds all of the "play" infections
+       rngs:
+         The list of thread-safe random number generators, one per thread
+       nthreads: int
+         The number of threads over which to parallelise the calculation
+       profiler: Profiler
+         The profiler used to profile this calculation
+       kwargs:
+         Extra arguments that may be used by other advancers, but which
+         are not used by advance_play
+    """
+    if nthreads == 1:
+        advance_play_serial(**kwargs)
+    else:
+        advance_play_omp(nthreads=nthreads, **kwargs)

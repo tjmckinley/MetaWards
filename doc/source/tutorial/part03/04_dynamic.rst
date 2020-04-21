@@ -117,49 +117,104 @@ file to read;
 
 Run the model as before and see what happens...
 
-To start, the lockdown has worked and the number of infections has fallen.
-However, the lockdown has been released completely once the number of
-infections fell below 2000. This meant that there were still lots of
-infected individuals with a large susceptible population. Unsurprisingly,
-the infection quickly grew again, e.g. as seen in the print out from
-my run here;
+To start, the lockdown has worked and the number of infections has fallen,
+with the number falling below 2000 on day 78. However, releasing the
+lockdown completely leads to a rapid growth in the infection,
+with over 85,000 infected three weeks after lockdown ended. This
+is unsurprising, as there was still a lot of infected individuals
+remaining once lockdown ended, and a large population that was
+still susceptible to infection (as you can see from the print
+of my run and the overview graph below).
 
 ::
 
-    79 2360
-    S: 56044530    E: 167    I: 2087    R: 35293    IW: 138   TOTAL POPULATION 56081910
+    S: 56057097    E: 213    I: 2189    R: 22578    IW: 197   TOTAL POPULATION 56081864
     We are on lockdown
 
-    80 2254
-    S: 56044384    E: 143    I: 2003    R: 35547    IW: 144   TOTAL POPULATION 56081934
+    76 2402
+    S: 56056905    E: 200    I: 2133    R: 22839    IW: 184   TOTAL POPULATION 56081877
     We are on lockdown
 
-    81 2146
-    S: 56044232    E: 146    I: 1878    R: 35821    IW: 147   TOTAL POPULATION 56081931
+    77 2333
+    S: 56056746    E: 192    I: 2101    R: 23038    IW: 157   TOTAL POPULATION 56081885
+    We are on lockdown
 
-    82 2024
-    S: 56043435    E: 152    I: 1792    R: 36698    IW: 706   TOTAL POPULATION 56081925
+    78 2293
+    S: 56056568    E: 159    I: 2061    R: 23289    IW: 176   TOTAL POPULATION 56081918
+    We are on lockdown
 
-    83 1944
-    S: 56042700    E: 797    I: 1708    R: 36872    IW: 655   TOTAL POPULATION 56081280
+    79 2220
+    S: 56056399    E: 178    I: 1983    R: 23517    IW: 162   TOTAL POPULATION 56081899
 
-    84 2505
-    S: 56042027    E: 735    I: 2277    R: 37038    IW: 600   TOTAL POPULATION 56081342
+    80 2161
+    S: 56055290    E: 169    I: 1904    R: 24714    IW: 942   TOTAL POPULATION 56081908
 
-    85 3012
-    S: 56041403    E: 673    I: 2806    R: 37195    IW: 570   TOTAL POPULATION 56081404
+    81 2073
+    S: 56054625    E: 1109    I: 1853    R: 24490    IW: 596   TOTAL POPULATION 56080968
 
-    86 3479
-    S: 56040636    E: 624    I: 3286    R: 37531    IW: 691   TOTAL POPULATION 56081453
+    82 2962
+    S: 56053957    E: 665    I: 2728    R: 24727    IW: 602   TOTAL POPULATION 56081412
 
-    87 3910
-    S: 56039299    E: 767    I: 3683    R: 38328    IW: 1138   TOTAL POPULATION 56081310
+    83 3393
+    S: 56052602    E: 668    I: 3162    R: 25645    IW: 1151   TOTAL POPULATION 56081409
 
-    88 4450
-    S: 56037905    E: 1337    I: 4205    R: 38630    IW: 1196   TOTAL POPULATION 56080740
+    84 3830
+    S: 56051035    E: 1355    I: 3601    R: 26086    IW: 1304   TOTAL POPULATION 56080722
 
-    89 5542
-    S: 56036337    E: 1394    I: 5221    R: 39125    IW: 1320   TOTAL POPULATION 56080683
+    85 4956
+    S: 56049197    E: 1567    I: 4689    R: 26624    IW: 1492   TOTAL POPULATION 56080510
+
+    86 6256
+    S: 56046897    E: 1838    I: 5977    R: 27365    IW: 1811   TOTAL POPULATION 56080239
+
+    87 7815
+    S: 56044064    E: 2300    I: 7445    R: 28268    IW: 2140   TOTAL POPULATION 56079777
+
+    88 9745
+    S: 56041777    E: 2833    I: 9318    R: 28149    IW: 1808   TOTAL POPULATION 56079244
+
+    89 12151
+    S: 56039009    E: 2287    I: 11558    R: 29223    IW: 2106   TOTAL POPULATION 56079790
+
+    90 13845
+    S: 56033706    E: 2768    I: 13086    R: 32517    IW: 3391   TOTAL POPULATION 56079309
+
+    91 15854
+    S: 56027735    E: 5303    I: 14968    R: 34071    IW: 3622   TOTAL POPULATION 56076774
+
+    92 20271
+    S: 56020915    E: 5971    I: 19179    R: 36012    IW: 3947   TOTAL POPULATION 56076106
+
+    93 25150
+    S: 56012334    E: 6820    I: 23835    R: 39088    IW: 4518   TOTAL POPULATION 56075257
+
+    94 30655
+    S: 56001786    E: 8581    I: 29059    R: 42651    IW: 4947   TOTAL POPULATION 56073496
+
+    95 37640
+    S: 55994025    E: 10548    I: 35825    R: 41679    IW: 4377   TOTAL POPULATION 56071529
+
+    96 46373
+    S: 55984596    E: 7761    I: 44092    R: 45628    IW: 4847   TOTAL POPULATION 56074316
+
+    97 51853
+    S: 55965009    E: 9429    I: 49023    R: 58616    IW: 6443   TOTAL POPULATION 56072648
+
+    98 58452
+    S: 55943662    E: 19587    I: 55002    R: 63826    IW: 6618   TOTAL POPULATION 56062490
+
+    99 74589
+    S: 55919882    E: 21347    I: 70325    R: 70523    IW: 6883   TOTAL POPULATION 56060730
+
+    100 91672
+    S: 55889466    E: 23780    I: 86623    R: 82208    IW: 7276   TOTAL POPULATION 56058297
+
+.. image:: ../../images/tutorial_3_4_4_overview.jpg
+   :alt: Overview image of a automatically released lockdown
+
+Note how the second wave of infection makes the initial wave almost invisible
+in this graph. The only visible evidence is the small peak in the number
+of infected wards (**IW**) plot.
 
 Relaxing, not removing lockdown
 -------------------------------
@@ -189,7 +244,7 @@ edit your ``lockdown.py`` to contain the following.
         except Exception:
             population.lockdown_state = "before"
             population.is_locked_down = False
-            population.lockdown_scale_rate = 0.25
+            population.lockdown_scale_rate = 0.05
 
         if population.lockdown_state == "before":
             if population.total > 5000:
@@ -201,14 +256,14 @@ edit your ``lockdown.py`` to contain the following.
             if population.total < 2000:
                 population.lockdown_state = "relaxed_lockdown"
                 population.lockdown_ended = population.day
-                population.lockdown_scale_rate = 0.5
+                population.lockdown_scale_rate = 0.10
                 population.is_locked_down = True
 
         elif population.lockdown_state == "relaxed_lockdown":
             if population.total < 1000:
-                population.lockdown_scale_rate = 0.75
+                population.lockdown_scale_rate = 0.20
             else:
-                population.lockdown_scale_rate = 0.5
+                population.lockdown_scale_rate = 0.10
 
         if population.is_locked_down:
             return [advance_lockdown]
@@ -220,18 +275,18 @@ In this code we have created a new lockdown state that we've called
 ``relaxed_lockdown``. This is entered when the number of infections
 drops below 2000. In this state controls can be released that
 correspond to now only halving the infection rate (``scale_rate``
-is increased to 0.5 from 0.25 during the strong lockdown).
+is increased to 0.10 from 0.05 during the strong lockdown).
 In the ``relaxed_lockdown`` state the infected population
 is always checked. If it is below 1000 then the lockdown can be
-relaxed even more, with the ``scale_rate`` increasing from 0.5
-to 0.75. However, if the infected population rises above 1000,
+relaxed even more, with the ``scale_rate`` increasing from 0.10
+to 0.20. However, if the infected population rises above 1000,
 then the lockdown is tightened and the ``scale_rate`` is lowered
-again to 0.5.
+again to 0.10.
 
 Have a go at running using this iterator. What do you see? In my
-case I see the model moving from lockdown (``scale_factor==0.25``),
-through relaxed lockdown (``scale_factor==0.5``) to light
-lockdown (``scale_factor==0.75``) during the outbreak, which
+case I see the model moving from lockdown (``scale_factor==0.05``),
+through relaxed lockdown (``scale_factor==0.1``) to light
+lockdown (``scale_factor==0.2``) during the outbreak, which
 is brought under control. The overview plots are here;
 
 .. image:: ../../images/tutorial_3_4_2_overview.jpg
@@ -277,36 +332,39 @@ Copy the below into your ``lockdown.py`` file;
             advance_fixed(population=population, **kwargs)
 
     def iterate_lockdown(population, **kwargs):
-        try:
-            population.lockdown_state
-        except Exception:
+        if not hasattr(population, "lockdown_state"):
             population.lockdown_state = "before"
             population.is_locked_down = False
-            population.lockdown_scale_rate = 0.25
-            population.is_work_locked_down = False
 
         if population.lockdown_state == "before":
             if population.total > 5000:
                 population.lockdown_state = "lockdown"
                 population.lockdown_started = population.day
                 population.is_locked_down = True
+                population.lockdown_scale_rate = 0.05
                 population.is_work_locked_down = True
 
         elif population.lockdown_state == "lockdown":
             if population.total < 2000:
                 population.lockdown_state = "relaxed_lockdown"
                 population.lockdown_ended = population.day
-                population.lockdown_scale_rate = 0.5
+                population.lockdown_scale_rate = 0.05
                 population.is_locked_down = True
                 population.is_work_locked_down = False
 
         elif population.lockdown_state == "relaxed_lockdown":
             population.is_work_locked_down = False
 
-            if population.total < 1000:
-                population.lockdown_scale_rate = 0.75
+            if population.total > 5000:
+                population.lockdown_state = "lockdown"
+                population.lockdown_started = population.day
+                population.is_locked_down = True
+                population.lockdown_scale_rate = 0.05
+                population.is_work_locked_down = True
+            elif population.total < 1000:
+                population.lockdown_scale_rate = 0.1
             else:
-                population.lockdown_scale_rate = 0.5
+                population.lockdown_scale_rate = 0.05
 
         if population.is_locked_down:
             return [advance_lockdown]
@@ -318,14 +376,12 @@ This is getting longer, but I hope you can see that all we have
 added is a ``population.is_work_locked_down`` flag, plus some
 extra code to flip this between ``True`` and ``False``. This flag
 is read by ``advance_lockdown``, which calls ``advance_fixed``
-if the flag is ``False``.
+if the flag is ``False``. We've also added a check to see if the
+infected population rises above 5000 while in "relaxed lockdown",
+and if it does, to re-enter full lockdown.
 
-Run the model and plot the graphs. What do you see?
-
-For me, again I see smooth movement between the different lockdown
-stages. However, the peak after entering the relaxed lockdown
-state is much higher, possibly because more infected people are
-able to move between wards.
+Run the model and plot the graphs. What do you see? Do you get
+a graph similar to below?
 
 .. image:: ../../images/tutorial_3_4_3_overview.jpg
    :alt: Overview image of a automatically relaxing lockdown

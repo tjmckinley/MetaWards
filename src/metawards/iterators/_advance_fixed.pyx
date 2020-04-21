@@ -13,7 +13,8 @@ from ..utils._ran_binomial cimport _ran_binomial, \
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
-__all__ = ["advance_fixed", "advance_fixed_omp"]
+__all__ = ["advance_fixed", "advance_fixed_omp",
+           "advance_fixed_serial"]
 
 
 def advance_fixed_omp(network: Network, infections, rngs,
@@ -138,8 +139,8 @@ def advance_fixed_omp(network: Network, infections, rngs,
     p = p.stop()
 
 
-def advance_fixed(network: Network, infections, rngs,
-                  profiler: Profiler, **kwargs):
+def advance_fixed_serial(network: Network, infections, rngs,
+                         profiler: Profiler, **kwargs):
     """Advance the model by triggering infections related to fixed
        'work' movements (serial version of the function)
 
@@ -160,3 +161,29 @@ def advance_fixed(network: Network, infections, rngs,
     kwargs["nthreads"] = 1
     advance_fixed_omp(network=network, infections=infections,
                       rngs=rngs, profiler=profiler, **kwargs)
+
+
+def advance_fixed(nthreads: int, **kwargs):
+    """Advance the model by triggering infections related to fixed
+       'work' movements (parallel version of the function)
+
+       Parameters
+       ----------
+       network: Network
+         The network being modelled
+       infections:
+         The space that holds all of the "work" infections
+       rngs:
+         The list of thread-safe random number generators, one per thread
+       nthreads: int
+         The number of threads over which to parallelise the calculation
+       profiler: Profiler
+         The profiler used to profile this calculation
+       kwargs:
+         Extra arguments that may be used by other advancers, but which
+         are not used by advance_play
+    """
+    if nthreads == 1:
+        advance_fixed_serial(**kwargs)
+    else:
+        advance_fixed_omp(nthreads=nthreads, **kwargs)
