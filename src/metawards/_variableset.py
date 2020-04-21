@@ -45,6 +45,8 @@ def _set_uv(params, name: str, index: int, value: float):
 def _set_user_params(params, name: str, index: int, value: float):
     if name.startswith("user."):
         name = name[5:]
+    elif name.startswith("."):
+        name = name[1:]
 
     if index is None:
         params.user_params[name] = value
@@ -67,6 +69,23 @@ _adjustable["user"] = _set_user_params
 _adjustable["length_day"] = _set_lengthday
 _adjustable["plength_day"] = _set_plengthday
 _adjustable["UV"] = _set_uv
+
+
+def _clean(x):
+    """Clean the passed string by stripping off unnecesary characters,
+       and turning "True" and "False" into 1 and 0. Also change
+       '=' and ':' into '=='
+    """
+    x = x.strip()
+
+    if x.lower() == "true":
+        return 1.0
+    elif x.lower() == "false":
+        return 0.0
+    elif x == "=" or x == ":":
+        return "=="
+    else:
+        return x
 
 
 class VariableSet:
@@ -240,9 +259,17 @@ class VariableSet:
             index = None
             value = float(value)
 
-        if not (varname.startswith("user.") or varname in _adjustable):
+        if not (varname.startswith("user.") or varname.startswith(".") or
+                varname in _adjustable):
             raise KeyError(f"It is not possible to adjust the variable "
                            f"{name} to equal {value}")
+
+        if varname.startswith("user."):
+            # strip off 'user' so that it just starts with a dot
+            varname = varname[4:]
+
+        if name.startswith("user."):
+            name = name[4:]
 
         self._varnames.append(varname)
         self._varidxs.append(index)
@@ -474,6 +501,140 @@ class VariableSet:
         else:
             return f
 
+    @staticmethod
+    def read(filename: str):
+        """Read a single set of adjustable variables from the passed
+           file. The file can either write the variables in horizontal
+           or vertical mode, using space or comma separated values.
+
+           This is useful for when you want to set a global set of parameters
+           at the start of a calculation and don't want to use
+           a large VariableSets
+
+           Parameters
+           ----------
+           filename: str
+             The name of the file containing the VariableSet
+
+           Returns
+           -------
+           variables: VariableSet
+             The VariableSet that has been read
+        """
+        variables = VariableSet()
+
+        with open(filename, "r") as FILE:
+            # use the first line of the file to work out the mode
+            line = FILE.readline()
+
+            # find the first line of the file. Use this to work out
+            # the separator to use and also to see if the user has
+            # named the adjustable variables
+            first_line = None
+            separator = ","
+
+            # default adjustable variables
+            titles = ["beta[2]", "beta[3]", "progress[1]",
+                      "progress[2]", "progress[3]"]
+
+            is_title_line = False
+            is_vertical = False
+
+            while line:
+                line = line.strip()
+
+                if len(line) == 0:
+                    line = FILE.readline()
+                    continue
+
+                if first_line is None:
+                    if len(line) > 0:
+                        # this is a valid first line - what separator
+                        # should we use?
+                        if line.find(",") != -1:
+                            separator = ","
+                        else:
+                            separator = None  # spaces
+
+                        first_line = line
+
+                        words = [_clean(x) for x in line.split(separator)]
+
+                        try:
+                            float(words[0])
+                            is_title_line = False
+                            is_vertical = False
+                        except Exception:
+                            is_title_line = True
+
+                        if is_title_line:
+                            is_vertical = False
+                            is_title_line = True
+
+                            for i in range(1, len(words)):
+                                try:
+                                    float(words[i])
+                                    is_vertical = True
+                                    is_title_line = False
+                                    titles = None
+                                    break
+                                except Exception:
+                                    pass
+
+                        if is_title_line:
+                            titles = words
+                            line = FILE.readline()
+                            continue
+                    else:
+                        line = FILE.readline()
+                        continue
+
+                words = [_clean(x) for x in line.split(separator)]
+
+                if is_vertical:
+                    value = None
+
+                    try:
+                        value = float(words[1])
+                    except Exception:
+                        if words[1] == "==":
+                            try:
+                                value = float(words[2])
+                            except Exception:
+                                pass
+
+                    if value is None:
+                        raise ValueError(
+                            f"Corrupted file {filename}. Expected at least "
+                            f"two words for the 'variable value', but "
+                            f"got {line}")
+
+                    variables._add(words[0], value)
+                    line = FILE.readline()
+                    continue
+                else:
+                    values = []
+
+                    try:
+                        for i in range(0, len(titles)):
+                            values.append(float(words[i]))
+                    except Exception as e:
+                        print(e)
+                        pass
+
+                    if len(values) != len(titles):
+                        raise ValueError(
+                            f"Corrupted file {filename}. Expected at least "
+                            f"{len(titles)} words for {titles}, but got "
+                            f"{line}")
+
+                    for name, value in zip(titles, values):
+                        variables._add(name, value)
+
+                    return variables
+
+        return variables
+
     def adjust(self, params):  # should be 'Parameters' but circular include
         """Use the variables in this set to adjust the passed parameters.
            Note that this directly modifies 'params'
@@ -507,7 +668,7 @@ class VariableSet:
         try:
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
-                if varname.startswith("user."):
+                if varname.startswith("user.") or varname.startswith("."):
                     _adjustable["user"](params=params,
                                         name=varname,
                                         index=varidx,
@@ -732,9 +893,12 @@ class VariableSets:
                             titles = words
                             line = FILE.readline()
                             continue
+                    else:
+                        line = FILE.readline()
+                        continue
 
                 if line_numbers is None or i in line_numbers:
-                    words = line.split(separator)
+                    words = [_clean(x) for x in line.split(separator)]
 
                     if len(words) != len(titles):
                         raise ValueError(

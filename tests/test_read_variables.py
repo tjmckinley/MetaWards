@@ -182,3 +182,20 @@ def test_set_variables():
     assert p3.disease_params.progress[1] == 0.19
     assert p3.disease_params.progress[2] == 0.91
     assert p3.disease_params.progress[3] == 0.91
+
+
+def test_set_custom():
+
+    horiz = os.path.join(script_dir, "data", "horizontal.dat")
+    vert = os.path.join(script_dir, "data", "vertical.dat")
+
+    h = VariableSet.read(horiz)
+
+    v = VariableSet.read(vert)
+
+    assert v == h
+
+    assert v[".something"][1] == 5.0
+    assert v["user.another"][2] == 100.0
+    assert v[".flag"] == 1.0
+    assert v["beta"][3] == 0.5

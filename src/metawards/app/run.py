@@ -92,10 +92,6 @@ def parse_args():
                              "adjustable parameter sets or repeats "
                              "are used.")
 
-    parser.add_argument('-u', '--UV', type=float, default=0.0,
-                        help="Value for the UV parameter for the model "
-                             "(default is 0.0)")
-
     parser.add_argument('-d', '--disease', type=str, default=None,
                         help="Name of the disease to model "
                              "(default is 'ncov')")
@@ -143,6 +139,12 @@ def parse_args():
                              "outbreak (default is to run for a maximum "
                              "of two years - 730 days)")
 
+    parser.add_argument('-u', '--user-variables', type=str, default=None,
+                        help="Name of the file containing user-defined "
+                             "custom variables. These provide extra "
+                             "information that can be read by the "
+                             "custom integrators or custom extractors.")
+
     parser.add_argument('--iterator', type=str, default=None,
                         help="Name of the iterator to use to advance the "
                              "outbreak at each step (day). For a full "
@@ -154,6 +156,10 @@ def parse_args():
                              "information during a model run. For a full "
                              "explanation see the tutorial at "
                              "https://metawards.github.io")
+
+    parser.add_argument('--UV', type=float, default=0.0,
+                        help="Value for the UV parameter for the model "
+                             "(default is 0.0)")
 
     parser.add_argument('--nthreads', type=int, default=None,
                         help="Number of threads over which parallelise an "
@@ -801,13 +807,13 @@ def cli():
               f"default is $HOME/GitHub/MetaWardsData")
         raise e
 
-    # should we profile the code? (default yes, as it doesn't cost anything)
-    profile = args.profile
+    # should we profile the code? (default no as it prints a lot)
+    profile = False
 
     if args.no_profile:
         profile = False
-    elif profile is None:
-        profile = False
+    elif args.profile:
+        profile = True
 
     # load the disease and starting-point input files
     if args.disease:
@@ -816,6 +822,11 @@ def cli():
         params.set_disease("ncov")
 
     params.set_input_files(args.input_data)
+
+    # load the user-defined custom parameters
+    if args.user_variables:
+        variables = VariableSet.load(args.user_variables)
+        variables.adjust(params)
 
     # read the additional seeds
     if args.additional is None or len(args.additional) == 0:
