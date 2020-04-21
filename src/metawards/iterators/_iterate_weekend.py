@@ -21,11 +21,11 @@ def iterate_weekend(nthreads: int = 1, **kwargs):
     """
 
     if nthreads is None or nthreads == 1:
-        from ._advance_infprob import advance_infprob
-        from ._advance_play import advance_play
+        from ._advance_infprob import advance_infprob_serial
+        from ._advance_play import advance_play_serial
 
-        funcs = [advance_infprob,
-                 advance_play]
+        funcs = [advance_infprob_serial,
+                 advance_play_serial]
     else:
         from ._advance_infprob import advance_infprob_omp
         from ._advance_play import advance_play_omp

@@ -15,7 +15,8 @@ from ..utils._ran_binomial cimport _ran_binomial, \
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
-__all__ = ["advance_imports", "advance_imports_omp"]
+__all__ = ["advance_imports", "advance_imports_omp",
+           "advance_imports_serial"]
 
 
 def advance_imports_omp(network: Network, population: Population,
@@ -102,9 +103,9 @@ def advance_imports_omp(network: Network, population: Population,
 
 
 
-def advance_imports(network: Network, population: Population,
-                    infections, play_infections, rngs,
-                    profiler: Profiler, **kwargs):
+def advance_imports_serial(network: Network, population: Population,
+                           infections, play_infections, rngs,
+                           profiler: Profiler, **kwargs):
     """Advance the model by importing additional infections
        randomly
 
@@ -184,3 +185,34 @@ def advance_imports(network: Network, population: Population,
         raise AssertionError(f"Incorrect number of daily imports on day "
                              f"{population.day}. {params.daily_imports} vs "
                              f"{total}")
+
+
+def advance_imports(nthreads: int, **kwargs):
+    """Advance the model by importing additional infections
+       depending on the additional seeds specified by the user
+       and the day of the outbreak (serial version of the function)
+
+       Parameters
+       ----------
+       network: Network
+         The network being modelled
+       population: Population
+         The population experiencing the outbreak
+       infections:
+         The space that holds all of the "work" infections
+       play_infections:
+         The space that holds all of the "play" infections
+       rngs:
+         The list of thread-safe random number generators, one per thread
+       nthreads: int
+         The number of threads over which to parallelise the calculation
+       profiler: Profiler
+         The profiler used to profile this calculation
+       kwargs:
+         Extra arguments that may be used by other advancers, but which
+         are not used by advance_play
+    """
+    if nthreads == 1:
+        advance_imports_serial(**kwargs)
+    else:
+        advance_imports_omp(nthreads=nthreads, **kwargs)

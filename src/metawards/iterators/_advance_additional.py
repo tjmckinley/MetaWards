@@ -5,6 +5,7 @@ from ..utils._profiler import Profiler
 
 __all__ = ["setup_additional_seeds",
            "advance_additional",
+           "advance_additional_serial",
            "advance_additional_omp"]
 
 
@@ -68,11 +69,11 @@ def setup_additional_seeds(network: Network,
     p = p.stop()
 
 
-def advance_additional(network: Network,
-                       population: Population,
-                       infections, play_infections,
-                       profiler: Profiler,
-                       **kwargs):
+def advance_additional_serial(network: Network,
+                              population: Population,
+                              infections, play_infections,
+                              profiler: Profiler,
+                              **kwargs):
     """Advance the infection by infecting additional wards based
        on a pre-determined pattern based on the additional seeds
 
@@ -134,3 +135,30 @@ def advance_additional_omp(**kwargs):
     """
     kwargs["nthreads"] = 1
     advance_additional(**kwargs)
+
+
+def advance_additional(nthreads, **kwargs):
+    """Advance the infection by infecting additional wards based
+       on a pre-determined pattern based on the additional seeds
+       (parallel version)
+
+       Parameters
+       ----------
+       network: Network
+         The network being modelled
+       population: Population
+         The population experiencing the outbreak - also contains the day
+         of the outbreak
+       infections
+         Space to hold the 'work' infections
+       play_infections
+         Space to hold the 'play' infections
+       profiler: Profiler
+         Used to profile this function
+       kwargs
+         Arguments that aren't used by this advancer
+    """
+    if nthreads == 1:
+        advance_additional_serial(**kwargs)
+    else:
+        advance_additional_omp(nthreads=nthreads, **kwargs)

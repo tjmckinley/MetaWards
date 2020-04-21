@@ -2,6 +2,17 @@
 Changelog
 =========
 
+`0.8.0 <https://github.com/metawards/MetaWards/compare/0.7.0...0.8.0>`__ - April 21st 2020
+------------------------------------------------------------------------------------------
+
+* Automated github actions for building a versioned website plus automating
+  building the packages.
+* Switched default for UV parameter to 0.0, as this should not normally be 1.0
+* Added custom user variables both for scanning and to act as inputs that
+  may be used by custom advance and iterate functions. Detailed tutorial
+  now shows how these can be used to model a lockdown.
+* Improved speed of custom iterators
+
 `0.7.1 <https://github.com/metawards/MetaWards/compare/0.6.0...0.7.1>`__ - April 17th 2020
 ------------------------------------------------------------------------------------------
 

@@ -5,6 +5,92 @@ from typing import Dict as _Dict
 __all__ = ["VariableSets", "VariableSet"]
 
 
+def _set_beta(params, name: str, index: int, value: float):
+    params.disease_params.beta[index] = value
+
+
+def _set_progress(params, name: str, index: int, value: float):
+    params.disease_params.progress[index] = value
+
+
+def _set_too_ill_to_move(params, name: str, index: int, value: float):
+    params.disease_params.too_ill_to_move[index] = value
+
+
+def _set_contrib_foi(params, name: str, index: int, value: float):
+    params.disease_params.contrib_foi[index] = value
+
+
+def _set_lengthday(params, name: str, index: int, value: float):
+    if index is not None:
+        raise IndexError("You cannot index the lengthday")
+
+    params.length_day = value
+
+
+def _set_plengthday(params, name: str, index: int, value: float):
+    if index is not None:
+        raise IndexError("You cannot index the lengthday")
+
+    params.plength_day = value
+
+
+def _set_uv(params, name: str, index: int, value: float):
+    if index is not None:
+        raise IndexError("You cannot index the UV parameter")
+
+    params.UV = value
+
+
+def _set_user_params(params, name: str, index: int, value: float):
+    if name.startswith("user."):
+        name = name[5:]
+    elif name.startswith("."):
+        name = name[1:]
+
+    if params.user_params is None:
+        params.user_params = {}
+
+    if index is None:
+        params.user_params[name] = value
+    else:
+        if name not in params.user_params:
+            params.user_params[name] = []
+
+        while len(params.user_params[name]) <= index:
+            params.user_params[name].append(None)
+
+        params.user_params[name][index] = value
+
+
+_adjustable = {}
+_adjustable["beta"] = _set_beta
+_adjustable["progress"] = _set_progress
+_adjustable["too_ill_to_move"] = _set_too_ill_to_move
+_adjustable["contrib_foi"] = _set_contrib_foi
+_adjustable["user"] = _set_user_params
+_adjustable["length_day"] = _set_lengthday
+_adjustable["plength_day"] = _set_plengthday
+_adjustable["UV"] = _set_uv
+
+
+def _clean(x):
+    """Clean the passed string by stripping off unnecesary characters,
+       and turning "True" and "False" into 1 and 0. Also change
+       '=' and ':' into '=='
+    """
+    x = x.strip()
+
+    if x.lower() == "true":
+        return 1.0
+    elif x.lower() == "false":
+        return 0.0
+    elif x == "=" or x == ":":
+        return "=="
+    else:
+        return x
+
+
 class VariableSet:
     """This class holds a single set of adjustable variables that
        are used to adjust the variables as part of a model run
@@ -132,6 +218,9 @@ class VariableSet:
         if self._vals is None:
             raise KeyError(f"No adjustable parameter {key} in an empty set")
 
+        if key.startswith("user."):
+            key = key[4:]
+
         for i, name in enumerate(self._names):
             if key == name:
                 return self._vals[i]
@@ -165,18 +254,33 @@ class VariableSet:
         name = name.strip()
 
         # look for 'variable[index]'
-        m = re.search(r"(\w+)\[(\d+)\]", name)
+        m = re.search(r"([\.\w]+)\[(\d+)\]", name)
 
         if m:
-            self._varnames.append(m.group(1))
-            self._varidxs.append(int(m.group(2)))
-            self._names.append(name)
-            self._vals.append(float(value))
+            varname = m.group(1)
+            index = int(m.group(2))
+            value = float(value)
         else:
-            self._varnames.append(name)
-            self._varidxs.append(None)
-            self._names.append(name)
-            self._vals.append(float(value))
+            varname = name
+            index = None
+            value = float(value)
+
+        if not (varname.startswith("user.") or varname.startswith(".") or
+                varname in _adjustable):
+            raise KeyError(f"It is not possible to adjust the variable "
+                           f"{name} to equal {value}")
+
+        if varname.startswith("user."):
+            # strip off 'user' so that it just starts with a dot
+            varname = varname[4:]
+
+        if name.startswith("user."):
+            name = name[4:]
+
+        self._varnames.append(varname)
+        self._varidxs.append(index)
+        self._names.append(name)
+        self._vals.append(value)
 
     def variable_names(self):
         """Return the names of the variables that will be adjusted
@@ -352,7 +456,7 @@ class VariableSet:
                     part = f"0.{part}"
                     value = float(part)
 
-                values.append(value)
+                values.append(scl * value)
             except Exception:
                 # this is not part of the fingerprint
                 pass
@@ -403,6 +507,136 @@ class VariableSet:
         else:
             return f
 
+    @staticmethod
+    def read(filename: str):
+        """Read a single set of adjustable variables from the passed
+           file. The file can either write the variables in horizontal
+           or vertical mode, using space or comma separated values.
+
+           This is useful for when you want to set a global set of parameters
+           at the start of a calculation and don't want to use
+           a large VariableSets
+
+           Parameters
+           ----------
+           filename: str
+             The name of the file containing the VariableSet
+
+           Returns
+           -------
+           variables: VariableSet
+             The VariableSet that has been read
+        """
+        variables = VariableSet()
+
+        with open(filename, "r") as FILE:
+            # use the first line of the file to work out the mode
+            line = FILE.readline()
+
+            # find the first line of the file. Use this to work out
+            # the separator to use and also to see if the user has
+            # named the adjustable variables
+            first_line = None
+            separator = ","
+
+            # default adjustable variables
+            titles = ["beta[2]", "beta[3]", "progress[1]",
+                      "progress[2]", "progress[3]"]
+
+            is_title_line = False
+            is_vertical = False
+
+            while line:
+                line = line.strip()
+
+                if line.startswith("#") or len(line) == 0:
+                    line = FILE.readline()
+                    continue
+
+                if first_line is None:
+                    # this is a valid first line - what separator
+                    # should we use?
+                    if line.find(",") != -1:
+                        separator = ","
+                    else:
+                        separator = None  # spaces
+
+                    first_line = line
+
+                    words = [_clean(x) for x in line.split(separator)]
+
+                    try:
+                        float(words[0])
+                        is_title_line = False
+                        is_vertical = False
+                    except Exception:
+                        is_title_line = True
+
+                    if is_title_line:
+                        is_vertical = False
+                        is_title_line = True
+
+                        for i in range(1, len(words)):
+                            try:
+                                float(words[i])
+                                is_vertical = True
+                                is_title_line = False
+                                titles = None
+                                break
+                            except Exception:
+                                pass
+
+                    if is_title_line:
+                        titles = words
+                        line = FILE.readline()
+                        continue
+
+                words = [_clean(x) for x in line.split(separator)]
+
+                if is_vertical:
+                    value = None
+
+                    try:
+                        value = float(words[1])
+                    except Exception:
+                        if words[1] == "==":
+                            try:
+                                value = float(words[2])
+                            except Exception:
+                                pass
+
+                    if value is None:
+                        raise ValueError(
+                            f"Corrupted file {filename}. Expected at least "
+                            f"two words for the 'variable value', but "
+                            f"got {line}")
+
+                    variables._add(words[0], value)
+                    line = FILE.readline()
+                    continue
+                else:
+                    values = []
+
+                    try:
+                        for i in range(0, len(titles)):
+                            values.append(float(words[i]))
+                    except Exception as e:
+                        print(e)
+                        pass
+
+                    if len(values) != len(titles):
+                        raise ValueError(
+                            f"Corrupted file {filename}. Expected at least "
+                            f"{len(titles)} words for {titles}, but got "
+                            f"{line}")
+
+                    for name, value in zip(titles, values):
+                        variables._add(name, value)
+
+                    return variables
+
+        return variables
+
     def adjust(self, params):  # should be 'Parameters' but circular include
         """Use the variables in this set to adjust the passed parameters.
            Note that this directly modifies 'params'
@@ -436,19 +670,20 @@ class VariableSet:
         try:
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
-                if value is not None:
-                    if varname == "beta":
-                        params.disease_params.beta[varidx] = value
-                    elif varname == "progress":
-                        params.disease_params.progress[varidx] = value
-                    elif varname == "too_ill_to_move":
-                        params.disease_params.too_ill_to_move[varidx] = value
-                    elif varname == "contrib_foi":
-                        params.disease_params.contrib_foi[varidx] = value
-                    else:
-                        raise KeyError(
-                            f"Cannot set unrecognised parameter {varname} "
-                            f"to {value}")
+                if varname.startswith("user.") or varname.startswith("."):
+                    _adjustable["user"](params=params,
+                                        name=varname,
+                                        index=varidx,
+                                        value=value)
+                elif varname in _adjustable:
+                    _adjustable[varname](params=params,
+                                         name=varname,
+                                         index=varidx,
+                                         value=value)
+                else:
+                    raise KeyError(
+                        f"Cannot set unrecognised parameter {varname} "
+                        f"to {value}")
         except Exception as e:
             raise ValueError(
                 f"Unable to set parameters from {self}. Error "
@@ -637,32 +872,35 @@ class VariableSets:
 
                 line = line.strip()
 
+                if line.startswith("#") or len(line) == 0:
+                    line = FILE.readline()
+                    continue
+
                 if first_line is None:
-                    if len(line) > 0:
-                        # this is a valid first line - what separator
-                        # should we use?
-                        if line.find(",") != -1:
-                            separator = ","
-                        else:
-                            separator = None  # spaces
+                    # this is a valid first line - what separator
+                    # should we use?
+                    if line.find(",") != -1:
+                        separator = ","
+                    else:
+                        separator = None  # spaces
 
-                        first_line = line
+                    first_line = line
 
-                        words = line.split(separator)
+                    words = line.split(separator)
 
-                        try:
-                            float(words[0])
-                            is_title_line = False
-                        except Exception:
-                            is_title_line = True
+                    try:
+                        float(words[0])
+                        is_title_line = False
+                    except Exception:
+                        is_title_line = True
 
-                        if is_title_line:
-                            titles = words
-                            line = FILE.readline()
-                            continue
+                    if is_title_line:
+                        titles = words
+                        line = FILE.readline()
+                        continue
 
                 if line_numbers is None or i in line_numbers:
-                    words = line.split(separator)
+                    words = [_clean(x) for x in line.split(separator)]
 
                     if len(words) != len(titles):
                         raise ValueError(

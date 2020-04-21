@@ -35,7 +35,9 @@ def import_graphics_modules(verbose=False):
     return (pd, plt)
 
 
-def create_overview_plot(df, match_axes=True):
+def create_overview_plot(df, output_dir: str = None,
+                         format: str = "jpg", dpi: int = 150,
+                         align_axes: bool = True, verbose: bool = True):
     """Create a summary plot of the result.csv data held in the
        passed pandas dataframe. This returns the figure for you
        to save if desired (or just call ``plt.show()`` to show
@@ -49,15 +51,30 @@ def create_overview_plot(df, match_axes=True):
        ----------
        df : Pandas Dataframe
          The pandas dataframe containing the data from results.csv.bz2
-       match_axes: bool
+       output_dir: str
+         The name of the directory in which to draw the graphs. If this
+         is set then the graphs are written to files as they are generated
+         and the filenames of the figures are returned. This is necessary
+         when the number of graphs to draw is high and you don't want
+         to waste too much memory
+       format: str
+         Format to save the figures in if output_dir is supplied
+       dpi: int
+         dpi (dots per inch) resolution to save the figures with if
+         a bitmap format is used and output_dir is supplied
+       align_axes: bool
          If true (default) then this will ensure that all of the plots
          for different fingerprints are put on the same axis scale
+       verbose: bool
+         Whether or not to print progress to the screen
 
        Returns
        -------
        fig
          The matplotlib figure containing the summary plot, or a
-         dictionary of figures if there are multiple fingerprints
+         dictionary of figures if there are multiple fingerprints,
+         or the filename if output_dir was supplied, or a dictionary
+         of multiple filenames indexed by fingerprint
     """
     _, plt = import_graphics_modules()
 
@@ -72,7 +89,9 @@ def create_overview_plot(df, match_axes=True):
 
     columns = ["E", "I", "IW", "R"]
 
-    if len(fingerprints) > 1 and match_axes:
+    nfigs = len(fingerprints)
+
+    if len(fingerprints) > 1 and align_axes:
         for fingerprint in fingerprints:
             df2 = df[df["fingerprint"] == fingerprint]
 
@@ -115,7 +134,7 @@ def create_overview_plot(df, match_axes=True):
             ax.get_legend().remove()
             ax.set_ylabel("Population")
 
-            if len(fingerprints) > 1 and match_axes:
+            if len(fingerprints) > 1 and align_axes:
                 ax.set_xlim(min_date, max_date)
                 ax.set_ylim(min_y[column], 1.1*max_y[column])
 
@@ -130,7 +149,28 @@ def create_overview_plot(df, match_axes=True):
                 i += 1
 
         fig.tight_layout(pad=1)
-        figs[fingerprint] = fig
+
+        if output_dir:
+            import os
+
+            if nfigs == 1:
+                filename = os.path.join(output_dir, f"overview.{format}")
+            else:
+                filename = os.path.join(output_dir,
+                                        f"overview_{fingerprint}.{format}")
+
+            if verbose:
+                print(f"Saving figure {filename}")
+
+            fig.savefig(filename, dpi=dpi)
+            plt.close()
+            fig = None
+            figs[fingerprint] = filename
+        else:
+            if verbose:
+                print(f"Created the figure for {fingerprint}")
+
+            figs[fingerprint] = fig
 
     if len(figs) == 0:
         return None
@@ -140,7 +180,9 @@ def create_overview_plot(df, match_axes=True):
         return figs
 
 
-def create_average_plot(df):
+def create_average_plot(df, output_dir: str = None, format: str = "jpg",
+                        dpi: int = 150, align_axes: bool = True,
+                        verbose: bool = True):
     """Create an average plot of the result.csv data held in the
        passed pandas dataframe. This returns the figure for you
        to save if desired (or just call ``plt.show()`` to show
@@ -158,18 +200,36 @@ def create_average_plot(df):
        ----------
        df : Pandas Dataframe
          The pandas dataframe containing the data from results.csv.bz2
+       output_dir: str
+         The name of the directory in which to draw the graphs. If this
+         is set then the graphs are written to files as they are generated
+         and the filenames of the figures are returned. This is necessary
+         when the number of graphs to draw is high and you don't want
+         to waste too much memory
+       format: str
+         Format to save the figures in if output_dir is supplied
+       dpi: int
+         dpi (dots per inch) resolution to save the figures with if
+         a bitmap format is used and output_dir is supplied
+       align_axes: bool
+         If true (default) then this will ensure that all of the plots
+         for different fingerprints are put on the same axis scale
+       verbose: bool
+         Whether or not to print progress to the screen
 
        Returns
        -------
        fig
-         The matplotlib figure containing the summary plot, or None
-         if there are no repeats over which to average. A dictionary
-         of figures will be returned if the dataframe contains multiple
-         fingerprint - the dictionaries will be indexed by fingerprint
+         The matplotlib figure containing the average plot, or a
+         dictionary of figures if there are multiple fingerprints,
+         or the filename if output_dir was supplied, or a dictionary
+         of multiple filenames indexed by fingerprint
     """
     fingerprints = df["fingerprint"].unique()
 
     figs = {}
+
+    nfigs = len(fingerprints)
 
     for fingerprint in fingerprints:
         df2 = df[df["fingerprint"] == fingerprint]
@@ -201,7 +261,28 @@ def create_average_plot(df):
                     i += 1
 
             fig.tight_layout(pad=1)
-            figs[fingerprint] = fig
+
+            if output_dir:
+                import os
+
+                if nfigs == 1:
+                    filename = os.path.join(output_dir, f"average.{format}")
+                else:
+                    filename = os.path.join(output_dir,
+                                            f"average_{fingerprint}.{format}")
+
+                if verbose:
+                    print(f"Saving figure {filename}")
+
+                fig.savefig(filename, dpi=dpi)
+                fig = None
+                plt.close()
+                figs[fingerprint] = filename
+            else:
+                if verbose:
+                    print(f"Created the figure for {fingerprint}")
+
+                figs[fingerprint] = fig
 
     if len(figs) == 0:
         return None
@@ -212,7 +293,8 @@ def create_average_plot(df):
 
 
 def save_summary_plots(results: str, output_dir: str = None,
-                       format: str = "pdf", dpi: int = 300,
+                       format: str = "jpg", dpi: int = 150,
+                       align_axes: bool = True,
                        verbose=False):
     """Create summary plots of the data contained in the passed
        'results.csv.bz2' file that was produced by metawards
@@ -231,6 +313,8 @@ def save_summary_plots(results: str, output_dir: str = None,
        dpi: int
          The dots-per-inch to use when saving bitmap graphics (e.g.
          png, jpg etc)
+       align_axes: bool
+         Whether or not to plot all graphs in a set on the same axes
        verbose: bool
          Whether or not to print progress to the screen
 
@@ -258,46 +342,25 @@ def save_summary_plots(results: str, output_dir: str = None,
     if verbose:
         print(f"Creating overview plot(s)...")
 
-    figs = create_overview_plot(df)
+    figs = create_overview_plot(df, output_dir=output_dir,
+                                format=format, dpi=dpi,
+                                align_axes=align_axes)
 
-    if not isinstance(figs, dict):
-        figs = {"fingerprint": figs}
-
-    for fingerprint, fig in figs.items():
-        if len(figs) == 1:
-            filename = os.path.join(output_dir, f"overview.{format}")
-        else:
-            filename = os.path.join(output_dir,
-                                    f"overview_{fingerprint}.{format}")
-
-        if verbose:
-            print(f"Saving to {filename}...")
-
-        fig.savefig(filename, dpi=dpi)
-        filenames.append(filename)
+    if isinstance(figs, dict):
+        filenames += list(figs.values())
+    elif figs is not None:
+        filenames.append(figs)
 
     if verbose:
         print(f"Creating average plot(s)...")
 
-    figs = create_average_plot(df)
+    figs = create_average_plot(df, output_dir=output_dir,
+                               format=format, dpi=dpi,
+                               align_axes=align_axes)
 
-    if figs is None:
-        print("Nothing to plot")
-    else:
-        if not isinstance(figs, dict):
-            figs = {"fingerprint": figs}
-
-        for fingerprint, fig in figs.items():
-            if len(figs) == 1:
-                filename = os.path.join(output_dir, f"average.{format}")
-            else:
-                filename = os.path.join(output_dir,
-                                        f"average_{fingerprint}.{format}")
-
-            if verbose:
-                print(f"Saving to {filename}...")
-
-            fig.savefig(filename, dpi=dpi)
-            filenames.append(filename)
+    if isinstance(figs, dict):
+        filenames += list(figs.values())
+    elif figs is not None:
+        filenames.append(figs)
 
     return filenames

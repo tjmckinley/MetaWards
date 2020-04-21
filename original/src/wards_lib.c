@@ -1651,6 +1651,7 @@ parameters *InitialiseParameters(){
 	par->DailyImports = json_object_get_double(daily_imports);
 	json_object_object_get_ex(parsed_json, "UV", &UV); /* e.g. 0.0 */
 	par->UV = json_object_get_double(UV);
+	printf("UV = %f\n", par->UV);
 
 	for(i=0;i<N_INF_CLASSES;i++){
 		par->beta[i]=beta[i];

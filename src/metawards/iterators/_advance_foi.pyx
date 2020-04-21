@@ -19,7 +19,7 @@ from ..utils._ran_binomial cimport _ran_binomial, \
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
-__all__ = ["advance_foi", "advance_foi_omp"]
+__all__ = ["advance_foi", "advance_foi_omp", "advance_foi_serial"]
 
 
 cdef struct foi_buffer:
@@ -118,7 +118,7 @@ def advance_foi_omp(network: Network, population: Population,
 
     cdef double uv = params.UV
     cdef int ts = population.day
-    cdef double uvscale = (1.0-uv/2.0 + cos(2.0*pi*ts/365.0)/2.0)
+    cdef double uvscale = (1.0-uv/2.0 + uv*cos(2.0*pi*ts/365.0)/2.0)
 
     # Copy arguments from Python into C cdef variables
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
@@ -352,9 +352,9 @@ def advance_foi_omp(network: Network, population: Population,
     free_foi_buffers(&(night_buffers[0]), num_threads)
 
 
-def advance_foi(network: Network, population: Population,
-                infections, play_infections, rngs,
-                profiler: Profiler, **kwargs):
+def advance_foi_serial(network: Network, population: Population,
+                       infections, play_infections, rngs,
+                       profiler: Profiler, **kwargs):
     """Advance the model calculating the new force of infection (foi)
        for all of the wards and links between wards, based on the
        current number of infections. Note that you must call this
@@ -389,3 +389,39 @@ def advance_foi(network: Network, population: Population,
                     infections=infections,
                     play_infections=play_infections, rngs=rngs,
                     profiler=profiler, **kwargs)
+
+
+def advance_foi(nthreads: int, **kwargs):
+    """Advance the model calculating the new force of infection (foi)
+       for all of the wards and links between wards, based on the
+       current number of infections. Note that you must call this
+       first before performing any other step in the iteration
+       as this will update the foi based on the infections that
+       occured the previous day. This is the parallel version of
+       this function
+
+       Parameters
+       ----------
+       network: Network
+         The network being modelled
+       population: Population
+         The population experiencing the outbreak - contains the
+         day number of the outbreak
+       infections:
+         The space that holds all of the "work" infections
+       play_infections:
+         The space that holds all of the "play" infections
+       rngs:
+         The list of thread-safe random number generators, one per thread
+       nthreads: int
+         The number of threads over which to parallelise the calculation
+       profiler: Profiler
+         The profiler used to profile this calculation
+       kwargs:
+         Extra arguments that may be used by other advancers, but which
+         are not used by advance_play
+    """
+    if nthreads == 1:
+        advance_foi_serial(**kwargs)
+    else:
+        advance_foi_omp(nthreads=nthreads, **kwargs)
