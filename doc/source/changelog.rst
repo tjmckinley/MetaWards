@@ -2,7 +2,7 @@
 Changelog
 =========
 
-`0.8.2 <https://github.com/metawards/MetaWards/compare/0.8.0...0.8.2>`__ - April 21st 2020
+`0.8.3 <https://github.com/metawards/MetaWards/compare/0.8.0...0.8.3>`__ - April 21st 2020
 ------------------------------------------------------------------------------------------
 
 * Fixing CI/CD so that I can build and deploy on a new tag (hopefully 0.8.2)

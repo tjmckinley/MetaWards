@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: '0'
       - name: Get tags
-        run: git fetch --tags
+        run: python actions/get_tags.py
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
