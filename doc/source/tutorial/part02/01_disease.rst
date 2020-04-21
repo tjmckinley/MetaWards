@@ -153,30 +153,28 @@ Again, this helps someone reproduce this output in the future.
 This model run may take longer, as, intuitively, you would expect that
 the changes we have made mean that more individuals are likely to be
 infected. Indeed, for the run I performed, copied below,
-the outbreak lasted for 182 days, involving over 15m people.
+the outbreak lasted for 175 days, involving over 49m people.
 
 ::
 
-  ******************************************
-  *** To repeat this job use the command ***
-  ******************************************
+  170 8
+  S: 6229809    E: 0    I: 6    R: 49852262    IW: 0   TOTAL POPULATION 56082077
 
-  metawards --repeats 1 --seed 15752663 --additional ExtraSeedsLondon.dat --output output --UV 1.0 --disease lurgy2 --input-data 2011Data --start-date 2020-04-16 --start-day 0 --parameters march29 --repository /Users/chris/GitHub/MetaWardsData --population 57104043 --nthreads 4 --nprocs 1
+  171 6
+  S: 6229809    E: 0    I: 3    R: 49852265    IW: 0   TOTAL POPULATION 56082077
 
-  [truncating output]
+  172 3
+  S: 6229809    E: 0    I: 2    R: 49852266    IW: 0   TOTAL POPULATION 56082077
 
-   178 1
-  S: 40455275    E: 0    I: 1    R: 15626801    IW: 0   TOTAL POPULATION 56082077
+  173 2
+  S: 6229809    E: 0    I: 2    R: 49852266    IW: 0   TOTAL POPULATION 56082077
 
-   179 1
-  S: 40455275    E: 0    I: 1    R: 15626801    IW: 0   TOTAL POPULATION 56082077
+  174 2
+  S: 6229809    E: 0    I: 1    R: 49852267    IW: 0   TOTAL POPULATION 56082077
 
-   180 1
-  S: 40455275    E: 0    I: 1    R: 15626801    IW: 0   TOTAL POPULATION 56082077
-
-   181 1
-  S: 40455275    E: 0    I: 0    R: 15626802    IW: 0   TOTAL POPULATION 56082077
-  Infection died ... Ending on day 182
+  175 1
+  S: 6229809    E: 0    I: 0    R: 49852268    IW: 0   TOTAL POPULATION 56082077
+  Infection died ... Ending on day 176
 
 An overview plot of the outbreak, created using
 

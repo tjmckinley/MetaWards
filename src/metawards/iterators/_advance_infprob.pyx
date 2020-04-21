@@ -11,7 +11,8 @@ from ..utils._rate_to_prob cimport rate_to_prob
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
-__all__ = ["advance_infprob", "advance_infprob_omp"]
+__all__ = ["advance_infprob", "advance_infprob_omp",
+           "advance_infprob_serial"]
 
 
 def advance_infprob_omp(network: Network, nthreads: int,
@@ -90,7 +91,7 @@ def advance_infprob_omp(network: Network, nthreads: int,
 
             if denom != 0.0:
                 rate = (length_day * wards_day_foi[j]) / denom
-                wards_day_inf_prob[j] = sclrate * rate_to_prob(rate)
+                wards_day_inf_prob[j] = rate_to_prob(sclrate * rate)
             else:
                 wards_day_inf_prob[j] = 0.0
 
@@ -98,7 +99,7 @@ def advance_infprob_omp(network: Network, nthreads: int,
 
             if denom != 0.0:
                 rate = (1.0 - length_day) * (wards_night_foi[j]) / denom
-                wards_night_inf_prob[j] = sclrate * rate_to_prob(rate)
+                wards_night_inf_prob[j] = rate_to_prob(sclrate * rate)
             else:
                 wards_night_inf_prob[j] = 0.0
         # end of loop over wards
@@ -106,7 +107,7 @@ def advance_infprob_omp(network: Network, nthreads: int,
     p = p.stop()
 
 
-def advance_infprob(**kwargs):
+def advance_infprob_serial(**kwargs):
     """Advance the calculation of the day and night infection probabilities
        for each ward. You need to call this function after you have
        changed them, and before you use them in, e.g. advance_fixed
@@ -124,3 +125,31 @@ def advance_infprob(**kwargs):
     """
     kwargs["nthreads"] = 1
     advance_infprob_omp(**kwargs)
+
+
+def advance_infprob(nthreads: int, **kwargs):
+    """Advance the calculation of the day and night infection probabilities
+       for each ward. You need to call this function after you have
+       changed them, and before you use them in, e.g. advance_fixed
+       and advance_play. This is the parallel version of this function
+
+       Parameters
+       ----------
+       network: Network
+         The network being modelled
+       nthreads: int
+         The number of threads over which to parallelise the calculation
+       profiler: Profiler
+         The profiler used to profile this calculation
+       scale_rate: float
+         Optional parameter to scale the calculated infection rates.
+         This can very bluntly model the impact of broad measures
+         to reduce the infection rate
+       kwargs:
+         Extra arguments that may be used by other advancers, but which
+         are not used by advance_infprob
+    """
+    if nthreads == 1:
+        advance_infprob_serial(**kwargs)
+    else:
+        advance_infprob_omp(nthreads=nthreads, **kwargs)

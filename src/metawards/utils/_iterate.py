@@ -51,11 +51,13 @@ def iterate(network: Network, population: Population,
                                               profiler=p)
 
     for advance_function in advance_functions:
+        p = p.start(str(advance_function))
         advance_function(network=network,
                          population=population,
                          infections=infections,
                          play_infections=play_infections,
                          rngs=rngs, nthreads=nthreads,
                          profiler=p)
+        p = p.stop()
 
     p.stop()

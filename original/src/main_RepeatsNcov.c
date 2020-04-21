@@ -60,6 +60,8 @@ int main(int argc, char *argv[]){
 
 	par->UV=atof(argv[4]);
 
+	printf("SETTING UV TO %f\n", par->UV);
+
 	SetInputFileNames(4,par);
 
 

@@ -21,7 +21,7 @@ about to find `MetaWardsData`, then please try
 
 .. warning::
 
-  This tutorial is written for ``metawards`` version 0.7.1 or
+  This tutorial is written for ``metawards`` version |MetaWardsVersion| or
   higher. If you are using an older version then please upgrade.
 
 Introducing the Lurgy
@@ -131,8 +131,8 @@ to the codes;
   have symptoms and are infectious
 * **R**: The number of the population who are removed from the outbreak,
   e.g. because they have recovered and are no longer susceptible to infection
-* **IW**: The number of the population who are *infected* and showing
-  stronger symptoms.
+* **IW**: The number electoral wards that contain at least one infected
+  individual.
 
 For more information about these values, please
 `read <https://doi.org/10.1016/j.epidem.2009.11.002>`__
@@ -160,27 +160,30 @@ may look something like this;
 
 ::
 
-   190 1
-  S: 55748884    E: 1    I: 0    R: 333192    IW: 0   TOTAL POPULATION 56082076
+   217 9
+   S: 11772514    E: 0    I: 7    R: 44309556    IW: 1   TOTAL POPULATION 56082077
 
-   191 1
-  S: 55748884    E: 1    I: 0    R: 333192    IW: 0   TOTAL POPULATION 56082076
+   218 7
+   S: 11772513    E: 1    I: 7    R: 44309556    IW: 1   TOTAL POPULATION 56082076
 
-   192 1
-  S: 55748884    E: 1    I: 0    R: 333192    IW: 0   TOTAL POPULATION 56082076
+   219 8
+   S: 11772512    E: 1    I: 5    R: 44309559    IW: 1   TOTAL POPULATION 56082076
 
-   193 1
-  S: 55748884    E: 1    I: 0    R: 333192    IW: 0   TOTAL POPULATION 56082076
+   220 6
+   S: 11772512    E: 1    I: 5    R: 44309559    IW: 0   TOTAL POPULATION 56082076
 
-   194 1
-  S: 55748884    E: 0    I: 1    R: 333192    IW: 0   TOTAL POPULATION 56082077
+   221 6
+   S: 11772512    E: 0    I: 3    R: 44309562    IW: 0   TOTAL POPULATION 56082077
 
-   195 1
-  S: 55748884    E: 0    I: 1    R: 333192    IW: 0   TOTAL POPULATION 56082077
+   222 3
+   S: 11772512    E: 0    I: 2    R: 44309563    IW: 0   TOTAL POPULATION 56082077
 
-   196 1
-  S: 55748884    E: 0    I: 0    R: 333193    IW: 0   TOTAL POPULATION 56082077
-  Infection died ... Ending on day 197
+   223 2
+   S: 11772512    E: 0    I: 2    R: 44309563    IW: 0   TOTAL POPULATION 56082077
+
+   224 2
+   S: 11772512    E: 0    I: 0    R: 44309565    IW: 0   TOTAL POPULATION 56082077
+   Infection died ... Ending on day 225
 
 .. note::
 
@@ -203,7 +206,7 @@ to enable a job to be repeated. Look the for line the reads;
   *** To repeat this job use the command ***
   ******************************************
 
-  metawards --repeats 1 --seed 17294186 --additional ExtraSeedsLondon.dat --output output --UV 1.0 --disease lurgy --input-data 2011Data --start-date 2020-04-16 --start-day 0 --parameters march29 --repository /Users/chris/GitHub/MetaWardsData --population 57104043 --nthreads 4 --nprocs 1
+  metawards --repeats 1 --seed 20460833 --additional ExtraSeedsLondon.dat --output output --UV 0.0 --disease lurgy --input-data 2011Data --start-date 2020-04-20 --start-day 0 --parameters march29 --repository /Users/chris/GitHub/MetaWardsData --population 57104043 --nthreads 4 --nprocs 1
 
 This is the command line that you can use to repeat a job (note that
 the command line you see will be different). We have been careful to

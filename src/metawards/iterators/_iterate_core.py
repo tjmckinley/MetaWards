@@ -36,13 +36,13 @@ def iterate_core(nthreads: int = 1, setup=False, **kwargs):
                  setup_additional_seeds]
 
     elif nthreads is None or nthreads == 1:
-        from ._advance_additional import advance_additional
-        from ._advance_foi import advance_foi
-        from ._advance_recovery import advance_recovery
+        from ._advance_additional import advance_additional_serial
+        from ._advance_foi import advance_foi_serial
+        from ._advance_recovery import advance_recovery_serial
 
-        funcs = [advance_additional,
-                 advance_foi,
-                 advance_recovery]
+        funcs = [advance_additional_serial,
+                 advance_foi_serial,
+                 advance_recovery_serial]
     else:
         from ._advance_additional import advance_additional_omp
         from ._advance_foi import advance_foi_omp

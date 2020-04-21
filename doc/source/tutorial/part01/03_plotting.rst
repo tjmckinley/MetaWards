@@ -35,6 +35,20 @@ This will create two sets of graphs;
 .. image:: ../../images/tutorial_1_3_average.jpg
    :alt: Overview image of the outbreak of the lurgy
 
+The **E** graph shows the total number of latent infections. It should be
+slightly ahead of and of a similar shape to the **I** graph, which shows
+the total number of infections.
+
+The **IW** graph shows the number of wards with at least one infection.
+This cannot grow to more than the total number of wards, hence why
+you see this graph topping out at ~8588, as this is the number of wards.
+
+The **R** graph shows the number of individuals removed from the epidemic
+(e.g. as they may have recovered). This should have an "S" shape,
+showing exponential growth in the initial stage of the epidemic that
+tails off as the number of individuals susceptible to infection is
+reduced (e.g. as immunity in the population is built up).
+
 .. note::
 
     Your graphs may look a little different in the exact numbers, but should
