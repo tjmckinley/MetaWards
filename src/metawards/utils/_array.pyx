@@ -23,7 +23,9 @@ def resize_array(a, size: int, default: any = None):
     """Resize the passed array to size 'size', adding 'default'
        if this will grow the array
     """
-    if size < len(a):
+    if size == len(a):
+        return a
+    elif size < len(a):
         return a[0:size]
     elif len(a) == 0:
         typecode = None
@@ -47,7 +49,21 @@ def resize_array(a, size: int, default: any = None):
         assert(len(a) == size)
         return a
     else:
-        return a + array(a.typecode, (size-len(a))*[default])
+        try:
+            typecode = a.typecode
+        except:
+            typecode = None
+
+        d = size - len(a)
+
+        if typecode is None:
+            return a + create_string_array(d, default)
+        elif typecode == "i":
+            return a + create_int_array(d, default)
+        elif typecode == "d":
+            return a + create_double_array(d, default)
+        else:
+            raise AssertionError(f"Unrecognised array typecode {typecode}")
 
 
 def create_double_array(size: int, default: float=None):

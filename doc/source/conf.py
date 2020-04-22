@@ -27,7 +27,7 @@ extensions = [
 issues_github_path = 'metawards/MetaWards'
 
 # Add any paths that contain templates here, relative to this directory.
-#templates_path = ['_templates']
+templates_path = ['_templates']
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -121,8 +121,11 @@ html_theme = 'sphinx_rtd_theme'
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-'logo_only': False,
-'style_nav_header_background': '#161e3c'
+    'logo_only': True,
+    'display_version': False,
+    'prev_next_buttons_location': 'both',
+    'style_external_links': True,
+    'style_nav_header_background': ''
 }
 # pngmath_latex_preamble = r"""
 # \usepackage{color}
@@ -153,6 +156,9 @@ html_favicon = 'favicons/favicon.ico'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_css_files = ['custom.css']
+html_js_files = ['custom.js']
+
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 html_last_updated_fmt = '%b %d, %Y'
@@ -162,7 +168,9 @@ html_last_updated_fmt = '%b %d, %Y'
 html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+#html_sidebars = {'**': ['sourcelink.html', 'globaltoc.html']}
+
+
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -178,7 +186,7 @@ html_use_smartypants = True
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 html_show_sphinx = False
