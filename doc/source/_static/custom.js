@@ -12,6 +12,12 @@ function choose_version(value){
     s += "/MetaWards";
     s += value;
 
+    if (parts[1].startsWith("versions/")){
+        var parts2 = parts[1].split("/");
+        parts2.shift().shift();
+        parts[1] = parts2.join("/");
+    }
+
     for (var i=1; i<parts.length - 1; ++i){
         s += parts[i] + "/MetaWards/";
     }
