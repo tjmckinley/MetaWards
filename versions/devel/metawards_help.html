@@ -201,7 +201,8 @@
                  [--iterator ITERATOR] [--extractor EXTRACTOR] [--UV UV]
                  [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
                  [--cores-per-node CORES_PER_NODE] [--auto-bzip]
-                 [--no-auto-bzip] [--force-overwrite-output] [--profile]
+                 [--no-auto-bzip] [--force-overwrite-output]
+                 [--max-nodes MAX_NODES] [--max-links MAX_LINKS] [--profile]
                  [--no-profile] [--mpi] [--scoop]
 
 MetaWards epidemic modelling - see https://github.com/metawards/metawards for
@@ -319,6 +320,10 @@ optional arguments:
                         is safe to delete the contents of the output directory
                         specified in by &#39;--output&#39; if it already exists.
                         Dangerous as this can remove existing output files
+  --max-nodes MAX_NODES
+                        Maximum number of nodes that can be read
+  --max-links MAX_LINKS
+                        Maximum number of links that can be read
   --profile             Enable profiling of the code
   --no-profile          Disable profiling of the code
   --mpi                 Force use of MPI to parallelise across runs
