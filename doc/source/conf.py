@@ -124,7 +124,7 @@ html_theme_options = {
     'logo_only': True,
     'display_version': False,
     'prev_next_buttons_location': 'both',
-    'style_external_links': True,
+    'style_external_links': False,
     'style_nav_header_background': ''
 }
 # pngmath_latex_preamble = r"""
