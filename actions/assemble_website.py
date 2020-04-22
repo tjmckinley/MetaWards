@@ -17,10 +17,15 @@ print(f"Build docs for branch {branch} version {version}")
 
 # we will only build docs for the master and devel branches
 # (as these are moved into special locations)
+is_tagged_release = False
 
 if branch not in ["master", "devel"]:
-    print(f"We don't assemble the website for branch {branch}")
-    sys.exit(0)
+    if branch.find(version) != -1:
+        print(f"Building the docs for tag {version}")
+        is_tagged_release = True
+    else:
+        print(f"We don't assemble the website for branch {branch}")
+        sys.exit(0)
 
 os.environ["METAWARDS_VERSION"] = version
 os.environ["METAWARDS_BRANCH"] = branch
@@ -34,7 +39,7 @@ if not os.path.exists("./gh-pages"):
 
 # if this is the master branch, then copy the docs to both the root
 # directory of the website, and also to the 'versions/version' directory
-if branch == "master":
+if is_tagged_release or (branch == "master"):
     print(f"Copying main docs to gh-pages and gh-pages/versions/{version}")
     dir_util.copy_tree("doc/build/html/", "gh-pages/")
     dir_util.copy_tree("doc/build/html/", f"gh-pages/versions/{version}/")
