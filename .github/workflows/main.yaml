@@ -3,6 +3,8 @@ name: Build
 on:
   push:
     branches: [master, devel]
+    tags:
+    - '*'
   pull_request:
     branches: [master, devel]
 
@@ -19,12 +21,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: '0'
-      - name: Get tags
-        run: git fetch --tags
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Get tags
+        run: python actions/get_tags.py
       - name: Print branch information
         run: echo ${{github.ref}}
       - name: Install Python dependencies
