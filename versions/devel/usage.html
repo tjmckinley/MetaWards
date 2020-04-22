@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.8.0b
+                0.8.3
               </div>
             
           
@@ -203,15 +203,15 @@ type;</p>
 </div>
 <p>This prints out the version of <code class="docutils literal notranslate"><span class="pre">metawards</span></code>, which should look something
 like this;</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>      ***********************************
-      metawards version 0.8.0b+1.gc1633a8
-      ***********************************
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>       **********************************
+       metawards version 0.8.3+4.ge6926ad
+       **********************************
 
             -- Source information --
 repository: https://github.com/metawards/MetaWards
                  branch: devel
-revision: c1633a848052826b23589a768adfceb47821ac22
-    last modified: 2020-04-21T21:04:34+0100
+revision: e6926ad909903ffed069ecfd267a07f85d785b5c
+    last modified: 2020-04-22T12:05:47+0100
 
           -- Additional information --
 Visit https://metawards.github.io for more information
@@ -361,6 +361,71 @@ a title line, e.g.</p>
 </div>
 <p>specifies that you want to adjust the <code class="docutils literal notranslate"><span class="pre">beta[2]</span></code>, <code class="docutils literal notranslate"><span class="pre">progress[2]</span></code> and
 <code class="docutils literal notranslate"><span class="pre">progress[3]</span></code> parameters to the specified values.</p>
+<p>The full list of parameters you can adjust are listed below;</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>UV:
+  Adjust the Parameters.UV parameter
+
+beta:
+  Adjust the Disease.beta parameter
+
+contrib_foi:
+  Adjust the Disease.contrib_foi parameter
+
+daily_imports:
+  Adjust the Parameters.daily_imports parameter
+
+daily_ward_vaccination_capacity:
+  Adjust the Parameters.daily_ward_vaccination_capacity
+  parameter
+
+data_dist_cutoff:
+  Adjust the Parameters.data_dist_cutoff parameter
+
+dyn_dist_cutoff:
+  Adjust the Parameters.dyn_dist_cutoff parameter
+
+dyn_play_at_home:
+  Adjust the Parameters.dyn_play_at_home parameter
+
+global_detection_thresh:
+  Adjust the Parameters.global_detection_thresh parameter
+
+initial_inf:
+  Adjust the Parameters.initial_inf parameter
+
+length_day:
+  Adjust the Parameters.length_day parameter
+
+local_vaccination_thesh:
+  Adjust the Parameters.local_vaccination_thresh parameter
+
+neighbour_weight_threshold:
+  Adjust the Parameters.neighbour_weight_threshold parameter
+
+play_to_work:
+  Adjust the Parameters.play_to_work parameter
+
+plength_day:
+  Adjust the Parameters.plength_day parameter
+
+progress:
+  Adjust the Disease.progress parameter
+
+static_play_at_home:
+  Adjust the Parameters.static_play_at_home parameter
+
+too_ill_to_move:
+  Adjust the Disease.too_ill_to_move parameter
+
+user:
+  Adjust a custom user-supplied parameter, held in
+  Parameters.user_params[name]. Set a user parameter
+  called &#39;name&#39; via &#39;user.name&#39; or &#39;.name&#39;.
+
+work_to_play:
+  Adjust the Parameters.work_to_play parameter
+</pre></div>
+</div>
 </div>
 <div class="section" id="understanding-the-output">
 <h2>Understanding the output<a class="headerlink" href="#understanding-the-output" title="Permalink to this headline">¶</a></h2>
@@ -437,7 +502,7 @@ The full help is <a class="reference internal" href="metawards_plot_help.html"><
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 21, 2020.
+        Last updated on Apr 22, 2020.
       </span>
 
     </p>

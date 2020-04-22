@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.8.0b
+                0.8.3
               </div>
             
           
@@ -107,6 +107,7 @@
 <li class="toctree-l3"><a class="reference internal" href="05_scanning.html">Custom variables</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Scanning lockdown</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#running-on-a-cluster">Running on a cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#moving-beyond-this-simple-demo">Moving beyond this simple demo</a></li>
 </ul>
 </li>
 </ul>
@@ -433,6 +434,86 @@ through to outbreaks that grow despite lockdown. These can all
 be seen here;</p>
 <img alt="Overview image of a lockdown with custom parameters" src="../../_images/tutorial_3_6.gif" />
 </div>
+<div class="section" id="moving-beyond-this-simple-demo">
+<h2>Moving beyond this simple demo<a class="headerlink" href="#moving-beyond-this-simple-demo" title="Permalink to this headline">¶</a></h2>
+<p>This was a simple demo of how different lockdown scenarios could
+be modelled using custom parameters and custom iterators.</p>
+<p>You can of course go further, e.g. by using your custom <code class="docutils literal notranslate"><span class="pre">advance</span> <span class="pre">function</span></code>
+to change actual parameters of the model or of the disease. Feel
+free to change any of the parameters in
+<a class="reference internal" href="../../api/generated/metawards.Parameters.html#metawards.Parameters" title="metawards.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">network.params</span></code></a> or
+<a class="reference internal" href="../../api/generated/metawards.Disease.html#metawards.Disease" title="metawards.Disease"><code class="xref py py-class docutils literal notranslate"><span class="pre">network.params.disease_params</span></code></a> directly.
+You could, for example, reduce the
+<a class="reference internal" href="../../api/generated/metawards.Parameters.html#metawards.Parameters" title="metawards.Parameters"><code class="xref py py-data docutils literal notranslate"><span class="pre">network.params.dyn_dist_cutoff</span></code></a>
+variable as lockdown starts. Or you could directly adjust
+<a class="reference internal" href="../../api/generated/metawards.Disease.html#metawards.Disease.beta" title="metawards.Disease.beta"><code class="xref py py-data docutils literal notranslate"><span class="pre">network.params.disease_params.beta[0]</span></code></a>.</p>
+<p>You can also add these parameters to your scan of adjustable parameters.
+The full list of built-in adjustable parameters is below;</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>UV:
+  Adjust the Parameters.UV parameter
+
+beta:
+  Adjust the Disease.beta parameter
+
+contrib_foi:
+  Adjust the Disease.contrib_foi parameter
+
+daily_imports:
+  Adjust the Parameters.daily_imports parameter
+
+daily_ward_vaccination_capacity:
+  Adjust the Parameters.daily_ward_vaccination_capacity
+  parameter
+
+data_dist_cutoff:
+  Adjust the Parameters.data_dist_cutoff parameter
+
+dyn_dist_cutoff:
+  Adjust the Parameters.dyn_dist_cutoff parameter
+
+dyn_play_at_home:
+  Adjust the Parameters.dyn_play_at_home parameter
+
+global_detection_thresh:
+  Adjust the Parameters.global_detection_thresh parameter
+
+initial_inf:
+  Adjust the Parameters.initial_inf parameter
+
+length_day:
+  Adjust the Parameters.length_day parameter
+
+local_vaccination_thesh:
+  Adjust the Parameters.local_vaccination_thresh parameter
+
+neighbour_weight_threshold:
+  Adjust the Parameters.neighbour_weight_threshold parameter
+
+play_to_work:
+  Adjust the Parameters.play_to_work parameter
+
+plength_day:
+  Adjust the Parameters.plength_day parameter
+
+progress:
+  Adjust the Disease.progress parameter
+
+static_play_at_home:
+  Adjust the Parameters.static_play_at_home parameter
+
+too_ill_to_move:
+  Adjust the Disease.too_ill_to_move parameter
+
+user:
+  Adjust a custom user-supplied parameter, held in
+  Parameters.user_params[name]. Set a user parameter
+  called &#39;name&#39; via &#39;user.name&#39; or &#39;.name&#39;.
+
+work_to_play:
+  Adjust the Parameters.work_to_play parameter
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -456,7 +537,7 @@ be seen here;</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 21, 2020.
+        Last updated on Apr 22, 2020.
       </span>
 
     </p>

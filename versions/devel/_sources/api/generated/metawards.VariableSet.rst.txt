@@ -15,6 +15,7 @@ metawards.VariableSet
    
       ~VariableSet.__init__
       ~VariableSet.adjust
+      ~VariableSet.adjustable_help
       ~VariableSet.extract_values
       ~VariableSet.fingerprint
       ~VariableSet.make_compatible_with

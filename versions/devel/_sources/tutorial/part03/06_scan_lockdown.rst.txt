@@ -263,3 +263,24 @@ be seen here;
 
 .. image:: ../../images/tutorial_3_6.gif
    :alt: Overview image of a lockdown with custom parameters
+
+Moving beyond this simple demo
+------------------------------
+
+This was a simple demo of how different lockdown scenarios could
+be modelled using custom parameters and custom iterators.
+
+You can of course go further, e.g. by using your custom ``advance function``
+to change actual parameters of the model or of the disease. Feel
+free to change any of the parameters in
+:class:`network.params <metawards.Parameters>` or
+:class:`network.params.disease_params <metawards.Disease>` directly.
+You could, for example, reduce the
+:data:`network.params.dyn_dist_cutoff <metawards.Parameters>`
+variable as lockdown starts. Or you could directly adjust
+:data:`network.params.disease_params.beta[0] <metawards.Disease.beta>`.
+
+You can also add these parameters to your scan of adjustable parameters.
+The full list of built-in adjustable parameters is below;
+
+.. program-output:: python get_variableset_help.py
