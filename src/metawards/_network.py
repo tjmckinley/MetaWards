@@ -36,9 +36,9 @@ class Network:
     plinks: int = 0
 
     #: The maximum allowable number of nodes in the network
-    max_nodes: int = 10050
+    max_nodes: int = 16384
     #: The maximum allowable number of links in the network
-    max_links: int = 2414000
+    max_links: int = 4194304
 
     #: To seed provides additional seeding information
     to_seed: _List[int] = None
@@ -51,8 +51,8 @@ class Network:
               calculate_distances: bool = True,
               build_function=None,
               distance_function=None,
-              max_nodes: int = 10050,
-              max_links: int = 2414000,
+              max_nodes: int = 16384,
+              max_links: int = 4194304,
               nthreads: int = 1,
               profile: bool = True,
               profiler=None):

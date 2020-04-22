@@ -18,8 +18,8 @@ __all__ = ["build_wards_network"]
 def build_wards_network(params: Parameters,
                         profiler: Profiler = None,
                         nthreads: int = 1,
-                        max_nodes:int = 10050,
-                        max_links:int = 2414000):
+                        max_nodes:int = 16384,
+                        max_links:int = 4194304):
     """Creates a network of wards using the information provided in
        the file specified in parameters.input_files.work.
 
@@ -53,6 +53,9 @@ def build_wards_network(params: Parameters,
     cdef int to_id = 0
     cdef double weight = 0.0
     cdef int iweight = 0
+
+    cdef int MAX_LINKS = max_links
+    cdef int MAX_NODES = max_nodes
 
     cdef int * nodes_label = get_int_array_ptr(nodes.label)
     cdef int * nodes_begin_to = get_int_array_ptr(nodes.begin_to)
@@ -97,11 +100,22 @@ def build_wards_network(params: Parameters,
 
             nlinks += 1
 
+            if nlinks >= MAX_LINKS:
+                break
+
+            if from_id > nnodes:
+                nnodes = from_id
+
+            if to_id > nnodes:
+                nnodes = to_id
+
+            if nnodes >= MAX_NODES:
+                break
+
             if nodes_label[from_id] == -1:
                 nodes_label[from_id] = from_id
                 nodes_begin_to[from_id] = nlinks
                 nodes_end_to[from_id] = nlinks
-                nnodes += 1
 
             if from_id == to_id:
                 nodes_self_w[from_id] = nlinks
@@ -119,6 +133,13 @@ def build_wards_network(params: Parameters,
             nodes_denominator_d[to_id] += weight
 
         fclose(cfile)
+
+    if nlinks >= MAX_LINKS or nnodes >= MAX_NODES:
+        raise MemoryError(
+            f"There are either too many links (>{nlinks}) or too many "
+            f"wards (>{nnodes}) to fit into pre-allocated memory "
+            f"(max_nodes = {MAX_NODES}, max_links = {MAX_LINKS}). "
+            f"Increase these values and try to run again.")
 
     if error_from != -1 or error_to != -1:
         raise ValueError(f"{params.input_files.work} is corrupted! "
@@ -143,19 +164,36 @@ def build_wards_network(params: Parameters,
 
     from . import fill_in_gaps
     p = p.start("fill_in_gaps")
-    fill_in_gaps(network)
+    fill_in_gaps(network, max_nodes=max_nodes)
     p = p.stop()
 
     print(f"Number of nodes after filling equals {network.nnodes}")
 
     from . import build_play_matrix
     p = p.start("build_play_matrix")
-    build_play_matrix(network=network, profiler=p)
+    build_play_matrix(network=network, profiler=p, max_nodes=max_nodes,
+                      max_links=max_links)
     p = p.stop()
+
+    # now finally go through all of the nodes and make sure that their
+    # label is not -1
+    cdef int nnull = 0
+    cdef int nnodes_plus_one = network.nnodes + 1
+
+    with nogil:
+        for i in range(1, nnodes_plus_one):
+            if nodes_label[i] == -1:
+                nnull += 1
+                nodes_label[i] = i
+
+    if nnull > 0:
+        print(f"Number of null nodes equals {nnull}")
 
     print(f"Number of nodes after build play equals {network.nnodes}")
 
     print(f"Resize nodes to {network.nnodes + 1}")
+    print(f"Resize links to {network.nlinks + 1}")
+    print(f"Resize play links to {network.plinks + 1}")
     p = p.start("resize_nodes_and_links")
     network.nodes.resize(network.nnodes + 1)     # remember 1-indexed
     network.to_links.resize(network.nlinks + 1)  # remember 1-indexed
