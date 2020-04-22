@@ -37,5 +37,6 @@ metawards.InputFiles
       ~InputFiles.uv
       ~InputFiles.weekend
       ~InputFiles.work
+      ~InputFiles.work_size
    
    

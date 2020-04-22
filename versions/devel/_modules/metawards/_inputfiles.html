@@ -26,6 +26,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/custom.js"></script>
         <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -35,6 +36,7 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -46,11 +48,11 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: #161e3c" >
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="../../index.html" class="icon icon-home"> MetaWards
+            <a href="../../index.html">
           
 
           
@@ -60,13 +62,6 @@
           </a>
 
           
-            
-            
-              <div class="version">
-                0.8.3
-              </div>
-            
-          
 
           
 <div role="search">
@@ -75,7 +70,9 @@
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
+  <div id="version_box"></div>
 </div>
+
 
           
         </div>
@@ -217,7 +214,9 @@
     <span class="n">identifier2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1">#: File from which to read the weekend matrix of links</span>
     <span class="n">weekend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1">#: File from which to read the size of the population in the play pile</span>
+    <span class="c1">#: File from which to read the size of the population in the work file</span>
+    <span class="n">work_size</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1">#: File from which to read the size of the population in the play file</span>
     <span class="n">play_size</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1">#: File from which to read the positions (locations) of the wards</span>
     <span class="c1">#: (the centre of the bounding boxes)</span>
@@ -267,6 +266,7 @@
                <span class="sa">f</span><span class="s2">&quot;identifier = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="sa">f</span><span class="s2">&quot;identifier2 = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier2</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="sa">f</span><span class="s2">&quot;weekend = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weekend</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;work_size = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">work_size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="sa">f</span><span class="s2">&quot;play_size = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">play_size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="sa">f</span><span class="s2">&quot;position = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="sa">f</span><span class="s2">&quot;seed = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
@@ -369,16 +369,17 @@
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find or read </span><span class="si">{</span><span class="n">json_file</span><span class="si">}</span><span class="s2">: &quot;</span>
                                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">model</span> <span class="o">=</span> <span class="n">InputFiles</span><span class="p">(</span><span class="n">work</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">],</span>
-                           <span class="n">play</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;play&quot;</span><span class="p">],</span>
-                           <span class="n">identifier</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;identifier&quot;</span><span class="p">],</span>
-                           <span class="n">identifier2</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;identifier2&quot;</span><span class="p">],</span>
-                           <span class="n">weekend</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;weekend&quot;</span><span class="p">],</span>
-                           <span class="n">play_size</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;play_size&quot;</span><span class="p">],</span>
-                           <span class="n">position</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">],</span>
-                           <span class="n">seed</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">],</span>
-                           <span class="n">nodes_to_track</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;nodes_to_track&quot;</span><span class="p">],</span>
-                           <span class="n">uv</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;uv&quot;</span><span class="p">],</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">InputFiles</span><span class="p">(</span><span class="n">work</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">play</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;play&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">identifier</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;identifier&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">identifier2</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;identifier2&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">weekend</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weekend&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">work_size</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;work_size&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">play_size</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;play_size&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">position</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">seed</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">nodes_to_track</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes_to_track&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">uv</span><span class="o">=</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;uv&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                            <span class="n">_filename</span><span class="o">=</span><span class="n">json_file</span><span class="p">,</span>
                            <span class="n">_model_path</span><span class="o">=</span><span class="n">model_path</span><span class="p">,</span>
                            <span class="n">_model_name</span><span class="o">=</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
