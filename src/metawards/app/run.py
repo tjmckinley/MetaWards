@@ -96,9 +96,9 @@ def parse_args():
                         help="Name of the disease to model "
                              "(default is 'ncov')")
 
-    parser.add_argument('-I', '--input-data', type=str, default="2011Data",
-                        help="Name of the input data set for the network "
-                             "(default is '2011Data')")
+    parser.add_argument('-m', '--model', type=str, default=None,
+                        help="Name of the input model data set for the "
+                             "network (default is '2011Data')")
 
     parser.add_argument('--start-date', type=str, default=None,
                         help="Date of the start of the model outbreak. "
@@ -617,7 +617,8 @@ def cli():
     # WE NEED ONE OF these listed options;
     should_run = False
 
-    for arg in [args.input, args.repeats, args.disease, args.additional]:
+    for arg in [args.input, args.repeats, args.disease, args.additional,
+                args.model]:
         if arg is not None:
             should_run = True
             break
@@ -821,7 +822,10 @@ def cli():
     else:
         params.set_disease("ncov")
 
-    params.set_input_files(args.input_data)
+    if args.model:
+        params.set_input_files(args.model)
+    else:
+        params.set_input_files("2011Data")
 
     # load the user-defined custom parameters
     if args.user_variables:
