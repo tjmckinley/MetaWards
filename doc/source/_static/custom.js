@@ -14,7 +14,8 @@ function choose_version(value){
 
     if (parts[1].startsWith("versions/")){
         var parts2 = parts[1].split("/");
-        parts2.shift().shift();
+        parts2.shift();
+        parts2.shift();
         parts[1] = parts2.join("/");
     }
 
