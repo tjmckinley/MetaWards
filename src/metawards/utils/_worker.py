@@ -33,7 +33,7 @@ def silence_output():
         sys.stderr = old_err
 
 
-def prepare_worker(params: Parameters):
+def prepare_worker(params: Parameters, options):
     """Prepare a worker to receive work to run a model using the passed
        parameters. This will build the network specified by the
        parameters and will store it in global memory ready to
@@ -44,10 +44,18 @@ def prepare_worker(params: Parameters):
     with silence_output():
         global global_network
 
+        max_nodes = options["max_nodes"]
+        max_links = options["max_links"]
+
+        del options["max_nodes"]
+        del options["max_links"]
+
         if global_network is None:
             global_network = Network.build(params=params,
                                            calculate_distances=True,
-                                           profile=False)
+                                           profile=False,
+                                           max_nodes=max_nodes,
+                                           max_links=max_links)
 
         else:
             global_network.update(params)
@@ -68,7 +76,7 @@ def run_worker(arguments):
     options = arguments["options"]
 
     # first, build and prepare the network
-    prepare_worker(params)
+    prepare_worker(params, options)
 
     # next, run the job, writing to output
     from ._runner import redirect_output

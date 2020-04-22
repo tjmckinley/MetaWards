@@ -218,6 +218,9 @@ def run_models(network: Network, variables: VariableSets,
         # create all of the parameters and options to run
         arguments = []
 
+        max_nodes = network.nnodes + 1
+        max_links = max(network.nlinks, network.plinks) + 1
+
         for i, variable in enumerate(variables):
             seed = seeds[i]
             outdir = outdirs[i]
@@ -233,7 +236,9 @@ def run_models(network: Network, variables: VariableSets,
                             "iterator": iterator,
                             "extractor": extractor,
                             "profile": profile,
-                            "nthreads": nthreads}
+                            "nthreads": nthreads,
+                            "max_nodes": max_nodes,
+                            "max_links": max_links}
             })
 
         if parallel_scheme == "multiprocessing":

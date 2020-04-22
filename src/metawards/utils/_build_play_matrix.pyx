@@ -12,7 +12,9 @@ from ._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
 __all__ = ["build_play_matrix"]
 
-def build_play_matrix(network: Network, profiler: Profiler=None):
+def build_play_matrix(network: Network,
+                      max_nodes: int, max_links: int,
+                      profiler: Profiler=None):
     """Build the play matrix for the passed network"""
     if profiler is None:
         profiler = NullProfiler()
@@ -56,6 +58,9 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
     cdef int error_from = -1
     cdef int error_to = -1
 
+    cdef int MAX_LINKS = max_links
+    cdef int MAX_NODES = max_nodes
+
     cdef char* fname
     cdef FILE* cfile
 
@@ -81,6 +86,9 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
 
                 nlinks += 1
 
+                if nlinks >= MAX_LINKS:
+                    break
+
                 if from_id == 0 or to_id == 0:
                     error_from = from_id
                     error_to = to_id
@@ -105,6 +113,11 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
 
             fclose(cfile)
 
+        if nlinks >= MAX_LINKS:
+            raise MemoryError(f"There are too many links (>{nlinks}) to fit "
+                              f"into pre-allocated memory (max_links = "
+                              f"{max_links}). Increase this and try again.")
+
         if error_from != -1 or error_to != -1:
             raise ValueError(f"{params.input_files.play} is corrupted. "
                              f"Zero in link list: ${error_from}-${error_to}! "
@@ -127,7 +140,7 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
 
     from . import fill_in_gaps
     p = p.start("fill_in_gaps")
-    fill_in_gaps(network)
+    fill_in_gaps(network, max_nodes=max_nodes)
     p = p.stop()
 
     cdef int i1 = 0
@@ -168,7 +181,19 @@ def build_play_matrix(network: Network, profiler: Profiler=None):
         # we now need to fill in the missing nodes that are defined
         # in the play_size file, but were not linked to in the node
         # links file
-        print("NEED TO ADD THINGS HERE!")
+        old_nnodes = network.nnodes
+
+        if max_node_id >= max_nodes:
+            raise MemoryError(f"Link ID {max_node_id} implies we have more "
+                              f"nodes than are pre-allocated ({max_nodes}). "
+                              f"Increase this and try again.")
+
+        print(f"Adding missing nodes from {old_nnodes+1} to {max_node_id}")
+
+        network.nnodes = max_node_id
+
+        for i in range(old_nnodes, max_node_id+1):
+            network.nodes.label[i] = i
 
         p = p.stop()
     # end of if play_size file

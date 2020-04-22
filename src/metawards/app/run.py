@@ -215,6 +215,12 @@ def parse_args():
                              "exists. Dangerous as this can remove "
                              "existing output files")
 
+    parser.add_argument('--max-nodes', type=int, default=16384,
+                        help="Maximum number of nodes that can be read")
+
+    parser.add_argument('--max-links', type=int, default=4194304,
+                        help="Maximum number of links that can be read")
+
     parser.add_argument('--profile', action="store_true",
                         default=None, help="Enable profiling of the code")
 
@@ -857,6 +863,8 @@ def cli():
 
     print("\nBuilding the network...")
     network = Network.build(params=params, calculate_distances=True,
+                            max_nodes=args.max_nodes,
+                            max_links=args.max_links,
                             profile=profile)
 
     print("\nRun the model...")
