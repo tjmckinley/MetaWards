@@ -194,6 +194,10 @@ a title line, e.g.
 specifies that you want to adjust the ``beta[2]``, ``progress[2]`` and
 ``progress[3]`` parameters to the specified values.
 
+The full list of parameters you can adjust are listed below;
+
+.. program-output:: python get_variableset_help.py
+
 Understanding the output
 ========================
 

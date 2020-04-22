@@ -38,6 +38,9 @@ of six main units;
   perform model runs. These functions are internal to metawards and are
   not designed to be used outside of this program.
 
+.. toctree::
+   :maxdepth: 1
+
   index_MetaWards_app
   index_MetaWards
   index_MetaWards_iterators
