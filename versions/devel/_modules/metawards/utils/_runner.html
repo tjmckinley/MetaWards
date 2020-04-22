@@ -184,7 +184,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get_number_of_processes&quot;</span><span class="p">,</span> <span class="s2">&quot;run_models&quot;</span><span class="p">,</span> <span class="s2">&quot;redirect_output&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">get_number_of_processes</span><span class="p">(</span><span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_number_of_processes"><a class="viewcode-back" href="../../../api/generated/metawards.utils.get_number_of_processes.html#metawards.utils.get_number_of_processes">[docs]</a><span class="k">def</span> <span class="nf">get_number_of_processes</span><span class="p">(</span><span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function works out how many processes have been set</span>
 <span class="sd">       by the paralellisation system called &#39;parallel_scheme&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -220,10 +220,10 @@
         <span class="k">return</span> <span class="n">nprocs</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unrecognised parallelisation scheme </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="sa">f</span><span class="s2">&quot;Unrecognised parallelisation scheme </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="redirect_output"><a class="viewcode-back" href="../../../api/generated/metawards.utils.redirect_output.html#metawards.utils.redirect_output">[docs]</a><span class="nd">@_contextmanager</span>
+<span class="nd">@_contextmanager</span>
 <span class="k">def</span> <span class="nf">redirect_output</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Nice way to redirect stdout and stderr - thanks to</span>
 <span class="sd">       Emil Stenström in</span>
@@ -243,7 +243,7 @@
         <span class="n">_sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">old_out</span>
         <span class="n">_sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">old_err</span>
         <span class="n">new_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">new_err</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">new_err</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">run_models</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">VariableSets</span><span class="p">,</span>
