@@ -42,7 +42,9 @@ class InputFiles:
     identifier2: str = None
     #: File from which to read the weekend matrix of links
     weekend: str = None
-    #: File from which to read the size of the population in the play pile
+    #: File from which to read the size of the population in the work file
+    work_size: str = None
+    #: File from which to read the size of the population in the play file
     play_size: str = None
     #: File from which to read the positions (locations) of the wards
     #: (the centre of the bounding boxes)
@@ -92,6 +94,7 @@ class InputFiles:
                f"identifier = {self.identifier}\n" \
                f"identifier2 = {self.identifier2}\n" \
                f"weekend = {self.weekend}\n" \
+               f"work_size = {self.work_size}\n" \
                f"play_size = {self.play_size}\n" \
                f"position = {self.position}\n" \
                f"seed = {self.seed}\n" \
@@ -194,16 +197,17 @@ class InputFiles:
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 
-        model = InputFiles(work=files["work"],
-                           play=files["play"],
-                           identifier=files["identifier"],
-                           identifier2=files["identifier2"],
-                           weekend=files["weekend"],
-                           play_size=files["play_size"],
-                           position=files["position"],
-                           seed=files["seed"],
-                           nodes_to_track=files["nodes_to_track"],
-                           uv=files["uv"],
+        model = InputFiles(work=files.get("work", None),
+                           play=files.get("play", None),
+                           identifier=files.get("identifier", None),
+                           identifier2=files.get("identifier2", None),
+                           weekend=files.get("weekend", None),
+                           work_size=files.get("work_size", None),
+                           play_size=files.get("play_size", None),
+                           position=files.get("position", None),
+                           seed=files.get("seed", None),
+                           nodes_to_track=files.get("nodes_to_track", None),
+                           uv=files.get("uv", None),
                            _filename=json_file,
                            _model_path=model_path,
                            _model_name=files["name"],

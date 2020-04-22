@@ -6,22 +6,27 @@ __all__ = ["VariableSets", "VariableSet"]
 
 
 def _set_beta(params, name: str, index: int, value: float):
+    """Adjust the Disease.beta parameter"""
     params.disease_params.beta[index] = value
 
 
 def _set_progress(params, name: str, index: int, value: float):
+    """Adjust the Disease.progress parameter"""
     params.disease_params.progress[index] = value
 
 
 def _set_too_ill_to_move(params, name: str, index: int, value: float):
+    """Adjust the Disease.too_ill_to_move parameter"""
     params.disease_params.too_ill_to_move[index] = value
 
 
 def _set_contrib_foi(params, name: str, index: int, value: float):
+    """Adjust the Disease.contrib_foi parameter"""
     params.disease_params.contrib_foi[index] = value
 
 
 def _set_lengthday(params, name: str, index: int, value: float):
+    """Adjust the Parameters.length_day parameter"""
     if index is not None:
         raise IndexError("You cannot index the lengthday")
 
@@ -29,6 +34,7 @@ def _set_lengthday(params, name: str, index: int, value: float):
 
 
 def _set_plengthday(params, name: str, index: int, value: float):
+    """Adjust the Parameters.plength_day parameter"""
     if index is not None:
         raise IndexError("You cannot index the lengthday")
 
@@ -36,13 +42,122 @@ def _set_plengthday(params, name: str, index: int, value: float):
 
 
 def _set_uv(params, name: str, index: int, value: float):
+    """Adjust the Parameters.UV parameter"""
     if index is not None:
         raise IndexError("You cannot index the UV parameter")
 
     params.UV = value
 
 
+def _set_initial_inf(params, name: str, index: int, value: float):
+    """Adjust the Parameters.initial_inf parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the initial_inf parameter")
+
+    params.initial_inf = value
+
+
+def _set_static_play_at_home(params, name: str, index: int, value: float):
+    """Adjust the Parameters.static_play_at_home parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the static_play_at_home parameter")
+
+    params.static_play_at_home = value
+
+
+def _set_dyn_play_at_home(params, name: str, index: int, value: float):
+    """Adjust the Parameters.dyn_play_at_home parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the dyn_play_at_home parameter")
+
+    params.dyn_play_at_home = value
+
+
+def _set_data_dist_cutoff(params, name: str, index: int, value: float):
+    """Adjust the Parameters.data_dist_cutoff parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the data_dist_cutoff parameter")
+
+    params.data_dist_cutoff = value
+
+
+def _set_dyn_dist_cutoff(params, name: str, index: int, value: float):
+    """Adjust the Parameters.dyn_dist_cutoff parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the dyn_dist_cutoff parameter")
+
+    params.dyn_dist_cutoff = value
+
+
+def _set_play_to_work(params, name: str, index: int, value: float):
+    """Adjust the Parameters.play_to_work parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the play_to_work parameter")
+
+    params.play_to_work = value
+
+
+def _set_work_to_play(params, name: str, index: int, value: float):
+    """Adjust the Parameters.work_to_play parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the work_to_play parameter")
+
+    params.work_to_play = value
+
+
+def _set_local_vaccination_thresh(params, name: str, index: int, value: float):
+    """Adjust the Parameters.local_vaccination_thresh parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the local_vaccination_thresh "
+                         "parameter")
+
+    params.local_vaccination_thresh = value
+
+
+def _set_global_detection_thresh(params, name: str, index: int, value: float):
+    """Adjust the Parameters.global_detection_thresh parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the global_detection_thresh "
+                         "parameter")
+
+    params.global_detection_thresh = value
+
+
+def _set_daily_ward_vaccination_capacity(params, name: str,
+                                         index: int, value: float):
+    """Adjust the Parameters.daily_ward_vaccination_capacity
+       parameter
+    """
+    if index is not None:
+        raise IndexError("You cannot index the daily_ward_vaccination "
+                         "parameter")
+
+    params.daily_ward_vaccination_capacity = value
+
+
+def _set_neighbour_weight_threshold(params, name: str,
+                                    index: int, value: float):
+    """Adjust the Parameters.neighbour_weight_threshold parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the neighbour_weight_threshold "
+                         "parameter")
+
+    params.neighbour_weight_threshold = value
+
+
+def _set_daily_imports(params, name: str, index: int, value: float):
+    """Adjust the Parameters.daily_imports parameter"""
+    if index is not None:
+        raise IndexError("You cannot index the daily_imports parameter")
+
+    params.daily_imports = value
+
+
 def _set_user_params(params, name: str, index: int, value: float):
+    """Adjust a custom user-supplied parameter, held in
+       Parameters.user_params[name]. Set a user parameter
+       called 'name' via 'user.name' or '.name'.
+    """
     if name.startswith("user."):
         name = name[5:]
     elif name.startswith("."):
@@ -72,6 +187,19 @@ _adjustable["user"] = _set_user_params
 _adjustable["length_day"] = _set_lengthday
 _adjustable["plength_day"] = _set_plengthday
 _adjustable["UV"] = _set_uv
+_adjustable["initial_inf"] = _set_initial_inf
+_adjustable["static_play_at_home"] = _set_static_play_at_home
+_adjustable["dyn_play_at_home"] = _set_dyn_play_at_home
+_adjustable["data_dist_cutoff"] = _set_data_dist_cutoff
+_adjustable["dyn_dist_cutoff"] = _set_dyn_dist_cutoff
+_adjustable["play_to_work"] = _set_play_to_work
+_adjustable["work_to_play"] = _set_work_to_play
+_adjustable["local_vaccination_thesh"] = _set_local_vaccination_thresh
+_adjustable["global_detection_thresh"] = _set_global_detection_thresh
+_adjustable["daily_ward_vaccination_capacity"] = \
+                            _set_daily_ward_vaccination_capacity
+_adjustable["neighbour_weight_threshold"] = _set_neighbour_weight_threshold
+_adjustable["daily_imports"] = _set_daily_imports
 
 
 def _clean(x):
@@ -89,6 +217,15 @@ def _clean(x):
         return "=="
     else:
         return x
+
+
+def _wrap(text, width=70):
+    """Return 'text' wrapped to at most 'width' characters, as
+       a list of lines
+    """
+    import textwrap
+    text = text.strip().replace(r"\s+", " ").replace("\n", " ")
+    return textwrap.wrap(text, width)
 
 
 class VariableSet:
@@ -268,7 +405,11 @@ class VariableSet:
         if not (varname.startswith("user.") or varname.startswith(".") or
                 varname in _adjustable):
             raise KeyError(f"It is not possible to adjust the variable "
-                           f"{name} to equal {value}")
+                           f"{name} to equal {value}. Available variables "
+                           f"are {list(_adjustable.keys())}, or to set "
+                           f"a user parameter 'user.parameter' or "
+                           f"'.parameter'. To set an index use "
+                           f"'parameter[index]', e.g. 'beta[2]'")
 
         if varname.startswith("user."):
             # strip off 'user' so that it just starts with a dot
@@ -281,6 +422,27 @@ class VariableSet:
         self._varidxs.append(index)
         self._names.append(name)
         self._vals.append(value)
+
+    @staticmethod
+    def adjustable_help():
+        """Return a string that contains some help that is useful
+           for finding out which variables can be adjusted
+        """
+        lines = []
+
+        names = list(_adjustable.keys())
+        names.sort()
+
+        for name in names:
+            func = _adjustable[name]
+            docs = _wrap(func.__doc__, 60)
+            lines.append("")
+            lines.append(f"{name}:")
+
+            for doc in docs:
+                lines.append(f"  {doc}")
+
+        return "\n".join(lines)
 
     def variable_names(self):
         """Return the names of the variables that will be adjusted
@@ -361,14 +523,14 @@ class VariableSet:
            Example
            -------
            >>> v1 = VariableSet()
-           >>> v1["beta1"] = 0.9
-           >>> v1["beta2"] = 0.8
+           >>> v1["beta[1]"] = 0.9
+           >>> v1["beta[2]"] = 0.8
 
            >>> v2 = VariableSet()
-           >>> v2["beta1"] = 0.6
+           >>> v2["beta[1]"] = 0.6
            >>> v2 = v2.make_compatible_with(v1)
            >>> print(v2)
-           (beta1=0.6, beta2=0.8)[repeat 1]
+           (beta[1]=0.6, beta[2]=0.8)[repeat 1]
         """
         from copy import deepcopy
 

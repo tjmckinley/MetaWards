@@ -112,25 +112,25 @@ def add_wards_network_distance(network: Network, nthreads: int = 1):
 
     total_distance = 0.0
 
-    with nogil, parallel(num_threads=num_threads):
-        for i in prange(1, nnodes_plus_one, schedule="static"):
-            ifrom = plinks_ifrom[i]
-            ito = plinks_ito[i]
+    if network.plinks > 0:
+        with nogil, parallel(num_threads=num_threads):
+            for i in prange(1, nnodes_plus_one, schedule="static"):
+                ifrom = plinks_ifrom[i]
+                ito = plinks_ito[i]
 
-            x1 = wards_x[ifrom]
-            y1 = wards_y[ifrom]
+                x1 = wards_x[ifrom]
+                y1 = wards_y[ifrom]
 
-            x2 = wards_x[ito]
-            y2 = wards_y[ito]
+                x2 = wards_x[ito]
+                y2 = wards_y[ito]
 
-            dx = x1 - x2
-            dy = y1 - y2
+                dx = x1 - x2
+                dy = y1 - y2
 
-            distance = sqrt(dx*dx + dy*dy)
-            plinks_distance[i] = distance
-            total_distance += distance
+                distance = sqrt(dx*dx + dy*dy)
+                plinks_distance[i] = distance
+                total_distance += distance
 
-    print(f"Total play links distance equals {total_distance}")
-
+        print(f"Total play links distance equals {total_distance}")
 
     return network

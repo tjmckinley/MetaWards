@@ -4,6 +4,18 @@ import os
 import subprocess
 import shlex
 
+import metawards
+
+branch = metawards.__branch__
+release = metawards.__version__
+version = metawards.__version__.split("+")[0]
+
+if version.find("untagged") != -1:
+    print("This is an untagged branch")
+    version = metawards.__manual_version__
+
+print(f"Update gh-pages for branch {branch} version {version}")
+
 
 def run_command(cmd, dry=False):
     """Run the passed shell command"""
@@ -17,8 +29,8 @@ def run_command(cmd, dry=False):
         args = shlex.split(cmd)
         subprocess.run(args).check_returncode()
     except Exception as e:
-        print(f"[ERROR] {e}")
-        sys.exit(-1)
+        print(f"[IGNORE ERROR] {e}")
+        sys.exit(0)
 
 
 os.chdir("gh-pages")

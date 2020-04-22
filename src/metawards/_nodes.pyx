@@ -198,7 +198,6 @@ class Nodes:
             return
 
         from .utils._array import resize_array
-
         self.label = resize_array(self.label, N, -1)
         self.begin_to = resize_array(self.begin_to, N, -1)
         self.end_to = resize_array(self.end_to, N, -1)

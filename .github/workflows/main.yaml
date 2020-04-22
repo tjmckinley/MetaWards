@@ -43,16 +43,16 @@ jobs:
         run: |
           pip install --upgrade setuptools wheel
           python setup.py bdist_wheel
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        if: contains(github.ref, 'refs/tags/') && github.event_name == 'push'
       - name: Make sdist package
         run: python setup.py sdist
-        if: matrix.python-version == 3.8 && matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/master' && github.event_name == 'push'
+        if: matrix.python-version == 3.8 && matrix.os == 'ubuntu-latest' && contains(github.ref, 'refs/tags/') && github.event_name == 'push'
       - name: Upload sdist/bdist package(s)
         uses: actions/upload-artifact@v1
         with:
           name: dist
           path: ./dist
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        if: contains(github.ref, 'refs/tags/') && github.event_name == 'push'
       - name: Build Docs
         run: python actions/build_docs.py
         if: matrix.python-version == 3.8 && matrix.os == 'ubuntu-latest' && github.event_name == 'push'
