@@ -2,7 +2,7 @@
 Changelog
 =========
 
-`0.8.4 <https://github.com/metawards/MetaWards/compare/0.8.3...0.8.4>`__ - April 22nd 2020
+`0.8.5 <https://github.com/metawards/MetaWards/compare/0.8.3...0.8.5>`__ - April 22nd 2020
 
 * Small bugfixes to support the loading of the 2011UK model data
 * Cleaned up the website and added the version combo box
