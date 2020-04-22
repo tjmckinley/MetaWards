@@ -19,10 +19,15 @@ print(f"Deduplicate website for branch {branch} version {version}")
 
 # we will only build docs for the master and devel branches
 # (as these are moved into special locations)
+is_tagged_release = False
 
 if branch not in ["master", "devel"]:
-    print(f"We don't deduplicate the website for branch {branch}")
-    sys.exit(0)
+    if branch.find(version) != -1:
+        print(f"Deduplicating for tag {version}")
+        is_tagged_release = True
+    else:
+        print(f"We don't assemble the website for branch {branch}")
+        sys.exit(0)
 
 files = {}
 
