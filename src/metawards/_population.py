@@ -34,7 +34,7 @@ class Population:
     @property
     def population(self) -> int:
         """The total population in all wards"""
-        return self.susceptibles + self.total + self.recovereds
+        return self.susceptibles + self.latent + self.total + self.recovereds
 
     @property
     def infecteds(self) -> int:

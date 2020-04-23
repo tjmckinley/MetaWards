@@ -108,7 +108,7 @@ def build_play_matrix(network: Network,
                 links_ito[nlinks] = to_id
                 links_weight[nlinks] = weight
 
-                nodes_denominator_p[from_id] += weight  # not denominator_p
+                nodes_denominator_p[from_id] += weight
                 nodes_play_suscept[from_id] += weight
 
             fclose(cfile)

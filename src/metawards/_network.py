@@ -99,7 +99,7 @@ class Network:
 
         # sanity-check that the network makes sense - there are specific
         # requirements for the data layout
-        network.assert_sane()
+        network.assert_sane(profiler=p)
 
         if calculate_distances:
             p = p.start("add_distances")
@@ -142,14 +142,18 @@ class Network:
 
         return network
 
-    def assert_sane(self):
+    def assert_sane(self, profiler: None):
         """Assert that this network is sane. This checks that the network
            is laid out correctly in memory and that it doesn't have
            anything unexpected. Checking here will prevent us from having
            to check every time the network is accessed
         """
         from .utils import assert_sane_network
-        assert_sane_network(self)
+        if profiler is None:
+            from .profiler import NullProfiler
+            profiler = NullProfiler()
+
+        assert_sane_network(network=self, profiler=profiler)
 
     def add_distances(self, distance_function=None, nthreads: int = 1,
                       profiler=None):

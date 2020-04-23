@@ -122,13 +122,11 @@ def build_wards_network(params: Parameters,
 
             nodes_end_to[from_id] += 1
 
-            # original code does int(weight) even though this is a float?
             links_ifrom[nlinks] = from_id
             links_ito[nlinks] = to_id
             links_weight[nlinks] = weight
             links_suscept[nlinks] = weight
 
-            # again, int(weight) is in the code despite these being floats?
             nodes_denominator_n[from_id] += weight
             nodes_denominator_d[to_id] += weight
 
