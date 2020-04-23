@@ -90,11 +90,12 @@ typedef struct parameters{
 	int DailyWardVaccinationCapacity;
 	double NeighbourWeightThreshold;
 
+    int InfectedsTrigger;
+
 	double DailyImports; // proportion of daily imports if #IMPORTS is defined
   double UV;
   double n_restrict;
   double controlsON[NRESTRICTIONS],controlsOFF[NRESTRICTIONS],controlScale[NRESTRICTIONS];
-
 }parameters;
 
 

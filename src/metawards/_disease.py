@@ -12,6 +12,24 @@ _default_disease_path = _os.path.join(_pathlib.Path.home(),
 _default_folder_name = "diseases"
 
 
+def _safe_eval_float(s):
+    """Convert 's' to a float. This supports normal floats,
+       but also simple maths expressions like 1/1.2
+    """
+    try:
+        return float(s)
+    except Exception:
+        pass
+
+    try:
+        # this is about as save as eval gets in python
+        return float(eval(s, {"__builtins__":None},{}))
+    except Exception:
+        pass
+
+    raise ValueError(f"Cannot interpret '{s}' as a float")
+
+
 @_dataclass
 class Disease:
     """This class holds the parameters about a single disease
