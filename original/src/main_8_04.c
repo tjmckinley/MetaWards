@@ -66,14 +66,14 @@ int main(int argc, char *argv[]){
 //	par->controlScale[0] = 1; //R0=2.8
 //	Xdays =27*7; //From 1 March - End August
 //	Xdays = 27*7 - 8;//From 8 March (our seed) - End August
-//	par->controlsON[0] = 15+7; //23 March
-	//par->controlsOFF[0] = Xdays;
-//	par->controlsOFF[0] = par->controlsON[0]+21; // three weeks (four from start, Option 1) //13 April
+	par->controlsON[0] = 15+7; //23 March
+//	par->controlsOFF[0] = Xdays;
+	par->controlsOFF[0] = par->controlsON[0]+184; // three weeks (four from start, Option 1) //13 April
 //	par->controlsOFF[0] = par->controlsON[0]+21+21; // approx 1 May (actually 4 May)
 //	par->controlsOFF[0] = par->controlsON[0]+21+18; //  exactly 1 May
 //    par->controlsOFF[0] = par->controlsON[0]+21+18+31; //   1 June
 //	par->controlsOFF[0] = par->controlsON[0]+184; // until September (longer period, Option 3)
-  par->controlScale[0] = (0.8)/2.8;
+  par->controlScale[0] = (0.2)/2.8;
 
   par->controlsON[1]=par->controlsOFF[0];
 //  par->controlsOFF[1]=Xdays;
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]){
 	par->DynDistCutoff=*max+1;
 
 	s=-1;
-	par->StaticPlayAtHome=0.7;
+	par->StaticPlayAtHome=0.0;
 	ResetEverything(net,par);
 	RescalePlayMatrix(net,par);
 

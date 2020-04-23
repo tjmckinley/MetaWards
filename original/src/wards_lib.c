@@ -1721,26 +1721,6 @@ parameters *InitialiseParameters(){
 		par->ContribFOI[i]=ContribFOI[i];
 	}
 
-    /** NEED TO COPY THESE TO PARAMS
-	par->initial_inf=5;
-
-	par->LengthDay=0.7;
-
-	par->PLengthDay=0.5;
-
-	par->DynDistCutoff = 10000000;
-	par->DataDistCutoff = 10000000;
-	par->WorkToPlay=0.0;
-	par->PlayToWork=0.0;
-	par->StaticPlayAtHome=0;
-	par->DynPlayAtHome=0;
-
-	par->LocalVaccinationThresh = 4;
-	par->GlobalDetectionThresh = 4;
-	par->NeighbourWeightThreshold = 0.0;
-	par->DailyWardVaccinationCapacity = 5;
-	par->UV=0.0; */
-
 	return par;
 }
 
@@ -1903,12 +1883,14 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
     uvscale=(1-uv/2.0+uv*cos(2*M_PI*(t)/365.0)/2.0); // starting day = 41
   }
 
+  printf("UV = %f uvscale = %f\n", uv, uvscale);
 
   for(i=0;i<par->n_restrict;i++){
-
+    printf("control %d  %d  %f  %f  %f\n", i, t, par->controlsON[i], par->controlsOFF[i], par->controlScale[i]);
     if(t > par->controlsON[i] && t < par->controlsOFF[i]){
       uvscale = uvscale*par->controlScale[i];
       cutoff = 1000;
+      printf("lockdown %d %d %f %f\n", t, i, par->controlScale[i], uvscale);
     } // starts on day ON stops on day OFF
   }
 
