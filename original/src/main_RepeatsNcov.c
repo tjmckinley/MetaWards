@@ -16,8 +16,8 @@ int main(int argc, char *argv[]){
 
 	int **inf, **playinf;
 	parameters *par;
-	int s,i;
-	char command[100];
+	int s,i,Xdays;
+	char command[100],str[10];
 
 	int nseeds;
 	int *to_seed;
@@ -60,11 +60,38 @@ int main(int argc, char *argv[]){
 
 	par->UV=atof(argv[4]);
 
-	printf("SETTING UV TO %f\n", par->UV);
 
+	par->n_restrict = 2; // how many restrictions shall we have. 2 means one, because we use this to only trigger once
+	par->InfectedsTrigger = 3097*20; // at what number of infecteds shall we start restrictions (i.e. when is 23 March)
+//	par->controlScale[0] = 1; //R0=2.8
+//	Xdays =27*7; //From 1 March - End August
+//	Xdays = 27*7 - 8;//From 8 March (our seed) - End August
+//	par->controlsON[0] = 15+7; //23 March
+	//par->controlsOFF[0] = Xdays;
+//	par->controlsOFF[0] = par->controlsON[0]+21; // three weeks (four from start, Option 1) //13 April
+//	par->controlsOFF[0] = par->controlsON[0]+21+21; // approx 1 May (actually 4 May)
+//	par->controlsOFF[0] = par->controlsON[0]+21+18; //  exactly 1 May
+//    par->controlsOFF[0] = par->controlsON[0]+21+18+31; //   1 June
+//	par->controlsOFF[0] = par->controlsON[0]+184; // until September (longer period, Option 3)
+  par->controlScale[0] = (0.8)/2.8;
+
+  par->controlsON[1]=par->controlsOFF[0];
+//  par->controlsOFF[1]=Xdays;
+  par->controlScale[1] = 2.8/2.8;
+
+  // for(i=1;i<par->n_restrict;i++){
+//    par->controlsON[i]=par->controlsOFF[i-1]+14;
+//    par->controlsOFF[i]=par->controlsON[i]+14;
+//    par->controlScale[i] = (0.8 + ((double) i /10.0))/2.8;
+//    par->controlScale[i] = (par->controlScale[0]+((double)i)/10.0)/2.8;
+//    printf("Controls i %d: ON %lf OFF %lf \n", i, par->controlsON[i],par->controlsOFF[i]);
+//  }
+
+  //scanf("%s \n",str);
 	SetInputFileNames(4,par);
 
-
+	strcpy(par->AdditionalSeeding,argv[5]);
+  printf("%s\n",par->AdditionalSeeding);
 
 	nseeds=ReadDoneFile(par->SeedName,to_seed);
 
@@ -85,11 +112,8 @@ int main(int argc, char *argv[]){
 
 	par->DynDistCutoff=*max+1;
 
-//	for(i=0;i<N_INF_CLASSES;i++)beta[i]=par->beta[i];
-//	for(i=0;i<N_INF_CLASSES;i++)par->beta[i]=beta[i]*(1.4/1.9);
-
 	s=-1;
-	par->StaticPlayAtHome=0.0;
+	par->StaticPlayAtHome=0.7;
 	ResetEverything(net,par);
 	RescalePlayMatrix(net,par);
 
