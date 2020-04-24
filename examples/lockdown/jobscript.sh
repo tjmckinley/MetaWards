@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -l walltime=01:00:00
-#PBS -l select=4:ncpus=64
+#PBS -l select=4:ncpus=64:mem=64GB
 # The above sets 4 nodes with 64 cores each
 
 # source the version of metawards we want to use
