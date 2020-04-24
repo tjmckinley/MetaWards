@@ -195,7 +195,7 @@ network *BuildWardsNetworkDistance(parameters *par)
 
 	double total_distance = 0;
 
-	for(i=0;i<net->nlinks;i++){
+	for(i=1;i<=net->nlinks;i++){
 		x1=wards[links[i].ifrom].x;
 		y1=wards[links[i].ifrom].y;
 
@@ -204,14 +204,32 @@ network *BuildWardsNetworkDistance(parameters *par)
 
 		total_distance += sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 
-		links[i].distance=plinks[i].distance=sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+		links[i].distance=sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 #ifdef WEEKENDS
 		welinks[i].distance=links[i].distance;
 #endif
 	}
+
+    printf("Total distance %f\n", total_distance);
+
+    double total_play_distance = 0;
+
+    for (i=1;i<=net->plinks;i++){
+		x1=wards[plinks[i].ifrom].x;
+		y1=wards[plinks[i].ifrom].y;
+
+		x2=wards[plinks[i].ito].x;
+		y2=wards[plinks[i].ito].y;
+
+		total_play_distance += sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+
+		plinks[i].distance=sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+    }
+
 	fclose(locf);
 
-	printf("Total distance equals %f\n", total_distance);
+    printf("Total play distance %f\n", total_play_distance);
+	printf("Total distance equals %f\n", total_distance+total_play_distance);
 
 	return net;
 }
@@ -1876,6 +1894,8 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
 	double cum_prob,ProbScaled;
 	double cutoff=par->DynDistCutoff;
 
+    printf("Starting cutoff %f\n", cutoff);
+
 	double thresh=0.01;
 //	int DayInfW,DayInfP,NightInfW,NightInfP;
 
@@ -1894,6 +1914,7 @@ void Iterate(network *net, int **inf, int **playinf, parameters *par, gsl_rng *r
     } // starts on day ON stops on day OFF
   }
 
+    printf("Cutoff used is %f\n", cutoff);
 
 	to_link *links=net->to_links;
 	node *wards=net->nodes;

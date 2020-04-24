@@ -26,6 +26,9 @@ class Population:
     recovereds: int = 0
     #: The number infected in all wards
     n_inf_wards: int = 0
+    #: The scale_uv parameter that can be used to affect the
+    #: foi calculation. A value of 1.0 means do nothing
+    scale_uv: float = 1.0
     #: The day in the outbreak of this record (e.g. day 0, day 10 etc.)
     day: int = 0
     #: The date in the outbreak of this record
@@ -48,6 +51,7 @@ class Population:
             f"I: {self.total}    " \
             f"R: {self.recovereds}    " \
             f"IW: {self.n_inf_wards}   " \
+            f"UV: {self.scale_uv}   " \
             f"TOTAL POPULATION {self.population}"
 
         if self.date:

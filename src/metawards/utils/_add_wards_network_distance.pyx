@@ -160,8 +160,10 @@ def add_wards_network_distance(network: Network, nthreads: int = 1):
     cdef double y1 = 0.0
     cdef double y2 = 0.0
 
-    cdef int nnodes_plus_one = network.nnodes + 1
     cdef int nlinks_plus_one = network.nlinks + 1
+    cdef int plinks_plus_one = network.plinks + 1
+
+    cdef double too_large = 1000000 * scale_for_km
 
     cdef int ifrom = 0
     cdef int ito = 0
@@ -188,8 +190,7 @@ def add_wards_network_distance(network: Network, nthreads: int = 1):
                 links_distance[i] = distance
                 total_distance += distance
 
-                if distance > 1000:
-                    # more than 1000 km between UK wards?
+                if distance > too_large:
                     with gil:
                         print(f"Large distance between wards {ifrom} "
                               f"and {ito}: {distance} km? {x1},{y1}  "
@@ -197,11 +198,11 @@ def add_wards_network_distance(network: Network, nthreads: int = 1):
 
     print(f"Total links distance equals {total_distance}")
 
-    total_distance = 0.0
+    cdef double total_play_distance = 0.0
 
     if network.plinks > 0:
-        with nogil, parallel(num_threads=num_threads):
-            for i in prange(1, nnodes_plus_one, schedule="static"):
+        with nogil, parallel(num_threads=1):
+            for i in prange(1, plinks_plus_one, schedule="static"):
                 ifrom = plinks_ifrom[i]
                 ito = plinks_ito[i]
 
@@ -218,15 +219,15 @@ def add_wards_network_distance(network: Network, nthreads: int = 1):
                     distance = calc_distance(x1, y1, x2, y2)
 
                     plinks_distance[i] = distance
-                    total_distance += distance
+                    total_play_distance += distance
 
-                    if distance > 1000:
-                        # more than 1000 km between UK wards?
+                    if distance > too_large:
                         with gil:
                             print(f"Large distance between play wards {ifrom} "
                                   f"and {ito}: {distance} km? {x1},{y1}  "
                                   f"{x2},{y2}")
 
-        print(f"Total play links distance equals {total_distance}")
+    print(f"Total play distance equals {total_play_distance}")
+    print(f"Total distance equals {total_distance+total_play_distance}")
 
     return network

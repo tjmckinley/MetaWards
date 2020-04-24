@@ -80,8 +80,7 @@ cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
 
 def advance_foi_omp(network: Network, population: Population,
                     infections, play_infections, rngs,
-                    nthreads: int, profiler: Profiler,
-                    scale_uv: float = 1.0, **kwargs):
+                    nthreads: int, profiler: Profiler, **kwargs):
     """Advance the model calculating the new force of infection (foi)
        for all of the wards and links between wards, based on the
        current number of infections. Note that you must call this
@@ -107,8 +106,6 @@ def advance_foi_omp(network: Network, population: Population,
          The number of threads over which to parallelise the calculation
        profiler: Profiler
          The profiler used to profile this calculation
-       scale_uv: float = 1.0
-         The amount by which to scale the FOI
        kwargs:
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
@@ -119,11 +116,14 @@ def advance_foi_omp(network: Network, population: Population,
     plinks = network.play
     params = network.params
 
+    # Copy arguments from Python into C cdef variables
+    cdef double uv = params.UV
+    cdef double uvscale = population.scale_uv
     cdef int ts = population.day
 
-    cdef double uvscale = scale_uv
+    if uv > 0:
+        uvscale *= (1.0-uv/2.0 + uv*cos(2.0*pi*ts/365.0)/2.0)
 
-    # Copy arguments from Python into C cdef variables
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
 
@@ -357,8 +357,7 @@ def advance_foi_omp(network: Network, population: Population,
 
 def advance_foi_serial(network: Network, population: Population,
                        infections, play_infections, rngs,
-                       profiler: Profiler,
-                       scale_uv: float = 1.0, **kwargs):
+                       profiler: Profiler, **kwargs):
     """Advance the model calculating the new force of infection (foi)
        for all of the wards and links between wards, based on the
        current number of infections. Note that you must call this
@@ -384,8 +383,6 @@ def advance_foi_serial(network: Network, population: Population,
          The day of the outbreak (timestep in the simulation)
        profiler: Profiler
          The profiler used to profile this calculation
-       scale_uv: float = 1.0
-         The amount by which to scale the FOI
        kwargs:
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
@@ -394,7 +391,7 @@ def advance_foi_serial(network: Network, population: Population,
     advance_foi_omp(network=network, population=population,
                     infections=infections,
                     play_infections=play_infections, rngs=rngs,
-                    profiler=profiler, scale_uv=scale_uv, **kwargs)
+                    profiler=profiler, **kwargs)
 
 
 def advance_foi(nthreads: int, **kwargs):
@@ -423,8 +420,6 @@ def advance_foi(nthreads: int, **kwargs):
          The number of threads over which to parallelise the calculation
        profiler: Profiler
          The profiler used to profile this calculation
-       scale_uv: float = 1.0
-         The amount by which to scale the FOI
        kwargs:
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
