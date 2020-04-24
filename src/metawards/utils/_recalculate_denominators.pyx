@@ -108,14 +108,15 @@ def recalculate_play_denominator_day(network: Network, nthreads: int = 1,
     cdef int nlinks_plus_one = network.plinks + 1
 
     # not easily parallelisable due to the reduction
-    for j in range(1, nlinks_plus_one):
-        ifrom = links_ifrom[j]
-        ito = links_ito[j]
-        weight = links_weight[j]
-        denom = weight * wards_play_suscept[ifrom]
-        wards_denominator_pd[ito] += denom
+    with nogil:
+        for j in range(1, nlinks_plus_one):
+            ifrom = links_ifrom[j]
+            ito = links_ito[j]
+            weight = links_weight[j]
+            denom = weight * wards_play_suscept[ifrom]
+            wards_denominator_pd[ito] += denom
 
-        sum += denom
+            sum += denom
 
     print(f"recalculate_play_denominator_day sum 1 = {sum}")
 

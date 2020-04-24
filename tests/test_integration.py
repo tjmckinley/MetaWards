@@ -31,7 +31,7 @@ def test_integration_ncov(prompt=None):
         raise e
 
     # load the disease and starting-point input files
-    params.set_disease("ncov")
+    params.set_disease(os.path.join(script_dir, "data", "ncov.json"))
     params.set_input_files("2011Data")
     params.add_seeds("ExtraSeedsBrighton.dat")
 

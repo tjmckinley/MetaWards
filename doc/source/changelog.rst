@@ -2,7 +2,17 @@
 Changelog
 =========
 
+`0.9.0 <https://github.com/metawards/MetaWards/compare/0.8.4...0.9.0>`__ - April 24th 2020
+------------------------------------------------------------------------------------------
+
+* Merged in latest changes from the C code. Now gives complete agreement,
+  including via a custom iterator that repeats the lockdown model.
+* Support x/y and lat/lon coordinates and distances. Now works properly
+  with the 2011UK model data
+* Added an example of a lockdown parameter set scan
+
 `0.8.5 <https://github.com/metawards/MetaWards/compare/0.8.3...0.8.5>`__ - April 22nd 2020
+------------------------------------------------------------------------------------------
 
 * Small bugfixes to support the loading of the 2011UK model data
 * Cleaned up the website and added the version combo box
