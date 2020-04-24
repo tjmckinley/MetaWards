@@ -130,6 +130,9 @@ def build_play_matrix(network: Network,
     renormalise = (params.input_files.play == params.input_files.work)
     p = p.stop()
 
+    if renormalise:
+        print("Identical work and play links, so renormalising...")
+
     p = p.start("renormalise_loop")
     for j in range(1, nlinks+1):   # careful 1-indexed
         if renormalise:
