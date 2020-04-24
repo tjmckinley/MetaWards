@@ -271,7 +271,7 @@
 
         <span class="c1"># sanity-check that the network makes sense - there are specific</span>
         <span class="c1"># requirements for the data layout</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">assert_sane</span><span class="p">()</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">assert_sane</span><span class="p">(</span><span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">calculate_distances</span><span class="p">:</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;add_distances&quot;</span><span class="p">)</span>
@@ -314,14 +314,18 @@
 
         <span class="k">return</span> <span class="n">network</span></div>
 
-<div class="viewcode-block" id="Network.assert_sane"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.assert_sane">[docs]</a>    <span class="k">def</span> <span class="nf">assert_sane</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Network.assert_sane"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.assert_sane">[docs]</a>    <span class="k">def</span> <span class="nf">assert_sane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profiler</span><span class="p">:</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Assert that this network is sane. This checks that the network</span>
 <span class="sd">           is laid out correctly in memory and that it doesn&#39;t have</span>
 <span class="sd">           anything unexpected. Checking here will prevent us from having</span>
 <span class="sd">           to check every time the network is accessed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">assert_sane_network</span>
-        <span class="n">assert_sane_network</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">profiler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.profiler</span> <span class="kn">import</span> <span class="n">NullProfiler</span>
+            <span class="n">profiler</span> <span class="o">=</span> <span class="n">NullProfiler</span><span class="p">()</span>
+
+        <span class="n">assert_sane_network</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Network.add_distances"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.add_distances">[docs]</a>    <span class="k">def</span> <span class="nf">add_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                       <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -538,7 +542,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 22, 2020.
+        Last updated on Apr 24, 2020.
       </span>
 
     </p>

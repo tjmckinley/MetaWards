@@ -27,6 +27,7 @@ metawards.InputFiles
 
    .. autosummary::
    
+      ~InputFiles.coordinates
       ~InputFiles.identifier
       ~InputFiles.identifier2
       ~InputFiles.nodes_to_track

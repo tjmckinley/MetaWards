@@ -31,6 +31,7 @@ metawards.Population
       ~Population.n_inf_wards
       ~Population.population
       ~Population.recovereds
+      ~Population.scale_uv
       ~Population.susceptibles
       ~Population.total
    

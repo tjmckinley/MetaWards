@@ -335,6 +335,8 @@
 
         <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;timing for day </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+        <span class="n">start_population</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">population</span>
+
         <span class="n">iterate</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
                 <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span> <span class="n">play_infections</span><span class="o">=</span><span class="n">play_infections</span><span class="p">,</span>
                 <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_advance_functions</span><span class="o">=</span><span class="n">iterator</span><span class="p">,</span>
@@ -349,6 +351,16 @@
                      <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_output_functions</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span>
                      <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p2</span><span class="p">)</span>
         <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">population</span> <span class="o">!=</span> <span class="n">start_population</span><span class="p">:</span>
+            <span class="c1"># something went wrong as the population should be conserved</span>
+            <span class="c1"># during the day</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The total population changed during the day. This &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;should not happen and indicates a program bug. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;The starting population was </span><span class="si">{</span><span class="n">start_population</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;while the end population is </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">population</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Detail is </span><span class="si">{</span><span class="n">population</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">infecteds</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">infecteds</span>
 
@@ -396,7 +408,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 22, 2020.
+        Last updated on Apr 24, 2020.
       </span>
 
     </p>

@@ -184,6 +184,24 @@
 <span class="n">_default_folder_name</span> <span class="o">=</span> <span class="s2">&quot;diseases&quot;</span>
 
 
+<span class="k">def</span> <span class="nf">_safe_eval_float</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert &#39;s&#39; to a float. This supports normal floats,</span>
+<span class="sd">       but also simple maths expressions like 1/1.2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># this is about as save as eval gets in python</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;__builtins__&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">},{}))</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot interpret &#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&#39; as a float&quot;</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="Disease"><a class="viewcode-back" href="../../api/generated/metawards.Disease.html#metawards.Disease">[docs]</a><span class="nd">@_dataclass</span>
 <span class="k">class</span> <span class="nc">Disease</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This class holds the parameters about a single disease</span>
@@ -215,6 +233,8 @@
     <span class="c1">#: Contribution to the Force of Infection (FOI) parameter for each</span>
     <span class="c1">#: stage of the disease</span>
     <span class="n">contrib_foi</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1">#: Index of the first symptomatic stage</span>
+    <span class="n">start_symptom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
@@ -239,13 +259,15 @@
                <span class="sa">f</span><span class="s2">&quot;beta = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="sa">f</span><span class="s2">&quot;progress = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="sa">f</span><span class="s2">&quot;too_ill_to_move = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">too_ill_to_move</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;contrib_foi = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+               <span class="sa">f</span><span class="s2">&quot;contrib_foi = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;start_symptom = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">beta</span> <span class="ow">and</span> \
                <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">progress</span> <span class="ow">and</span> \
                <span class="bp">self</span><span class="o">.</span><span class="n">too_ill_to_move</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">too_ill_to_move</span> <span class="ow">and</span> \
-               <span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">contrib_foi</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">contrib_foi</span> <span class="ow">and</span> \
+               <span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">start_symptom</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">:</span>
@@ -268,6 +290,25 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data read for disease </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"> &quot;</span>
                                  <span class="sa">f</span><span class="s2">&quot;is corrupted! </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> \
+           <span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;start_symptom </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span><span class="si">}</span><span class="s2"> is &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;invalid for a disease with </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> stages&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_safe_eval_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">too_ill_to_move</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_safe_eval_float</span><span class="p">(</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">too_ill_to_move</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_safe_eval_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_safe_eval_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Invalid disease parameter at index </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Disease.load"><a class="viewcode-back" href="../../api/generated/metawards.Disease.html#metawards.Disease.load">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">disease</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ncov&quot;</span><span class="p">,</span>
@@ -352,6 +393,7 @@
                           <span class="n">progress</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;progress&quot;</span><span class="p">],</span>
                           <span class="n">too_ill_to_move</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;too_ill_to_move&quot;</span><span class="p">],</span>
                           <span class="n">contrib_foi</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;contrib_foi&quot;</span><span class="p">],</span>
+                          <span class="n">start_symptom</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;start_symptom&quot;</span><span class="p">],</span>
                           <span class="n">_name</span><span class="o">=</span><span class="n">disease</span><span class="p">,</span>
                           <span class="n">_authors</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;author(s)&quot;</span><span class="p">],</span>
                           <span class="n">_contacts</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;contact(s)&quot;</span><span class="p">],</span>
@@ -377,7 +419,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 22, 2020.
+        Last updated on Apr 24, 2020.
       </span>
 
     </p>

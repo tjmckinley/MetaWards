@@ -198,6 +198,9 @@
     <span class="n">recovereds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="c1">#: The number infected in all wards</span>
     <span class="n">n_inf_wards</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1">#: The scale_uv parameter that can be used to affect the</span>
+    <span class="c1">#: foi calculation. A value of 1.0 means do nothing</span>
+    <span class="n">scale_uv</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="c1">#: The day in the outbreak of this record (e.g. day 0, day 10 etc.)</span>
     <span class="n">day</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="c1">#: The date in the outbreak of this record</span>
@@ -206,7 +209,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">population</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The total population in all wards&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">susceptibles</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recovereds</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">susceptibles</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">latent</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recovereds</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">infecteds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -220,6 +223,7 @@
             <span class="sa">f</span><span class="s2">&quot;I: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2">    &quot;</span> \
             <span class="sa">f</span><span class="s2">&quot;R: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">recovereds</span><span class="si">}</span><span class="s2">    &quot;</span> \
             <span class="sa">f</span><span class="s2">&quot;IW: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_inf_wards</span><span class="si">}</span><span class="s2">   &quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;UV: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_uv</span><span class="si">}</span><span class="s2">   &quot;</span> \
             <span class="sa">f</span><span class="s2">&quot;TOTAL POPULATION </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">:</span>
@@ -283,7 +287,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 22, 2020.
+        Last updated on Apr 24, 2020.
       </span>
 
     </p>

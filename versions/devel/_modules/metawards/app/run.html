@@ -1114,7 +1114,7 @@
             <span class="n">datestring</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
         <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fingerprint,repeat,</span><span class="si">{</span><span class="n">varnames</span><span class="si">}</span><span class="s2">&quot;</span>
-                      <span class="sa">f</span><span class="s2">&quot;day,</span><span class="si">{</span><span class="n">datestring</span><span class="si">}</span><span class="s2">S,E,I,R,IW</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                      <span class="sa">f</span><span class="s2">&quot;day,</span><span class="si">{</span><span class="n">datestring</span><span class="si">}</span><span class="s2">S,E,I,R,IW,UV</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">varset</span><span class="p">,</span> <span class="n">trajectory</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
             <span class="n">varvals</span> <span class="o">=</span> <span class="n">varset</span><span class="o">.</span><span class="n">variable_values</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">varvals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">varvals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1133,7 +1133,8 @@
 
                 <span class="n">RESULTS</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">d</span><span class="si">}{</span><span class="n">pop</span><span class="o">.</span><span class="n">susceptibles</span><span class="si">}</span><span class="s2">,&quot;</span>
                               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">latent</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2">,&quot;</span>
-                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">recovereds</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">n_inf_wards</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">recovereds</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">n_inf_wards</span><span class="si">}</span><span class="s2">,&quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pop</span><span class="o">.</span><span class="n">scale_uv</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;End of the run&quot;</span><span class="p">)</span>
 
@@ -1160,7 +1161,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 22, 2020.
+        Last updated on Apr 24, 2020.
       </span>
 
     </p>

@@ -226,7 +226,7 @@ play (unpredictable/random) and weekend</p>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Network.add_distances" title="metawards.Network.add_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_distances</span></code></a>([distance_function,&nbsp;profiler])</td>
 <td>Read in the positions of all of the nodes (wards) and calculate the distances of the links.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.assert_sane" title="metawards.Network.assert_sane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_sane</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.assert_sane" title="metawards.Network.assert_sane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_sane</span></code></a>(profiler)</td>
 <td>Assert that this network is sane.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Network.build" title="metawards.Network.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(params,&nbsp;calculate_distances[,&nbsp;…])</td>
@@ -312,7 +312,7 @@ By default this is mw.utils.add_wards_network_distance</p>
 
 <dl class="method">
 <dt id="metawards.Network.assert_sane">
-<code class="descname">assert_sane</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.assert_sane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.assert_sane" title="Permalink to this definition">¶</a></dt>
+<code class="descname">assert_sane</code><span class="sig-paren">(</span><em>profiler: None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.assert_sane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.assert_sane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assert that this network is sane. This checks that the network
 is laid out correctly in memory and that it doesn’t have
 anything unexpected. Checking here will prevent us from having
@@ -517,7 +517,7 @@ and ready for a new run.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 22, 2020.
+        Last updated on Apr 24, 2020.
       </span>
 
     </p>
