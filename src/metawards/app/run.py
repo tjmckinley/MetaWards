@@ -942,7 +942,7 @@ def cli():
             datestring = ""
 
         RESULTS.write(f"fingerprint,repeat,{varnames}"
-                      f"day,{datestring}S,E,I,R,IW\n")
+                      f"day,{datestring}S,E,I,R,IW,UV\n")
         for varset, trajectory in result:
             varvals = varset.variable_values()
             if varvals is None or len(varvals) == 0:
@@ -961,7 +961,8 @@ def cli():
 
                 RESULTS.write(f"{start}{pop.day},{d}{pop.susceptibles},"
                               f"{pop.latent},{pop.total},"
-                              f"{pop.recovereds},{pop.n_inf_wards}\n")
+                              f"{pop.recovereds},{pop.n_inf_wards},"
+                              f"{pop.scale_uv}\n")
 
     print("End of the run")
 

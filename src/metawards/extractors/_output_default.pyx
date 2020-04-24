@@ -457,7 +457,7 @@ def output_default_omp(network: Network, population: Population,
     print(f"I: {total}    ", end="")
     print(f"R: {recovereds}    ", end="")
     print(f"IW: {n_inf_wards[0]}   ", end="")
-    print(f"TOTAL POPULATION {susceptibles+total+recovereds}")
+    print(f"TOTAL POPULATION {susceptibles+latent+total+recovereds}")
 
     if population is not None:
         population.susceptibles = susceptibles

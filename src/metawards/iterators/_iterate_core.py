@@ -2,7 +2,11 @@
 __all__ = ["iterate_core"]
 
 
-def iterate_core(nthreads: int = 1, setup=False, **kwargs):
+def iterate_core(nthreads: int = 1, setup=False,
+                 auto_advance_additional=True,
+                 auto_advance_foi=True,
+                 auto_advance_recovery=True,
+                 **kwargs):
     """This returns the default list of 'advance_XXX' functions that
        are called in sequence at the beginning of each iteration of
        the model run. These are the core functions, so must
@@ -32,24 +36,25 @@ def iterate_core(nthreads: int = 1, setup=False, **kwargs):
         from ._setup_imports import setup_seed_wards
         from ._advance_additional import setup_additional_seeds
 
-        funcs = [setup_seed_wards,
-                 setup_additional_seeds]
+        funcs = [setup_seed_wards]
 
-    elif nthreads is None or nthreads == 1:
-        from ._advance_additional import advance_additional_serial
-        from ._advance_foi import advance_foi_serial
-        from ._advance_recovery import advance_recovery_serial
+        if auto_advance_additional:
+            funcs.append(setup_additional_seeds)
 
-        funcs = [advance_additional_serial,
-                 advance_foi_serial,
-                 advance_recovery_serial]
     else:
-        from ._advance_additional import advance_additional_omp
-        from ._advance_foi import advance_foi_omp
-        from ._advance_recovery import advance_recovery_omp
+        from ._advance_additional import advance_additional
+        from ._advance_foi import advance_foi
+        from ._advance_recovery import advance_recovery
 
-        funcs = [advance_additional_omp,
-                 advance_foi_omp,
-                 advance_recovery_omp]
+        funcs = []
+
+        if auto_advance_additional:
+            funcs.append(advance_additional)
+
+        if auto_advance_foi:
+            funcs.append(advance_foi)
+
+        if auto_advance_recovery:
+            funcs.append(advance_recovery)
 
     return funcs

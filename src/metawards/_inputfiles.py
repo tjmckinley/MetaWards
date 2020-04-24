@@ -49,6 +49,8 @@ class InputFiles:
     #: File from which to read the positions (locations) of the wards
     #: (the centre of the bounding boxes)
     position: str = None
+    #: Coordinates-system used for the positions. Should be 'x/y' or 'lat/long'
+    coordinates: str = None
     #: File from which to read the values to seed the wards
     seed: str = None
     #: File from which to read the list of nodes to track
@@ -97,6 +99,7 @@ class InputFiles:
                f"work_size = {self.work_size}\n" \
                f"play_size = {self.play_size}\n" \
                f"position = {self.position}\n" \
+               f"coordinates = {self.coordinates}\n" \
                f"seed = {self.seed}\n" \
                f"nodes_to_track = {self.nodes_to_track}\n\n"
 
@@ -110,6 +113,9 @@ class InputFiles:
                    and not attr.startswith("_")]
 
         for member in members:
+            if member == "coordinates":
+                continue
+
             filename = getattr(self, member)
             if filename:
                 filename = _os.path.join(self._model_path, filename)
@@ -205,6 +211,7 @@ class InputFiles:
                            work_size=files.get("work_size", None),
                            play_size=files.get("play_size", None),
                            position=files.get("position", None),
+                           coordinates=files.get("coordinates", "x/y"),
                            seed=files.get("seed", None),
                            nodes_to_track=files.get("nodes_to_track", None),
                            uv=files.get("uv", None),

@@ -163,6 +163,8 @@ def run_model(network: Network,
 
         p2 = p2.start(f"timing for day {population.day}")
 
+        start_population = population.population
+
         iterate(network=network, population=population,
                 infections=infections, play_infections=play_infections,
                 rngs=rngs, get_advance_functions=iterator,
@@ -177,6 +179,16 @@ def run_model(network: Network,
                      rngs=rngs, get_output_functions=extractor,
                      nthreads=nthreads, profiler=p2)
         p2 = p2.stop()
+
+        if population.population != start_population:
+            # something went wrong as the population should be conserved
+            # during the day
+            raise AssertionError(
+                    f"The total population changed during the day. This "
+                    f"should not happen and indicates a program bug. "
+                    f"The starting population was {start_population}, "
+                    f"while the end population is {population.population}. "
+                    f"Detail is {population}")
 
         infecteds = population.infecteds
 

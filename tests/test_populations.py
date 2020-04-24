@@ -40,7 +40,7 @@ def test_populations():
     assert traj[1].latent == 5
     assert traj[1].total == 4
     assert traj[1].recovereds == 1
-    assert traj[1].population == 85 + 4 + 1
+    assert traj[1].population == 85 + 5 + 4 + 1
 
     pop.susceptibles -= 20
     pop.latent += 3
@@ -54,7 +54,7 @@ def test_populations():
     assert traj[2].latent == 8
     assert traj[2].total == 18
     assert traj[2].recovereds == 4
-    assert traj[2].population == 65 + 18 + 4
+    assert traj[2].population == 65 + 8 + 18 + 4
 
     s = pickle.dumps(traj)
 

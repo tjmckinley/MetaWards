@@ -86,21 +86,41 @@ def build_custom_iterator(custom_function, parent_name="__main__"):
         try:
             import importlib
             module = importlib.import_module(func_module)
+        except SyntaxError as e:
+            print(f"\nSyntax error when importing {func_module}")
+            print(f"{e.__class__.__name__}:{e}")
+            print(f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '} |")
+            print(f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '}\\|/")
+            print(f"Line {e.lineno}.{e.offset}: {e.text}\n")
+            module = None
         except Exception:
             module = None
 
         if module is None:
             try:
                 import importlib.util
+                import os
+
+                if os.path.exists(func_module):
+                    pyfile = func_module
+                else:
+                    pyfile = f"{func_module}.py"
+
                 spec = importlib.util.spec_from_file_location(
                                                 func_module,
-                                                f"{func_module}.py")
+                                                pyfile)
 
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
-                print(f"Loaded iterator from {func_module}.py")
+                print(f"Loaded iterator from {pyfile}")
+            except SyntaxError as e:
+                print(f"\nSyntax error when reading {pyfile}")
+                print(f"{e.__class__.__name__}:{e}")
+                print(f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '} |")
+                print(f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '}\\|/")
+                print(f"Line {e.lineno}.{e.offset}: {e.text}\n")
             except Exception:
-                module = None
+                pass
 
         if module is None:
             # we cannot find the iterator

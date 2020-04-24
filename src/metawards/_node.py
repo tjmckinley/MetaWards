@@ -42,7 +42,7 @@ class Node:
     play_suscept: float = 0.0
     save_play_suscept: float = 0.0
 
-    denominator_n: float = 0.0  #Denominator only
+    denominator_n: float = 0.0  # Denominator only
     denominator_d: float = 0.0  # Maybe won't need
 
     denominator_p: float = 0.0
