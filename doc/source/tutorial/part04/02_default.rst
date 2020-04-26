@@ -29,8 +29,8 @@ This :class:`metawards.Workspace` object contains;
 * :meth:`~metawards.Workspace.incidence`: The incidence of infection in each
   ward.
 
-Default outputs
----------------
+Output incidence
+----------------
 
 This :class:`~metawards.Workspace` contains data that can be easily output,
 e.g. the :meth:`metawards.extractors.output_incidence` supplied extractor
@@ -78,4 +78,38 @@ You will now see that you get a file called ``incidence.dat.bz2``
 in the output directory. This will be a big matrix of mostly zeroes,
 as no infection has been seeded.
 
+Default outputs
+---------------
 
+The default extractor is :meth:`~metawards.extractors.extract_default`.
+This returns;
+
+* :meth:`~metawards.extractors.output_basic`: Writes out basic information
+  to the files ``NumberWardsInfected.dat``, ``TotalInfections.dat`` etc.
+
+* :meth:`~metawards.extractors.output_dispersal`: Calculates and writes out
+  the geographic disperal of the outbreak to ``MeanXY.dat``, ``VarXY.day``
+  and ``Dispersal.dat``
+
+* :meth:`~metawards.extractors.output_prevalence`: Writes the (large)
+  prevalence matrix to ``prevalence.dat``.
+
+* :meth:`~metawards.extractors.output_incidence`: Writes the (large) incidence
+  matrix to ``incidence.dat``.
+
+You can use :meth:`~metawards.extractors.extract_default`
+either by not supplying an extractor
+via the ``--extractor`` command line argument, or by specifying
+``--extract-default``.
+
+Have a go using;
+
+.. code-block:: bash
+
+   metawards --extractor extract_default
+
+As well as :meth:`~metawards.extractors.extract_default`, there is also
+:meth:`~metawards.extractors.extract_small` (only extracting the
+"small" files), and
+:meth:`~metawards.extractors.extract_none` (extract nothing - useful if
+you want to restrict output only to ``results.csv.bz2``).
