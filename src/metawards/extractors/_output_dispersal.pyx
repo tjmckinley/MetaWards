@@ -19,7 +19,6 @@ __all__ = ["output_dispersal"]
 def output_dispersal(network: Network, population: Population,
                      output_dir: OutputFiles,
                      workspace: Workspace,
-                     infections: Infections,
                      **kwargs):
     """This will calculate and output the geographic dispersal
        of the outbreak
@@ -34,8 +33,6 @@ def output_dispersal(network: Network, population: Population,
          The directory in which to place all output files
        workspace: Workspace
          A workspace that can be used to extract data
-       infections: Infections
-         Space to hold the infections
        kwargs
          Extra argumentst that are ignored by this function
     """
