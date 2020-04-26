@@ -589,41 +589,52 @@ class VariableSet:
         for suffix in fingerprint.suffixes:
             fingerprint = str(fingerprint).replace(suffix, "")
 
+        fingerprint = str(fingerprint)
+
         # does this have a repeat index - if so, this is the last
         # value at the end after the hyphen (negative numbers are ~)
-        parts = fingerprint.split("-")
+        parts = fingerprint.split("@")
 
         if len(parts) > 1:
             repeat_index = int(parts[-1])
-            fingerprint = "-".join(parts[0:-1])
+            fingerprint = "@".join(parts[0:-1])
         else:
             repeat_index = None
 
         # now get the values
         values = []
 
-        for part in fingerprint.split("_"):
+        for part in fingerprint.split(":"):
             try:
-                if part.startswith("~"):
-                    scl = -1.0
-                    part = part[1:]
-                else:
-                    scl = 1.0
-
-                if part.find(".") != -1:
-                    # this is already a floating point number
-                    value = float(part)
-                else:
-                    # this is an integer, which represents 0.INT
-                    part = f"0.{part}"
-                    value = float(part)
-
-                values.append(scl * value)
+                values.append(float(part.replace("_",".")))
             except Exception:
                 # this is not part of the fingerprint
                 pass
 
         return (values, repeat_index)
+
+    @staticmethod
+    def create_fingerprint(vals: _List[float], index: int = None,
+                           include_index: bool = False):
+        """Create the fingerprint for the passed values"""
+        f = None
+        for val in vals:
+            v = float(val)
+
+            if v.is_integer():
+                v = int(val)
+
+            v = str(v).replace(".", "_")
+
+            if f is None:
+                f = v
+            else:
+                f += ":" + v
+
+        if include_index:
+            return "%s@%03d" % (f, index)
+        else:
+            return f
 
     def fingerprint(self, include_index: bool = False):
         """Return a fingerprint for this VariableSet. This can be
@@ -643,31 +654,14 @@ class VariableSet:
              The fingerprint for this VariableSet
         """
         if self._vals is None or len(self._vals) == 0:
-            f = "NO_CHANGE"
+            if include_index:
+                return "NO_CHANGE_%03d" % self._idx
+            else:
+                return "NO_CHANGE"
         else:
-            f = None
-            for val in self._vals:
-                v = str(val)
-                if v.startswith("-"):
-                    v = v[1:]
-                if v.startswith("0"):
-                    v = v[1:]
-                if v.startswith("."):
-                    v = v[1:]
-
-                if val < 0:
-                    # use `~` for negative numbers
-                    v = "~" + v
-
-                if f is None:
-                    f = v
-                else:
-                    f += "_" + v
-
-        if include_index:
-            return "%s-%03d" % (f, self._idx)
-        else:
-            return f
+            return VariableSet.create_fingerprint(vals=self._vals,
+                                                  index=self._idx,
+                                                  include_index=include_index)
 
     @staticmethod
     def read(filename: str):

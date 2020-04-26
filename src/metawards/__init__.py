@@ -21,6 +21,7 @@ Classes
     Populations
     VariableSet
     VariableSets
+    Workspace
 
 Functions
 =========
@@ -44,6 +45,7 @@ from ._network import *
 from ._outputfiles import *
 from ._variableset import *
 from ._infections import *
+from ._workspace import *
 
 # import the pyx cython-compiled modules
 from ._nodes import *

@@ -2,7 +2,7 @@
 from .._network import Network
 from .._population import Population
 from .._outputfiles import OutputFiles
-from ..utils import Workspace
+from .._workspace import Workspace
 
 __all__ = ["output_basic"]
 

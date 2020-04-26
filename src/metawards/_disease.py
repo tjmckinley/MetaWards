@@ -217,11 +217,11 @@ class Disease:
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 
-        disease = Disease(beta=data["beta"],
-                          progress=data["progress"],
-                          too_ill_to_move=data["too_ill_to_move"],
-                          contrib_foi=data["contrib_foi"],
-                          start_symptom=data["start_symptom"],
+        disease = Disease(beta=data.get("beta", []),
+                          progress=data.get("progress", []),
+                          too_ill_to_move=data.get("too_ill_to_move", []),
+                          contrib_foi=data.get("contrib_foi", []),
+                          start_symptom=data.get("start_symptom", 3),
                           _name=disease,
                           _authors=data["author(s)"],
                           _contacts=data["contact(s)"],

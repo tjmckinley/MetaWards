@@ -2,7 +2,7 @@
 from .._network import Network
 from .._infections import Infections
 from .._outputfiles import OutputFiles
-from ._workspace import Workspace
+from .._workspace import Workspace
 from .._population import Population, Populations
 from ._profiler import Profiler, NullProfiler
 from ._iterate import iterate
@@ -130,7 +130,7 @@ def run_model(network: Network,
 
     # create a workspace that is used as part of extract_data to
     # provide a scratch-pad while extracting data from the model
-    workspace = Workspace(network=network)
+    workspace = Workspace.build(network=network)
 
     # Now get the population and network data for the first day of the
     # model ("day zero", unless a future day has been set by the user)

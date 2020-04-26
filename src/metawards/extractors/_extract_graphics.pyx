@@ -6,7 +6,7 @@ from .._infections import Infections
 from .._parameters import Parameters
 from ._profiler import Profiler, NullProfiler
 from .._population import Population
-from ._workspace import Workspace
+from .._workspace import Workspace
 
 __all__ = ["extract_data_for_graphics"]
 

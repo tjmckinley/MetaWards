@@ -11,7 +11,7 @@ from .._network import Network
 from .._population import Population
 from .._infections import Infections
 
-from ..utils._workspace import Workspace
+from .._workspace import Workspace
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
