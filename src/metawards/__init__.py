@@ -21,6 +21,8 @@ Classes
     Populations
     VariableSet
     VariableSets
+    WardInfo
+    WardInfos
     Workspace
 
 Functions
@@ -46,6 +48,7 @@ from ._outputfiles import *
 from ._variableset import *
 from ._infections import *
 from ._workspace import *
+from ._wardinfo import *
 
 # import the pyx cython-compiled modules
 from ._nodes import *

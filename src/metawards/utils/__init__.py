@@ -7,6 +7,7 @@ Functions
 .. autosummary::
     :toctree: generated/
 
+    add_lookup
     add_wards_network_distance
     allocate_vaccination
     assert_sane_network
@@ -71,6 +72,7 @@ from ._iterate import *
 from ._worker import *
 from ._extract import *
 
+from ._add_lookup import *
 from ._build_wards_network import *
 from ._add_wards_network_distance import *
 from ._get_min_max_distances import *
