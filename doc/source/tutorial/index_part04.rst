@@ -23,3 +23,4 @@ In this fourth part of the tutorial you will:
    :maxdepth: 2
 
    part04/01_extractors
+   part04/02_default

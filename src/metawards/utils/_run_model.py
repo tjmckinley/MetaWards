@@ -82,7 +82,7 @@ def run_model(network: Network,
 
     if extractor is None:
         extractor = extract_default
-    elif isinstance(iterator, str):
+    elif isinstance(extractor, str):
         from ..extractors._extract_custom import build_custom_extractor
         extractor = build_custom_extractor(extractor, __name__)
 
@@ -134,10 +134,12 @@ def run_model(network: Network,
 
     # Now get the population and network data for the first day of the
     # model ("day zero", unless a future day has been set by the user)
-    extract(network=network, population=population, workspace=workspace,
-            output_dir=output_dir, infections=infections,
-            rngs=rngs, get_output_functions=extractor,
-            nthreads=nthreads, profiler=p)
+    from metawards.extractors import output_core
+
+    output_core(network=network, population=population, workspace=workspace,
+                output_dir=output_dir, infections=infections,
+                rngs=rngs, get_output_functions=extractor,
+                nthreads=nthreads, profiler=p)
 
     infecteds = population.infecteds
 
