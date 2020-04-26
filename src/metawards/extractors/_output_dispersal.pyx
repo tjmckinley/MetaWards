@@ -99,7 +99,11 @@ def output_dispersal(network: Network, population: Population,
             var_x = 0.0
             var_y = 0.0
 
-        dispersal = sqrt(var_x + var_y)
+        if var_x + var_y > 0:
+            dispersal = sqrt(var_x + var_y)
+        else:
+            print(f"Negative var? {var_x+var_y}, {var_x} {var_y}")
+            dispersal = 0.0
     else:
         mean_x = 0.0
         mean_y = 0.0

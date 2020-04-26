@@ -65,7 +65,7 @@ def test_integration_ncov(prompt=None):
                                  s=-1, nsteps=30, profile=True,
                                  nthreads=1)
 
-    #OutputFiles.remove(outdir, prompt=None)
+    OutputFiles.remove(outdir, prompt=None)
 
     print("End of the run")
 
