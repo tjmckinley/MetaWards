@@ -225,6 +225,7 @@ def output_core_omp(network: Network, population: Population,
     cdef int * total_new_inf_ward = get_int_array_ptr(
                                                 workspace.total_new_inf_ward)
     cdef int * n_inf_wards = get_int_array_ptr(workspace.n_inf_wards)
+    cdef int * incidence = get_int_array_ptr(workspace.incidence)
 
     # get pointers to arrays from links and plinks to read data
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
