@@ -452,6 +452,9 @@ def output_default_omp(network: Network, population: Population,
 
     p = p.stop()
 
+    print(workspace.inf_tot)
+    print(workspace.pinf_tot)
+
     print(f"S: {susceptibles}    ", end="")
     print(f"E: {latent}    ", end="")
     print(f"I: {total}    ", end="")
