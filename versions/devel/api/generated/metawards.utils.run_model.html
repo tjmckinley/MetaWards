@@ -203,7 +203,7 @@
 <h1>metawards.utils.run_model<a class="headerlink" href="#metawards-utils-run-model" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.run_model">
-<code class="descclassname">metawards.utils.</code><code class="descname">run_model</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>infections</em>, <em>play_infections</em>, <em>rngs</em>, <em>s: int</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>population: metawards._population.Population = Population(initial=57104043</em>, <em>susceptibles=0</em>, <em>latent=0</em>, <em>total=0</em>, <em>recovereds=0</em>, <em>n_inf_wards=0</em>, <em>scale_uv=1.0</em>, <em>day=0</em>, <em>date=None)</em>, <em>nsteps: int = None</em>, <em>profile: bool = True</em>, <em>profiler: metawards.utils._profiler.Profiler = None</em>, <em>nthreads: int = None</em>, <em>iterator=None</em>, <em>extractor=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_run_model.html#run_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">run_model</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>infections: metawards._infections.Infections</em>, <em>rngs</em>, <em>s: int</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>population: metawards._population.Population = Population(initial=57104043</em>, <em>susceptibles=0</em>, <em>latent=0</em>, <em>total=0</em>, <em>recovereds=0</em>, <em>n_inf_wards=0</em>, <em>scale_uv=1.0</em>, <em>day=0</em>, <em>date=None)</em>, <em>nsteps: int = None</em>, <em>profile: bool = True</em>, <em>profiler: metawards.utils._profiler.Profiler = None</em>, <em>nthreads: int = None</em>, <em>iterator=None</em>, <em>extractor=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_run_model.html#run_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Actually run the model… Real work happens here. The model
 will run until completion or until ‘nsteps’ have been
 completed (whichever happens first)</p>
@@ -211,10 +211,8 @@ completed (whichever happens first)</p>
 <div><dl class="docutils">
 <dt>network: Network</dt>
 <dd>The network on which to run the model</dd>
-<dt>infections: list</dt>
+<dt>infections: Infections</dt>
 <dd>The space used to record the infections</dd>
-<dt>play_infections: list</dt>
-<dd>The space used to record the play infectionss</dd>
 <dt>rngs: list</dt>
 <dd>The list of random number generators to use, one per thread</dd>
 <dt>population: Population</dt>
@@ -279,7 +277,7 @@ the model run</dd>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 24, 2020.
+        Last updated on Apr 26, 2020.
       </span>
 
     </p>

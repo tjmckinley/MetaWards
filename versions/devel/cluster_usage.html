@@ -208,7 +208,7 @@ scoop or mpi4py work pools.</p>
 <p>Here is an example job script for a PBS cluster;</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
 #PBS -l walltime=01:00:00
-#PBS -l select=4:ncpus=64
+#PBS -l select=4:ncpus=64:mem=64GB
 # The above sets 4 nodes with 64 cores each
 
 # source the version of metawards we want to use
@@ -298,7 +298,7 @@ you name this script <code class="docutils literal notranslate"><span class="pre
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 24, 2020.
+        Last updated on Apr 26, 2020.
       </span>
 
     </p>

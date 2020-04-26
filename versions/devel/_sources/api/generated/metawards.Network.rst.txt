@@ -19,7 +19,6 @@ metawards.Network
       ~Network.build
       ~Network.get_min_max_distances
       ~Network.initialise_infections
-      ~Network.initialise_play_infections
       ~Network.move_from_play_to_work
       ~Network.rescale_play_matrix
       ~Network.reset_everything

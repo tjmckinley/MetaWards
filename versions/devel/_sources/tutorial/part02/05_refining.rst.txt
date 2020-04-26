@@ -108,7 +108,7 @@ before. For example, I used;
 
   #!/bin/bash
   #PBS -l walltime=12:00:00
-  #PBS -l select=4:ncpus=64
+  #PBS -l select=4:ncpus=64:mem=64GB
 
   # source the version of metawards we want to use
   source $HOME/envs/metawards-devel/bin/activate

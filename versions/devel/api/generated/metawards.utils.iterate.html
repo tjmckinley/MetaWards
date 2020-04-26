@@ -203,7 +203,7 @@
 <h1>metawards.utils.iterate<a class="headerlink" href="#metawards-utils-iterate" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.iterate">
-<code class="descclassname">metawards.utils.</code><code class="descname">iterate</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>population: metawards._population.Population</em>, <em>infections</em>, <em>play_infections</em>, <em>rngs</em>, <em>nthreads: int</em>, <em>get_advance_functions</em>, <em>profiler: metawards.utils._profiler.Profiler = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_iterate.html#iterate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.iterate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">iterate</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>population: metawards._population.Population</em>, <em>infections: metawards._infections.Infections</em>, <em>rngs</em>, <em>nthreads: int</em>, <em>get_advance_functions</em>, <em>profiler: metawards.utils._profiler.Profiler = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_iterate.html#iterate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.iterate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Advance the infection by one day for the passed Network,
 acting on the passed Population.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -215,8 +215,7 @@ acting on the passed Population.</p>
 <li><strong>population</strong> (<a class="reference internal" href="metawards.Population.html#metawards.Population" title="metawards.Population"><em>Population</em></a>) – The population experiencing the outbreak. This contains
 an overview of the current population, plus the day and
 date of the outbreak</li>
-<li><strong>infections</strong> – Space in which the ‘work’ (fixed) infections are recorded</li>
-<li><strong>play_infections</strong> – Space in which the ‘play’ (random) infections are recorded</li>
+<li><strong>infections</strong> (<a class="reference internal" href="metawards.Infections.html#metawards.Infections" title="metawards.Infections"><em>Infections</em></a>) – Space in which the infections are recorded</li>
 <li><strong>rngs</strong> – List of the thread-safe random number generators (one per thread)</li>
 <li><strong>nthreads</strong> (<em>int</em>) – The number of threads over which to parallelise the calculation</li>
 <li><strong>get_advance_functions</strong> (<em>function</em>) – This is a function that should return the set of “advance_XXX”
@@ -253,7 +252,7 @@ if you want to disable profiling</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 24, 2020.
+        Last updated on Apr 26, 2020.
       </span>
 
     </p>

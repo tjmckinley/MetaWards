@@ -222,7 +222,7 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.build_wards_network.html#metawards.utils.build_wards_network" title="metawards.utils.build_wards_network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_wards_network</span></code></a>(params,&nbsp;profiler,&nbsp;…)</td>
 <td>Creates a network of wards using the information provided in the file specified in parameters.input_files.work.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.clear_all_infections.html#metawards.utils.clear_all_infections" title="metawards.utils.clear_all_infections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear_all_infections</span></code></a>(infections,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.clear_all_infections.html#metawards.utils.clear_all_infections" title="metawards.utils.clear_all_infections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear_all_infections</span></code></a>(infections,&nbsp;nthreads)</td>
 <td>Clears all infections associated with a model run</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.create_int_array.html#metawards.utils.create_int_array" title="metawards.utils.create_int_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_int_array</span></code></a>(size,&nbsp;default)</td>
@@ -240,7 +240,7 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.delete_ran_binomial.html#metawards.utils.delete_ran_binomial" title="metawards.utils.delete_ran_binomial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_ran_binomial</span></code></a>(rng)</td>
 <td>Delete the passed random number generator.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.extract_data.html#metawards.utils.extract_data" title="metawards.utils.extract_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_data</span></code></a>(network,&nbsp;population,&nbsp;workspace,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.extract.html#metawards.utils.extract" title="metawards.utils.extract"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract</span></code></a>(network,&nbsp;population,&nbsp;workspace,&nbsp;…)</td>
 <td>Extract data from the network and write this to the specified output directory.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.fill_in_gaps.html#metawards.utils.fill_in_gaps" title="metawards.utils.fill_in_gaps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_in_gaps</span></code></a>(network,&nbsp;max_nodes)</td>
@@ -315,7 +315,7 @@
 <tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.reset_work_matrix.html#metawards.utils.reset_work_matrix" title="metawards.utils.reset_work_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_work_matrix</span></code></a>(network[,&nbsp;nthreads])</td>
 <td>Resets the work entries in the passed Network.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.run_model.html#metawards.utils.run_model" title="metawards.utils.run_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_model</span></code></a>(network,&nbsp;infections,&nbsp;…[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.utils.run_model.html#metawards.utils.run_model" title="metawards.utils.run_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_model</span></code></a>(network,&nbsp;infections,&nbsp;rngs,&nbsp;s,&nbsp;…)</td>
 <td>Actually run the model…</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/metawards.utils.run_models.html#metawards.utils.run_models" title="metawards.utils.run_models"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_models</span></code></a>(network,&nbsp;variables,&nbsp;population,&nbsp;…)</td>
@@ -381,7 +381,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 24, 2020.
+        Last updated on Apr 26, 2020.
       </span>
 
     </p>

@@ -173,6 +173,7 @@
 <span></span>
 <span class="kn">from</span> <span class="nn">.._network</span> <span class="kn">import</span> <span class="n">Network</span>
 <span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">.._infections</span> <span class="kn">import</span> <span class="n">Infections</span>
 
 <span class="kn">from</span> <span class="nn">._profiler</span> <span class="kn">import</span> <span class="n">Profiler</span><span class="p">,</span> <span class="n">NullProfiler</span>
 
@@ -180,7 +181,7 @@
 
 
 <div class="viewcode-block" id="iterate"><a class="viewcode-back" href="../../../api/generated/metawards.utils.iterate.html#metawards.utils.iterate">[docs]</a><span class="k">def</span> <span class="nf">iterate</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
-            <span class="n">infections</span><span class="p">,</span> <span class="n">play_infections</span><span class="p">,</span>
+            <span class="n">infections</span><span class="p">:</span> <span class="n">Infections</span><span class="p">,</span>
             <span class="n">rngs</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">get_advance_functions</span><span class="p">,</span>
             <span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -195,10 +196,8 @@
 <span class="sd">         The population experiencing the outbreak. This contains</span>
 <span class="sd">         an overview of the current population, plus the day and</span>
 <span class="sd">         date of the outbreak</span>
-<span class="sd">       infections</span>
-<span class="sd">         Space in which the &#39;work&#39; (fixed) infections are recorded</span>
-<span class="sd">       play_infections</span>
-<span class="sd">         Space in which the &#39;play&#39; (random) infections are recorded</span>
+<span class="sd">       infections: Infections</span>
+<span class="sd">         Space in which the infections are recorded</span>
 <span class="sd">       rngs</span>
 <span class="sd">         List of the thread-safe random number generators (one per thread)</span>
 <span class="sd">       nthreads: int</span>
@@ -218,7 +217,6 @@
     <span class="n">advance_functions</span> <span class="o">=</span> <span class="n">get_advance_functions</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span>
                                               <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
                                               <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span>
-                                              <span class="n">play_infections</span><span class="o">=</span><span class="n">play_infections</span><span class="p">,</span>
                                               <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
                                               <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
 
@@ -227,7 +225,6 @@
         <span class="n">advance_function</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span>
                          <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
                          <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span>
-                         <span class="n">play_infections</span><span class="o">=</span><span class="n">play_infections</span><span class="p">,</span>
                          <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
                          <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
@@ -246,7 +243,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 24, 2020.
+        Last updated on Apr 26, 2020.
       </span>
 
     </p>
