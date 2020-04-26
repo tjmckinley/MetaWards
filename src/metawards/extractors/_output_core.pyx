@@ -355,6 +355,13 @@ def output_core_omp(network: Network, population: Population,
             # end of loop over nodes
         # end of parallel
 
+        with nogil:
+            if i == 2:
+                # save the sum of infections up to i <= 2. This
+                # is the incidence
+                for j in range(1, nnodes_plus_one):
+                    incidence[j] = total_inf_ward[j]
+
         # can now reduce across all threads (don't need to lock as each
         # thread maintained its own running total)
         _reduce_variables(_redvars, num_threads)
