@@ -50,8 +50,12 @@ def extract_default(setup=False, **kwargs):
 
         from ._output_basic import output_basic
         from ._output_dispersal import output_dispersal
+        from ._output_prevalence import output_prevalence
+        from ._output_incidence import output_incidence
 
         funcs.append(output_basic)
         funcs.append(output_dispersal)
+        funcs.append(output_prevalence)
+        funcs.append(output_incidence)
 
     return funcs

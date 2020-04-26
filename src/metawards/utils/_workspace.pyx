@@ -37,10 +37,15 @@ class Workspace:
         self.n_inf_wards = create_int_array(n_inf_classes, 0)
 
         #: Total number of infections in each ward over the last day
+        #: This is also equal to the prevalence
         self.total_inf_ward = create_int_array(size, 0)
 
         #: Number of new infections in each ward over the last day
         self.total_new_inf_ward = create_int_array(size, 0)
+
+        #: The incidence of the infection (sum of infections up to
+        #: disease_class == 2)
+        self.incidence = create_int_array(size, 0)
 
     def zero_all(self):
         """Reset the values of all of the arrays to zero"""
@@ -54,6 +59,8 @@ class Workspace:
         cdef int * total_new_inf_ward = get_int_array_ptr(
                                                 self.total_new_inf_ward)
 
+        cdef int * incidence = get_int_array_ptr(self.incidence)
+
         cdef int nclasses = self.n_inf_classes
         cdef int nnodes_plus_one = self.nnodes + 1
 
@@ -66,3 +73,4 @@ class Workspace:
             for i in range(0, nnodes_plus_one):
                 total_inf_ward[i] = 0
                 total_new_inf_ward[i] = 0
+                incidence[i] = 0

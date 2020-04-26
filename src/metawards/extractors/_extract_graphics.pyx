@@ -71,11 +71,11 @@ def extract_data_for_graphics(network: Network, infections: Infections,
             if i == 2:
                 FILE.write("%d " % total_infections[j])   # incidence
 
-                if i == N_INF_CLASSES - 1:
-                    FILE.write("%d ", total_infections[j])  # prevalence
+            if i == N_INF_CLASSES - 1:
+                FILE.write("%d ", total_infections[j])  # prevalence
 
-                if i == N_INF_CLASSES - 1:
-                    prevalence[j] = total_infections[j]
+            if i == N_INF_CLASSES - 1:
+                prevalence[j] = total_infections[j]
 
     FILE.write("\n")
 
