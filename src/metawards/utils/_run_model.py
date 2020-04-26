@@ -1,5 +1,6 @@
 
 from .._network import Network
+from .._infections import Infections
 from .._outputfiles import OutputFiles
 from ._workspace import Workspace
 from .._population import Population, Populations
@@ -14,7 +15,7 @@ __all__ = ["run_model"]
 
 
 def run_model(network: Network,
-              infections, play_infections,
+              infections: Infections,
               rngs, s: int,
               output_dir: OutputFiles,
               population: Population = Population(initial=57104043),
@@ -32,10 +33,8 @@ def run_model(network: Network,
         ----------
         network: Network
             The network on which to run the model
-        infections: list
+        infections: Infections
             The space used to record the infections
-        play_infections: list
-            The space used to record the play infectionss
         rngs: list
             The list of random number generators to use, one per thread
         population: Population
@@ -109,9 +108,7 @@ def run_model(network: Network,
     trajectory = Populations()
 
     p = p.start("clear_all_infections")
-    clear_all_infections(infections=infections,
-                         play_infections=play_infections,
-                         nthreads=nthreads)
+    infections.clear(nthreads=nthreads)
     p = p.stop()
 
     # get and call all of the functions that need to be called to set
@@ -121,8 +118,8 @@ def run_model(network: Network,
 
     for setup_func in setup_funcs:
         setup_func(network=network, population=population,
-                   infections=infections, play_infections=play_infections,
-                   rngs=rngs, profiler=p, nthreads=nthreads)
+                   infections=infections, rngs=rngs, profiler=p,
+                   nthreads=nthreads)
 
     setup_funcs = extractor(nthreads=nthreads, setup=True)
 
@@ -139,7 +136,6 @@ def run_model(network: Network,
     # model ("day zero", unless a future day has been set by the user)
     extract(network=network, population=population, workspace=workspace,
             output_dir=output_dir, infections=infections,
-            play_infections=play_infections,
             rngs=rngs, get_output_functions=extractor,
             nthreads=nthreads, profiler=p)
 
@@ -164,16 +160,16 @@ def run_model(network: Network,
         start_population = population.population
 
         iterate(network=network, population=population,
-                infections=infections, play_infections=play_infections,
-                rngs=rngs, get_advance_functions=iterator,
+                infections=infections, rngs=rngs,
+                get_advance_functions=iterator,
                 nthreads=nthreads, profiler=p2)
 
         print(f"\n {population.day} {infecteds}")
 
         extract(network=network, population=population,
                 workspace=workspace, output_dir=output_dir,
-                infections=infections, play_infections=play_infections,
-                rngs=rngs, get_output_functions=extractor,
+                infections=infections, rngs=rngs,
+                get_output_functions=extractor,
                 nthreads=nthreads, profiler=p2)
 
         if population.population != start_population:

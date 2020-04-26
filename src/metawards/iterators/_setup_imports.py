@@ -1,6 +1,7 @@
 
 from .._network import Network
 from .._population import Population
+from .._infections import Infections
 
 __all__ = ["setup_seed_specified_ward",
            "setup_seed_all_wards",
@@ -8,8 +9,7 @@ __all__ = ["setup_seed_specified_ward",
 
 
 def setup_seed_specified_ward(network: Network,
-                              infections,
-                              play_infections,
+                              infections: Infections,
                               **kwargs):
     """Setup function that sets up the Network by seeding the infection
        at the ward specified by looking up the ward index
@@ -19,16 +19,17 @@ def setup_seed_specified_ward(network: Network,
        ----------
        network: Network
          The network to be seeded
-       infections
+       infections: Infections
          Space to hold the 'work' infections
-       play_infections
-         Space to hold the 'play' infections
        kwargs
          Arguments that are not used by this setup function
     """
     wards = network.nodes
     links = network.to_links
     params = network.params
+
+    play_infections = infections.play
+    infections = infections.work
 
     seed_index = int(params.ward_seed_index)
     seed = network.to_seed[seed_index]
@@ -53,8 +54,7 @@ def setup_seed_specified_ward(network: Network,
 
 def setup_seed_all_wards(network: Network,
                          population: Population,
-                         infections,
-                         play_infections,
+                         infections: Infections,
                          **kwargs):
     """Seed the wards with an initial set of infections, assuming
        an 'expected' number of infected people out of a population
@@ -63,6 +63,9 @@ def setup_seed_all_wards(network: Network,
     """
     wards = network.nodes
     params = network.params
+
+    play_infections = infections.play
+    infections = infections.work
 
     print(f"Setup by seeding all wards")
 

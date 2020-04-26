@@ -5,12 +5,14 @@
 cimport cython
 from cython.parallel import parallel, prange
 
+from .._infections import Infections
+
 from ._get_array_ptr cimport get_int_array_ptr
 
 __all__ = ["clear_all_infections"]
 
 
-def clear_all_infections(infections, play_infections,
+def clear_all_infections(infections: Infections,
                          nthreads: int=1):
     """Clears all infections associated with a model run
 
@@ -23,7 +25,9 @@ def clear_all_infections(infections, play_infections,
        nthreads: int
          Number of threads to use to clear the arrays
     """
-    assert len(infections) == len(play_infections)
+
+    play_infections = infections.play
+    infections = infections.work
 
     cdef int i = 0
     cdef int j = 0

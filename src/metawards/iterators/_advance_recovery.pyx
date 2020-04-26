@@ -7,6 +7,7 @@ from cython.parallel import parallel, prange
 
 from .._network import Network
 from ..utils._profiler import Profiler
+from .._infections import Infections
 
 from ..utils._ran_binomial cimport _ran_binomial, \
                                    _get_binomial_ptr, binomial_rng
@@ -17,7 +18,7 @@ __all__ = ["advance_recovery", "advance_recovery_omp",
            "advance_recovery_serial"]
 
 
-def advance_recovery_omp(network: Network, infections, play_infections, rngs,
+def advance_recovery_omp(network: Network, infections: Infections, rngs,
                          nthreads: int, profiler: Profiler, **kwargs):
     """Advance the model by processing recovery of individual through
        the different stages of the disease (parallel version of the
@@ -27,10 +28,8 @@ def advance_recovery_omp(network: Network, infections, play_infections, rngs,
        ----------
        network: Network
          The network being modelled
-       infections:
-         The space that holds all of the "work" infections
-       play_infections:
-         The space that holds all of the "play" infections
+       infections: Infections
+         The space that holds all of the  infections
        rngs:
          The list of thread-safe random number generators, one per thread
        nthreads: int
@@ -43,6 +42,9 @@ def advance_recovery_omp(network: Network, infections, play_infections, rngs,
     """
 
     params = network.params
+
+    play_infections = infections.play
+    infections = infections.work
 
     # Copy arguments from Python into C cdef variables
     cdef int N_INF_CLASSES = len(infections)
@@ -114,7 +116,7 @@ def advance_recovery_omp(network: Network, infections, play_infections, rngs,
     p = p.stop()
 
 
-def advance_recovery_serial(network: Network, infections, play_infections,
+def advance_recovery_serial(network: Network, infections: Infections,
                             rngs, profiler: Profiler, **kwargs):
     """Advance the model by processing recovery of individual through
        the different stages of the disease (serial version of the
@@ -124,10 +126,8 @@ def advance_recovery_serial(network: Network, infections, play_infections,
        ----------
        network: Network
          The network being modelled
-       infections:
-         The space that holds all of the "work" infections
-       play_infections:
-         The space that holds all of the "play" infections
+       infections: Infections
+         The space that holds all of the infections
        rngs:
          The list of thread-safe random number generators, one per thread
        profiler: Profiler
@@ -139,8 +139,7 @@ def advance_recovery_serial(network: Network, infections, play_infections,
     kwargs["nthreads"] = 1
 
     advance_recovery_omp(network=network, infections=infections,
-                         play_infections=play_infections, rngs=rngs,
-                         profiler=profiler, **kwargs)
+                         rngs=rngs, profiler=profiler, **kwargs)
 
 
 def advance_recovery(nthreads: int, **kwargs):
@@ -152,10 +151,8 @@ def advance_recovery(nthreads: int, **kwargs):
        ----------
        network: Network
          The network being modelled
-       infections:
+       infections: Infections
          The space that holds all of the "work" infections
-       play_infections:
-         The space that holds all of the "play" infections
        rngs:
          The list of thread-safe random number generators, one per thread
        nthreads: int

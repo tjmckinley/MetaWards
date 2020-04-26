@@ -4,13 +4,12 @@
 
 cimport cython
 
-from libc.math cimport sqrt
 from libc.stdlib cimport malloc, free
 cimport openmp
 
 from .._network import Network
-from .._parameters import Parameters
 from .._population import Population
+from .._infections import Infections
 
 from ..utils._workspace import Workspace
 
@@ -180,7 +179,7 @@ def setup_core(network: Network, nthreads: int = 1, **kwargs):
 
 def output_core_omp(network: Network, population: Population,
                     workspace: Workspace,
-                    infections, play_infections,
+                    infections: Infections,
                     nthreads: int, **kwargs):
     """This is the core output function that must be called
        every iteration as it is responsible for accumulating
@@ -196,10 +195,8 @@ def output_core_omp(network: Network, population: Population,
          The population experiencing the outbreak
        workspace: Workspace
          A workspace that can be used to extract data
-       infections
-         Space to hold the 'work' infections
-       play_infections
-         Space to hold the 'play' infections
+       infections: Infections
+         Space to hold the nfections
        nthreads: int
          The number of threads to use to help extract the data
        kwargs
@@ -211,6 +208,9 @@ def output_core_omp(network: Network, population: Population,
     wards = network.nodes
 
     # set up main variables
+    play_infections = infections.play
+    infections = infections.work
+
     cdef int N_INF_CLASSES = len(infections)
     assert len(infections) == len(play_infections)
 
@@ -407,7 +407,7 @@ def output_core_omp(network: Network, population: Population,
 
 def output_core_serial(network: Network, population: Population,
                        workspace: Workspace,
-                       infections, play_infections,
+                       infections: Infections,
                        **kwargs):
     """This is the core output function that must be called
        every iteration as it is responsible for accumulating
@@ -423,10 +423,8 @@ def output_core_serial(network: Network, population: Population,
          The population experiencing the outbreak
        workspace: Workspace
          A workspace that can be used to extract data
-       infections
+       infections : Infections
          Space to hold the 'work' infections
-       play_infections
-         Space to hold the 'play' infections
        nthreads: int
          The number of threads to use to help extract the data
        kwargs
@@ -436,6 +434,9 @@ def output_core_serial(network: Network, population: Population,
     wards = network.nodes
 
     # set up main variables
+    play_infections = infections.play
+    infections = infections.work
+
     cdef int N_INF_CLASSES = len(infections)
     assert len(infections) == len(play_infections)
 

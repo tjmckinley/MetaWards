@@ -2,6 +2,7 @@
 from .._network import Network
 from .._population import Population
 from ..utils._profiler import Profiler
+from .._infections import Infections
 
 __all__ = ["setup_additional_seeds",
            "advance_additional",
@@ -71,7 +72,7 @@ def setup_additional_seeds(network: Network,
 
 def advance_additional_serial(network: Network,
                               population: Population,
-                              infections, play_infections,
+                              infections: Infections,
                               profiler: Profiler,
                               **kwargs):
     """Advance the infection by infecting additional wards based
@@ -84,10 +85,8 @@ def advance_additional_serial(network: Network,
        population: Population
          The population experiencing the outbreak - also contains the day
          of the outbreak
-       infections
-         Space to hold the 'work' infections
-       play_infections
-         Space to hold the 'play' infections
+       infections: Infections
+         Space to hold the infections
        profiler: Profiler
          Used to profile this function
        kwargs
@@ -95,6 +94,9 @@ def advance_additional_serial(network: Network,
     """
 
     wards = network.nodes
+
+    play_infections = infections.play
+    infections = infections.work
 
     # The 'setup_additional_seeds' function should have loaded
     # all additional seeds into this global '_additional_seeds' variable
@@ -124,10 +126,8 @@ def advance_additional_omp(**kwargs):
        population: Population
          The population experiencing the outbreak - also contains the day
          of the outbreak
-       infections
-         Space to hold the 'work' infections
-       play_infections
-         Space to hold the 'play' infections
+       infections: Infections
+         Space to hold the infections
        profiler: Profiler
          Used to profile this function
        kwargs
@@ -149,10 +149,8 @@ def advance_additional(nthreads, **kwargs):
        population: Population
          The population experiencing the outbreak - also contains the day
          of the outbreak
-       infections
-         Space to hold the 'work' infections
-       play_infections
-         Space to hold the 'play' infections
+       infections: Infections
+         Space to hold the infections
        profiler: Profiler
          Used to profile this function
        kwargs
