@@ -48,4 +48,7 @@ def extract_default(setup=False, **kwargs):
     else:
         funcs = extract_core(**kwargs)
 
+        from ._output_dispersal import output_dispersal
+        funcs.append(output_dispersal)
+
     return funcs

@@ -129,6 +129,9 @@ extensions = [
     Extension("metawards.extractors._output_core",
               ["src/metawards/extractors/_output_core.pyx"],
               define_macros=define_macros),
+    Extension("metawards.extractors._output_dispersal",
+              ["src/metawards/extractors/_output_dispersal.pyx"],
+              define_macros=define_macros),
 ]
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
