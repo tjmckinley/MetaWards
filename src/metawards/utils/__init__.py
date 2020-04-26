@@ -18,7 +18,7 @@ Functions
     create_string_array
     create_thread_generators
     delete_ran_binomial
-    extract_data
+    extract
     fill_in_gaps
     get_available_num_threads
     get_min_max_distances
@@ -69,12 +69,13 @@ from ._initialise_infections import *
 from ._read_done_file import *
 from ._string_to_ints import *
 from ._profiler import *
+from ._workspace import *
 from ._run_model import *
 from ._runner import *
 from ._iterate import *
 from ._worker import *
+from ._extract import *
 
-# pyx imports
 from ._build_wards_network import *
 from ._add_wards_network_distance import *
 from ._get_min_max_distances import *
@@ -84,12 +85,10 @@ from ._recalculate_denominators import *
 from ._move_population import *
 from ._fill_in_gaps import *
 from ._build_play_matrix import *
-from ._workspace import *
 from ._array import *
 from ._ran_binomial import *
 from ._parallel import *
 from ._assert_sane_network import *
-from ._extract_data import *
 from ._vaccination import *
 from ._clear_all_infections import *
 

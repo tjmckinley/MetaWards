@@ -3,6 +3,8 @@ from ._array import create_int_array
 
 from .._network import Network
 
+from ._get_array_ptr cimport get_int_array_ptr
+
 __all__ = ["Workspace"]
 
 
@@ -16,42 +18,59 @@ class Workspace:
            passed network
         """
         params = network.params
-        N_INF_CLASSES = params.disease_params.N_INF_CLASSES()
-        MAXSIZE = network.nnodes + 1  # 1-indexed
 
-        self.N_INF_CLASSES = N_INF_CLASSES
-        self.MAXSIZE = MAXSIZE
+        n_inf_classes = params.disease_params.N_INF_CLASSES()
 
-        self.inf_tot = create_int_array(N_INF_CLASSES, 0)
-        self.pinf_tot = create_int_array(N_INF_CLASSES, 0)
-        self.n_inf_wards = create_int_array(N_INF_CLASSES, 0)
+        #: number of disease stages
+        self.n_inf_classes = params.disease_params.N_INF_CLASSES()
 
-        self.total_inf_ward = create_int_array(MAXSIZE, 0)
-        self.total_new_inf_ward = create_int_array(MAXSIZE, 0)
+        #: number of wards (nodes)
+        self.nnodes = network.nnodes
 
-        self.total_infections = create_int_array(MAXSIZE, 0)
-        self.prevalence = create_int_array(MAXSIZE, 0)
+        size = self.nnodes + 1  # 1-indexed
+
+        #: Size of population in each disease stage for work infections
+        self.inf_tot = create_int_array(n_inf_classes, 0)
+        #: Size of population in each disease stage for play infections
+        self.pinf_tot = create_int_array(n_inf_classes, 0)
+        #: Number of wards with at least one individual in this disease stage
+        self.n_inf_wards = create_int_array(n_inf_classes, 0)
+
+        #: Total number of infections in each ward over the last day
+        #: This is also equal to the prevalence
+        self.total_inf_ward = create_int_array(size, 0)
+
+        #: Number of new infections in each ward over the last day
+        self.total_new_inf_ward = create_int_array(size, 0)
+
+        #: The incidence of the infection (sum of infections up to
+        #: disease_class == 2)
+        self.incidence = create_int_array(size, 0)
 
     def zero_all(self):
         """Reset the values of all of the arrays to zero"""
         cdef int i = 0
 
-        cdef int [::1] inf_tot = self.inf_tot
-        cdef int [::1] pinf_tot = self.pinf_tot
-        cdef int [::1] n_inf_wards = self.n_inf_wards
+        cdef int * inf_tot = get_int_array_ptr(self.inf_tot)
+        cdef int * pinf_tot = get_int_array_ptr(self.pinf_tot)
+        cdef int * n_inf_wards = get_int_array_ptr(self.n_inf_wards)
 
-        cdef int [::1] total_inf_ward = self.total_inf_ward
-        cdef int [::1] total_new_inf_ward = self.total_new_inf_ward
-        cdef int [::1] total_infections = self.total_infections
-        cdef int [::1] prevalence = self.prevalence
+        cdef int * total_inf_ward = get_int_array_ptr(self.total_inf_ward)
+        cdef int * total_new_inf_ward = get_int_array_ptr(
+                                                self.total_new_inf_ward)
 
-        for i in range(0, self.N_INF_CLASSES):
-            inf_tot[i] = 0
-            pinf_tot[i] = 0
-            n_inf_wards[i] = 0
+        cdef int * incidence = get_int_array_ptr(self.incidence)
 
-        for i in range(0, self.MAXSIZE):
-            total_inf_ward[i] = 0
-            total_new_inf_ward[i] = 0
-            total_infections[i] = 0
-            prevalence[i] = 0
+        cdef int nclasses = self.n_inf_classes
+        cdef int nnodes_plus_one = self.nnodes + 1
+
+        with nogil:
+            for i in range(0, nclasses):
+                inf_tot[i] = 0
+                pinf_tot[i] = 0
+                n_inf_wards[i] = 0
+
+            for i in range(0, nnodes_plus_one):
+                total_inf_ward[i] = 0
+                total_new_inf_ward[i] = 0
+                incidence[i] = 0

@@ -7,6 +7,7 @@ from cython.parallel import parallel, prange
 
 from .._network import Network
 from ..utils._profiler import Profiler
+from .._infections import Infections
 
 from ..utils._ran_binomial cimport _ran_binomial, \
                                    _get_binomial_ptr, binomial_rng
@@ -17,7 +18,7 @@ __all__ = ["advance_play", "advance_play_omp",
            "advance_play_serial"]
 
 
-def advance_play_omp(network: Network, play_infections, rngs,
+def advance_play_omp(network: Network, infections: Infections, rngs,
                      nthreads: int, profiler: Profiler, **kwargs):
     """Advance the model by triggering infections related to random
        'play' movements (parallel version of the function)
@@ -26,8 +27,8 @@ def advance_play_omp(network: Network, play_infections, rngs,
        ----------
        network: Network
          The network being modelled
-       play_infections:
-         The space that holds all of the "play" infections
+       infections: Infections
+         The space that holds all of the infections
        rngs:
          The list of thread-safe random number generators, one per thread
        nthreads: int
@@ -43,6 +44,8 @@ def advance_play_omp(network: Network, play_infections, rngs,
     wards = network.nodes
     plinks = network.play
     params = network.params
+
+    play_infections = infections.play
 
     # Copy arguments from Python into C cdef variables
     cdef int * wards_begin_p = get_int_array_ptr(wards.begin_p)
@@ -163,7 +166,7 @@ def advance_play_omp(network: Network, play_infections, rngs,
     p.stop()
 
 
-def advance_play_serial(network: Network, play_infections, rngs,
+def advance_play_serial(network: Network, infections: Infections, rngs,
                         profiler: Profiler, **kwargs):
     """Advance the model by triggering infections related to random
        'play' movements (serial version of the function)
@@ -172,8 +175,8 @@ def advance_play_serial(network: Network, play_infections, rngs,
        ----------
        network: Network
          The network being modelled
-       play_infections:
-         The space that holds all of the "play" infections
+       infections: Infections
+         The space that holds all of the infections
        rngs:
          The list of thread-safe random number generators, one per thread
        nthreads: int
@@ -185,7 +188,7 @@ def advance_play_serial(network: Network, play_infections, rngs,
          are not used by advance_play
     """
     kwargs["nthreads"] = 1
-    advance_play_omp(network=network, play_infections=play_infections,
+    advance_play_omp(network=network, infections=infections,
                      rngs=rngs, profiler=profiler, **kwargs)
 
 
@@ -197,7 +200,7 @@ def advance_play(nthreads: int, **kwargs):
        ----------
        network: Network
          The network being modelled
-       play_infections:
+       infections: Infections
          The space that holds all of the "play" infections
        rngs:
          The list of thread-safe random number generators, one per thread

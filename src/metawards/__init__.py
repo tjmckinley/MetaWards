@@ -8,6 +8,7 @@ Classes
     :toctree: generated/
 
     Disease
+    Infections
     InputFiles
     Link
     Links
@@ -42,12 +43,13 @@ from ._population import *
 from ._network import *
 from ._outputfiles import *
 from ._variableset import *
+from ._infections import *
 
 # import the pyx cython-compiled modules
 from ._nodes import *
 from ._links import *
 
-__manual_version__ = "0.7.2b"
+__manual_version__ = "0.9.0"
 
 from ._version import get_versions
 _v = get_versions()

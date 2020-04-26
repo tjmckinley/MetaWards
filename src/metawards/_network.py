@@ -181,15 +181,8 @@ class Network:
         """Initialise and return the space that will be used
            to track infections
         """
-        from .utils import initialise_infections
-        return initialise_infections(self)
-
-    def initialise_play_infections(self, nthreads: int = 1):
-        """Initialise and return the space that will be used
-           to track play infections
-        """
-        from .utils import initialise_play_infections
-        return initialise_play_infections(self)
+        from ._infections import Infections
+        return Infections.build(network=self)
 
     def get_min_max_distances(self, nthreads: int = 1,
                               profiler=None):
@@ -342,14 +335,10 @@ class Network:
         print("Initialise infections...")
         infections = self.initialise_infections()
 
-        print("Initialise play infections...")
-        play_infections = self.initialise_play_infections()
-
         from .utils import run_model
         population = run_model(network=self,
                                population=population,
                                infections=infections,
-                               play_infections=play_infections,
                                rngs=rngs, s=s, output_dir=output_dir,
                                nsteps=nsteps,
                                profile=profile, nthreads=nthreads,

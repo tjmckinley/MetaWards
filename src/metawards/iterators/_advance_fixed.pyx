@@ -44,6 +44,9 @@ def advance_fixed_omp(network: Network, infections, rngs,
     plinks = network.play
     params = network.params
 
+    play_infections = infections.play
+    infections = infections.work
+
     # Copy arguments from Python into C cdef variables
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
     cdef int * links_ito = get_int_array_ptr(links.ito)
