@@ -18,7 +18,8 @@ from ..utils._workspace import Workspace
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
-__all__ = ["setup_output_default", "output_default", "output_default_omp"]
+__all__ = ["setup_core", "output_core", "output_core_omp",
+           "output_core_serial"]
 
 
 cdef struct _inf_buffer:
@@ -172,12 +173,12 @@ cdef _red_variables * _redvars = <_red_variables*>0
 _files = None
 
 
-def setup_output_default(network: Network,
-                         output_dir: OutputFiles,
-                         nthreads: int,
-                         **kwargs):
+def setup_core(network: Network,
+               output_dir: OutputFiles,
+               nthreads: int,
+               **kwargs):
     """This is the setup function that corresponds with
-       :meth:`~metawards.extractors.output_default`.
+       :meth:`~metawards.extractors.output_core`.
     """
     global _buffer_nthreads
 
@@ -196,25 +197,14 @@ def setup_output_default(network: Network,
         _total_inf_ward_buffers = _allocate_inf_buffers(nthreads)
         _buffer_nthreads = nthreads
 
-    global _files
 
-    _files = []
-    _files.append(output_dir.open("WorkInfections.dat"))
-    _files.append(output_dir.open("NumberWardsInfected.dat"))
-    _files.append(output_dir.open("MeanXY.dat"))
-    _files.append(output_dir.open("PlayInfections.dat"))
-    _files.append(output_dir.open("TotalInfections.dat"))
-    _files.append(output_dir.open("VarXY.dat"))
-    _files.append(output_dir.open("Dispersal.dat"))
-
-
-def output_default_omp(network: Network, population: Population,
-                       output_dir: OutputFiles,
-                       workspace: Workspace,
-                       infections, play_infections,
-                       nthreads: int, profiler: Profiler,
-                       **kwargs):
-    """This is the default output function that must be called
+def output_core_omp(network: Network, population: Population,
+                    output_dir: OutputFiles,
+                    workspace: Workspace,
+                    infections, play_infections,
+                    nthreads: int, profiler: Profiler,
+                    **kwargs):
+    """This is the core output function that must be called
        every iteration as it is responsible for accumulating
        the core data each day, which is used to report a summary
        to the main output file. This is the parallel version
@@ -243,7 +233,7 @@ def output_default_omp(network: Network, population: Population,
     """
     from cython.parallel import parallel, prange
 
-    p = profiler.start("extract_data")
+    p = profiler.start("output_core")
 
     links = network.to_links
     wards = network.nodes
@@ -255,11 +245,6 @@ def output_default_omp(network: Network, population: Population,
     workspace.zero_all()
 
     cdef int timestep = population.day
-
-    global _files
-    _files[0].write("%d " % timestep)
-    _files[1].write("%d " % timestep)
-    _files[3].write("%d " % timestep)
 
     global _total_inf_ward_buffers
     global _total_new_inf_ward_buffers
@@ -380,10 +365,6 @@ def output_default_omp(network: Network, population: Population,
                         newinf = total_new_inf_ward[j]
                         x = wards_x[j]
                         y = wards_y[j]
-                        redvar[0].sum_x += newinf * x
-                        redvar[0].sum_y += newinf * y
-                        redvar[0].sum_x2 += newinf * x * x
-                        redvar[0].sum_y2 += newinf * y * y
                         redvar[0].total_new += newinf
 
                 if play_infections_i[j] > 0:
@@ -407,16 +388,7 @@ def output_default_omp(network: Network, population: Population,
         total_new += _redvars[0].total_new
         susceptibles += _redvars[0].susceptibles
 
-        sum_x += _redvars[0].sum_x
-        sum_y += _redvars[0].sum_y
-        sum_x2 += _redvars[0].sum_x2
-        sum_y2 += _redvars[0].sum_y2
-
         _reset_reduce_variables(_redvars, num_threads)
-
-        _files[0].write("%d " % inf_tot[i])
-        _files[1].write("%d " % n_inf_wards[i])
-        _files[3].write("%d " % pinf_tot[i])
 
         if i == 1:
             latent += inf_tot[i] + pinf_tot[i]
@@ -425,31 +397,6 @@ def output_default_omp(network: Network, population: Population,
         else:
             recovereds += inf_tot[i] + pinf_tot[i]
     # end of loop over i
-    p = p.stop()
-
-    p = p.start("write_to_files")
-    if total_new > 1:  # CHECK - this should be > 1 rather than > 0
-        mean_x = sum_x / total_new
-        mean_y = sum_y / total_new
-
-        var_x = (sum_x2 - sum_x*mean_x) / (total_new - 1)
-        var_y = (sum_y2 - sum_y*mean_y) / (total_new - 1)
-
-        dispersal = sqrt(var_x + var_y)
-        _files[2].write("%d %f %f\n" % (timestep, mean_x, mean_y))
-        _files[5].write("%d %f %f\n" % (timestep, var_x, var_y))
-        _files[6].write("%d %f\n" % (timestep, dispersal))
-    else:
-        _files[2].write("%d %f %f\n" % (timestep, 0.0, 0.0))
-        _files[5].write("%d %f %f\n" % (timestep, 0.0, 0.0))
-        _files[6].write("%d %f\n" % (timestep, 0.0))
-
-    _files[0].write("\n")
-    _files[1].write("\n")
-    _files[3].write("\n")
-    _files[4].write("%d \n" % total)
-    _files[4].flush()
-
     p = p.stop()
 
     print(f"S: {susceptibles}    ", end="")
@@ -471,11 +418,11 @@ def output_default_omp(network: Network, population: Population,
     return total + latent
 
 
-def output_default_serial(network: Network, population: Population,
-                          output_dir: OutputFiles, workspace: Workspace,
-                          infections, play_infections,
-                          profiler: Profiler, **kwargs):
-    """This is the default output function that must be called
+def output_core_serial(network: Network, population: Population,
+                       output_dir: OutputFiles, workspace: Workspace,
+                       infections, play_infections,
+                       profiler: Profiler, **kwargs):
+    """This is the core output function that must be called
        every iteration as it is responsible for accumulating
        the core data each day, which is used to report a summary
        to the main output file. This is the serial version
@@ -503,15 +450,15 @@ def output_default_serial(network: Network, population: Population,
          Extra argumentst that are ignored by this function
     """
     kwargs["nthreads"] = 1
-    output_default_omp(network=network, population=population,
-                       output_dir=output_dir, workspace=workspace,
-                       infections=infections,
-                       play_infections=play_infections,
-                       profiler=profiler, **kwargs)
+    output_core_omp(network=network, population=population,
+                    output_dir=output_dir, workspace=workspace,
+                    infections=infections,
+                    play_infections=play_infections,
+                    profiler=profiler, **kwargs)
 
 
-def output_default(nthreads: int, **kwargs):
-    """This is the default output function that must be called
+def output_core(nthreads: int, **kwargs):
+    """This is the core output function that must be called
        every iteration as it is responsible for accumulating
        the core data each day, which is used to report a summary
        to the main output file. This is the serial version
@@ -539,6 +486,6 @@ def output_default(nthreads: int, **kwargs):
          Extra argumentst that are ignored by this function
     """
     if nthreads == 1:
-        output_default_serial(**kwargs)
+        output_core_serial(**kwargs)
     else:
-        output_default_omp(nthreads=nthreads, **kwargs)
+        output_core_omp(nthreads=nthreads, **kwargs)

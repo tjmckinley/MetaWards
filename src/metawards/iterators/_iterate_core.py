@@ -9,7 +9,10 @@ def iterate_core(nthreads: int = 1, setup=False,
                  **kwargs):
     """This returns the default list of 'advance_XXX' functions that
        are called in sequence at the beginning of each iteration of
-       the model run. These are the core functions, so must
+       the model run. These are the core functions, so must make sure
+       that the foi parameters have been calculated correctly
+       and that the recovery/movement through disease stages takes
+       place
 
        Parameters
        ----------
