@@ -73,6 +73,7 @@ from ._run_model import *
 from ._runner import *
 from ._iterate import *
 from ._worker import *
+from ._extract import *
 
 # pyx imports
 from ._build_wards_network import *
@@ -89,7 +90,6 @@ from ._array import *
 from ._ran_binomial import *
 from ._parallel import *
 from ._assert_sane_network import *
-from ._extract_data import *
 from ._vaccination import *
 from ._clear_all_infections import *
 

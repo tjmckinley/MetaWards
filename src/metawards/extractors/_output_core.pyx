@@ -439,10 +439,6 @@ def output_core_serial(network: Network, population: Population,
     cdef int N_INF_CLASSES = len(infections)
     assert len(infections) == len(play_infections)
 
-    global _total_inf_ward_buffers
-    global _total_new_inf_ward_buffers
-    global _redvars
-
     # get pointers to arrays in workspace to write data
     cdef int * inf_tot = get_int_array_ptr(workspace.inf_tot)
     cdef int * pinf_tot = get_int_array_ptr(workspace.pinf_tot)

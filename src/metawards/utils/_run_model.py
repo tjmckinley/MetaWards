@@ -8,7 +8,7 @@ from ._iterate import iterate
 from ..iterators._iterate_default import iterate_default
 from ..extractors._extract_default import extract_default
 from ._clear_all_infections import clear_all_infections
-from ._extract_data import extract_data
+from ._extract import extract
 
 __all__ = ["run_model"]
 
@@ -137,13 +137,11 @@ def run_model(network: Network,
 
     # Now get the population and network data for the first day of the
     # model ("day zero", unless a future day has been set by the user)
-    p = p.start("extract_data")
-    extract_data(network=network, population=population, workspace=workspace,
-                 output_dir=output_dir, infections=infections,
-                 play_infections=play_infections,
-                 rngs=rngs, get_output_functions=extractor,
-                 nthreads=nthreads, profiler=p)
-    p = p.stop()
+    extract(network=network, population=population, workspace=workspace,
+            output_dir=output_dir, infections=infections,
+            play_infections=play_infections,
+            rngs=rngs, get_output_functions=extractor,
+            nthreads=nthreads, profiler=p)
 
     infecteds = population.infecteds
 
@@ -172,13 +170,11 @@ def run_model(network: Network,
 
         print(f"\n {population.day} {infecteds}")
 
-        p2 = p2.start("extract_data")
-        extract_data(network=network, population=population,
-                     workspace=workspace, output_dir=output_dir,
-                     infections=infections, play_infections=play_infections,
-                     rngs=rngs, get_output_functions=extractor,
-                     nthreads=nthreads, profiler=p2)
-        p2 = p2.stop()
+        extract(network=network, population=population,
+                workspace=workspace, output_dir=output_dir,
+                infections=infections, play_infections=play_infections,
+                rngs=rngs, get_output_functions=extractor,
+                nthreads=nthreads, profiler=p2)
 
         if population.population != start_population:
             # something went wrong as the population should be conserved
