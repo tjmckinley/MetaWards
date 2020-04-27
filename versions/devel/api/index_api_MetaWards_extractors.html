@@ -209,34 +209,43 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.extract_core.html#metawards.extractors.extract_core" title="metawards.extractors.extract_core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_core</span></code></a>(nthreads[,&nbsp;setup,&nbsp;auto_output_core])</td>
 <td>This returns the default list of ‘output_XXX’ functions that are called in sequence at the end of each iteration of the model run.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.extract_default.html#metawards.extractors.extract_default" title="metawards.extractors.extract_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_default</span></code></a>([setup])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.extract_custom.html#metawards.extractors.extract_custom" title="metawards.extractors.extract_custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_custom</span></code></a>(custom_function[,&nbsp;setup])</td>
+<td>This returns the default list of ‘output_XXX’ functions that are called in sequence to extract data after each iteration of the model run.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.extract_default.html#metawards.extractors.extract_default" title="metawards.extractors.extract_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_default</span></code></a>([setup])</td>
 <td>This returns the default list of ‘output_XXX’ functions that are called in sequence for each iteration of the model run.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.extractor_needs_setup.html#metawards.extractors.extractor_needs_setup" title="metawards.extractors.extractor_needs_setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extractor_needs_setup</span></code></a>(extractor)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.extract_none.html#metawards.extractors.extract_none" title="metawards.extractors.extract_none"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_none</span></code></a>(**kwargs)</td>
+<td>This extractor extracts nothing - meaning that no output will be written</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.extract_small.html#metawards.extractors.extract_small" title="metawards.extractors.extract_small"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_small</span></code></a>(**kwargs)</td>
+<td>This extractor only extracts the ‘small’ default files, e.g.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.extractor_needs_setup.html#metawards.extractors.extractor_needs_setup" title="metawards.extractors.extractor_needs_setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extractor_needs_setup</span></code></a>(extractor)</td>
 <td>Return whether or not the passed extractor function has a “setup” argument, and thus needs to be setup before it can be used</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.output_basic.html#metawards.extractors.output_basic" title="metawards.extractors.output_basic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_basic</span></code></a>(network,&nbsp;population,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.output_basic.html#metawards.extractors.output_basic" title="metawards.extractors.output_basic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_basic</span></code></a>(network,&nbsp;population,&nbsp;…)</td>
 <td>This will write basic trajectory data to the output files.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.output_core.html#metawards.extractors.output_core" title="metawards.extractors.output_core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_core</span></code></a>(nthreads,&nbsp;**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.output_core.html#metawards.extractors.output_core" title="metawards.extractors.output_core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_core</span></code></a>(nthreads,&nbsp;**kwargs)</td>
 <td>This is the core output function that must be called every iteration as it is responsible for accumulating the core data each day, which is used to report a summary to the main output file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.output_core_omp.html#metawards.extractors.output_core_omp" title="metawards.extractors.output_core_omp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_core_omp</span></code></a>(network,&nbsp;population,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.output_core_omp.html#metawards.extractors.output_core_omp" title="metawards.extractors.output_core_omp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_core_omp</span></code></a>(network,&nbsp;population,&nbsp;…)</td>
 <td>This is the core output function that must be called every iteration as it is responsible for accumulating the core data each day, which is used to report a summary to the main output file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.output_core_serial.html#metawards.extractors.output_core_serial" title="metawards.extractors.output_core_serial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_core_serial</span></code></a>(network,&nbsp;population,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.output_core_serial.html#metawards.extractors.output_core_serial" title="metawards.extractors.output_core_serial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_core_serial</span></code></a>(network,&nbsp;population,&nbsp;…)</td>
 <td>This is the core output function that must be called every iteration as it is responsible for accumulating the core data each day, which is used to report a summary to the main output file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.output_incidence.html#metawards.extractors.output_incidence" title="metawards.extractors.output_incidence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_incidence</span></code></a>(population,&nbsp;output_dir,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.output_incidence.html#metawards.extractors.output_incidence" title="metawards.extractors.output_incidence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_incidence</span></code></a>(population,&nbsp;output_dir,&nbsp;…)</td>
 <td>This will incidence of infection for each ward for each timestep.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.output_dispersal.html#metawards.extractors.output_dispersal" title="metawards.extractors.output_dispersal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_dispersal</span></code></a>(network,&nbsp;population,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.output_dispersal.html#metawards.extractors.output_dispersal" title="metawards.extractors.output_dispersal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_dispersal</span></code></a>(network,&nbsp;population,&nbsp;…)</td>
 <td>This will calculate and output the geographic dispersal of the outbreak</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.output_prevalence.html#metawards.extractors.output_prevalence" title="metawards.extractors.output_prevalence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_prevalence</span></code></a>(population,&nbsp;output_dir,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.output_prevalence.html#metawards.extractors.output_prevalence" title="metawards.extractors.output_prevalence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_prevalence</span></code></a>(population,&nbsp;output_dir,&nbsp;…)</td>
 <td>This will output the number of infections per ward per timestep as a (large) 2D matrix</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.extractors.setup_core.html#metawards.extractors.setup_core" title="metawards.extractors.setup_core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_core</span></code></a>(network,&nbsp;nthreads,&nbsp;**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.extractors.setup_core.html#metawards.extractors.setup_core" title="metawards.extractors.setup_core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_core</span></code></a>(network,&nbsp;nthreads,&nbsp;**kwargs)</td>
 <td>This is the setup function that corresponds with <a class="reference internal" href="generated/metawards.extractors.output_core.html#metawards.extractors.output_core" title="metawards.extractors.output_core"><code class="xref py py-meth docutils literal notranslate"><span class="pre">output_core()</span></code></a>.</td>
 </tr>
 </tbody>
@@ -267,7 +276,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 26, 2020.
+        Last updated on Apr 27, 2020.
       </span>
 
     </p>

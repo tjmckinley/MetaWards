@@ -203,7 +203,7 @@
 <h1>metawards.InputFiles<a class="headerlink" href="#metawards-inputfiles" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="metawards.InputFiles">
-<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">InputFiles</code><span class="sig-paren">(</span><em>work: str = None</em>, <em>play: str = None</em>, <em>identifier: str = None</em>, <em>identifier2: str = None</em>, <em>weekend: str = None</em>, <em>work_size: str = None</em>, <em>play_size: str = None</em>, <em>position: str = None</em>, <em>coordinates: str = None</em>, <em>seed: str = None</em>, <em>nodes_to_track: str = None</em>, <em>uv: str = None</em>, <em>_filename: str = None</em>, <em>_model_name: str = None</em>, <em>_model_path: str = None</em>, <em>_model_version: str = None</em>, <em>_authors: str = None</em>, <em>_contacts: str = None</em>, <em>_references: str = None</em>, <em>_repository: str = None</em>, <em>_repository_version: str = None</em>, <em>_repository_branch: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_inputfiles.html#InputFiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.InputFiles" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">InputFiles</code><span class="sig-paren">(</span><em>work: str = None</em>, <em>play: str = None</em>, <em>identifier: str = None</em>, <em>identifier2: str = None</em>, <em>weekend: str = None</em>, <em>work_size: str = None</em>, <em>play_size: str = None</em>, <em>position: str = None</em>, <em>coordinates: str = None</em>, <em>lookup: str = None</em>, <em>lookup_columns: Dict[str</em>, <em>int] = None</em>, <em>seed: str = None</em>, <em>nodes_to_track: str = None</em>, <em>uv: str = None</em>, <em>_filename: str = None</em>, <em>_model_name: str = None</em>, <em>_model_path: str = None</em>, <em>_model_version: str = None</em>, <em>_authors: str = None</em>, <em>_contacts: str = None</em>, <em>_references: str = None</em>, <em>_repository: str = None</em>, <em>_repository_version: str = None</em>, <em>_repository_branch: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_inputfiles.html#InputFiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.InputFiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class holds all of the input files that must be loaded
 from METAWARDSDATA to construct the network of wards
 and links between them</p>
@@ -220,7 +220,7 @@ and links between them</p>
 </div>
 <dl class="method">
 <dt id="metawards.InputFiles.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>work: str = None</em>, <em>play: str = None</em>, <em>identifier: str = None</em>, <em>identifier2: str = None</em>, <em>weekend: str = None</em>, <em>work_size: str = None</em>, <em>play_size: str = None</em>, <em>position: str = None</em>, <em>coordinates: str = None</em>, <em>seed: str = None</em>, <em>nodes_to_track: str = None</em>, <em>uv: str = None</em>, <em>_filename: str = None</em>, <em>_model_name: str = None</em>, <em>_model_path: str = None</em>, <em>_model_version: str = None</em>, <em>_authors: str = None</em>, <em>_contacts: str = None</em>, <em>_references: str = None</em>, <em>_repository: str = None</em>, <em>_repository_version: str = None</em>, <em>_repository_branch: str = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.InputFiles.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>work: str = None</em>, <em>play: str = None</em>, <em>identifier: str = None</em>, <em>identifier2: str = None</em>, <em>weekend: str = None</em>, <em>work_size: str = None</em>, <em>play_size: str = None</em>, <em>position: str = None</em>, <em>coordinates: str = None</em>, <em>lookup: str = None</em>, <em>lookup_columns: Dict[str</em>, <em>int] = None</em>, <em>seed: str = None</em>, <em>nodes_to_track: str = None</em>, <em>uv: str = None</em>, <em>_filename: str = None</em>, <em>_model_name: str = None</em>, <em>_model_path: str = None</em>, <em>_model_version: str = None</em>, <em>_authors: str = None</em>, <em>_contacts: str = None</em>, <em>_references: str = None</em>, <em>_repository: str = None</em>, <em>_repository_version: str = None</em>, <em>_repository_branch: str = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.InputFiles.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
@@ -262,6 +262,12 @@ and links between them</p>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.InputFiles.identifier2" title="metawards.InputFiles.identifier2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identifier2</span></code></a></td>
 <td>File from which to read all of the secondary ward IDs, (Communities, Counties, Districts, UA’s etc)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.InputFiles.lookup" title="metawards.InputFiles.lookup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lookup</span></code></a></td>
+<td>File to look up metadata about the wards (e.g.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.InputFiles.lookup_columns" title="metawards.InputFiles.lookup_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lookup_columns</span></code></a></td>
+<td>Which columns in this file have the data</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.InputFiles.nodes_to_track" title="metawards.InputFiles.nodes_to_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_to_track</span></code></a></td>
 <td>File from which to read the list of nodes to track</td>
@@ -348,6 +354,18 @@ repository</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.InputFiles.lookup">
+<code class="descname">lookup</code><em class="property"> = None</em><a class="headerlink" href="#metawards.InputFiles.lookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>File to look up metadata about the wards (e.g. their names)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.InputFiles.lookup_columns">
+<code class="descname">lookup_columns</code><em class="property"> = None</em><a class="headerlink" href="#metawards.InputFiles.lookup_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Which columns in this file have the data</p>
 </dd></dl>
 
 <dl class="method">
@@ -448,7 +466,7 @@ repository</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 26, 2020.
+        Last updated on Apr 27, 2020.
       </span>
 
     </p>

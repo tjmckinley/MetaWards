@@ -33,6 +33,7 @@ metawards.Network
 
    .. autosummary::
    
+      ~Network.info
       ~Network.max_links
       ~Network.max_nodes
       ~Network.nlinks

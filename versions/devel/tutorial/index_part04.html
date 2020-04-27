@@ -99,6 +99,9 @@
 <li class="toctree-l2"><a class="reference internal" href="index_part03.html">Part 3 - Customising the outbreak</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Part 4 - Customising the output</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="part04/01_extractors.html">Custom extractors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="part04/02_default.html">Accumulating into a Workspace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="part04/03_regional.html">Extracting by location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="part04/04_iterators.html">Combining extractors with iterators</a></li>
 </ul>
 </li>
 </ul>
@@ -191,11 +194,6 @@
             
   <div class="section" id="part-4-customising-the-output">
 <h1>Part 4 - Customising the output<a class="headerlink" href="#part-4-customising-the-output" title="Permalink to this headline">¶</a></h1>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This section has not yet been written. The plan for this part
-of the tutorial is written below.</p>
-</div>
 <p>In this fourth part of the tutorial you will:</p>
 <ul class="simple">
 <li>Understand more about the other files that are output by <code class="docutils literal notranslate"><span class="pre">metawards</span></code>.</li>
@@ -210,7 +208,24 @@ innovative lockdown strategies</li>
 </ul>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="part04/01_extractors.html">Custom extractors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part04/01_extractors.html">Custom extractors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part04/01_extractors.html#hello-extractors">Hello extractors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part04/01_extractors.html#extract-xxx-and-output-xxx">extract_XXX and output_XXX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part04/01_extractors.html#occasional-functions">Occasional functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part04/02_default.html">Accumulating into a Workspace</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part04/02_default.html#output-incidence">Output incidence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part04/02_default.html#default-outputs">Default outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part04/03_regional.html">Extracting by location</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part04/03_regional.html#searching-using-wardinfo">Searching using WardInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part04/03_regional.html#searching-by-local-authority">Searching by local authority</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part04/03_regional.html#using-location-in-an-extractor">Using location in an extractor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part04/04_iterators.html">Combining extractors with iterators</a></li>
 </ul>
 </div>
 </div>
@@ -236,7 +251,7 @@ innovative lockdown strategies</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 26, 2020.
+        Last updated on Apr 27, 2020.
       </span>
 
     </p>

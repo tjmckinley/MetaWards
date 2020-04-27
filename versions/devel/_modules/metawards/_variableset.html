@@ -761,41 +761,52 @@
         <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">suffixes</span><span class="p">:</span>
             <span class="n">fingerprint</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
+        <span class="n">fingerprint</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span>
+
         <span class="c1"># does this have a repeat index - if so, this is the last</span>
         <span class="c1"># value at the end after the hyphen (negative numbers are ~)</span>
-        <span class="n">parts</span> <span class="o">=</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">repeat_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">fingerprint</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">fingerprint</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">repeat_index</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># now get the values</span>
         <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">):</span>
-                    <span class="n">scl</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
-                    <span class="n">part</span> <span class="o">=</span> <span class="n">part</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">scl</span> <span class="o">=</span> <span class="mf">1.0</span>
-
-                <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                    <span class="c1"># this is already a floating point number</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># this is an integer, which represents 0.INT</span>
-                    <span class="n">part</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;0.</span><span class="si">{</span><span class="n">part</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
-
-                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scl</span> <span class="o">*</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span><span class="s2">&quot;.&quot;</span><span class="p">)))</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="c1"># this is not part of the fingerprint</span>
                 <span class="k">pass</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">repeat_index</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VariableSet.create_fingerprint"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.create_fingerprint">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_fingerprint</span><span class="p">(</span><span class="n">vals</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">include_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create the fingerprint for the passed values&quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">+=</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">v</span>
+
+        <span class="k">if</span> <span class="n">include_index</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">@</span><span class="si">%03d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span></div>
 
 <div class="viewcode-block" id="VariableSet.fingerprint"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.fingerprint">[docs]</a>    <span class="k">def</span> <span class="nf">fingerprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a fingerprint for this VariableSet. This can be</span>
@@ -815,31 +826,14 @@
 <span class="sd">             The fingerprint for this VariableSet</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="s2">&quot;NO_CHANGE&quot;</span>
+            <span class="k">if</span> <span class="n">include_index</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;NO_CHANGE_</span><span class="si">%03d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;NO_CHANGE&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">:</span>
-                <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">):</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-
-                <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># use `~` for negative numbers</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="s2">&quot;~&quot;</span> <span class="o">+</span> <span class="n">v</span>
-
-                <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">f</span> <span class="o">=</span> <span class="n">v</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">f</span> <span class="o">+=</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">v</span>
-
-        <span class="k">if</span> <span class="n">include_index</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">-</span><span class="si">%03d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idx</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">f</span></div>
+            <span class="k">return</span> <span class="n">VariableSet</span><span class="o">.</span><span class="n">create_fingerprint</span><span class="p">(</span><span class="n">vals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">,</span>
+                                                  <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_idx</span><span class="p">,</span>
+                                                  <span class="n">include_index</span><span class="o">=</span><span class="n">include_index</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VariableSet.read"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.read">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -1024,7 +1018,7 @@
                 <span class="sa">f</span><span class="s2">&quot;equals </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">VariableSets</span><span class="p">:</span>
+<div class="viewcode-block" id="VariableSets"><a class="viewcode-back" href="../../api/generated/metawards.VariableSets.html#metawards.VariableSets">[docs]</a><span class="k">class</span> <span class="nc">VariableSets</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This class holds the collection of all VariableSet objects</span>
 <span class="sd">       that contain the set of adjustable variables that are used</span>
 <span class="sd">       to control a single run of the model</span>
@@ -1043,7 +1037,7 @@
 <span class="sd">       beta[2]=0.89)[repeat 1], (beta[2]=0.95, beta[3]=0.9)[repeat 2],</span>
 <span class="sd">       (beta[1]=0.86, beta[2]=0.89)[repeat 2]}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableSets.__init__"><a class="viewcode-back" href="../../api/generated/metawards.VariableSets.html#metawards.VariableSets.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialise an empty VariableSets object</span>
 
 <span class="sd">           Parameters</span>
@@ -1054,7 +1048,7 @@
 <span class="sd">           -------</span>
 <span class="sd">           None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span> <span class="o">=</span> <span class="p">[]</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1100,7 +1094,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">VariableSet</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableSets.append"><a class="viewcode-back" href="../../api/generated/metawards.VariableSets.html#metawards.VariableSets.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">VariableSet</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Append the passed set of variables to the set that will</span>
 <span class="sd">           be used to run a model. If there are any existing</span>
 <span class="sd">           VariableSet objects in this list, then the new VariableSet</span>
@@ -1127,9 +1121,9 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">make_compatible_with</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nrepeats</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableSets.repeat"><a class="viewcode-back" href="../../api/generated/metawards.VariableSets.html#metawards.VariableSets.repeat">[docs]</a>    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nrepeats</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a copy of this VariableSet in which all of the</span>
 <span class="sd">           unique VaribleSet objects have been repeated &#39;nrepeats&#39;</span>
 <span class="sd">           times</span>
@@ -1159,9 +1153,9 @@
                 <span class="n">v2</span><span class="o">.</span><span class="n">_idx</span> <span class="o">=</span> <span class="n">i</span>
                 <span class="n">repeats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">repeats</span>
+        <span class="k">return</span> <span class="n">repeats</span></div>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="VariableSets.read"><a class="viewcode-back" href="../../api/generated/metawards.VariableSets.html#metawards.VariableSets.read">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">line_numbers</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read and return collection of VariableSet objects from the</span>
 <span class="sd">           specified line number(s) of the specified file</span>
@@ -1267,7 +1261,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Cannot read parameters from line </span><span class="si">{</span><span class="n">line_numbers</span><span class="si">}</span><span class="s2"> &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;as the number of lines in the file is </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;as the number of lines in the file is </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -1281,7 +1275,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 26, 2020.
+        Last updated on Apr 27, 2020.
       </span>
 
     </p>

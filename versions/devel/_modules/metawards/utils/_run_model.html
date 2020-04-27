@@ -174,7 +174,7 @@
 <span class="kn">from</span> <span class="nn">.._network</span> <span class="kn">import</span> <span class="n">Network</span>
 <span class="kn">from</span> <span class="nn">.._infections</span> <span class="kn">import</span> <span class="n">Infections</span>
 <span class="kn">from</span> <span class="nn">.._outputfiles</span> <span class="kn">import</span> <span class="n">OutputFiles</span>
-<span class="kn">from</span> <span class="nn">._workspace</span> <span class="kn">import</span> <span class="n">Workspace</span>
+<span class="kn">from</span> <span class="nn">.._workspace</span> <span class="kn">import</span> <span class="n">Workspace</span>
 <span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span><span class="p">,</span> <span class="n">Populations</span>
 <span class="kn">from</span> <span class="nn">._profiler</span> <span class="kn">import</span> <span class="n">Profiler</span><span class="p">,</span> <span class="n">NullProfiler</span>
 <span class="kn">from</span> <span class="nn">._iterate</span> <span class="kn">import</span> <span class="n">iterate</span>
@@ -254,7 +254,7 @@
 
     <span class="k">if</span> <span class="n">extractor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">extractor</span> <span class="o">=</span> <span class="n">extract_default</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">..extractors._extract_custom</span> <span class="kn">import</span> <span class="n">build_custom_extractor</span>
         <span class="n">extractor</span> <span class="o">=</span> <span class="n">build_custom_extractor</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
@@ -300,16 +300,18 @@
                    <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-    <span class="c1"># create a workspace that is used as part of extract_data to</span>
+    <span class="c1"># create a workspace that is used as part of extract to</span>
     <span class="c1"># provide a scratch-pad while extracting data from the model</span>
-    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">)</span>
 
     <span class="c1"># Now get the population and network data for the first day of the</span>
     <span class="c1"># model (&quot;day zero&quot;, unless a future day has been set by the user)</span>
-    <span class="n">extract</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span>
-            <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span>
-            <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_output_functions</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span>
-            <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">metawards.extractors</span> <span class="kn">import</span> <span class="n">output_core</span>
+
+    <span class="n">output_core</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span>
+                <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span>
+                <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">get_output_functions</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span>
+                <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
 
     <span class="n">infecteds</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">infecteds</span>
 
@@ -400,7 +402,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 26, 2020.
+        Last updated on Apr 27, 2020.
       </span>
 
     </p>
