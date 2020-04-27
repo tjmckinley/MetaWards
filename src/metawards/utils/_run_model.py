@@ -128,7 +128,7 @@ def run_model(network: Network,
                    output_dir=output_dir, profiler=p, nthreads=nthreads)
     p = p.stop()
 
-    # create a workspace that is used as part of extract_data to
+    # create a workspace that is used as part of extract to
     # provide a scratch-pad while extracting data from the model
     workspace = Workspace.build(network=network)
 

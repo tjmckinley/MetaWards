@@ -11,6 +11,9 @@ def test_lookup():
 
     info = network.info
 
+    all_wards = info.find()
+    assert len(all_wards) == network.nnodes
+
     bristol = info.find("Bristol")
 
     assert len(bristol) == 0
@@ -26,16 +29,15 @@ def test_lookup():
 
     assert clifton == clifton2
 
-    bristol = info.find_by_authority("bristol")
+    bristol = info.find(authority="bristol")
 
     assert len(bristol) == 35
 
-    clifton_bristol = info.find("Clifton", authority="Bristol")
+    clifton_bristol = info.find(name="Clifton", authority="Bristol")
 
     assert len(clifton_bristol) == 2
 
-    clifton_bristol = info.find("clifton", authority="bristol",
-                                best_match=True)
+    clifton_bristol = info.find(name=r"^clifton$", authority="bristol")[0]
 
     assert clifton_bristol == 3662
 
@@ -48,7 +50,7 @@ def test_lookup():
     assert clifton.authority == "Bristol, City of"
     assert clifton.authority_code == "E06000023"
 
-    clifton2 = info.find_by_code("E05001980")
+    clifton2 = info.find("E05001980")
 
     assert clifton2[0] == clifton_bristol
 

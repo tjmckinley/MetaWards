@@ -50,64 +50,14 @@ class WardInfos:
     def __getitem__(self, index):
         return self.wards[index]
 
-    def find_by_name(self, name: str, include_alternates=True,
-                     authority: str = None, region: str = None,
-                     match: bool = False,
-                     match_authority_and_region: bool = False,
-                     best_match: bool = False):
-        """Find a ward that matches the name 'name'. This returns
-           the set of indicies of all wards that match the passed
-           name
-
-           Parameters
-           ----------
-           name: str or regexp
-             The name to search. This is case-insensitve and a partial
-             match by default. If you want more control, then pass
-             in a regular expression object
-           include_alternates:
-             Search the alternative names as well as the primary name
-           authority: str or regexp
-             Optionally limit the search to authorities that match 'authority'
-           region: str or regexp
-             Optionally limit the search to regions that match 'region'
-           match: bool
-             If True, then match rather than search
-           match_authority_and_region: bool
-             If True, then also match the authority and region rather
-             than searching
-           best_match: bool
-             If True, then return the best matching ward
-
-           Returns
-           -------
-           indicies: list[int]
-             The indicies of all nodes that match
-        """
+    def _find_ward(self, name: str, match: bool, include_alternates: bool):
+        """Internal function that flexibly finds a ward by name"""
         import re
 
         if not isinstance(name, re.Pattern):
             search = re.compile(name, re.IGNORECASE)
         else:
             search = name
-
-        if authority is not None:
-            if not isinstance(authority, re.Pattern):
-                authority = re.compile(authority, re.IGNORECASE)
-
-            if match_authority_and_region:
-                authority = authority.match
-            else:
-                authority = authority.search
-
-        if region is not None:
-            if not isinstance(region, re.Pattern):
-                region = re.compile(region, re.IGNORECASE)
-
-            if match_authority_and_region:
-                region = region.match
-            else:
-                region = region.search
 
         if match:
             search = search.match
@@ -124,148 +74,33 @@ class WardInfos:
 
             if search(ward.name):
                 is_match = True
-
+            elif search(ward.code):
+                is_match = True
             elif include_alternates:
                 for alternate in ward.alternate_names:
                     if search(alternate):
                         is_match = True
                         break
 
+                if not is_match:
+                    for alternate in ward.alternate_codes:
+                        if search(alternate):
+                            is_match = True
+                            break
+
             if is_match:
-                if authority and authority(ward.authority) is None:
-                    continue
-
-                if region and region(ward.region) is None:
-                    continue
-
                 matches.append(i)
 
-        if best_match:
-            if len(matches) == 0:
-                return None
-            elif len(matches) == 1:
-                return matches[0]
+        return matches
 
-            best = None
-            score = None
-            pattern = search.__self__.pattern
-
-            for match in matches:
-                diff = abs(len(pattern) - len(self.wards[match].name))
-
-                if best is None:
-                    best = match
-                    score = diff
-                elif diff < score:
-                    best = match
-                    score = diff
-
-            return best
-        else:
-            return matches
-
-    find = find_by_name
-
-    def find_by_authority(self, name, include_region=False,
-                          match: bool = False):
-        """Find a ward whose authority matches the name 'name'. This returns
-           the set of indicies of all wards whose authorities that
-           match the passed name
-
-           Parameters
-           ----------
-           name: str or regexp
-             The name to search. This is case-insensitve and a partial
-             match by default. If you want more control, then pass
-             in a regular expression object
-           include_region:
-             Search the region as well as the authority
-           match: bool
-             If True, then match rather than search
-
-           Returns
-           -------
-           indicies: list[int]
-             The indicies of all wards that match
-        """
+    def _find_authority(self, name: str, match: bool):
+        """Internal function that flexibly finds a ward by authority"""
         import re
 
         if not isinstance(name, re.Pattern):
             search = re.compile(name, re.IGNORECASE)
         else:
             search = name
-
-        matches = []
-
-        for i, ward in enumerate(self.wards):
-            if ward is None:
-                continue
-
-            if search.search(ward.authority):
-                matches.append(i)
-
-            elif include_region:
-                if search.search(ward.region):
-                    matches.append(i)
-
-        return matches
-
-    def find_by_code(self, code: str, include_alternates=True,
-                     authority: str = None, region: str = None,
-                     match: bool = False,
-                     match_authority_and_region: bool = False):
-        """Find a ward that matches the code 'code'. This returns
-           the set of indicies of all wards that match the passed
-           code
-
-           Parameters
-           ----------
-           code: str or regexp
-             The code to search. This is case-insensitve and a partial
-             match by default. If you want more control, then pass
-             in a regular expression object
-           include_alternates:
-             Search the alternative codes as well as the primary codes
-           authority: str or regexp
-             Optionally limit the search to authorities that match 'authority'
-             code
-           region: str or regexp
-             Optionally limit the search to regions that match 'region' code
-           match: bool
-             If True, then match rather than search
-           match_authority_and_region: bool
-             If True, then also match the authority and region rather
-             than searching
-
-           Returns
-           -------
-           indicies: list[int]
-             The indicies of all nodes that match
-        """
-        import re
-
-        if not isinstance(code, re.Pattern):
-            search = re.compile(code, re.IGNORECASE)
-        else:
-            search = code
-
-        if authority is not None:
-            if not isinstance(authority, re.Pattern):
-                authority = re.compile(authority, re.IGNORECASE)
-
-            if match_authority_and_region:
-                authority = authority.match
-            else:
-                authority = authority.search
-
-        if region is not None:
-            if not isinstance(region, re.Pattern):
-                region = re.compile(region, re.IGNORECASE)
-
-            if match_authority_and_region:
-                region = region.match
-            else:
-                region = region.search
 
         if match:
             search = search.match
@@ -280,22 +115,119 @@ class WardInfos:
 
             is_match = False
 
-            if search(ward.code):
+            if search(ward.authority):
+                is_match = True
+            elif search(ward.authority_code):
                 is_match = True
 
-            elif include_alternates:
-                for alternate in ward.alternate_codes:
-                    if search(alternate):
-                        is_match = True
-                        break
-
             if is_match:
-                if authority and authority(ward.authority_code) is None:
-                    continue
-
-                if region and region(ward.region_code) is None:
-                    continue
-
                 matches.append(i)
 
         return matches
+
+    def _find_region(self, name: str, match: bool):
+        """Internal function that flexibly finds a ward by region"""
+        import re
+
+        if not isinstance(name, re.Pattern):
+            search = re.compile(name, re.IGNORECASE)
+        else:
+            search = name
+
+        if match:
+            search = search.match
+        else:
+            search = search.search
+
+        matches = []
+
+        for i, ward in enumerate(self.wards):
+            if ward is None:
+                continue
+
+            is_match = False
+
+            if search(ward.region):
+                is_match = True
+            elif search(ward.region_code):
+                is_match = True
+
+            if is_match:
+                matches.append(i)
+
+        return matches
+
+    def _intersect(self, list1, list2):
+        """Return the intersection of two lists"""
+        return [value for value in list1 if value in list2]
+
+    def find(self, name: str = None,
+             authority: str = None, region: str = None,
+             match: bool = False, match_authority_and_region: bool = False,
+             include_alternates: bool = True):
+        """Generic search function that will search using any or all
+           of the terms provided. This returns a list of indicies
+           of wards that match the search
+
+           Parameters
+           ----------
+           name: str or regexp
+             Name or code of the ward to search
+           authority: str or regexp
+             Name or code of the authority to search
+           region: str or regexp
+             Name or code of the region to search
+           match: bool (False)
+             Use a regular expression match for the ward rather than a
+             search. This forces the match to be at the start of the string
+           match_authority_and_region: bool (False)
+             Use a regular expression match for the authority and region
+             rather than a search. This forces the match to be at the start
+             of the string
+           include_alternates: bool (True)
+             Whether or not to include alternative names and codes when
+             searching for the ward
+        """
+        wards = None
+
+        if name is not None:
+            wards = self._find_ward(name, match=match,
+                                    include_alternates=include_alternates)
+
+            if len(wards) == 0:
+                return wards
+
+        if authority is not None:
+            authorities = self._find_authority(
+                                        authority,
+                                        match=match_authority_and_region)
+
+            if len(authorities) == 0:
+                return authorities
+
+            if wards is None:
+                wards = authorities
+            else:
+                wards = self._intersect(wards, authorities)
+                wards.sort()
+                if len(wards) == 0:
+                    return wards
+
+        if region is not None:
+            regions = self._find_region(region,
+                                        match=match_authority_and_region)
+
+            if len(regions) == 0:
+                return regions
+
+            if wards is None:
+                wards = regions
+            else:
+                wards = self._intersect(wards, regions)
+                wards.sort()
+
+        if wards is None:
+            # we have not searched for anything, so return everything
+            return list(range(1, len(self.wards)))
+        else:
+            return wards

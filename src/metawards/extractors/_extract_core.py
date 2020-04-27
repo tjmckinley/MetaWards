@@ -26,7 +26,7 @@ def extract_core(nthreads: int = 1, setup=False,
        Returns
        -------
        funcs: List[function]
-         The list of functions that ```extract_data``` will call in sequence
+         The list of functions that ```extract``` will call in sequence
     """
 
     funcs = []
