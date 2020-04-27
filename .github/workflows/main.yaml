@@ -10,12 +10,11 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       max-parallel: 4
       matrix:
-        os: [ubuntu-latest, macos-latest, windows_latest]
         python-version: [3.7, 3.8]
         config:
         - {
