@@ -2,7 +2,7 @@
 from .._population import Population
 from .._outputfiles import OutputFiles
 
-from ..utils._workspace import Workspace
+from .._workspace import Workspace
 
 __all__ = ["output_incidence"]
 

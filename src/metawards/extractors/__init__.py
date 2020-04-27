@@ -8,7 +8,10 @@ Functions
     :toctree: generated/
 
     extract_core
+    extract_custom
     extract_default
+    extract_none
+    extract_small
 
     extractor_needs_setup
 
@@ -25,6 +28,9 @@ Functions
 
 from ._extract_default import *
 from ._extract_core import *
+from ._extract_custom import *
+from ._extract_none import *
+from ._extract_small import *
 
 from ._output_basic import *
 from ._output_core import *

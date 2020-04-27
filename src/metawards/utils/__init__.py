@@ -7,6 +7,7 @@ Functions
 .. autosummary::
     :toctree: generated/
 
+    add_lookup
     add_wards_network_distance
     allocate_vaccination
     assert_sane_network
@@ -58,24 +59,20 @@ Classes
 
     Profiler
     NullProfiler
-    Workspace
 
 """
-
-# make top-level objects also available in utils, e.g. network
-from .. import _network
 
 from ._initialise_infections import *
 from ._read_done_file import *
 from ._string_to_ints import *
 from ._profiler import *
-from ._workspace import *
 from ._run_model import *
 from ._runner import *
 from ._iterate import *
 from ._worker import *
 from ._extract import *
 
+from ._add_lookup import *
 from ._build_wards_network import *
 from ._add_wards_network_distance import *
 from ._get_min_max_distances import *

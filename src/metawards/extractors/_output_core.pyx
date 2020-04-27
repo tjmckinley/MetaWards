@@ -11,7 +11,7 @@ from .._network import Network
 from .._population import Population
 from .._infections import Infections
 
-from ..utils._workspace import Workspace
+from .._workspace import Workspace
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
@@ -225,6 +225,7 @@ def output_core_omp(network: Network, population: Population,
     cdef int * total_new_inf_ward = get_int_array_ptr(
                                                 workspace.total_new_inf_ward)
     cdef int * n_inf_wards = get_int_array_ptr(workspace.n_inf_wards)
+    cdef int * incidence = get_int_array_ptr(workspace.incidence)
 
     # get pointers to arrays from links and plinks to read data
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
@@ -354,6 +355,13 @@ def output_core_omp(network: Network, population: Population,
                     redvar[0].n_inf_wards += 1
             # end of loop over nodes
         # end of parallel
+
+        with nogil:
+            if i == 2:
+                # save the sum of infections up to i <= 2. This
+                # is the incidence
+                for j in range(1, nnodes_plus_one):
+                    incidence[j] = total_inf_ward[j]
 
         # can now reduce across all threads (don't need to lock as each
         # thread maintained its own running total)

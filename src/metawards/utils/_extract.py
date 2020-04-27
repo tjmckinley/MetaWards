@@ -3,7 +3,7 @@ from .._network import Network
 from ._profiler import Profiler, NullProfiler
 from .._population import Population
 from .._outputfiles import OutputFiles
-from ._workspace import Workspace
+from .._workspace import Workspace
 from .._infections import Infections
 
 __all__ = ["extract"]

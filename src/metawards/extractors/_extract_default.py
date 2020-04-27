@@ -34,7 +34,7 @@ def extract_default(setup=False, **kwargs):
        Returns
        -------
        funcs: List[function]
-         The list of functions that ```extract_data``` will call in sequence
+         The list of functions that ```extract``` will call in sequence
     """
 
     kwargs["setup"] = setup
