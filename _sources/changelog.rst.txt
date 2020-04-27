@@ -2,6 +2,16 @@
 Changelog
 =========
 
+`0.10.0 <https://github.com/metawards/MetaWards/compare/0.9.0...0.10.0>`__ - April 27th 2020
+--------------------------------------------------------------------------------------------
+
+* Created all of the extract framework to support customising the output
+  and analysis during a run.
+* Created a better Workspace class for holding accumulated data during extract
+* Completed most of the extractor tutorial
+* Added in WardInfo(s) to get metadata about wards, and to support searching
+  for wards via their name, code, authority and region
+
 `0.9.0 <https://github.com/metawards/MetaWards/compare/0.8.4...0.9.0>`__ - April 24th 2020
 ------------------------------------------------------------------------------------------
 

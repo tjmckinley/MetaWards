@@ -173,6 +173,7 @@
 <span></span>
 <span class="kn">from</span> <span class="nn">.._network</span> <span class="kn">import</span> <span class="n">Network</span>
 <span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">.._infections</span> <span class="kn">import</span> <span class="n">Infections</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;setup_seed_specified_ward&quot;</span><span class="p">,</span>
            <span class="s2">&quot;setup_seed_all_wards&quot;</span><span class="p">,</span>
@@ -180,8 +181,7 @@
 
 
 <div class="viewcode-block" id="setup_seed_specified_ward"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.setup_seed_specified_ward.html#metawards.iterators.setup_seed_specified_ward">[docs]</a><span class="k">def</span> <span class="nf">setup_seed_specified_ward</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span>
-                              <span class="n">infections</span><span class="p">,</span>
-                              <span class="n">play_infections</span><span class="p">,</span>
+                              <span class="n">infections</span><span class="p">:</span> <span class="n">Infections</span><span class="p">,</span>
                               <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Setup function that sets up the Network by seeding the infection</span>
 <span class="sd">       at the ward specified by looking up the ward index</span>
@@ -191,16 +191,17 @@
 <span class="sd">       ----------</span>
 <span class="sd">       network: Network</span>
 <span class="sd">         The network to be seeded</span>
-<span class="sd">       infections</span>
+<span class="sd">       infections: Infections</span>
 <span class="sd">         Space to hold the &#39;work&#39; infections</span>
-<span class="sd">       play_infections</span>
-<span class="sd">         Space to hold the &#39;play&#39; infections</span>
 <span class="sd">       kwargs</span>
 <span class="sd">         Arguments that are not used by this setup function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">wards</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">nodes</span>
     <span class="n">links</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">to_links</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">params</span>
+
+    <span class="n">play_infections</span> <span class="o">=</span> <span class="n">infections</span><span class="o">.</span><span class="n">play</span>
+    <span class="n">infections</span> <span class="o">=</span> <span class="n">infections</span><span class="o">.</span><span class="n">work</span>
 
     <span class="n">seed_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">ward_seed_index</span><span class="p">)</span>
     <span class="n">seed</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">to_seed</span><span class="p">[</span><span class="n">seed_index</span><span class="p">]</span>
@@ -225,8 +226,7 @@
 
 <div class="viewcode-block" id="setup_seed_all_wards"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.setup_seed_all_wards.html#metawards.iterators.setup_seed_all_wards">[docs]</a><span class="k">def</span> <span class="nf">setup_seed_all_wards</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span>
                          <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
-                         <span class="n">infections</span><span class="p">,</span>
-                         <span class="n">play_infections</span><span class="p">,</span>
+                         <span class="n">infections</span><span class="p">:</span> <span class="n">Infections</span><span class="p">,</span>
                          <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Seed the wards with an initial set of infections, assuming</span>
 <span class="sd">       an &#39;expected&#39; number of infected people out of a population</span>
@@ -235,6 +235,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">wards</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">nodes</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">params</span>
+
+    <span class="n">play_infections</span> <span class="o">=</span> <span class="n">infections</span><span class="o">.</span><span class="n">play</span>
+    <span class="n">infections</span> <span class="o">=</span> <span class="n">infections</span><span class="o">.</span><span class="n">work</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setup by seeding all wards&quot;</span><span class="p">)</span>
 
@@ -247,7 +250,7 @@
         <span class="n">play_infections</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">to_seed</span></div>
 
 
-<div class="viewcode-block" id="setup_seed_wards"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.setup_seed_wards.html#metawards.iterators.setup_seed_wards">[docs]</a><span class="k">def</span> <span class="nf">setup_seed_wards</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">setup_seed_wards</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span>
                      <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Seed the wards with an initial infection. If a specific ward</span>
 <span class="sd">       has been highlighted via `params.ward_seed_index`, then this</span>
@@ -274,7 +277,7 @@
                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">setup_seed_specified_ward</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span>
-                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -288,7 +291,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 24, 2020.
+        Last updated on Apr 27, 2020.
       </span>
 
     </p>
