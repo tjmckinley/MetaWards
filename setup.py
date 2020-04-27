@@ -61,9 +61,6 @@ extensions = [
               define_macros=define_macros),
     Extension("metawards._links", ["src/metawards/_links.pyx"],
               define_macros=define_macros),
-    Extension("metawards.utils._workspace",
-              ["src/metawards/utils/_workspace.pyx"],
-              define_macros=define_macros),
     Extension("metawards.utils._clear_all_infections",
               ["src/metawards/utils/_clear_all_infections.pyx"],
               define_macros=define_macros),
@@ -123,8 +120,11 @@ extensions = [
     Extension("metawards.iterators._advance_imports",
               ["src/metawards/iterators/_advance_imports.pyx"]+random_sources,
               define_macros=define_macros),
-    Extension("metawards.extractors._output_default",
-              ["src/metawards/extractors/_output_default.pyx"],
+    Extension("metawards.extractors._output_core",
+              ["src/metawards/extractors/_output_core.pyx"],
+              define_macros=define_macros),
+    Extension("metawards.extractors._output_dispersal",
+              ["src/metawards/extractors/_output_dispersal.pyx"],
               define_macros=define_macros),
 ]
 

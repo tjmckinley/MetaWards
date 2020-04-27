@@ -3,15 +3,16 @@ from .._network import Network
 from ._profiler import Profiler, NullProfiler
 from .._population import Population
 from .._outputfiles import OutputFiles
-from ._workspace import Workspace
+from .._workspace import Workspace
+from .._infections import Infections
 
-__all__ = ["extract_data"]
+__all__ = ["extract"]
 
 
-def extract_data(network: Network, population: Population,
-                 workspace: Workspace, output_dir: OutputFiles,
-                 infections, play_infections, rngs, get_output_functions,
-                 nthreads: int, profiler: Profiler = None):
+def extract(network: Network, population: Population,
+            workspace: Workspace, output_dir: OutputFiles,
+            infections: Infections, rngs, get_output_functions,
+            nthreads: int, profiler: Profiler = None):
     """Extract data from the network and write this to the specified
        output directory. Like :meth:`~metawards.utils.iterate` this
        uses a dynamic set of functions that can be utilised to
@@ -29,10 +30,8 @@ def extract_data(network: Network, population: Population,
          it is being extracted
        output_dir: OutputFiles
          The output directory to which to write all files
-       infections
-         Space to hold all of the 'work' infections
-       play_infections
-         Space to hold all of the 'play' infections
+       infections: Infections
+         Space to hold all of the infections
        rngs
          Thread-safe random number generators (one per thread)
        get_output_functions
@@ -49,19 +48,20 @@ def extract_data(network: Network, population: Population,
     if profiler is None:
         profiler = NullProfiler()
 
-    p = profiler.start("extract_data")
+    p = profiler.start("extract")
 
     output_functions = get_output_functions(population=population,
                                             nthreads=nthreads)
 
     for output_function in output_functions:
+        p = p.start(str(output_function))
         output_function(network=network,
                         population=population,
                         workspace=workspace,
                         output_dir=output_dir,
                         infections=infections,
-                        play_infections=play_infections,
                         rngs=rngs, nthreads=nthreads,
                         profiler=p)
+        p = p.stop()
 
     p.stop()

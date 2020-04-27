@@ -3,6 +3,7 @@ from array import array
 import os
 
 from .._network import Network
+from .._infections import Infections
 
 __all__ = ["allocate_vaccination",
            "how_many_vaccinated", "vaccinate_same_id"]
@@ -33,6 +34,6 @@ def how_many_vaccinated(vac):
 
 
 def vaccinate_same_id(network: Network, risk_ra, sort_ra,
-                      infections, play_infections,
+                      infections: Infections,
                       vac, params):
     raise AssertionError("vaccinate_same_id has not yet been written")

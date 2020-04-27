@@ -2,11 +2,12 @@
 from .._network import Network
 from .._parameters import Parameters
 from ._profiler import Profiler
+from .._infections import Infections
 
 __all__ = ["iterate_weekend"]
 
 
-def iterate_weekend(network: Network, infections, play_infections,
+def iterate_weekend(network: Network, infections: Infections,
                     params: Parameters, rngs, timestep: int,
                     population: int, nthreads: int = None,
                     profiler: Profiler = None,

@@ -11,6 +11,7 @@ from libc.math cimport cos, pi
 
 from .._network import Network
 from .._population import Population
+from .._infections import Infections
 
 from ..utils._profiler import Profiler
 
@@ -79,7 +80,7 @@ cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
 
 
 def advance_foi_omp(network: Network, population: Population,
-                    infections, play_infections, rngs,
+                    infections: Infections, rngs,
                     nthreads: int, profiler: Profiler, **kwargs):
     """Advance the model calculating the new force of infection (foi)
        for all of the wards and links between wards, based on the
@@ -96,10 +97,8 @@ def advance_foi_omp(network: Network, population: Population,
        population: Population
          The population experiencing the outbreak - contains the
          day number of the outbreak
-       infections:
-         The space that holds all of the "work" infections
-       play_infections:
-         The space that holds all of the "play" infections
+       infections: Infections
+         The space that holds all of the infections
        rngs:
          The list of thread-safe random number generators, one per thread
        nthreads: int
@@ -120,6 +119,9 @@ def advance_foi_omp(network: Network, population: Population,
     cdef double uv = params.UV
     cdef double uvscale = population.scale_uv
     cdef int ts = population.day
+
+    play_infections = infections.play
+    infections = infections.work
 
     if uv > 0:
         uvscale *= (1.0-uv/2.0 + uv*cos(2.0*pi*ts/365.0)/2.0)
@@ -356,7 +358,7 @@ def advance_foi_omp(network: Network, population: Population,
 
 
 def advance_foi_serial(network: Network, population: Population,
-                       infections, play_infections, rngs,
+                       infections: Infections, rngs,
                        profiler: Profiler, **kwargs):
     """Advance the model calculating the new force of infection (foi)
        for all of the wards and links between wards, based on the
@@ -373,10 +375,8 @@ def advance_foi_serial(network: Network, population: Population,
        population: Population
          The population experiencing the outbreak - contains the
          day number of the outbreak
-       infections:
+       infections: Infections
          The space that holds all of the "work" infections
-       play_infections:
-         The space that holds all of the "play" infections
        rngs:
          The list of thread-safe random number generators, one per thread
        day: int
@@ -389,8 +389,7 @@ def advance_foi_serial(network: Network, population: Population,
     """
     kwargs["nthreads"] = 1
     advance_foi_omp(network=network, population=population,
-                    infections=infections,
-                    play_infections=play_infections, rngs=rngs,
+                    infections=infections, rngs=rngs,
                     profiler=profiler, **kwargs)
 
 
@@ -410,10 +409,8 @@ def advance_foi(nthreads: int, **kwargs):
        population: Population
          The population experiencing the outbreak - contains the
          day number of the outbreak
-       infections:
-         The space that holds all of the "work" infections
-       play_infections:
-         The space that holds all of the "play" infections
+       infections: Infections
+         The space that holds all of the infections
        rngs:
          The list of thread-safe random number generators, one per thread
        nthreads: int

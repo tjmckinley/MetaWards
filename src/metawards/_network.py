@@ -7,6 +7,7 @@ from ._nodes import Nodes
 from ._links import Links
 from ._population import Population
 from ._outputfiles import OutputFiles
+from ._wardinfo import WardInfos
 
 __all__ = ["Network"]
 
@@ -39,6 +40,9 @@ class Network:
     max_nodes: int = 16384
     #: The maximum allowable number of links in the network
     max_links: int = 4194304
+
+    #: The metadata for all of the wards
+    info: WardInfos = WardInfos()
 
     #: To seed provides additional seeding information
     to_seed: _List[int] = None
@@ -104,8 +108,13 @@ class Network:
         if calculate_distances:
             p = p.start("add_distances")
             network.add_distances(distance_function=distance_function,
-                                  nthreads=nthreads, profiler=p)
+                                  nthreads=nthreads)
             p = p.stop()
+
+        # add metadata about the wards
+        p = p.start("add_lookup")
+        network._add_lookup(nthreads=nthreads)
+        p = p.stop()
 
         if params.input_files.seed:
             from .utils import read_done_file
@@ -155,8 +164,7 @@ class Network:
 
         assert_sane_network(network=self, profiler=profiler)
 
-    def add_distances(self, distance_function=None, nthreads: int = 1,
-                      profiler=None):
+    def add_distances(self, distance_function=None, nthreads: int = 1):
         """Read in the positions of all of the nodes (wards) and calculate
            the distances of the links.
 
@@ -177,19 +185,22 @@ class Network:
 
         self.params.dyn_dist_cutoff = maxdist + 1
 
+    def _add_lookup(self, lookup_function=None, nthreads: int = 1):
+        """Read in the ward lookup information that is used to
+           locate wards by name or region
+        """
+        if lookup_function is None:
+            from .utils import add_lookup
+            lookup_function = add_lookup
+
+        lookup_function(self, nthreads=nthreads)
+
     def initialise_infections(self, nthreads: int = 1):
         """Initialise and return the space that will be used
            to track infections
         """
-        from .utils import initialise_infections
-        return initialise_infections(self)
-
-    def initialise_play_infections(self, nthreads: int = 1):
-        """Initialise and return the space that will be used
-           to track play infections
-        """
-        from .utils import initialise_play_infections
-        return initialise_play_infections(self)
+        from ._infections import Infections
+        return Infections.build(network=self)
 
     def get_min_max_distances(self, nthreads: int = 1,
                               profiler=None):
@@ -342,14 +353,10 @@ class Network:
         print("Initialise infections...")
         infections = self.initialise_infections()
 
-        print("Initialise play infections...")
-        play_infections = self.initialise_play_infections()
-
         from .utils import run_model
         population = run_model(network=self,
                                population=population,
                                infections=infections,
-                               play_infections=play_infections,
                                rngs=rngs, s=s, output_dir=output_dir,
                                nsteps=nsteps,
                                profile=profile, nthreads=nthreads,

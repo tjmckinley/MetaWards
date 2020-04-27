@@ -624,7 +624,7 @@ def cli():
     should_run = False
 
     for arg in [args.input, args.repeats, args.disease, args.additional,
-                args.model]:
+                args.model, args.iterator, args.extractor]:
         if arg is not None:
             should_run = True
             break

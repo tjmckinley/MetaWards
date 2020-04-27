@@ -7,6 +7,7 @@ from cython.parallel import parallel, prange
 
 from .._network import Network
 from .._population import Population
+from .._infections import Infections
 
 from ..utils._profiler import Profiler
 
@@ -20,7 +21,7 @@ __all__ = ["advance_imports", "advance_imports_omp",
 
 
 def advance_imports_omp(network: Network, population: Population,
-                        infections, play_infections, rngs,
+                        infections: Infections, rngs,
                         nthreads: int, profiler: Profiler,
                         **kwargs):
     """Advance the model by importing additional infections
@@ -33,10 +34,8 @@ def advance_imports_omp(network: Network, population: Population,
          The network being modelled
        population: Population
          The population experiencing the outbreak
-       infections:
-         The space that holds all of the "work" infections
-       play_infections:
-         The space that holds all of the "play" infections
+       infections: Infections
+         The space that holds all of the infections
        rngs:
          The list of thread-safe random number generators, one per thread
        nthreads: int
@@ -51,6 +50,9 @@ def advance_imports_omp(network: Network, population: Population,
     wards = network.nodes
     links = network.to_links
     params = network.params
+
+    play_infections = infections.play
+    infections = infections.work
 
     # Copy arguments from Python into C cdef variables
     cdef double * wards_play_suscept = get_double_array_ptr(wards.play_suscept)
@@ -104,7 +106,7 @@ def advance_imports_omp(network: Network, population: Population,
 
 
 def advance_imports_serial(network: Network, population: Population,
-                           infections, play_infections, rngs,
+                           infections: Infections, rngs,
                            profiler: Profiler, **kwargs):
     """Advance the model by importing additional infections
        randomly
@@ -115,10 +117,8 @@ def advance_imports_serial(network: Network, population: Population,
          The network being modelled
        population: Population
          The population experiencing the outbreak
-       infections:
-         The space that holds all of the "work" infections
-       play_infections:
-         The space that holds all of the "play" infections
+       infections: Infections
+         The space that holds all of the infections
        rngs:
          The list of thread-safe random number generators, one per thread
        profiler: Profiler
@@ -131,6 +131,9 @@ def advance_imports_serial(network: Network, population: Population,
     wards = network.nodes
     links = network.to_links
     params = network.params
+
+    play_infections = infections.play
+    infections = infections.work
 
     # Copy arguments from Python into C cdef variables
     cdef double * wards_play_suscept = get_double_array_ptr(wards.play_suscept)
@@ -198,10 +201,8 @@ def advance_imports(nthreads: int, **kwargs):
          The network being modelled
        population: Population
          The population experiencing the outbreak
-       infections:
-         The space that holds all of the "work" infections
-       play_infections:
-         The space that holds all of the "play" infections
+       infections: Infections
+         The space that holds all of the infections
        rngs:
          The list of thread-safe random number generators, one per thread
        nthreads: int

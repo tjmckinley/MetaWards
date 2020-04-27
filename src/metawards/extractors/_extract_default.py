@@ -1,8 +1,17 @@
 
-__all__ = ["extract_default"]
+__all__ = ["extract_default", "extractor_needs_setup"]
 
 
-def extract_default(nthreads: int = 1, setup=False, **kwargs):
+def extractor_needs_setup(extractor):
+    """Return whether or not the passed extractor function has
+       a "setup" argument, and thus needs to be setup before
+       it can be used
+    """
+    import inspect
+    return "setup" in inspect.signature(extractor).parameters
+
+
+def extract_default(setup=False, **kwargs):
     """This returns the default list of 'output_XXX' functions that
        are called in sequence for each iteration of the model run.
        These functions are used to output data to files for
@@ -25,19 +34,28 @@ def extract_default(nthreads: int = 1, setup=False, **kwargs):
        Returns
        -------
        funcs: List[function]
-         The list of functions that ```extract_data``` will call in sequence
+         The list of functions that ```extract``` will call in sequence
     """
 
-    if setup:
-        from ._output_default import setup_output_default
-        funcs = [setup_output_default]
+    kwargs["setup"] = setup
 
-    elif nthreads is None or nthreads == 1:
-        from ._output_default import output_default
-        funcs = [output_default]
+    from ._extract_core import extract_core
+
+    if setup:
+        # Return the functions needed to initialise this extractor
+        funcs = extract_core(**kwargs)
 
     else:
-        from ._output_default import output_default_omp
-        funcs = [output_default_omp]
+        funcs = extract_core(**kwargs)
+
+        from ._output_basic import output_basic
+        from ._output_dispersal import output_dispersal
+        from ._output_prevalence import output_prevalence
+        from ._output_incidence import output_incidence
+
+        funcs.append(output_basic)
+        funcs.append(output_dispersal)
+        funcs.append(output_prevalence)
+        funcs.append(output_incidence)
 
     return funcs

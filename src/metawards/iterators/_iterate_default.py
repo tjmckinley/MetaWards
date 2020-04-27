@@ -1,9 +1,6 @@
 
 __all__ = ["iterate_default", "iterator_needs_setup"]
 
-from ._iterate_core import iterate_core
-from ._iterate_weekday import iterate_weekday
-
 
 def iterator_needs_setup(iterator):
     """Return whether or not the passed iterator function has
@@ -36,6 +33,9 @@ def iterate_default(setup=False, **kwargs):
     """
 
     kwargs["setup"] = setup
+
+    from ._iterate_core import iterate_core
+    from ._iterate_weekday import iterate_weekday
 
     if setup:
         # Return the functions needed to initialise this iterator

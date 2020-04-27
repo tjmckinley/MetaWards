@@ -19,7 +19,7 @@ of six main units;
   all of the package-supplied iterators that are used to advance the
   model infection from day to day. These are used to customise exactly
   how an infection progresses, and how control measures are applied.
-  This is described in the :doc:`tutorial <tutorial>`.
+  This is described in the :doc:`tutorial <../tutorial/tutorial>`.
 
 * The :doc:`metawards.extractors <index_MetaWards_extractors>` which contains
   all of the package-supplied extractors that are used to extract and
@@ -27,7 +27,7 @@ of six main units;
   These are used to customise exactly what information is gathered,
   how it is processed, and where it is written as the infection progresses.
   You can see how to use these to customise output in
-  the :doc:`tutorial <tutorial>`.
+  the :doc:`tutorial <../tutorial/tutorial>`.
 
 * The :doc:`metawards.analysis <index_MetaWards_analysis>` contains
   analysis functions that can be used to process the results of a
