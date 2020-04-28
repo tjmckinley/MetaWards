@@ -44,6 +44,8 @@ clean:
 	$(RM) -r build dist
 	$(RM) -r src/metawards/*.c
 	$(RM) -r src/metawards/utils/*.c
+	$(RM) -r src/metawards/iterators/*.c
+	$(RM) -r src/metawards/extractors/*.c
 
 uninstall:
 	pip uninstall metawards

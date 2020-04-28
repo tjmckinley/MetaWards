@@ -5,6 +5,13 @@
 import os
 import versioneer
 from setuptools import setup, Extension
+import distutils.sysconfig
+import distutils.ccompiler
+from glob import glob
+import tempfile
+import subprocess
+import shutil
+import sys
 
 try:
     from Cython.Build import cythonize
@@ -12,9 +19,82 @@ try:
 except Exception:
     have_cython = False
 
-cflags = '-O3 -march=native -Wall -fopenmp'
+# First, get the compiler that (I think) distutils will use
+# - I will need this to add options etc.
+compiler = distutils.ccompiler.new_compiler()
+distutils.sysconfig.customize_compiler(compiler)
+
+
+# Check if compiler support openmp (and find the correct openmp flag)
+def get_openmp_flag():
+    openmp_test = \
+        r"""
+        #include <omp.h>
+        #include <stdio.h>
+
+        int main()
+        {
+            int nthreads, thread_id;
+
+            #pragma omp parallel private(nthreads, thread_id)
+            {
+                thread_id = omp_get_thread_num();
+                nthreads = omp_get_num_threads();
+                printf("I am thread %d of %d\n", thread_id, nthreads);
+            }
+        }
+        """
+
+    tmpdir = tempfile.mkdtemp()
+    curdir = os.getcwd()
+    os.chdir(tmpdir)
+    filename = r'openmp_test.c'
+
+    with open(filename, 'w') as file:
+        file.write(openmp_test)
+        file.flush()
+
+    openmp_flag = None
+
+    with open(os.devnull, 'w') as fnull:
+        exit_code = 1
+        for flag in ["-fopenmp", "-openmp"]:
+            try:
+                # Compiler and then link using each openmp flag...
+                cmd = compiler.compiler_so + [flag, filename,
+                                              "-c"]
+                exit_code = subprocess.call(cmd, stdout=fnull, stderr=fnull)
+            except Exception:
+                pass
+
+            if exit_code == 0:
+                openmp_flag = flag
+                break
+
+    # clean up
+    os.chdir(curdir)
+    shutil.rmtree(tmpdir)
+
+    return openmp_flag
+
+
+openmp_flag = get_openmp_flag()
+
+if openmp_flag is None:
+    print(f"You cannot compile MetaWards using a C compiler that doesn't "
+          f"support OpenMP. The compiler {compiler.compiler_so[0]} "
+          f"does not support OpenMP. See the installation instructions "
+          f"on the web for more information and fixes.")
+    sys.exit(-1)
+
+cflags = f"-O3 {openmp_flag}"
 
 nbuilders = int(os.getenv("CYTHON_NBUILDERS", 2))
+
+if nbuilders < 1:
+    nbuilders = 1
+
+print(f"Number of builders equals {nbuilders}")
 
 compiler_directives = {"language_level": 3, "embedsignature": True,
                        "boundscheck": False, "cdivision": True,
@@ -29,8 +109,18 @@ if os.getenv("CYTHON_LINETRACE", 0):
 else:
     define_macros = []
 
-random_sources = ["src/metawards/ran_binomial/mt19937.c",
-                  "src/metawards/ran_binomial/distributions.c"]
+
+# Thank you Priyaj for pointing out this little documented feature - finally
+# I can build the random code into a library!
+# https://www.edureka.co/community/21524/setuptools-shared-libary-cython-wrapper-linked-shared-libary
+ext_lib_path = "src/metawards/ran_binomial"
+sources = ["mt19937.c", "distributions.c"]
+
+ext_libraries = [['metawards_random', {
+                  'sources': [os.path.join(ext_lib_path, src) for src in sources],
+                  'include_dirs': [],
+                  'macros': [],
+                  }]]
 
 
 # https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#distributing-cython-modules
@@ -49,84 +139,38 @@ def no_cythonize(extensions, **_ignore):
         extension.sources[:] = sources
     return extensions
 
-# Currently each file compiles to its own module. Ideally I'd like
-# them all to compile into a single module library, but this doesn't
-# work (get the error "ImportError: dynamic module does not define
-# init function" and the answers on stackoverflow didn't work.
-# If anyone can help please do :-)
 
+utils_pyx_files = glob("src/metawards/utils/*.pyx")
+iterator_pyx_files = glob("src/metawards/iterators/*.pyx")
+extractor_pyx_files = glob("src/metawards/extractors/*.pyx")
 
-extensions = [
-    Extension("metawards._nodes", ["src/metawards/_nodes.pyx"],
-              define_macros=define_macros),
-    Extension("metawards._links", ["src/metawards/_links.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._clear_all_infections",
-              ["src/metawards/utils/_clear_all_infections.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._build_wards_network",
-              ["src/metawards/utils/_build_wards_network.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._add_wards_network_distance",
-              ["src/metawards/utils/_add_wards_network_distance.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._get_min_max_distances",
-              ["src/metawards/utils/_get_min_max_distances.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._reset_everything",
-              ["src/metawards/utils/_reset_everything.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._rescale_matrix",
-              ["src/metawards/utils/_rescale_matrix.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._recalculate_denominators",
-              ["src/metawards/utils/_recalculate_denominators.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._move_population",
-              ["src/metawards/utils/_move_population.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._fill_in_gaps",
-              ["src/metawards/utils/_fill_in_gaps.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._build_play_matrix",
-              ["src/metawards/utils/_build_play_matrix.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._array", ["src/metawards/utils/_array.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._ran_binomial",
-              ["src/metawards/utils/_ran_binomial.pyx"]+random_sources,
-              define_macros=define_macros),
-    Extension("metawards.utils._assert_sane_network",
-              ["src/metawards/utils/_assert_sane_network.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.utils._get_array_ptr",
-              ["src/metawards/utils/_get_array_ptr.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.iterators._advance_play",
-              ["src/metawards/iterators/_advance_play.pyx"]+random_sources,
-              define_macros=define_macros),
-    Extension("metawards.iterators._advance_fixed",
-              ["src/metawards/iterators/_advance_fixed.pyx"]+random_sources,
-              define_macros=define_macros),
-    Extension("metawards.iterators._advance_infprob",
-              ["src/metawards/iterators/_advance_infprob.pyx"]+random_sources,
-              define_macros=define_macros),
-    Extension("metawards.iterators._advance_recovery",
-              ["src/metawards/iterators/_advance_recovery.pyx"]+random_sources,
-              define_macros=define_macros),
-    Extension("metawards.iterators._advance_foi",
-              ["src/metawards/iterators/_advance_foi.pyx"]+random_sources,
-              define_macros=define_macros),
-    Extension("metawards.iterators._advance_imports",
-              ["src/metawards/iterators/_advance_imports.pyx"]+random_sources,
-              define_macros=define_macros),
-    Extension("metawards.extractors._output_core",
-              ["src/metawards/extractors/_output_core.pyx"],
-              define_macros=define_macros),
-    Extension("metawards.extractors._output_dispersal",
-              ["src/metawards/extractors/_output_dispersal.pyx"],
-              define_macros=define_macros),
-]
+libraries = ["metawards_random"]
+
+extensions = []
+
+for pyx in utils_pyx_files:
+    _, name = os.path.split(pyx)
+    name = name[0:-4]
+    module = f"metawards.utils.{name}"
+
+    extensions.append(Extension(module, [pyx], define_macros=define_macros,
+                                libraries=libraries))
+
+for pyx in iterator_pyx_files:
+    _, name = os.path.split(pyx)
+    name = name[0:-4]
+    module = f"metawards.iterators.{name}"
+
+    extensions.append(Extension(module, [pyx], define_macros=define_macros,
+                                libraries=libraries))
+
+for pyx in extractor_pyx_files:
+    _, name = os.path.split(pyx)
+    name = name[0:-4]
+    module = f"metawards.extractors.{name}"
+
+    extensions.append(Extension(module, [pyx], define_macros=define_macros,
+                                libraries=libraries))
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
 
@@ -136,8 +180,10 @@ if not have_cython:
 os.environ['CFLAGS'] = cflags
 
 if CYTHONIZE:
+    # only using 1 cythonize thread as multiple threads caused a fork bomb
+    # on github
     extensions = cythonize(extensions, compiler_directives=compiler_directives,
-                           nthreads=nbuilders)
+                           nthreads=1)
 else:
     extensions = no_cythonize(extensions)
 
@@ -152,6 +198,7 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
     ext_modules=extensions,
     install_requires=install_requires,
+    libraries=ext_libraries,
     extras_require={
         "dev": dev_requires,
         "docs": ["sphinx", "sphinx-rtd-theme"]

@@ -49,7 +49,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements-dev.txt
       - name: Install MetaWards package
-        run: make -j 1
+        run: make -j 4
       - name: Clone MetaWards data
         run: git clone https://github.com/metawards/MetaWardsData
       - name: Run tests
