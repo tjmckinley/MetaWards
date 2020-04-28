@@ -328,7 +328,16 @@ class Network:
         # Create the random number generator
         from .utils._ran_binomial import seed_ran_binomial, ran_binomial
 
-        rng = seed_ran_binomial(seed=seed)
+        if seed == 0:
+            # this is a special mode that a developer can use to force
+            # all jobs to use the same random number seed (15324) that
+            # is used for comparing outputs. This should NEVER be used
+            # for production code
+            print("** WARNING: Using special mode to fix all random number")
+            print("** WARNING: seeds to 15324. DO NOT USE IN PRODUCTION!!!")
+            rng = seed_ran_binomial(seed=15324)
+        else:
+            rng = seed_ran_binomial(seed=seed)
 
         # Print the first five random numbers so that we can
         # compare to other codes/runs, and be sure that we are

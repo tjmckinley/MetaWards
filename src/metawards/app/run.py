@@ -708,7 +708,15 @@ def cli():
         import random
         seed = random.randint(10000, 99999999)
 
-    print(f"\nUsing random number seed {seed}")
+    if seed == 0:
+        # this is a special mode that a developer can use to force
+        # all jobs to use the same random number seed (15324) that
+        # is used for comparing outputs. This should NEVER be used
+        # for production code
+        print("** WARNING: Using special mode to fix all random number")
+        print("** WARNING: seeds to 15324. DO NOT USE IN PRODUCTION!!!")
+    else:
+        print(f"\nUsing random number seed {seed}")
 
     # get the starting day and date
     start_day = args.start_day
