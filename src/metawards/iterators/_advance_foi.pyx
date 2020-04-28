@@ -98,20 +98,20 @@ cdef void add_from_buffer(foi_buffer *buffer, double *wards_foi) nogil:
 cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
                                double *wards_foi,
                                int buffer_size=4096) nogil:
-    if buffer[0].next_buffer:
-        add_to_buffer(buffer[0].next_buffer, index, value, wards_foi,
-                      buffer_size)
-        return
 
     cdef int count = buffer[0].count
 
-    buffer[0].index[count] = index
-    buffer[0].foi[count] = value
-    buffer[0].count = count + 1
-
     if buffer[0].count >= buffer_size:
         # we need to allocate another buffer and set to use that
-        buffer[0].next_buffer = allocate_foi_buffer(buffer_size)
+        if not buffer[0].next_buffer:
+            buffer[0].next_buffer = allocate_foi_buffer(buffer_size)
+
+        add_to_buffer(buffer[0].next_buffer, index, value,
+                      wards_foi, buffer_size)
+    else:
+        buffer[0].index[count] = index
+        buffer[0].foi[count] = value
+        buffer[0].count = count + 1
 
 
 def advance_foi_omp(network: Network, population: Population,
