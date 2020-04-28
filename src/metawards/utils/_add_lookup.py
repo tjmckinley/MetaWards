@@ -16,6 +16,7 @@ def add_lookup(network: Network, nthreads: int = 1):
 
     if lookup_file is None:
         print("No ward lookup information available.")
+        return
 
     lines = open(lookup_file, "r").readlines()
 

@@ -37,6 +37,18 @@ class Workspace:
     #: disease_class == 2)
     incidence: _List[int] = None
 
+    #: The size of the S population in each ward
+    S_in_wards: _List[int] = None
+
+    #: The size of the E population in each ward
+    E_in_wards: _List[int] = None
+
+    #: The size of the I population in each ward
+    I_in_wards: _List[int] = None
+
+    #: The size of the R population in each ward
+    R_in_wards: _List[int] = None
+
     @staticmethod
     def build(network: Network):
         """Create the workspace needed to run the model for the
@@ -63,6 +75,11 @@ class Workspace:
         workspace.total_new_inf_ward = create_int_array(size, 0)
         workspace.incidence = create_int_array(size, 0)
 
+        workspace.S_in_wards = create_int_array(size, 0)
+        workspace.E_in_wards = create_int_array(size, 0)
+        workspace.I_in_wards = create_int_array(size, 0)
+        workspace.R_in_wards = create_int_array(size, 0)
+
         return workspace
 
     def zero_all(self):
@@ -76,3 +93,7 @@ class Workspace:
             self.total_inf_ward[i] = 0
             self.total_new_inf_ward[i] = 0
             self.incidence[i] = 0
+            self.S_in_wards[i] = 0
+            self.E_in_wards[i] = 0
+            self.I_in_wards[i] = 0
+            self.R_in_wards[i] = 0
