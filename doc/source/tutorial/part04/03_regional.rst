@@ -132,7 +132,8 @@ wards that are in the same local authority as "Clifton, Bristol", e.g.
    WardInfo(name='Stockwood', alternate_names=['Stockwood'], code='E05002002', alternate_codes=['E36000555'], authority='Bristol, City of', authority_code='E06000023', region='', region_code='')
    WardInfo(name='Stoke Bishop', alternate_names=['Stoke Bishop'], code='E05002003', alternate_codes=['E36000556'], authority='Bristol, City of', authority_code='E06000023', region='', region_code='')
    WardInfo(name='Westbury-on-Trym', alternate_names=['Westbury-on-Trym'], code='E05002004', alternate_codes=['E36000557'], authority='Bristol, City of', authority_code='E06000023', region='', region_code='')
-   WardInfo(name='Whitchurch Park', alternate_names=['Whitchurch Park'], code='E05002005', alternate_codes=['E36000558'], authority='Bristol, City of', authority_code='E06000023', region='', region_code='')    WardInfo(name='Windmill Hill', alternate_names=['Windmill Hill'], code='E05002006', alternate_codes=['E36000559'], authority='Bristol, City of', authority_code='E06000023', region='', region_code='')
+   WardInfo(name='Whitchurch Park', alternate_names=['Whitchurch Park'], code='E05002005', alternate_codes=['E36000558'], authority='Bristol, City of', authority_code='E06000023', region='', region_code='')
+   WardInfo(name='Windmill Hill', alternate_names=['Windmill Hill'], code='E05002006', alternate_codes=['E36000559'], authority='Bristol, City of', authority_code='E06000023', region='', region_code='')
 
 .. note::
 
