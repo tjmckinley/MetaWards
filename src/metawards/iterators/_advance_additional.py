@@ -156,7 +156,4 @@ def advance_additional(nthreads, **kwargs):
        kwargs
          Arguments that aren't used by this advancer
     """
-    if nthreads == 1:
-        advance_additional_serial(**kwargs)
-    else:
-        advance_additional_omp(nthreads=nthreads, **kwargs)
+    advance_additional_serial(**kwargs)
