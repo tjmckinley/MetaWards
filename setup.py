@@ -57,10 +57,6 @@ def no_cythonize(extensions, **_ignore):
 
 
 extensions = [
-    Extension("metawards._nodes", ["src/metawards/_nodes.pyx"],
-              define_macros=define_macros),
-    Extension("metawards._links", ["src/metawards/_links.pyx"],
-              define_macros=define_macros),
     Extension("metawards.utils._clear_all_infections",
               ["src/metawards/utils/_clear_all_infections.pyx"],
               define_macros=define_macros),
