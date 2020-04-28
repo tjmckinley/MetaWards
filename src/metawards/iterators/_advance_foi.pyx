@@ -27,6 +27,20 @@ cdef struct foi_buffer:
     int count
     int *index
     double *foi
+    foi_buffer *next_buffer
+
+
+cdef foi_buffer* allocate_foi_buffer(int buffer_size=4096) nogil:
+
+    cdef int size = buffer_size
+    cdef foi_buffer *buffer = <foi_buffer *> malloc(sizeof(foi_buffer))
+
+    buffer[0].count = 0
+    buffer[0].index = <int *> malloc(size * sizeof(int))
+    buffer[0].foi = <double *> malloc(size * sizeof(double))
+    buffer[0].next_buffer = <foi_buffer*>0
+
+    return buffer
 
 
 cdef foi_buffer* allocate_foi_buffers(int nthreads,
@@ -40,16 +54,29 @@ cdef foi_buffer* allocate_foi_buffers(int nthreads,
         buffers[i].count = 0
         buffers[i].index = <int *> malloc(size * sizeof(int))
         buffers[i].foi = <double *> malloc(size * sizeof(double))
+        buffers[i].next_buffer = <foi_buffer*>0
 
     return buffers
+
+
+cdef void free_foi_buffer(foi_buffer *buffer) nogil:
+    if buffer:
+        free(buffer[0].index)
+        buffer[0].index = <int *>0
+        free(buffer[0].foi)
+        buffer[0].foi = <double *>0
+
+        if buffer[0].next_buffer:
+            free_foi_buffer(buffer[0].next_buffer)
+            free(buffer[0].next_buffer)
+            buffer[0].next_buffer = <foi_buffer *>0
 
 
 cdef void free_foi_buffers(foi_buffer *buffers, int nthreads) nogil:
     cdef int n = nthreads
 
     for i in range(0, nthreads):
-        free(buffers[i].index)
-        free(buffers[i].foi)
+        free_foi_buffer(&(buffers[i]))
 
     free(buffers)
 
@@ -61,11 +88,21 @@ cdef void add_from_buffer(foi_buffer *buffer, double *wards_foi) nogil:
     for i in range(0, count):
         wards_foi[buffer[0].index[i]] += buffer[0].foi[i]
 
+    if buffer[0].next_buffer:
+        add_from_buffer(buffer[0].next_buffer, wards_foi)
+
+    # added all of buffer, so set count to 0 to empty
+    buffer[0].count = 0
+
 
 cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
                                double *wards_foi,
-                               openmp.omp_lock_t *lock,
                                int buffer_size=4096) nogil:
+    if buffer[0].next_buffer:
+        add_to_buffer(buffer[0].next_buffer, index, value, wards_foi,
+                      buffer_size)
+        return
+
     cdef int count = buffer[0].count
 
     buffer[0].index[count] = index
@@ -73,10 +110,8 @@ cdef inline void add_to_buffer(foi_buffer *buffer, int index, double value,
     buffer[0].count = count + 1
 
     if buffer[0].count >= buffer_size:
-        openmp.omp_set_lock(lock)
-        add_from_buffer(buffer, wards_foi)
-        openmp.omp_unset_lock(lock)
-        buffer[0].count = 0
+        # we need to allocate another buffer and set to use that
+        buffer[0].next_buffer = allocate_foi_buffer(buffer_size)
 
 
 def advance_foi_omp(network: Network, population: Population,
@@ -182,11 +217,6 @@ def advance_foi_omp(network: Network, population: Population,
     cdef foi_buffer * night_buffers = allocate_foi_buffers(num_threads)
     cdef foi_buffer * night_buffer
 
-    # we need to create an OpenMP lock so that we can
-    # use critical regions to serialise reduction updates
-    cdef openmp.omp_lock_t lock
-    openmp.omp_init_lock(&lock)
-
     ## Finally(!) we can now declare the actual loop.
     ## This loops over all disease stages, and then in
     ## parallel over all wards and all links to then
@@ -217,7 +247,7 @@ def advance_foi_omp(network: Network, population: Population,
 
         if contrib_foi > 0:
             p = p.start(f"work_{i}")
-            with nogil, parallel(num_threads=1):
+            with nogil, parallel(num_threads=num_threads):
                 thread_id = cython.parallel.threadid()
                 rng = _get_binomial_ptr(rngs_view[thread_id])
                 day_buffer = &(day_buffers[thread_id])
@@ -245,7 +275,7 @@ def advance_foi_omp(network: Network, population: Population,
                             if staying > 0:
                                 add_to_buffer(day_buffer, ifrom,
                                               staying * scl_foi_uv,
-                                              &(wards_day_foi[0]), &lock)
+                                              &(wards_day_foi[0]))
 
                             # Daytime Force of
                             # Infection is proportional to
@@ -255,7 +285,7 @@ def advance_foi_omp(network: Network, population: Population,
                             if moving > 0:
                                 add_to_buffer(day_buffer, ito,
                                               moving * scl_foi_uv,
-                                              &(wards_day_foi[0]), &lock)
+                                              &(wards_day_foi[0]))
 
                             # Daytime FOI for destination is incremented
                             # (including self links, I_ii)
@@ -264,12 +294,12 @@ def advance_foi_omp(network: Network, population: Population,
                             if inf_ij > 0:
                                 add_to_buffer(day_buffer, ifrom,
                                               inf_ij * scl_foi_uv,
-                                              &(wards_day_foi[0]), &lock)
+                                              &(wards_day_foi[0]))
 
                         if inf_ij > 0:
                             add_to_buffer(night_buffer, ifrom,
                                           inf_ij * scl_foi_uv,
-                                          &(wards_night_foi[0]), &lock)
+                                          &(wards_night_foi[0]))
                         #wards_night_foi[ifrom] += inf_ij * scl_foi_uv
 
                         # Nighttime Force of Infection is
@@ -279,16 +309,17 @@ def advance_foi_omp(network: Network, population: Population,
 
                     # end of if inf_ij (are there any new infections)
                 # end of infectious class loop
-
-                openmp.omp_set_lock(&lock)
-                add_from_buffer(day_buffer, &(wards_day_foi[0]))
-                add_from_buffer(night_buffer, &(wards_night_foi[0]))
-                openmp.omp_unset_lock(&lock)
             # end of parallel section
+
+            # do the reduction in serial in a deterministic order
+            for j in range(0, num_threads):
+                add_from_buffer(&(day_buffers[j]), &(wards_day_foi[0]))
+                add_from_buffer(&(night_buffers[j]), &(wards_night_foi[0]))
+
             p = p.stop()
 
             p = p.start(f"play_{i}")
-            with nogil, parallel(num_threads=1):
+            with nogil, parallel(num_threads=num_threads):
                 thread_id = cython.parallel.threadid()
                 rng = _get_binomial_ptr(rngs_view[thread_id])
                 day_buffer = &(day_buffers[thread_id])
@@ -323,8 +354,7 @@ def advance_foi_omp(network: Network, population: Population,
 
                                 add_to_buffer(day_buffer, ito,
                                               play_move * scl_foi_uv,
-                                              &(wards_day_foi[0]),
-                                              &lock)
+                                              &(wards_day_foi[0]))
 
                                 moving = moving - play_move
                             # end of if within cutoff
@@ -336,10 +366,12 @@ def advance_foi_omp(network: Network, population: Population,
                     # end of if inf_ij (there are new infections)
 
                 # end of loop over all nodes
-                openmp.omp_set_lock(&lock)
-                add_from_buffer(day_buffer, &(wards_day_foi[0]))
-                openmp.omp_unset_lock(&lock)
             # end of parallel
+
+            # perform the reduction in series in a predictable order
+            for j in range(0, num_threads):
+                add_from_buffer(&(day_buffers[j]), &(wards_day_foi[0]))
+
             p = p.stop()
         # end of params.disease_params.contrib_foi[i] > 0:
     p = p.stop()
