@@ -522,7 +522,7 @@ def advance_foi_serial(network: Network, population: Population,
 
             p = p.start(f"play_{i}")
             with nogil:
-                for j in prange(1, nnodes_plus_one, schedule="static"):
+                for j in range(1, nnodes_plus_one):
                     # playmatrix loop FOI loop (random/unpredictable movements)
                     inf_ij = play_infections_i[j]
                     if inf_ij > 0:
