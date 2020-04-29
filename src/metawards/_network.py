@@ -222,15 +222,19 @@ class Network:
         reset_everything(network=self, nthreads=nthreads, profiler=profiler)
 
     def update(self, params: Parameters,
-               nthreads: int = 1, profile: bool = False):
+               nthreads: int = 1, profile: bool = False,
+               profiler=None):
         """Update this network with a new set of parameters.
            This is used to update the parameters for the network
            for a new run. The network will be reset
            and ready for a new run.
         """
         if profile:
-            from .utils import Profiler
-            p = Profiler()
+            if profiler:
+                p = profiler
+            else:
+                from .utils import Profiler
+                p = Profiler()
         else:
             from .utils import NullProfiler
             p = NullProfiler()
@@ -253,7 +257,7 @@ class Network:
 
         p = p.stop()
 
-        if profile:
+        if profile and (profiler is None):
             print(p)
 
     def rescale_play_matrix(self, nthreads: int = 1,
