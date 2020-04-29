@@ -219,7 +219,7 @@ def run_models(network: Network, variables: VariableSets,
         arguments = []
 
         max_nodes = network.nnodes + 1
-        max_links = max(network.nlinks, network.plinks) + 1
+        max_links = max(network.nlinks, network.nplay) + 1
 
         for i, variable in enumerate(variables):
             seed = seeds[i]

@@ -9,7 +9,7 @@ class Nodes:
        to store a list of Node objects as a "struct of arrays".
        This should improve speed of loading and access.
     """
-    def __init__(self, N: int=0):
+    def __init__(self, N: int = 0):
         """Create a container for up to "N" nodes"""
         if N <= 0:
             self._is_null = True

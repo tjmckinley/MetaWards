@@ -40,9 +40,9 @@ def advance_play_omp(network: Network, infections: Infections, rngs,
          are not used by advance_play
     """
 
-    links = network.to_links
+    links = network.links
     wards = network.nodes
-    plinks = network.play
+    play = network.play
     params = network.params
 
     play_infections = infections.play
@@ -51,14 +51,14 @@ def advance_play_omp(network: Network, infections: Infections, rngs,
     cdef int * wards_begin_p = get_int_array_ptr(wards.begin_p)
     cdef int * wards_end_p = get_int_array_ptr(wards.end_p)
 
-    cdef int * plinks_ito = get_int_array_ptr(plinks.ito)
-    cdef double * plinks_weight = get_double_array_ptr(plinks.weight)
+    cdef int * play_ito = get_int_array_ptr(play.ito)
+    cdef double * play_weight = get_double_array_ptr(play.weight)
 
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
 
     cdef double * wards_play_suscept = get_double_array_ptr(wards.play_suscept)
-    cdef double * plinks_distance = get_double_array_ptr(plinks.distance)
+    cdef double * play_distance = get_double_array_ptr(play.distance)
 
     cdef double * wards_day_inf_prob = get_double_array_ptr(
                                                     wards.day_inf_prob)
@@ -118,11 +118,11 @@ def advance_play_omp(network: Network, infections: Infections, rngs,
 
             # daytime infection of play matrix moves
             for k in range(wards_begin_p[j], wards_end_p[j]):
-                if plinks_distance[k] < cutoff:
-                    ito = plinks_ito[k]
+                if play_distance[k] < cutoff:
+                    ito = play_ito[k]
 
                     if wards_day_foi[ito] > 0.0:
-                        weight = plinks_weight[k]
+                        weight = play_weight[k]
                         prob_scaled = weight / (1.0-cumulative_prob)
                         cumulative_prob = cumulative_prob + weight
 
@@ -188,9 +188,9 @@ def advance_play_serial(network: Network, infections: Infections, rngs,
          are not used by advance_play
     """
 
-    links = network.to_links
+    links = network.links
     wards = network.nodes
-    plinks = network.play
+    play = network.play
     params = network.params
 
     play_infections = infections.play
@@ -199,14 +199,14 @@ def advance_play_serial(network: Network, infections: Infections, rngs,
     cdef int * wards_begin_p = get_int_array_ptr(wards.begin_p)
     cdef int * wards_end_p = get_int_array_ptr(wards.end_p)
 
-    cdef int * plinks_ito = get_int_array_ptr(plinks.ito)
-    cdef double * plinks_weight = get_double_array_ptr(plinks.weight)
+    cdef int * play_ito = get_int_array_ptr(play.ito)
+    cdef double * play_weight = get_double_array_ptr(play.weight)
 
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
 
     cdef double * wards_play_suscept = get_double_array_ptr(wards.play_suscept)
-    cdef double * plinks_distance = get_double_array_ptr(plinks.distance)
+    cdef double * play_distance = get_double_array_ptr(play.distance)
 
     cdef double * wards_day_inf_prob = get_double_array_ptr(
                                                     wards.day_inf_prob)
@@ -258,11 +258,11 @@ def advance_play_serial(network: Network, infections: Infections, rngs,
 
             # daytime infection of play matrix moves
             for k in range(wards_begin_p[j], wards_end_p[j]):
-                if plinks_distance[k] < cutoff:
-                    ito = plinks_ito[k]
+                if play_distance[k] < cutoff:
+                    ito = play_ito[k]
 
                     if wards_day_foi[ito] > 0.0:
-                        weight = plinks_weight[k]
+                        weight = play_weight[k]
                         prob_scaled = weight / (1.0-cumulative_prob)
                         cumulative_prob = cumulative_prob + weight
 

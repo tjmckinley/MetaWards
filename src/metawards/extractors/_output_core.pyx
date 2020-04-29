@@ -218,7 +218,7 @@ def output_core_omp(network: Network, population: Population,
     """
     from cython.parallel import parallel, prange
 
-    links = network.to_links
+    links = network.links
     wards = network.nodes
 
     # set up main variables
@@ -246,7 +246,7 @@ def output_core_omp(network: Network, population: Population,
     cdef int * I_in_wards = get_int_array_ptr(workspace.I_in_wards)
     cdef int * R_in_wards = get_int_array_ptr(workspace.R_in_wards)
 
-    # get pointers to arrays from links and plinks to read data
+    # get pointers to arrays from links and play to read data
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
 
     cdef double * links_suscept = get_double_array_ptr(links.suscept)
@@ -508,7 +508,7 @@ def output_core_serial(network: Network, population: Population,
        kwargs
          Extra argumentst that are ignored by this function
     """
-    links = network.to_links
+    links = network.links
     wards = network.nodes
 
     # set up main variables
@@ -532,7 +532,7 @@ def output_core_serial(network: Network, population: Population,
     cdef int * I_in_wards = get_int_array_ptr(workspace.I_in_wards)
     cdef int * R_in_wards = get_int_array_ptr(workspace.R_in_wards)
 
-    # get pointers to arrays from links and plinks to read data
+    # get pointers to arrays from links and play to read data
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
 
     cdef double * links_suscept = get_double_array_ptr(links.suscept)

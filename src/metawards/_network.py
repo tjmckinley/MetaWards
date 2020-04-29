@@ -16,25 +16,22 @@ __all__ = ["Network"]
 class Network:
     """This class represents a network of wards. The network comprises
        nodes (representing wards), connected with links which represent
-       work (predictable) links. There are also additional links for
-       play (unpredictable/random) and weekend
+       work (predictable movements) and play (unpredictable movements)
     """
 
     #: The list of nodes (wards) in the network
     nodes: Nodes = None
     #: The links between nodes (work)
-    to_links: Links = None
+    links: Links = None
     #: The links between nodes (play)
     play: Links = None
-    #: The links between nodes (weekend)
-    weekend: Links = None
 
     #: The number of nodes in the network
     nnodes: int = 0
     #: The number of links in the network
     nlinks: int = 0
     #: The number of play links in the network
-    plinks: int = 0
+    nplay: int = 0
 
     #: The maximum allowable number of nodes in the network
     max_nodes: int = 16384

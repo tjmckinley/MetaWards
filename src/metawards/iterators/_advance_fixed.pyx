@@ -39,12 +39,10 @@ def advance_fixed_omp(network: Network, infections, rngs,
          are not used by advance_play
     """
 
-    links = network.to_links
+    links = network.links
     wards = network.nodes
-    plinks = network.play
     params = network.params
 
-    play_infections = infections.play
     infections = infections.work
 
     # Copy arguments from Python into C cdef variables
@@ -162,12 +160,10 @@ def advance_fixed_serial(network: Network, infections, rngs,
          are not used by advance_play
     """
 
-    links = network.to_links
+    links = network.links
     wards = network.nodes
-    plinks = network.play
     params = network.params
 
-    play_infections = infections.play
     infections = infections.work
 
     # Copy arguments from Python into C cdef variables

@@ -259,11 +259,9 @@ def setup_package():
     os.environ['CFLAGS'] = cflags
 
     if CYTHONIZE:
-        # only using 1 cythonize thread as multiple threads caused a fork bomb
-        # on github
         extensions = cythonize(extensions,
                                compiler_directives=compiler_directives,
-                               nthreads=1)
+                               nthreads=nbuilders)
     else:
         extensions = no_cythonize(extensions)
 
