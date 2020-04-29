@@ -269,6 +269,62 @@ class Network:
         move_population_from_play_to_work(network=self, nthreads=nthreads,
                                           profiler=profiler)
 
+    def specialise(self, demographic):
+        """Return a copy of this network that has been specialised
+           for the passed demographic. The returned network will
+           contain only members of that demographic, with the
+           parameters of the network adjusted according to the rules
+           of that demographic
+
+           Parameters
+           ----------
+           demographic: Demographic
+             The demographic with which to specialise
+
+           Returns
+           -------
+           network: Network
+             The specialised network
+        """
+        return demographic.specialise(network=self)
+
+    def scale_susceptibles(self, ratio: any = None,
+                           work_ratio: any = None, play_ratio: any = None):
+        """Scale the number of susceptibles in this Network
+           by the passed scale ratios. These can be values, e.g.
+           ratio = 2.0 will scale the total number of susceptibles
+           in each ward by 2.0. They can also be lists of values,
+           where ward[i] will be scaled by ratio[i]. They can also
+           be dictionaries, e.g. ward[i] scaled by ratio[i]
+
+           Parameters
+           ----------
+           ratio: None, float, list or dict
+             The amount by which to scale the total population of
+             susceptibles - evenly scales the work and play populations
+           work_ratio: None, float, list or dict
+             Scale only the work population of susceptibles
+           play_ratio: None, float, list or dict
+             Scale only the play population of susceptibles
+
+           Returns
+           -------
+           None
+        """
+
+        if ratio is not None:
+            work_ratio = ratio
+            play_ratio = ratio
+
+        if work_ratio is not None:
+            self.links.scale_susceptibles(work_ratio)
+
+        if play_ratio is not None:
+            self.play.scale_susceptibles(play_ratio)
+
+        self.nodes.scale_susceptibles(work_ratio=work_ratio,
+                                      play_ratio=play_ratio)
+
     def run(self, population: Population,
             output_dir: OutputFiles,
             seed: int = None,

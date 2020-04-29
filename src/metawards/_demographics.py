@@ -21,6 +21,17 @@ class Demographics:
     #: Map from index to names of demographics - enables lookup by name
     _names: _Dict[str, int] = _field(default_factory=dict)
 
+    def __len__(self):
+        return len(self._demographics)
+
+    def __getitem__(self, item):
+        if isinstance(item, str):
+            # Lookup by name
+            return self.demographics[self._names[item]]
+        else:
+            # Lookup by index
+            return self.demographics[item]
+
     def add(self, demographic: Demographic):
         """Add a demographic to the set to be modelled"""
         if demographic.name in self._names:

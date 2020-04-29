@@ -7,12 +7,15 @@ Classes
 .. autosummary::
     :toctree: generated/
 
+    Demographic
+    Demographics
     Disease
     Infections
     InputFiles
     Link
     Links
     Network
+    Networks
     Node
     Nodes
     OutputFiles
@@ -38,12 +41,15 @@ Functions
 __all__ = ["get_version_string"]
 
 from ._parameters import *
+from ._demographic import *
+from ._demographics import *
 from ._disease import *
 from ._inputfiles import *
 from ._node import *
 from ._link import *
 from ._population import *
 from ._network import *
+from ._networks import *
 from ._outputfiles import *
 from ._variableset import *
 from ._infections import *
