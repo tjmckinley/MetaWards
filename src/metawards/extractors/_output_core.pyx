@@ -26,7 +26,7 @@ cdef struct _inf_buffer:
 
 
 cdef _inf_buffer* _allocate_inf_buffers(int nthreads,
-                                        int buffer_size=1024) nogil:
+                                        int buffer_size=4096) nogil:
     cdef int size = buffer_size
     cdef int n = nthreads
 
@@ -71,7 +71,7 @@ cdef void _add_from_buffer(_inf_buffer *buffer, int *wards_infected) nogil:
 cdef inline void _add_to_buffer(_inf_buffer *buffer, int index, int value,
                                 int *wards_infected,
                                 openmp.omp_lock_t *lock,
-                                int buffer_size=1024) nogil:
+                                int buffer_size=4096) nogil:
     cdef int count = buffer[0].count
 
     buffer[0].index[count] = index

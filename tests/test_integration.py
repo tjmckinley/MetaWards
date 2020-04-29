@@ -62,7 +62,7 @@ def test_integration_ncov(prompt=None):
     with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
         trajectory = network.run(population=population, seed=seed,
                                  output_dir=output_dir,
-                                 s=-1, nsteps=30, profile=False,
+                                 s=-1, nsteps=30, profile=True,
                                  nthreads=1)
 
     OutputFiles.remove(outdir, prompt=None)

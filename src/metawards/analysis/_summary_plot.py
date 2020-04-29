@@ -334,6 +334,9 @@ def save_summary_plots(results: str, output_dir: str = None,
     if output_dir is None:
         output_dir = os.path.dirname(results)
 
+        if output_dir is None or len(output_dir) == 0:
+            output_dir = "."
+
     if format is None:
         format = "pdf"
 

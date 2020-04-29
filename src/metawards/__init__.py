@@ -132,3 +132,26 @@ def get_version_string():
     lines.append("")
 
     return newline.join(lines)
+
+
+_system_input = input
+
+
+def input(prompt: str, default="y"):
+    """Wrapper for 'input' that returns 'default' if it detected
+       that this is being run from within a batch job or other
+       service that doesn't have access to a tty
+    """
+    import sys
+
+    try:
+        if sys.stdin.isatty():
+            return _system_input(prompt)
+        else:
+            print(f"Not connected to a console, so having to use the "
+                  f"default ({default})")
+            return default
+    except Exception as e:
+        print(f"Unable to get the input: {e.__class__} {e}")
+        print(f"Using the default ({default}) instead")
+        return default

@@ -7,9 +7,10 @@ import versioneer
 from setuptools import setup, Extension
 import distutils.sysconfig
 import distutils.ccompiler
+import multiprocessing
 from glob import glob
+import platform
 import tempfile
-import subprocess
 import shutil
 import sys
 
@@ -19,194 +20,280 @@ try:
 except Exception:
     have_cython = False
 
-# First, get the compiler that (I think) distutils will use
-# - I will need this to add options etc.
-compiler = distutils.ccompiler.new_compiler()
-distutils.sysconfig.customize_compiler(compiler)
+_system_input = input
 
 
-# Check if compiler support openmp (and find the correct openmp flag)
-def get_openmp_flag():
-    openmp_test = \
-        r"""
-        #include <omp.h>
-        #include <stdio.h>
+def setup_package():
+    # First, set some flags regarding the distribution
+    IS_MAC = False
+    IS_LINUX = False
+    IS_WINDOWS = False
+    MACHINE = platform.machine()
 
-        int main()
-        {
-            int nthreads, thread_id;
+    openmp_flags = ["-fopenmp", "-openmp"]
 
-            #pragma omp parallel private(nthreads, thread_id)
-            {
-                thread_id = omp_get_thread_num();
-                nthreads = omp_get_num_threads();
-                printf("I am thread %d of %d\n", thread_id, nthreads);
-            }
-        }
+    if platform.system() == "Darwin":
+        IS_MAC = True
+        print(f"\nCompiling on a Mac ({MACHINE})")
+
+    elif platform.system() == "Windows":
+        IS_WINDOWS = True
+        openmp_flags.insert(0, "/openmp")   # MSVC flag
+        print(f"\nCompiling on Windows ({MACHINE})")
+
+    elif platform.system() == "Linux":
+        IS_LINUX = True
+        print(f"\nCompiling on Linux ({MACHINE})")
+
+    else:
+        print(f"Unrecognised platform {platform.system()}. Assuming Linux")
+        IS_LINUX = True
+
+    # Get the compiler that (I think) distutils will use
+    # - I will need this to add options etc.
+    compiler = distutils.ccompiler.new_compiler()
+    distutils.sysconfig.customize_compiler(compiler)
+
+    user_openmp_flag = os.getenv("OPENMP_FLAG", None)
+
+    if user_openmp_flag is not None:
+        openmp_flags.insert(user_openmp_flag, 0)
+
+    # override 'input' so that defaults can be used when this is run in batch
+    # or CI/CD
+    def input(prompt: str, default="y"):
+        """Wrapper for 'input' that returns 'default' if it detected
+        that this is being run from within a batch job or other
+        service that doesn't have access to a tty
         """
+        import sys
 
-    tmpdir = tempfile.mkdtemp()
-    curdir = os.getcwd()
-    os.chdir(tmpdir)
-    filename = r'openmp_test.c'
+        try:
+            if sys.stdin.isatty():
+                return _system_input(prompt)
+            else:
+                print(f"Not connected to a console, so having to use "
+                    f"the default ({default})")
+                return default
+        except Exception as e:
+            print(f"Unable to get the input: {e.__class__} {e}")
+            print(f"Using the default ({default}) instead")
+            return default
 
-    with open(filename, 'w') as file:
-        file.write(openmp_test)
-        file.flush()
+    # Check if compiler support openmp (and find the correct openmp flag)
+    def get_openmp_flag():
+        openmp_test = \
+            r"""
+            #include <omp.h>
+            #include <stdio.h>
 
-    openmp_flag = None
+            int main()
+            {
+                int nthreads, thread_id;
 
-    with open(os.devnull, 'w') as fnull:
-        exit_code = 1
-        for flag in ["-fopenmp", "-openmp"]:
+                #pragma omp parallel private(nthreads, thread_id)
+                {
+                    thread_id = omp_get_thread_num();
+                    nthreads = omp_get_num_threads();
+                    printf("I am thread %d of %d\n", thread_id, nthreads);
+                }
+            }
+            """
+
+        tmpdir = tempfile.mkdtemp()
+        curdir = os.getcwd()
+        os.chdir(tmpdir)
+        filename = r'openmp_test.c'
+
+        with open(filename, 'w') as file:
+            file.write(openmp_test)
+            file.flush()
+
+        openmp_flag = None
+
+        if user_openmp_flag:
+            openmp_flags.insert(0, user_openmp_flag)
+
+        print(tmpdir)
+
+        for flag in openmp_flags:
             try:
                 # Compiler and then link using each openmp flag...
-                cmd = compiler.compiler_so + [flag, filename,
-                                              "-c"]
-                exit_code = subprocess.call(cmd, stdout=fnull, stderr=fnull)
-            except Exception:
-                pass
-
-            if exit_code == 0:
+                compiler.compile(sources=["openmp_test.c"],
+                                extra_preargs=[flag])
                 openmp_flag = flag
                 break
+            except Exception as e:
+                print(f"Cannot compile: {e.__class__} {e}")
+                pass
 
-    # clean up
-    os.chdir(curdir)
-    shutil.rmtree(tmpdir)
+        # clean up
+        os.chdir(curdir)
+        shutil.rmtree(tmpdir)
 
-    return openmp_flag
+        return openmp_flag
+
+    openmp_flag = get_openmp_flag()
+
+    include_dirs = []
+
+    if openmp_flag is None:
+        print(f"\nYour compiler {compiler.compiler_so[0]} does not support "
+              f"OpenMP with any of the known OpenMP flags {openmp_flags}. "
+              f"If you know which flag to use can you specify it using "
+              f"the environent variable OPENMP_FLAG. Otherwise, we will "
+              f"have to compile the serial version of the code.")
+
+        if IS_MAC:
+            print(f"\nThis is common on Mac, as the default compiler does not "
+                  f"support OpenMP. If you want to compile with OpenMP then "
+                  f"install llvm via homebrew, e.g. 'brew install llvm', see "
+                  f"https://embeddedartistry.com/blog/2017/02/24/installing-llvm-clang-on-osx/")
+
+            print(f"\nRemember then to choose that compiler by setting the "
+                  f"CC environment variable, or passing it on the 'make' line, "
+                  f"e.g. 'CC=/usr/local/opt/llvm/bin/clang make'")
+
+        result = input("\nDo you want compile without OpenMP? (y/n) ",
+                       default="y")
+
+        if result is None or result.strip().lower()[0] != "y":
+            sys.exit(-1)
+
+        include_dirs.append("src/metawards/disable_openmp")
+
+    cflags = "-O3"
+
+    if openmp_flag:
+        cflags = f"{cflags} {openmp_flag}"
+
+    nbuilders = int(os.getenv("CYTHON_NBUILDERS", 2))
+
+    if nbuilders < 1:
+        nbuilders = 1
+
+    print(f"Number of builders equals {nbuilders}\n")
+
+    compiler_directives = {"language_level": 3, "embedsignature": True,
+                        "boundscheck": False, "cdivision": True,
+                        "initializedcheck": False, "cdivision_warnings": False,
+                        "wraparound": False, "binding": False,
+                        "nonecheck": False, "overflowcheck": False}
+
+    if os.getenv("CYTHON_LINETRACE", 0):
+        print("Compiling with Cython line-tracing support - will be SLOW")
+        define_macros = [("CYTHON_TRACE", "1")]
+        compiler_directives["linetrace"] = True
+    else:
+        define_macros = []
+
+    # Thank you Priyaj for pointing out this little documented feature - finally
+    # I can build the random code into a library!
+    # https://www.edureka.co/community/21524/setuptools-shared-libary-cython-wrapper-linked-shared-libary
+    ext_lib_path = "src/metawards/ran_binomial"
+    sources = ["mt19937.c", "distributions.c"]
+
+    ext_libraries = [['metawards_random', {
+                    'sources': [os.path.join(ext_lib_path, src)
+                                for src in sources],
+                    'include_dirs': [],
+                    'macros': [],
+                    }]]
+
+    def no_cythonize(extensions, **_ignore):
+        # https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#distributing-cython-modules
+        for extension in extensions:
+            sources = []
+            for sfile in extension.sources:
+                path, ext = os.path.splitext(sfile)
+                if ext in (".pyx", ".py"):
+                    if extension.language == "c++":
+                        ext = ".cpp"
+                    else:
+                        ext = ".c"
+                    sfile = path + ext
+                sources.append(sfile)
+            extension.sources[:] = sources
+        return extensions
+
+    utils_pyx_files = glob("src/metawards/utils/*.pyx")
+    iterator_pyx_files = glob("src/metawards/iterators/*.pyx")
+    extractor_pyx_files = glob("src/metawards/extractors/*.pyx")
+
+    libraries = ["metawards_random"]
+
+    extensions = []
+
+    for pyx in utils_pyx_files:
+        _, name = os.path.split(pyx)
+        name = name[0:-4]
+        module = f"metawards.utils.{name}"
+
+        extensions.append(Extension(module, [pyx], define_macros=define_macros,
+                                    libraries=libraries,
+                                    include_dirs=include_dirs))
+
+    for pyx in iterator_pyx_files:
+        _, name = os.path.split(pyx)
+        name = name[0:-4]
+        module = f"metawards.iterators.{name}"
+
+        extensions.append(Extension(module, [pyx], define_macros=define_macros,
+                                    libraries=libraries,
+                                    include_dirs=include_dirs))
+
+    for pyx in extractor_pyx_files:
+        _, name = os.path.split(pyx)
+        name = name[0:-4]
+        module = f"metawards.extractors.{name}"
+
+        extensions.append(Extension(module, [pyx], define_macros=define_macros,
+                                    libraries=libraries,
+                                    include_dirs=include_dirs))
+
+    CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
+
+    if not have_cython:
+        CYTHONIZE = False
+
+    os.environ['CFLAGS'] = cflags
+
+    if CYTHONIZE:
+        # only using 1 cythonize thread as multiple threads caused a fork bomb
+        # on github
+        extensions = cythonize(extensions,
+                               compiler_directives=compiler_directives,
+                               nthreads=1)
+    else:
+        extensions = no_cythonize(extensions)
+
+    with open("requirements.txt") as fp:
+        install_requires = fp.read().strip().split("\n")
+
+    with open("requirements-dev.txt") as fp:
+        dev_requires = fp.read().strip().split("\n")
+
+    setup(
+        version=versioneer.get_version(),
+        cmdclass=versioneer.get_cmdclass(),
+        ext_modules=extensions,
+        install_requires=install_requires,
+        libraries=ext_libraries,
+        extras_require={
+            "dev": dev_requires,
+            "docs": ["sphinx", "sphinx-rtd-theme"]
+        },
+        entry_points={
+            "console_scripts": [
+                "metawards = metawards.app.run:cli",
+                "metawards-plot = metawards.app.plot:cli"
+            ]
+        }
+    )
 
 
-openmp_flag = get_openmp_flag()
-
-if openmp_flag is None:
-    print(f"You cannot compile MetaWards using a C compiler that doesn't "
-          f"support OpenMP. The compiler {compiler.compiler_so[0]} "
-          f"does not support OpenMP. See the installation instructions "
-          f"on the web for more information and fixes.")
-    sys.exit(-1)
-
-cflags = f"-O3 {openmp_flag}"
-
-nbuilders = int(os.getenv("CYTHON_NBUILDERS", 2))
-
-if nbuilders < 1:
-    nbuilders = 1
-
-print(f"Number of builders equals {nbuilders}")
-
-compiler_directives = {"language_level": 3, "embedsignature": True,
-                       "boundscheck": False, "cdivision": True,
-                       "initializedcheck": False, "cdivision_warnings": False,
-                       "wraparound": False, "binding": False,
-                       "nonecheck": False, "overflowcheck": False}
-
-if os.getenv("CYTHON_LINETRACE", 0):
-    print("Compiling with Cython line-tracing support - will be SLOW")
-    define_macros = [("CYTHON_TRACE", "1")]
-    compiler_directives["linetrace"] = True
-else:
-    define_macros = []
-
-
-# Thank you Priyaj for pointing out this little documented feature - finally
-# I can build the random code into a library!
-# https://www.edureka.co/community/21524/setuptools-shared-libary-cython-wrapper-linked-shared-libary
-ext_lib_path = "src/metawards/ran_binomial"
-sources = ["mt19937.c", "distributions.c"]
-
-ext_libraries = [['metawards_random', {
-                  'sources': [os.path.join(ext_lib_path, src) for src in sources],
-                  'include_dirs': [],
-                  'macros': [],
-                  }]]
-
-
-# https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#distributing-cython-modules
-def no_cythonize(extensions, **_ignore):
-    for extension in extensions:
-        sources = []
-        for sfile in extension.sources:
-            path, ext = os.path.splitext(sfile)
-            if ext in (".pyx", ".py"):
-                if extension.language == "c++":
-                    ext = ".cpp"
-                else:
-                    ext = ".c"
-                sfile = path + ext
-            sources.append(sfile)
-        extension.sources[:] = sources
-    return extensions
-
-
-utils_pyx_files = glob("src/metawards/utils/*.pyx")
-iterator_pyx_files = glob("src/metawards/iterators/*.pyx")
-extractor_pyx_files = glob("src/metawards/extractors/*.pyx")
-
-libraries = ["metawards_random"]
-
-extensions = []
-
-for pyx in utils_pyx_files:
-    _, name = os.path.split(pyx)
-    name = name[0:-4]
-    module = f"metawards.utils.{name}"
-
-    extensions.append(Extension(module, [pyx], define_macros=define_macros,
-                                libraries=libraries))
-
-for pyx in iterator_pyx_files:
-    _, name = os.path.split(pyx)
-    name = name[0:-4]
-    module = f"metawards.iterators.{name}"
-
-    extensions.append(Extension(module, [pyx], define_macros=define_macros,
-                                libraries=libraries))
-
-for pyx in extractor_pyx_files:
-    _, name = os.path.split(pyx)
-    name = name[0:-4]
-    module = f"metawards.extractors.{name}"
-
-    extensions.append(Extension(module, [pyx], define_macros=define_macros,
-                                libraries=libraries))
-
-CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
-
-if not have_cython:
-    CYTHONIZE = False
-
-os.environ['CFLAGS'] = cflags
-
-if CYTHONIZE:
-    # only using 1 cythonize thread as multiple threads caused a fork bomb
-    # on github
-    extensions = cythonize(extensions, compiler_directives=compiler_directives,
-                           nthreads=1)
-else:
-    extensions = no_cythonize(extensions)
-
-with open("requirements.txt") as fp:
-    install_requires = fp.read().strip().split("\n")
-
-with open("requirements-dev.txt") as fp:
-    dev_requires = fp.read().strip().split("\n")
-
-setup(
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
-    ext_modules=extensions,
-    install_requires=install_requires,
-    libraries=ext_libraries,
-    extras_require={
-        "dev": dev_requires,
-        "docs": ["sphinx", "sphinx-rtd-theme"]
-    },
-    entry_points={
-        "console_scripts": [
-           "metawards = metawards.app.run:cli",
-           "metawards-plot = metawards.app.plot:cli"
-        ]
-    }
-)
+if __name__ == "__main__":
+    # Freeze to support parallel compilation when using spawn instead of fork
+    # (thanks to pandas for showing how to do this in their setup.py)
+    multiprocessing.freeze_support()
+    setup_package()
