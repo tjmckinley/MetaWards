@@ -26,12 +26,15 @@ IS_LINUX = False
 IS_WINDOWS = False
 MACHINE = platform.machine()
 
+openmp_flags = ["-fopenmp", "-openmp"]
+
 if platform.system() == "Darwin":
     IS_MAC = True
     print(f"\nCompiling on a Mac ({MACHINE})")
 
 elif platform.system() == "Windows":
     IS_WINDOWS = True
+    openmp_flags.insert(0, "/openmp")   # MSVC flag
     print(f"\nCompiling on Windows ({MACHINE})")
 
 elif platform.system() == "Linux":
@@ -47,8 +50,34 @@ else:
 compiler = distutils.ccompiler.new_compiler()
 distutils.sysconfig.customize_compiler(compiler)
 
-openmp_flags = ["-fopenmp", "-openmp"]
 user_openmp_flag = os.getenv("OPENMP_FLAG", None)
+
+if user_openmp_flag is not None:
+    openmp_flags.insert(user_openmp_flag, 0)
+
+_system_input = input
+
+
+# override 'input' so that defaults can be used when this is run in batch
+# or CI/CD
+def input(prompt: str, default="y"):
+    """Wrapper for 'input' that returns 'default' if it detected
+       that this is being run from within a batch job or other
+       service that doesn't have access to a tty
+    """
+    import sys
+
+    try:
+        if sys.stdin.isatty():
+            return _system_input(prompt)
+        else:
+            print(f"Not connected to a console, so having to use "
+                  f"the default ({default})")
+            return default
+    except Exception as e:
+        print(f"Unable to get the input: {e.__class__} {e}")
+        print(f"Using the default ({default}) instead")
+        return default
 
 
 # Check if compiler support openmp (and find the correct openmp flag)
@@ -85,20 +114,18 @@ def get_openmp_flag():
     if user_openmp_flag:
         openmp_flags.insert(0, user_openmp_flag)
 
-    with open(os.devnull, 'w') as fnull:
-        exit_code = 1
-        for flag in openmp_flags:
-            try:
-                # Compiler and then link using each openmp flag...
-                cmd = compiler.compiler_so + [flag, filename,
-                                              "-c"]
-                exit_code = subprocess.call(cmd, stdout=fnull, stderr=fnull)
-            except Exception:
-                pass
+    print(tmpdir)
 
-            if exit_code == 0:
-                openmp_flag = flag
-                break
+    for flag in openmp_flags:
+        try:
+            # Compiler and then link using each openmp flag...
+            compiler.compile(sources=["openmp_test.c"],
+                             extra_preargs=[flag])
+            openmp_flag = flag
+            break
+        except Exception as e:
+            print(f"Cannot compile: {e.__class__} {e}")
+            pass
 
     # clean up
     os.chdir(curdir)
@@ -107,39 +134,31 @@ def get_openmp_flag():
     return openmp_flag
 
 
-disable_openmp = os.getenv("METAWARDS_DISABLE_OPENMP", None)
-
-if disable_openmp:
-    openmp_flag = None
-else:
-    openmp_flag = get_openmp_flag()
+openmp_flag = get_openmp_flag()
 
 include_dirs = []
 
 if openmp_flag is None:
-    if disable_openmp:
-        print("You have disabled OpenMP")
-    else:
-        print(f"\nYour compiler {compiler.compiler_so[0]} does not support "
-              f"OpenMP with any of the known OpenMP flags {openmp_flags}. "
-              f"If you know which flag to use can you specify it using "
-              f"the environent variable OPENMP_FLAG. Otherwise, we will "
-              f"have to compile the serial version of the code.")
+    print(f"\nYour compiler {compiler.compiler_so[0]} does not support "
+          f"OpenMP with any of the known OpenMP flags {openmp_flags}. "
+          f"If you know which flag to use can you specify it using "
+          f"the environent variable OPENMP_FLAG. Otherwise, we will "
+          f"have to compile the serial version of the code.")
 
-        if IS_MAC:
-            print(f"\nThis is common on Mac, as the default compiler does not "
-                  f"support OpenMP. If you want to compile with OpenMP then "
-                  f"install llvm via homebrew, e.g. 'brew install llvm', see "
-                  f"https://embeddedartistry.com/blog/2017/02/24/installing-llvm-clang-on-osx/")
+    if IS_MAC:
+        print(f"\nThis is common on Mac, as the default compiler does not "
+              f"support OpenMP. If you want to compile with OpenMP then "
+              f"install llvm via homebrew, e.g. 'brew install llvm', see "
+              f"https://embeddedartistry.com/blog/2017/02/24/installing-llvm-clang-on-osx/")
 
-            print(f"\nRemember then to choose that compiler by setting the "
-                  f"CC environment variable, or passing it on the 'make' line, "
-                  f"e.g. 'CC=/usr/local/opt/llvm/bin/clang make'")
+        print(f"\nRemember then to choose that compiler by setting the "
+              f"CC environment variable, or passing it on the 'make' line, "
+              f"e.g. 'CC=/usr/local/opt/llvm/bin/clang make'")
 
-        print(f"\nAlternatively, set the environment variable "
-              f"METAWARDS_DISABLE_OPENMP to compile without OpenMP "
-              f"support, e.g. 'METAWARDS_DISABLE_OPENMP=1 make'")
+    result = input("\nDo you want compile without OpenMP? (y/n) ",
+                   default="y")
 
+    if result is None or result.strip().lower()[0] != "y":
         sys.exit(-1)
 
     include_dirs.append("src/metawards/disable_openmp")

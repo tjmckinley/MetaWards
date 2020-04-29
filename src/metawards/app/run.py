@@ -887,7 +887,8 @@ def cli():
     if args.force_overwrite_output:
         prompt = None
     else:
-        prompt = input
+        from metawards import input
+        prompt = lambda x: input(x, default="y")
 
     auto_bzip = True
 
