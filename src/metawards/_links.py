@@ -127,7 +127,7 @@ class Links:
         self.distance = resize_array(self.distance, N, 0.0)
 
     def scale_susceptibles(self, ratio: any = None):
-        """Scale the number of susceptibles in these Nodes
+        """Scale the number of susceptibles in these Links
            by the passed scale ratio. This can be a value, e.g.
            ratio = 2.0 will scale the total number of susceptibles
            by 2.0. This can also be lists of values,

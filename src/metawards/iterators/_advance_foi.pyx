@@ -6,7 +6,7 @@ cimport cython
 from cython.parallel import parallel, prange
 cimport openmp
 
-from libc.stdlib cimport malloc, free
+from libc.stdlib cimport calloc, free
 from libc.math cimport cos, pi
 
 from .._network import Network
@@ -33,11 +33,11 @@ cdef struct foi_buffer:
 cdef foi_buffer* allocate_foi_buffer(int buffer_size=4096) nogil:
 
     cdef int size = buffer_size
-    cdef foi_buffer *buffer = <foi_buffer *> malloc(sizeof(foi_buffer))
+    cdef foi_buffer *buffer = <foi_buffer *> calloc(1, sizeof(foi_buffer))
 
     buffer[0].count = 0
-    buffer[0].index = <int *> malloc(size * sizeof(int))
-    buffer[0].foi = <double *> malloc(size * sizeof(double))
+    buffer[0].index = <int *> calloc(size, sizeof(int))
+    buffer[0].foi = <double *> calloc(size, sizeof(double))
     buffer[0].next_buffer = <foi_buffer*>0
 
     return buffer
@@ -48,12 +48,12 @@ cdef foi_buffer* allocate_foi_buffers(int nthreads,
     cdef int size = buffer_size
     cdef int n = nthreads
 
-    cdef foi_buffer *buffers = <foi_buffer *> malloc(n * sizeof(foi_buffer))
+    cdef foi_buffer *buffers = <foi_buffer *> calloc(n, sizeof(foi_buffer))
 
     for i in range(0, nthreads):
         buffers[i].count = 0
-        buffers[i].index = <int *> malloc(size * sizeof(int))
-        buffers[i].foi = <double *> malloc(size * sizeof(double))
+        buffers[i].index = <int *> calloc(size, sizeof(int))
+        buffers[i].foi = <double *> calloc(size, sizeof(double))
         buffers[i].next_buffer = <foi_buffer*>0
 
     return buffers

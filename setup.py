@@ -22,6 +22,14 @@ except Exception:
 
 _system_input = input
 
+# has the user asked for a build?
+is_build = False
+
+for arg in sys.argv[1:]:
+    if arg.lower().find("build") != -1:
+        is_build = True
+        break
+
 
 def setup_package():
     # First, set some flags regarding the distribution
@@ -34,19 +42,23 @@ def setup_package():
 
     if platform.system() == "Darwin":
         IS_MAC = True
-        print(f"\nCompiling on a Mac ({MACHINE})")
+        if is_build:
+            print(f"\nCompiling on a Mac ({MACHINE})")
 
     elif platform.system() == "Windows":
         IS_WINDOWS = True
         openmp_flags.insert(0, "/openmp")   # MSVC flag
-        print(f"\nCompiling on Windows ({MACHINE})")
+        if is_build:
+            print(f"\nCompiling on Windows ({MACHINE})")
 
     elif platform.system() == "Linux":
         IS_LINUX = True
-        print(f"\nCompiling on Linux ({MACHINE})")
+        if is_build:
+            print(f"\nCompiling on Linux ({MACHINE})")
 
     else:
-        print(f"Unrecognised platform {platform.system()}. Assuming Linux")
+        if is_build:
+            print(f"Unrecognised platform {platform.system()}. Assuming Linux")
         IS_LINUX = True
 
     # Get the compiler that (I think) distutils will use
@@ -114,13 +126,11 @@ def setup_package():
         if user_openmp_flag:
             openmp_flags.insert(0, user_openmp_flag)
 
-        print(tmpdir)
-
         for flag in openmp_flags:
             try:
                 # Compiler and then link using each openmp flag...
                 compiler.compile(sources=["openmp_test.c"],
-                                extra_preargs=[flag])
+                                 extra_preargs=[flag])
                 openmp_flag = flag
                 break
             except Exception as e:
@@ -133,11 +143,14 @@ def setup_package():
 
         return openmp_flag
 
-    openmp_flag = get_openmp_flag()
+    if is_build:
+        openmp_flag = get_openmp_flag()
+    else:
+        openmp_flag = None
 
     include_dirs = []
 
-    if openmp_flag is None:
+    if is_build and (openmp_flag is None):
         print(f"\nYour compiler {compiler.compiler_so[0]} does not support "
               f"OpenMP with any of the known OpenMP flags {openmp_flags}. "
               f"If you know which flag to use can you specify it using "
@@ -172,16 +185,19 @@ def setup_package():
     if nbuilders < 1:
         nbuilders = 1
 
-    print(f"Number of builders equals {nbuilders}\n")
+    if is_build:
+        print(f"Number of builders equals {nbuilders}\n")
 
     compiler_directives = {"language_level": 3, "embedsignature": True,
-                        "boundscheck": False, "cdivision": True,
-                        "initializedcheck": False, "cdivision_warnings": False,
-                        "wraparound": False, "binding": False,
-                        "nonecheck": False, "overflowcheck": False}
+                           "boundscheck": False, "cdivision": True,
+                           "initializedcheck": False,
+                           "cdivision_warnings": False,
+                           "wraparound": False, "binding": False,
+                           "nonecheck": False, "overflowcheck": False}
 
     if os.getenv("CYTHON_LINETRACE", 0):
-        print("Compiling with Cython line-tracing support - will be SLOW")
+        if is_build:
+            print("Compiling with Cython line-tracing support - will be SLOW")
         define_macros = [("CYTHON_TRACE", "1")]
         compiler_directives["linetrace"] = True
     else:

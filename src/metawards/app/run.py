@@ -100,6 +100,13 @@ def parse_args():
                         help="Name of the input model data set for the "
                              "network (default is '2011Data')")
 
+    parser.add_argument('-D', '--demographics', type=str, default=None,
+                        help="Name of the demographics file that provides "
+                             "information about how a population is modelled "
+                             "as multiple demographics. If this is not "
+                             "supplied then the population is modelled "
+                             "as a single demographic")
+
     parser.add_argument('--start-date', type=str, default=None,
                         help="Date of the start of the model outbreak. "
                              "This accepts dates either is iso-format, "
@@ -624,7 +631,8 @@ def cli():
     should_run = False
 
     for arg in [args.input, args.repeats, args.disease, args.additional,
-                args.model, args.iterator, args.extractor]:
+                args.model, args.iterator, args.extractor,
+                args.demographics]:
         if arg is not None:
             should_run = True
             break
@@ -874,6 +882,13 @@ def cli():
                             max_nodes=args.max_nodes,
                             max_links=args.max_links,
                             profile=profile)
+
+    if args.demographics:
+        from metawards import Demographics
+        print("\nSpecialising the network into different demographics:")
+        demographics = Demographics.load(args.demographics)
+        print(demographics)
+        network = network.specialise(demographics)
 
     print("\nRun the model...")
     from metawards import OutputFiles

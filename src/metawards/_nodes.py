@@ -250,6 +250,6 @@ class Nodes:
            None
         """
         from .utils._scale_susceptibles import scale_node_susceptibles
-        scale_node_susceptibles(network=self, ratio=ratio,
+        scale_node_susceptibles(nodes=self, ratio=ratio,
                                 work_ratio=work_ratio,
                                 play_ratio=play_ratio)

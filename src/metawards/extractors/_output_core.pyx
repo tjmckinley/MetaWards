@@ -4,7 +4,7 @@
 
 cimport cython
 
-from libc.stdlib cimport malloc, free
+from libc.stdlib cimport calloc, free
 cimport openmp
 
 from .._network import Network
@@ -30,12 +30,12 @@ cdef _inf_buffer* _allocate_inf_buffers(int nthreads,
     cdef int size = buffer_size
     cdef int n = nthreads
 
-    cdef _inf_buffer *buffers = <_inf_buffer *> malloc(n * sizeof(_inf_buffer))
+    cdef _inf_buffer *buffers = <_inf_buffer *> calloc(n, sizeof(_inf_buffer))
 
     for i in range(0, n):
         buffers[i].count = 0
-        buffers[i].index = <int *> malloc(size * sizeof(int))
-        buffers[i].infected = <int *> malloc(size * sizeof(int))
+        buffers[i].index = <int *> calloc(size, sizeof(int))
+        buffers[i].infected = <int *> calloc(size, sizeof(int))
 
     return buffers
 
@@ -114,8 +114,8 @@ cdef _red_variables* _allocate_red_variables(int nthreads) nogil:
     """
     cdef int n = nthreads
 
-    cdef _red_variables *variables = <_red_variables *> malloc(
-                                                n * sizeof(_red_variables))
+    cdef _red_variables *variables = <_red_variables *> calloc(
+                                                n, sizeof(_red_variables))
 
 
     _reset_reduce_variables(variables, n)

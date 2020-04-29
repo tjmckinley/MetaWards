@@ -145,11 +145,11 @@ class Disease:
              filename: str = None):
         """Load the disease parameters for the specified disease.
            This will look for a file called f"{disease}.json"
-           in the directory f"{repository}/{disease}/{disease}.ncon"
+           in the directory f"{repository}/{folder}/{disease}.json"
 
            By default this will load the ncov (SARS-Cov-2)
            parameters from
-           $HOME/GitHub/model_data/2011Data/diseases/ncov.json
+           $HOME/GitHub/model_data/diseases/ncov.json
 
            Alternatively you can provide the full path to the
            json file via the "filename" argument
@@ -223,9 +223,9 @@ class Disease:
                           contrib_foi=data.get("contrib_foi", []),
                           start_symptom=data.get("start_symptom", 3),
                           _name=disease,
-                          _authors=data["author(s)"],
-                          _contacts=data["contact(s)"],
-                          _references=data["reference(s)"],
+                          _authors=data.get("author(s)", "unknown"),
+                          _contacts=data.get("contact(s)", "unknown"),
+                          _references=data.get("reference(s)", "none"),
                           _filename=json_file,
                           _repository=repository,
                           _repository_branch=repository_branch,

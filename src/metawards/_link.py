@@ -18,7 +18,7 @@ class Link:
     #: of susceptibles in the work matrix
     weight: float = None
 
-    #: Number of susceptibles in the case of hte work matrix. Used
+    #: Number of susceptibles in the case of the work matrix. Used
     #: to save the weight of the play matrix
     suscept: float = None
 
