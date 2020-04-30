@@ -37,10 +37,12 @@ def parse_args():
     import argparse
     import sys
 
+    metawards_url = "https://metawards.github.io"
+
     parser = argparse.ArgumentParser(
-                    description="MetaWards epidemic modelling - see "
-                                "https://github.com/metawards/metawards "
-                                "for more information",
+                    description=f"MetaWards epidemic modelling - see "
+                                f"{metawards_url} "
+                                f"for more information",
                     prog="metawards")
 
     parser.add_argument('--version', action="store_true",
@@ -153,16 +155,28 @@ def parse_args():
                              "custom integrators or custom extractors.")
 
     parser.add_argument('--iterator', type=str, default=None,
-                        help="Name of the iterator to use to advance the "
-                             "outbreak at each step (day). For a full "
-                             "explanation see the tutorial at "
-                             "https://metawards.github.io")
+                        help=f"Name of the iterator to use to advance the "
+                             f"outbreak at each step (day). For a full "
+                             f"explanation see the tutorial at "
+                             f"{metawards_url}")
 
     parser.add_argument("--extractor", type=str, default=None,
-                        help="Name of the extractor to use to extract "
-                             "information during a model run. For a full "
-                             "explanation see the tutorial at "
-                             "https://metawards.github.io")
+                        help=f"Name of the extractor to use to extract "
+                             f"information during a model run. For a full "
+                             f"explanation see the tutorial at "
+                             f"{metawards_url}")
+
+    parser.add_argument("--mixer", type=str, default=None,
+                        help=f"Name of the mixer to use to mix information "
+                             f"from multiple demographics together during "
+                             f"a model run. For a full explanation see "
+                             f"the tutorial at {metawards_url}")
+
+    parser.add_argument("--mover", type=str, default=None,
+                        help=f"Name of the mover to use to move the "
+                             f"population between demographics during "
+                             f"a model run. For a full explanation see "
+                             f"the tutorial at {metawards_url}")
 
     parser.add_argument('--UV', type=float, default=0.0,
                         help="Value for the UV parameter for the model "
@@ -632,7 +646,7 @@ def cli():
 
     for arg in [args.input, args.repeats, args.disease, args.additional,
                 args.model, args.iterator, args.extractor,
-                args.demographics]:
+                args.demographics, args.mixer, args.mover]:
         if arg is not None:
             should_run = True
             break
@@ -928,6 +942,18 @@ def cli():
     else:
         extractor = None
 
+    if args.mixer:
+        mixer = args.mixer
+        # also see above :-)
+    else:
+        mixer = None
+
+    if args.mover:
+        mover = args.mover
+        # also see above :-)
+    else:
+        mover = None
+
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
                      auto_bzip=auto_bzip, prompt=prompt) as output_dir:
         result = run_models(network=network, variables=variables,
@@ -937,6 +963,8 @@ def cli():
                             output_dir=output_dir,
                             iterator=iterator,
                             extractor=extractor,
+                            mixer=mixer,
+                            mover=mover,
                             profile=profile, parallel_scheme=parallel_scheme)
 
         if result is None or len(result) == 0:
@@ -994,6 +1022,8 @@ def cli():
 
 
 if __name__ == "__main__":
+    import multiprocessing
+    multiprocessing.freeze_support()  # needed to stop fork bombs
     cli()
 
 else:

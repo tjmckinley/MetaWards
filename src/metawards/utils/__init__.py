@@ -73,6 +73,7 @@ from ._runner import *
 from ._iterate import *
 from ._worker import *
 from ._extract import *
+from ._import_module import *
 
 from ._add_lookup import *
 from ._build_wards_network import *

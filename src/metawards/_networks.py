@@ -124,6 +124,8 @@ class Networks:
             nthreads: int = None,
             iterator=None,
             extractor=None,
+            mover=None,
+            mixer=None,
             profiler=None):
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
@@ -167,6 +169,13 @@ class Networks:
            extractor: function
              Function that is called at each iteration to get the functions
              that are used to extract data for analysis or writing to files
+           mixer: function
+             Function that is called to mix the data calculated for each
+             of the sub-networks for the different demographics and
+             merge it together so that this is shared
+           mover: function
+             Function that is called to move the population between
+             different demographics
         """
         # Create the random number generator
         from .utils._ran_binomial import seed_ran_binomial, ran_binomial
@@ -213,7 +222,8 @@ class Networks:
                                nsteps=nsteps,
                                profile=profile, nthreads=nthreads,
                                profiler=profiler,
-                               iterator=iterator, extractor=extractor)
+                               iterator=iterator, extractor=extractor,
+                               mixer=mixer, mover=mover)
 
         return population
 
