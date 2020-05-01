@@ -1,7 +1,10 @@
 
+import pytest
+
 from metawards import Network, Parameters
 
 
+@pytest.mark.slow
 def test_lookup():
     params = Parameters()
     params.set_input_files("2011Data")

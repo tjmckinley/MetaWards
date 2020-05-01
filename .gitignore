@@ -16,7 +16,6 @@ __pycache__
 /src/metawards.egg-info
 /2011Data
 /.pytest_cache
-/.env
 /*.pyc
 /output
 /doc/build

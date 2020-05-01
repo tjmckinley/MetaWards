@@ -1,7 +1,9 @@
 
+import pytest
 import metawards
 
 
+@pytest.mark.slow
 def test_ran_binomial():
     # I've packaged the numpy random binomial generator
     # (mt19937 generator) into metawards so that we now

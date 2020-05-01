@@ -1,5 +1,6 @@
 
 import os
+import pytest
 
 from metawards import Parameters, Network, Population, OutputFiles
 
@@ -7,6 +8,7 @@ script_dir = os.path.dirname(__file__)
 ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
 
 
+@pytest.mark.slow
 def test_integration_ncov(prompt=None):
     """This test repeats main_RepeatsNcov.c and validates that the
        various stages report the same results as the original C code
@@ -85,6 +87,7 @@ def test_integration_ncov(prompt=None):
     assert trajectory[-1] == expected
 
 
+@pytest.mark.veryslow
 def test_integration_pox(prompt=None):
     """This test repeats main_RepeatsNcov.c and validates that the
        various stages report the same results as the original C code
@@ -180,4 +183,3 @@ if __name__ == "__main__":
         test_integration_ncov(input)
     else:
         test_integration_ncov(input)
-

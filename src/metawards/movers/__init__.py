@@ -13,6 +13,7 @@ Functions
 """
 
 from ._move_custom import *
+from ._move_default import *
 
 # from ._go_on_holiday import *
 # from ._go_back_home import *
