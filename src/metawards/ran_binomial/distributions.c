@@ -18,7 +18,7 @@ int64_t ran_binomial(binomial_rng *rng, double p, int64_t n){
 
 binomial_rng * binomial_rng_alloc(void)
 {
-  return (binomial_rng*)malloc(sizeof(binomial_rng));
+  return (binomial_rng*)calloc(1, sizeof(binomial_rng));
 }
 
 void binomial_rng_free(binomial_rng *rng)

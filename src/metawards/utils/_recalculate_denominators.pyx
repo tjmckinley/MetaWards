@@ -28,7 +28,7 @@ def recalculate_work_denominator_day(network: Network, nthreads: int = 1,
         return
 
     wards = network.nodes
-    links = network.to_links
+    links = network.links
 
     cdef int i = 0
 
@@ -105,7 +105,7 @@ def recalculate_play_denominator_day(network: Network, nthreads: int = 1,
     cdef double denom = 0.0
     cdef double * wards_play_suscept = get_double_array_ptr(wards.play_suscept)
 
-    cdef int nlinks_plus_one = network.plinks + 1
+    cdef int nlinks_plus_one = network.nplay + 1
 
     # not easily parallelisable due to the reduction
     with nogil:

@@ -79,6 +79,7 @@ def run_models(network: Network, variables: VariableSets,
                nprocs: int, nthreads: int, seed: int,
                nsteps: int, output_dir: OutputFiles,
                iterator: str, extractor: str,
+               mixer: str, mover: str,
                profile: bool, parallel_scheme: str):
     """Run all of the models on the passed Network that are described
        by the passed VariableSets
@@ -110,6 +111,11 @@ def run_models(network: Network, variables: VariableSets,
          Iterator to load that will be used to iterate the outbreak
        extractor: str
          Extractor to load that will be used to extract information
+       mixer: str
+         Mixer to load that will be used to mix demographic data
+       mover: str
+         Mover to load that will be used to move the population between
+         different demographics
        profile: bool
          Whether or not to profile the model run and print out live
          timing (useful for performance debugging)
@@ -132,6 +138,8 @@ def run_models(network: Network, variables: VariableSets,
                                  output_dir=output_dir,
                                  iterator=iterator,
                                  extractor=extractor,
+                                 mixer=mixer,
+                                 mover=mover,
                                  profile=profile,
                                  nthreads=nthreads)
 
@@ -202,6 +210,8 @@ def run_models(network: Network, variables: VariableSets,
                                          output_dir=subdir,
                                          iterator=iterator,
                                          extractor=extractor,
+                                         mixer=mixer,
+                                         mover=mover,
                                          profile=profile,
                                          nthreads=nthreads)
 
@@ -219,7 +229,7 @@ def run_models(network: Network, variables: VariableSets,
         arguments = []
 
         max_nodes = network.nnodes + 1
-        max_links = max(network.nlinks, network.plinks) + 1
+        max_links = max(network.nlinks, network.nplay) + 1
 
         for i, variable in enumerate(variables):
             seed = seeds[i]
@@ -235,6 +245,8 @@ def run_models(network: Network, variables: VariableSets,
                             "nsteps": nsteps,
                             "iterator": iterator,
                             "extractor": extractor,
+                            "mixer": mixer,
+                            "mover": mover,
                             "profile": profile,
                             "nthreads": nthreads,
                             "max_nodes": max_nodes,

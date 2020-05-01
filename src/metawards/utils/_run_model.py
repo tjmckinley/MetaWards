@@ -6,9 +6,6 @@ from .._workspace import Workspace
 from .._population import Population, Populations
 from ._profiler import Profiler, NullProfiler
 from ._iterate import iterate
-from ..iterators._iterate_default import iterate_default
-from ..extractors._extract_default import extract_default
-from ._clear_all_infections import clear_all_infections
 from ._extract import extract
 
 __all__ = ["run_model"]
@@ -24,7 +21,9 @@ def run_model(network: Network,
               profiler: Profiler = None,
               nthreads: int = None,
               iterator=None,
-              extractor=None):
+              extractor=None,
+              mixer=None,
+              mover=None):
     """Actually run the model... Real work happens here. The model
        will run until completion or until 'nsteps' have been
        completed (whichever happens first)
@@ -68,6 +67,12 @@ def run_model(network: Network,
             Function that will be used to dynamically get the functions
             that will be used at each iteration to extract data from
             the model run
+        mixer: function
+            Function that will mix data from multiple demographics
+            so that this is shared during a model run
+        mover: function
+            Function that can move the population between different
+            demographics
 
         Returns
         -------
@@ -75,16 +80,32 @@ def run_model(network: Network,
             The trajectory of the population for every day of the model run
     """
     if iterator is None:
+        from ..iterators import iterate_default
         iterator = iterate_default
     elif isinstance(iterator, str):
         from ..iterators._iterate_custom import build_custom_iterator
         iterator = build_custom_iterator(iterator, __name__)
 
     if extractor is None:
+        from ..extractors import extract_default
         extractor = extract_default
     elif isinstance(extractor, str):
         from ..extractors._extract_custom import build_custom_extractor
         extractor = build_custom_extractor(extractor, __name__)
+
+    if mixer is None:
+        from ..mixers import mix_default
+        mixer = mix_default
+    elif isinstance(mixer, str):
+        from ..mixers._mix_custom import build_custom_mixer
+        mixer = build_custom_mixer(mixer, __name__)
+
+    if mover is None:
+        from ..movers import move_default
+        mover = move_default
+    elif isinstance(mover, str):
+        from ..movers._move_custom import build_custom_mover
+        mover = build_custom_mover(mover, __name__)
 
     if profile:
         if profiler:
@@ -160,6 +181,33 @@ def run_model(network: Network,
         p2 = p2.start(f"timing for day {population.day}")
 
         start_population = population.population
+
+        # ideally should be split over the four stages of the day
+        #
+        # 1. changing the size of the population directly, e.g. seeding
+        #    infections, moving population between demographics etc.
+        #
+        # 2. calculating force of infections
+        #
+        # 3. using fois to advance the outbreak
+        #
+        # 4. combining together all results and (optionally) saving to file
+        #
+        # (then, stage 0 could be setup, replacing the setup flag)
+
+        # iterate(stage1)  - import, additional
+
+        # mover(stage1)    - move between demograpics
+
+        # iterate(stage2)  - calculate fois etc.
+
+        # mixer(stage2)    - merge together fois etc.
+
+        # iterate(stage3)  - advance play, work etc.
+
+        # mixer(stage4)    - merge together all infections/play into overall
+
+        # extract(stage4)  - extract overall, or even subnets
 
         iterate(network=network, population=population,
                 infections=infections, rngs=rngs,

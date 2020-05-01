@@ -25,7 +25,7 @@ def setup_seed_specified_ward(network: Network,
          Arguments that are not used by this setup function
     """
     wards = network.nodes
-    links = network.to_links
+    links = network.links
     params = network.params
 
     play_infections = infections.play

@@ -48,7 +48,7 @@ def advance_imports_omp(network: Network, population: Population,
     """
 
     wards = network.nodes
-    links = network.to_links
+    links = network.links
     params = network.params
 
     play_infections = infections.play
@@ -129,7 +129,7 @@ def advance_imports_serial(network: Network, population: Population,
     """
 
     wards = network.nodes
-    links = network.to_links
+    links = network.links
     params = network.params
 
     play_infections = infections.play

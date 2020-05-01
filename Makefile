@@ -1,6 +1,6 @@
-.PHONY: build dist makedist cov makecov install clean uninstall
+.PHONY: build dist doc makedist cov makecov install clean uninstall
 
-# Get the number of workers passed in using "make -j" - I need to 
+# Get the number of workers passed in using "make -j" - I need to
 # pass this to the setup.py script as part of cythonizing.
 # Thanks to yashma for this great answer on the stackoverflow post
 # https://stackoverflow.com/questions/5303553/gnu-make-extracting-argument-to-j-within-makefile
@@ -23,10 +23,13 @@ makedist:
 makecov:
 	CYTHONIZE=1 CYTHON_LINETRACE=1 CYTHON_NBUILDERS=$(JOBS) python setup.py build_ext --force --inplace -j $(JOBS)
 
-test: install
-	pytest --cov=metawards --cov-report html:doc/build/html/cov_html tests
+test:
+	pytest --cov=metawards --cov-report html:doc/build/html/cov_html  -vv --runveryslow tests
 
-doc: install
+quicktest:
+	pytest -vv tests
+
+doc:
 	cd doc && make html
 
 # Always build the coverage version from scratch so that

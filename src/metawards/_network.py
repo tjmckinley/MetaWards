@@ -16,25 +16,22 @@ __all__ = ["Network"]
 class Network:
     """This class represents a network of wards. The network comprises
        nodes (representing wards), connected with links which represent
-       work (predictable) links. There are also additional links for
-       play (unpredictable/random) and weekend
+       work (predictable movements) and play (unpredictable movements)
     """
 
     #: The list of nodes (wards) in the network
     nodes: Nodes = None
     #: The links between nodes (work)
-    to_links: Links = None
+    links: Links = None
     #: The links between nodes (play)
     play: Links = None
-    #: The links between nodes (weekend)
-    weekend: Links = None
 
     #: The number of nodes in the network
     nnodes: int = 0
     #: The number of links in the network
     nlinks: int = 0
     #: The number of play links in the network
-    plinks: int = 0
+    nplay: int = 0
 
     #: The maximum allowable number of nodes in the network
     max_nodes: int = 16384
@@ -225,15 +222,19 @@ class Network:
         reset_everything(network=self, nthreads=nthreads, profiler=profiler)
 
     def update(self, params: Parameters,
-               nthreads: int = 1, profile: bool = False):
+               nthreads: int = 1, profile: bool = False,
+               profiler=None):
         """Update this network with a new set of parameters.
            This is used to update the parameters for the network
            for a new run. The network will be reset
            and ready for a new run.
         """
         if profile:
-            from .utils import Profiler
-            p = Profiler()
+            if profiler:
+                p = profiler
+            else:
+                from .utils import Profiler
+                p = Profiler()
         else:
             from .utils import NullProfiler
             p = NullProfiler()
@@ -256,7 +257,7 @@ class Network:
 
         p = p.stop()
 
-        if profile:
+        if profile and (profiler is None):
             print(p)
 
     def rescale_play_matrix(self, nthreads: int = 1,
@@ -272,6 +273,62 @@ class Network:
         move_population_from_play_to_work(network=self, nthreads=nthreads,
                                           profiler=profiler)
 
+    def specialise(self, demographic):
+        """Return a copy of this network that has been specialised
+           for the passed demographic. The returned network will
+           contain only members of that demographic, with the
+           parameters of the network adjusted according to the rules
+           of that demographic
+
+           Parameters
+           ----------
+           demographic: Demographic
+             The demographic with which to specialise
+
+           Returns
+           -------
+           network: Network
+             The specialised network
+        """
+        return demographic.specialise(network=self)
+
+    def scale_susceptibles(self, ratio: any = None,
+                           work_ratio: any = None, play_ratio: any = None):
+        """Scale the number of susceptibles in this Network
+           by the passed scale ratios. These can be values, e.g.
+           ratio = 2.0 will scale the total number of susceptibles
+           in each ward by 2.0. They can also be lists of values,
+           where ward[i] will be scaled by ratio[i]. They can also
+           be dictionaries, e.g. ward[i] scaled by ratio[i]
+
+           Parameters
+           ----------
+           ratio: None, float, list or dict
+             The amount by which to scale the total population of
+             susceptibles - evenly scales the work and play populations
+           work_ratio: None, float, list or dict
+             Scale only the work population of susceptibles
+           play_ratio: None, float, list or dict
+             Scale only the play population of susceptibles
+
+           Returns
+           -------
+           None
+        """
+
+        if ratio is not None:
+            work_ratio = ratio
+            play_ratio = ratio
+
+        if work_ratio is not None:
+            self.links.scale_susceptibles(work_ratio)
+
+        if play_ratio is not None:
+            self.play.scale_susceptibles(play_ratio)
+
+        self.nodes.scale_susceptibles(work_ratio=work_ratio,
+                                      play_ratio=play_ratio)
+
     def run(self, population: Population,
             output_dir: OutputFiles,
             seed: int = None,
@@ -281,6 +338,8 @@ class Network:
             nthreads: int = None,
             iterator=None,
             extractor=None,
+            mixer=None,
+            mover=None,
             profiler=None):
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
@@ -324,6 +383,12 @@ class Network:
            extractor: function
              Function that is called at each iteration to get the functions
              that are used to extract data for analysis or writing to files
+           mixer: function
+             Function that is used to mix demographic data. Not used
+             by a single Network (used by Networks)
+           mover: function
+             Function that is used to move the population between different
+             demographics. Not used by a single Network (used by Networks)
         """
         # Create the random number generator
         from .utils._ran_binomial import seed_ran_binomial, ran_binomial

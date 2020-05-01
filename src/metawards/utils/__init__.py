@@ -47,6 +47,8 @@ Functions
     run_model
     run_models
     run_worker
+    scale_link_susceptibles
+    scale_node_susceptibles
     seed_ran_binomial
     string_to_ints
     vaccinate_same_id
@@ -71,6 +73,7 @@ from ._runner import *
 from ._iterate import *
 from ._worker import *
 from ._extract import *
+from ._import_module import *
 
 from ._add_lookup import *
 from ._build_wards_network import *
@@ -85,6 +88,7 @@ from ._build_play_matrix import *
 from ._array import *
 from ._ran_binomial import *
 from ._parallel import *
+from ._scale_susceptibles import *
 from ._assert_sane_network import *
 from ._vaccination import *
 from ._clear_all_infections import *

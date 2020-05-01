@@ -6,7 +6,7 @@ cimport cython
 from cython.parallel import parallel, prange
 cimport openmp
 
-from libc.stdlib cimport malloc, free
+from libc.stdlib cimport calloc, free
 from libc.math cimport cos, pi
 
 from .._network import Network
@@ -33,11 +33,11 @@ cdef struct foi_buffer:
 cdef foi_buffer* allocate_foi_buffer(int buffer_size=4096) nogil:
 
     cdef int size = buffer_size
-    cdef foi_buffer *buffer = <foi_buffer *> malloc(sizeof(foi_buffer))
+    cdef foi_buffer *buffer = <foi_buffer *> calloc(1, sizeof(foi_buffer))
 
     buffer[0].count = 0
-    buffer[0].index = <int *> malloc(size * sizeof(int))
-    buffer[0].foi = <double *> malloc(size * sizeof(double))
+    buffer[0].index = <int *> calloc(size, sizeof(int))
+    buffer[0].foi = <double *> calloc(size, sizeof(double))
     buffer[0].next_buffer = <foi_buffer*>0
 
     return buffer
@@ -48,12 +48,12 @@ cdef foi_buffer* allocate_foi_buffers(int nthreads,
     cdef int size = buffer_size
     cdef int n = nthreads
 
-    cdef foi_buffer *buffers = <foi_buffer *> malloc(n * sizeof(foi_buffer))
+    cdef foi_buffer *buffers = <foi_buffer *> calloc(n, sizeof(foi_buffer))
 
     for i in range(0, nthreads):
         buffers[i].count = 0
-        buffers[i].index = <int *> malloc(size * sizeof(int))
-        buffers[i].foi = <double *> malloc(size * sizeof(double))
+        buffers[i].index = <int *> calloc(size, sizeof(int))
+        buffers[i].foi = <double *> calloc(size, sizeof(double))
         buffers[i].next_buffer = <foi_buffer*>0
 
     return buffers
@@ -145,9 +145,9 @@ def advance_foi_omp(network: Network, population: Population,
          are not used by advance_play
     """
 
-    links = network.to_links
+    links = network.links
     wards = network.nodes
-    plinks = network.play
+    play = network.play
     params = network.params
 
     # Copy arguments from Python into C cdef variables
@@ -165,19 +165,19 @@ def advance_foi_omp(network: Network, population: Population,
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
 
     cdef double * links_weight = get_double_array_ptr(links.weight)
-    cdef double * plinks_weight = get_double_array_ptr(plinks.weight)
+    cdef double * play_weight = get_double_array_ptr(play.weight)
 
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
     cdef int * links_ito = get_int_array_ptr(links.ito)
 
-    cdef int * plinks_ifrom = get_int_array_ptr(plinks.ifrom)
-    cdef int * plinks_ito = get_int_array_ptr(plinks.ito)
+    cdef int * play_ifrom = get_int_array_ptr(play.ifrom)
+    cdef int * play_ito = get_int_array_ptr(play.ito)
 
     cdef int * wards_begin_p = get_int_array_ptr(wards.begin_p)
     cdef int * wards_end_p = get_int_array_ptr(wards.end_p)
 
     cdef double * links_distance = get_double_array_ptr(links.distance)
-    cdef double * plinks_distance = get_double_array_ptr(plinks.distance)
+    cdef double * play_distance = get_double_array_ptr(play.distance)
 
     cdef double cutoff = params.dyn_dist_cutoff
 
@@ -341,10 +341,10 @@ def advance_foi_omp(network: Network, population: Population,
 
                         while (moving > 0) and (k < end_p):
                             # distributing people across play wards
-                            if plinks_distance[k] < cutoff:
-                                weight = plinks_weight[k]
-                                ifrom = plinks_ifrom[k]
-                                ito = plinks_ito[k]
+                            if play_distance[k] < cutoff:
+                                weight = play_weight[k]
+                                ifrom = play_ifrom[k]
+                                ito = play_ito[k]
 
                                 prob_scaled = weight / (1.0 - cumulative_prob)
                                 cumulative_prob = cumulative_prob + weight
@@ -412,9 +412,9 @@ def advance_foi_serial(network: Network, population: Population,
          are not used by advance_play
     """
 
-    links = network.to_links
+    links = network.links
     wards = network.nodes
-    plinks = network.play
+    play = network.play
     params = network.params
 
     # Copy arguments from Python into C cdef variables
@@ -432,19 +432,19 @@ def advance_foi_serial(network: Network, population: Population,
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
 
     cdef double * links_weight = get_double_array_ptr(links.weight)
-    cdef double * plinks_weight = get_double_array_ptr(plinks.weight)
+    cdef double * play_weight = get_double_array_ptr(play.weight)
 
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
     cdef int * links_ito = get_int_array_ptr(links.ito)
 
-    cdef int * plinks_ifrom = get_int_array_ptr(plinks.ifrom)
-    cdef int * plinks_ito = get_int_array_ptr(plinks.ito)
+    cdef int * play_ifrom = get_int_array_ptr(play.ifrom)
+    cdef int * play_ito = get_int_array_ptr(play.ito)
 
     cdef int * wards_begin_p = get_int_array_ptr(wards.begin_p)
     cdef int * wards_end_p = get_int_array_ptr(wards.end_p)
 
     cdef double * links_distance = get_double_array_ptr(links.distance)
-    cdef double * plinks_distance = get_double_array_ptr(plinks.distance)
+    cdef double * play_distance = get_double_array_ptr(play.distance)
 
     cdef double cutoff = params.dyn_dist_cutoff
 
@@ -570,10 +570,10 @@ def advance_foi_serial(network: Network, population: Population,
 
                         while (moving > 0) and (k < end_p):
                             # distributing people across play wards
-                            if plinks_distance[k] < cutoff:
-                                weight = plinks_weight[k]
-                                ifrom = plinks_ifrom[k]
-                                ito = plinks_ito[k]
+                            if play_distance[k] < cutoff:
+                                weight = play_weight[k]
+                                ifrom = play_ifrom[k]
+                                ito = play_ito[k]
 
                                 prob_scaled = weight / (1.0 - cumulative_prob)
                                 cumulative_prob = cumulative_prob + weight
