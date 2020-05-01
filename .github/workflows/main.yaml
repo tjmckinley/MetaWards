@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [master, devel, fix-windows-tests]
+    branches: [master, devel]
     tags:
     - '*'
   pull_request:
@@ -54,13 +54,10 @@ jobs:
       - name: Clone MetaWards data
         run: git clone https://github.com/metawards/MetaWardsData
       - name: Run tests
-        run: METAWARDSDATA=./MetaWardsData make test
-        if: matrix.config.os == 'ubuntu-latest' || matrix.config.os == 'macos-latest'
-      - name: Run tests (Windows)
-        run: |
-             $env:CYTHONIZE=1; pip install .
-             $env:METAWARDSDATA=".\MetaWardsData"; pytest --cov=metawards --cov-report html:doc/build/html/cov_html tests
-        if: matrix.config.os == 'windows-latest'
+        run: make test
+        env:
+          CYTHONIZE: 1
+          METAWARDSDATA: ./MetaWardsData
       - name: Install packaging requirements
         run: pip install --upgrade setuptools wheel
         if: matrix.python-version == 3.8 && matrix.config.os == 'ubuntu-latest' && contains(github.ref, 'refs/tags/') && github.event_name == 'push'
