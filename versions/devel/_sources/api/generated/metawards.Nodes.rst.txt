@@ -16,8 +16,10 @@ metawards.Nodes
       ~Nodes.__init__
       ~Nodes.assert_not_null
       ~Nodes.assert_valid_index
+      ~Nodes.copy
       ~Nodes.is_null
       ~Nodes.resize
+      ~Nodes.scale_susceptibles
    
    
 

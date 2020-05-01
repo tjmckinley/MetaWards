@@ -317,11 +317,11 @@
              <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load the disease parameters for the specified disease.</span>
 <span class="sd">           This will look for a file called f&quot;{disease}.json&quot;</span>
-<span class="sd">           in the directory f&quot;{repository}/{disease}/{disease}.ncon&quot;</span>
+<span class="sd">           in the directory f&quot;{repository}/{folder}/{disease}.json&quot;</span>
 
 <span class="sd">           By default this will load the ncov (SARS-Cov-2)</span>
 <span class="sd">           parameters from</span>
-<span class="sd">           $HOME/GitHub/model_data/2011Data/diseases/ncov.json</span>
+<span class="sd">           $HOME/GitHub/model_data/diseases/ncov.json</span>
 
 <span class="sd">           Alternatively you can provide the full path to the</span>
 <span class="sd">           json file via the &quot;filename&quot; argument</span>
@@ -395,9 +395,9 @@
                           <span class="n">contrib_foi</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contrib_foi&quot;</span><span class="p">,</span> <span class="p">[]),</span>
                           <span class="n">start_symptom</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start_symptom&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
                           <span class="n">_name</span><span class="o">=</span><span class="n">disease</span><span class="p">,</span>
-                          <span class="n">_authors</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;author(s)&quot;</span><span class="p">],</span>
-                          <span class="n">_contacts</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;contact(s)&quot;</span><span class="p">],</span>
-                          <span class="n">_references</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;reference(s)&quot;</span><span class="p">],</span>
+                          <span class="n">_authors</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;author(s)&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+                          <span class="n">_contacts</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contact(s)&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+                          <span class="n">_references</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reference(s)&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">),</span>
                           <span class="n">_filename</span><span class="o">=</span><span class="n">json_file</span><span class="p">,</span>
                           <span class="n">_repository</span><span class="o">=</span><span class="n">repository</span><span class="p">,</span>
                           <span class="n">_repository_branch</span><span class="o">=</span><span class="n">repository_branch</span><span class="p">,</span>

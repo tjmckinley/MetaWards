@@ -204,15 +204,17 @@
         <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span>
 
 
-<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../api/generated/metawards.app.parse_args.html#metawards.app.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Parse all of the command line arguments&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">argparse</span>
     <span class="kn">import</span> <span class="nn">sys</span>
 
+    <span class="n">metawards_url</span> <span class="o">=</span> <span class="s2">&quot;https://metawards.github.io&quot;</span>
+
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
-                    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MetaWards epidemic modelling - see &quot;</span>
-                                <span class="s2">&quot;https://github.com/metawards/metawards &quot;</span>
-                                <span class="s2">&quot;for more information&quot;</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;MetaWards epidemic modelling - see &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metawards_url</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;for more information&quot;</span><span class="p">,</span>
                     <span class="n">prog</span><span class="o">=</span><span class="s2">&quot;metawards&quot;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
@@ -272,6 +274,13 @@
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the input model data set for the &quot;</span>
                              <span class="s2">&quot;network (default is &#39;2011Data&#39;)&quot;</span><span class="p">)</span>
 
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-D&#39;</span><span class="p">,</span> <span class="s1">&#39;--demographics&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the demographics file that provides &quot;</span>
+                             <span class="s2">&quot;information about how a population is modelled &quot;</span>
+                             <span class="s2">&quot;as multiple demographics. If this is not &quot;</span>
+                             <span class="s2">&quot;supplied then the population is modelled &quot;</span>
+                             <span class="s2">&quot;as a single demographic&quot;</span><span class="p">)</span>
+
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--start-date&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Date of the start of the model outbreak. &quot;</span>
                              <span class="s2">&quot;This accepts dates either is iso-format, &quot;</span>
@@ -318,16 +327,28 @@
                              <span class="s2">&quot;custom integrators or custom extractors.&quot;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--iterator&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the iterator to use to advance the &quot;</span>
-                             <span class="s2">&quot;outbreak at each step (day). For a full &quot;</span>
-                             <span class="s2">&quot;explanation see the tutorial at &quot;</span>
-                             <span class="s2">&quot;https://metawards.github.io&quot;</span><span class="p">)</span>
+                        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Name of the iterator to use to advance the &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;outbreak at each step (day). For a full &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;explanation see the tutorial at &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metawards_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--extractor&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of the extractor to use to extract &quot;</span>
-                             <span class="s2">&quot;information during a model run. For a full &quot;</span>
-                             <span class="s2">&quot;explanation see the tutorial at &quot;</span>
-                             <span class="s2">&quot;https://metawards.github.io&quot;</span><span class="p">)</span>
+                        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Name of the extractor to use to extract &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;information during a model run. For a full &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;explanation see the tutorial at &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metawards_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--mixer&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Name of the mixer to use to mix information &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;from multiple demographics together during &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;a model run. For a full explanation see &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;the tutorial at </span><span class="si">{</span><span class="n">metawards_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--mover&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Name of the mover to use to move the &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;population between demographics during &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;a model run. For a full explanation see &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;the tutorial at </span><span class="si">{</span><span class="n">metawards_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--UV&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Value for the UV parameter for the model &quot;</span>
@@ -417,7 +438,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">get_version_string</span><span class="p">())</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">get_hostfile</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -444,7 +465,7 @@
     <span class="k">return</span> <span class="kc">None</span>
 
 
-<span class="k">def</span> <span class="nf">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cores_per_node"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_cores_per_node.html#metawards.app.get_cores_per_node">[docs]</a><span class="k">def</span> <span class="nf">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the number of cores per node in the cluster&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cores_per_node</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">cores_per_node</span>
@@ -462,7 +483,7 @@
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must specify the number of cores per node &quot;</span>
                      <span class="s2">&quot;using --cores-per-node or by setting the &quot;</span>
-                     <span class="s2">&quot;environment variable METAWARDS_CORES_PER_NODE&quot;</span><span class="p">)</span>
+                     <span class="s2">&quot;environment variable METAWARDS_CORES_PER_NODE&quot;</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -490,7 +511,7 @@
                      <span class="s2">&quot;or OMP_NUM_THREADS&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="scoop_supervisor"><a class="viewcode-back" href="../../../api/generated/metawards.app.scoop_supervisor.html#metawards.app.scoop_supervisor">[docs]</a><span class="k">def</span> <span class="nf">scoop_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">scoop_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Function used by the scoop supervisor to get the information needed to</span>
 <span class="sd">       form the scoop call to run a scoop version of the program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -589,10 +610,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scoop processes completed successfully&quot;</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scoop processes completed successfully&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="mpi_supervisor"><a class="viewcode-back" href="../../../api/generated/metawards.app.mpi_supervisor.html#metawards.app.mpi_supervisor">[docs]</a><span class="k">def</span> <span class="nf">mpi_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">mpi_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Function used by the MPI supervisor to get the information needed to</span>
 <span class="sd">       form the mpiexec call to run an MPI version of the program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -708,10 +729,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MPI processes completed successfully&quot;</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MPI processes completed successfully&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
+<div class="viewcode-block" id="cli"><a class="viewcode-back" href="../../../api/generated/metawards.app.cli.html#metawards.app.cli">[docs]</a><span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Main function for the command line interface. This does one of three</span>
 <span class="sd">       things:</span>
 
@@ -796,7 +817,8 @@
     <span class="n">should_run</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">repeats</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">disease</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">additional</span><span class="p">,</span>
-                <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">iterator</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">extractor</span><span class="p">]:</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">iterator</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">extractor</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">demographics</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">mixer</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">mover</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">should_run</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">break</span>
@@ -1047,6 +1069,13 @@
                             <span class="n">max_links</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">max_links</span><span class="p">,</span>
                             <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">demographics</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">Demographics</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Specialising the network into different demographics:&quot;</span><span class="p">)</span>
+        <span class="n">demographics</span> <span class="o">=</span> <span class="n">Demographics</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">demographics</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">demographics</span><span class="p">)</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">specialise</span><span class="p">(</span><span class="n">demographics</span><span class="p">)</span>
+
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Run the model...&quot;</span><span class="p">)</span>
     <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">OutputFiles</span>
     <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">run_models</span>
@@ -1085,6 +1114,18 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">extractor</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">mixer</span><span class="p">:</span>
+        <span class="n">mixer</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">mixer</span>
+        <span class="c1"># also see above :-)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mixer</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">mover</span><span class="p">:</span>
+        <span class="n">mover</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">mover</span>
+        <span class="c1"># also see above :-)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mover</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="k">with</span> <span class="n">OutputFiles</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">force_empty</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">force_overwrite_output</span><span class="p">,</span>
                      <span class="n">auto_bzip</span><span class="o">=</span><span class="n">auto_bzip</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_dir</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">run_models</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
@@ -1094,6 +1135,8 @@
                             <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
                             <span class="n">iterator</span><span class="o">=</span><span class="n">iterator</span><span class="p">,</span>
                             <span class="n">extractor</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span>
+                            <span class="n">mixer</span><span class="o">=</span><span class="n">mixer</span><span class="p">,</span>
+                            <span class="n">mover</span><span class="o">=</span><span class="n">mover</span><span class="p">,</span>
                             <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="n">parallel_scheme</span><span class="o">=</span><span class="n">parallel_scheme</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1147,10 +1190,12 @@
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;End of the run&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">multiprocessing</span>
+    <span class="n">multiprocessing</span><span class="o">.</span><span class="n">freeze_support</span><span class="p">()</span>  <span class="c1"># needed to stop fork bombs</span>
     <span class="n">cli</span><span class="p">()</span>
 
 <span class="k">else</span><span class="p">:</span>

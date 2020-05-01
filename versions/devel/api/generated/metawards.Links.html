@@ -229,11 +229,17 @@ This should improve speed of loading and access.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.Links.assert_valid_index" title="metawards.Links.assert_valid_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_valid_index</span></code></a>(i)</td>
 <td>Assert that the passed index ‘i’ is valid for this collection.</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_null</span></code>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Links.copy" title="metawards.Links.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</td>
+<td>Return a copy of these links, using a shallow copy for things that stay the same (e.g.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_null</span></code>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Links.resize" title="metawards.Links.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize</span></code></a>(N)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Links.resize" title="metawards.Links.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize</span></code></a>(N)</td>
 <td>Resize this container to hold ‘N’ links.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Links.scale_susceptibles" title="metawards.Links.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio)</td>
+<td>Scale the number of susceptibles in these Links by the passed scale ratio.</td>
 </tr>
 </tbody>
 </table>
@@ -252,6 +258,15 @@ so that “-1” refers to the last link in the collection</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="metawards.Links.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_links.html#Links.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Links.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of these links, using a shallow copy for
+things that stay the same (e.g. ifrom, ito, distance)
+and a deep copy for things that are variable
+(e.g. weight and suscept)</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.Links.resize">
 <code class="descname">resize</code><span class="sig-paren">(</span><em>N: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_links.html#Links.resize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Links.resize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resize this container to hold ‘N’ links. This will expand
@@ -260,6 +275,30 @@ contract the container (deleting excess links) if ‘N’
 is less than len(self). This function is called typically
 when you pre-allocate a large Links container, and then
 want to reduce the size to fit the number of loaded links</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Links.scale_susceptibles">
+<code class="descname">scale_susceptibles</code><span class="sig-paren">(</span><em>ratio: any = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_links.html#Links.scale_susceptibles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Links.scale_susceptibles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale the number of susceptibles in these Links
+by the passed scale ratio. This can be a value, e.g.
+ratio = 2.0 will scale the total number of susceptibles
+by 2.0. This can also be lists of values,
+where ward[i] will be scaled by ratio[i]. They can also
+be dictionaries, e.g. ward[i] scaled by ratio[i]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ratio</strong> (<em>None</em><em>, </em><em>float</em><em>, </em><em>list</em><em> or </em><em>dict</em>) – The amount by which to scale the total population of
+susceptibles - evenly scales the work and play populations</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

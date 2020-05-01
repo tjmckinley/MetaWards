@@ -188,25 +188,22 @@
 <span class="k">class</span> <span class="nc">Network</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This class represents a network of wards. The network comprises</span>
 <span class="sd">       nodes (representing wards), connected with links which represent</span>
-<span class="sd">       work (predictable) links. There are also additional links for</span>
-<span class="sd">       play (unpredictable/random) and weekend</span>
+<span class="sd">       work (predictable movements) and play (unpredictable movements)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: The list of nodes (wards) in the network</span>
     <span class="n">nodes</span><span class="p">:</span> <span class="n">Nodes</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1">#: The links between nodes (work)</span>
-    <span class="n">to_links</span><span class="p">:</span> <span class="n">Links</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Links</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1">#: The links between nodes (play)</span>
     <span class="n">play</span><span class="p">:</span> <span class="n">Links</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1">#: The links between nodes (weekend)</span>
-    <span class="n">weekend</span><span class="p">:</span> <span class="n">Links</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1">#: The number of nodes in the network</span>
     <span class="n">nnodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="c1">#: The number of links in the network</span>
     <span class="n">nlinks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="c1">#: The number of play links in the network</span>
-    <span class="n">plinks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">nplay</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="c1">#: The maximum allowable number of nodes in the network</span>
     <span class="n">max_nodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16384</span>
@@ -397,15 +394,19 @@
         <span class="n">reset_everything</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Network.update"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
-               <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+               <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+               <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update this network with a new set of parameters.</span>
 <span class="sd">           This is used to update the parameters for the network</span>
 <span class="sd">           for a new run. The network will be reset</span>
 <span class="sd">           and ready for a new run.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">Profiler</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">Profiler</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">profiler</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">profiler</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">Profiler</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">Profiler</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">NullProfiler</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">NullProfiler</span><span class="p">()</span>
@@ -428,7 +429,7 @@
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">profile</span> <span class="ow">and</span> <span class="p">(</span><span class="n">profiler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Network.rescale_play_matrix"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.rescale_play_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">rescale_play_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -444,6 +445,62 @@
         <span class="n">move_population_from_play_to_work</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
                                           <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Network.specialise"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.specialise">[docs]</a>    <span class="k">def</span> <span class="nf">specialise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demographic</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a copy of this network that has been specialised</span>
+<span class="sd">           for the passed demographic. The returned network will</span>
+<span class="sd">           contain only members of that demographic, with the</span>
+<span class="sd">           parameters of the network adjusted according to the rules</span>
+<span class="sd">           of that demographic</span>
+
+<span class="sd">           Parameters</span>
+<span class="sd">           ----------</span>
+<span class="sd">           demographic: Demographic</span>
+<span class="sd">             The demographic with which to specialise</span>
+
+<span class="sd">           Returns</span>
+<span class="sd">           -------</span>
+<span class="sd">           network: Network</span>
+<span class="sd">             The specialised network</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">demographic</span><span class="o">.</span><span class="n">specialise</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Network.scale_susceptibles"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.scale_susceptibles">[docs]</a>    <span class="k">def</span> <span class="nf">scale_susceptibles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ratio</span><span class="p">:</span> <span class="nb">any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">work_ratio</span><span class="p">:</span> <span class="nb">any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">play_ratio</span><span class="p">:</span> <span class="nb">any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scale the number of susceptibles in this Network</span>
+<span class="sd">           by the passed scale ratios. These can be values, e.g.</span>
+<span class="sd">           ratio = 2.0 will scale the total number of susceptibles</span>
+<span class="sd">           in each ward by 2.0. They can also be lists of values,</span>
+<span class="sd">           where ward[i] will be scaled by ratio[i]. They can also</span>
+<span class="sd">           be dictionaries, e.g. ward[i] scaled by ratio[i]</span>
+
+<span class="sd">           Parameters</span>
+<span class="sd">           ----------</span>
+<span class="sd">           ratio: None, float, list or dict</span>
+<span class="sd">             The amount by which to scale the total population of</span>
+<span class="sd">             susceptibles - evenly scales the work and play populations</span>
+<span class="sd">           work_ratio: None, float, list or dict</span>
+<span class="sd">             Scale only the work population of susceptibles</span>
+<span class="sd">           play_ratio: None, float, list or dict</span>
+<span class="sd">             Scale only the play population of susceptibles</span>
+
+<span class="sd">           Returns</span>
+<span class="sd">           -------</span>
+<span class="sd">           None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">work_ratio</span> <span class="o">=</span> <span class="n">ratio</span>
+            <span class="n">play_ratio</span> <span class="o">=</span> <span class="n">ratio</span>
+
+        <span class="k">if</span> <span class="n">work_ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">scale_susceptibles</span><span class="p">(</span><span class="n">work_ratio</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">play_ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">play</span><span class="o">.</span><span class="n">scale_susceptibles</span><span class="p">(</span><span class="n">play_ratio</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">scale_susceptibles</span><span class="p">(</span><span class="n">work_ratio</span><span class="o">=</span><span class="n">work_ratio</span><span class="p">,</span>
+                                      <span class="n">play_ratio</span><span class="o">=</span><span class="n">play_ratio</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Network.run"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
             <span class="n">output_dir</span><span class="p">:</span> <span class="n">OutputFiles</span><span class="p">,</span>
             <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -453,6 +510,8 @@
             <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">iterator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">mixer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">mover</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run the model simulation for the passed population.</span>
 <span class="sd">           The random number seed is given in &#39;seed&#39;. If this</span>
@@ -496,6 +555,12 @@
 <span class="sd">           extractor: function</span>
 <span class="sd">             Function that is called at each iteration to get the functions</span>
 <span class="sd">             that are used to extract data for analysis or writing to files</span>
+<span class="sd">           mixer: function</span>
+<span class="sd">             Function that is used to mix demographic data. Not used</span>
+<span class="sd">             by a single Network (used by Networks)</span>
+<span class="sd">           mover: function</span>
+<span class="sd">             Function that is used to move the population between different</span>
+<span class="sd">             demographics. Not used by a single Network (used by Networks)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create the random number generator</span>
         <span class="kn">from</span> <span class="nn">.utils._ran_binomial</span> <span class="kn">import</span> <span class="n">seed_ran_binomial</span><span class="p">,</span> <span class="n">ran_binomial</span>

@@ -174,6 +174,7 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span> <span class="k">as</span> <span class="n">_dataclass</span>
 
 <span class="kn">from</span> <span class="nn">._network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">._networks</span> <span class="kn">import</span> <span class="n">Networks</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Infections&quot;</span><span class="p">]</span>
 
@@ -192,18 +193,64 @@
     <span class="c1">#: of int arrays, size play[N_INF_CLASSES][nnodes+1]</span>
     <span class="n">play</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="c1">#: The work infections for each of the subnets of a Networks that</span>
+    <span class="c1">#: models multiple demographics</span>
+    <span class="n">sub_works</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The play infections for each of the subnets of a Networks that</span>
+    <span class="c1">#: models multiple demographics</span>
+    <span class="n">sub_plays</span> <span class="o">=</span> <span class="kc">None</span>
+
 <div class="viewcode-block" id="Infections.build"><a class="viewcode-back" href="../../api/generated/metawards.Infections.html#metawards.Infections.build">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">networks</span><span class="p">:</span> <span class="n">Networks</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct and return the Infections object that will track</span>
-<span class="sd">           infections during a model run on the passed Network</span>
+<span class="sd">           infections during a model run on the passed Network (or Networks)</span>
+
+<span class="sd">           Parameters</span>
+<span class="sd">           ----------</span>
+<span class="sd">           network: Network</span>
+<span class="sd">             A single network that will be run</span>
+<span class="sd">           networks: Networks</span>
+<span class="sd">             The full set of networks with multiple demographics</span>
+
+<span class="sd">           Returns</span>
+<span class="sd">           -------</span>
+<span class="sd">           infections: Infections</span>
+<span class="sd">             The space for the work and play infections for the network</span>
+<span class="sd">             (including space for all of the demographics)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">initialise_infections</span><span class="p">,</span> <span class="n">initialise_play_infections</span>
 
-        <span class="n">inf</span> <span class="o">=</span> <span class="n">Infections</span><span class="p">()</span>
-        <span class="n">inf</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="n">initialise_infections</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">)</span>
-        <span class="n">inf</span><span class="o">.</span><span class="n">play</span> <span class="o">=</span> <span class="n">initialise_play_infections</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">network</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">network</span> <span class="o">=</span> <span class="n">networks</span>
+        <span class="k">elif</span> <span class="n">networks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pass one of network or networks - not both!&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">inf</span></div>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">Network</span><span class="p">):</span>
+            <span class="n">inf</span> <span class="o">=</span> <span class="n">Infections</span><span class="p">()</span>
+            <span class="n">inf</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="n">initialise_infections</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">)</span>
+            <span class="n">inf</span><span class="o">.</span><span class="n">play</span> <span class="o">=</span> <span class="n">initialise_play_infections</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">inf</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">networks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">networks</span> <span class="o">=</span> <span class="n">network</span>
+
+            <span class="n">inf</span> <span class="o">=</span> <span class="n">Infections</span><span class="p">()</span>
+            <span class="n">inf</span><span class="o">.</span><span class="n">work</span> <span class="o">=</span> <span class="n">initialise_infections</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">networks</span><span class="o">.</span><span class="n">overall</span><span class="p">)</span>
+            <span class="n">inf</span><span class="o">.</span><span class="n">play</span> <span class="o">=</span> <span class="n">initialise_play_infections</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">networks</span><span class="o">.</span><span class="n">overall</span><span class="p">)</span>
+
+            <span class="n">works</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">plays</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">subnet</span> <span class="ow">in</span> <span class="n">networks</span><span class="o">.</span><span class="n">subnets</span><span class="p">:</span>
+                <span class="n">works</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">initialise_infections</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">subnet</span><span class="p">))</span>
+                <span class="n">plays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">initialise_play_infections</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">subnet</span><span class="p">))</span>
+
+            <span class="n">inf</span><span class="o">.</span><span class="n">sub_works</span> <span class="o">=</span> <span class="n">works</span>
+            <span class="n">inf</span><span class="o">.</span><span class="n">sub_plays</span> <span class="o">=</span> <span class="n">plays</span>
+
+            <span class="k">return</span> <span class="n">inf</span></div>
 
 <div class="viewcode-block" id="Infections.clear"><a class="viewcode-back" href="../../api/generated/metawards.Infections.html#metawards.Infections.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear all of the infections (resets all to zero)</span>
@@ -215,7 +262,15 @@
 <span class="sd">             of threads to use</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">clear_all_infections</span>
-        <span class="n">clear_all_infections</span><span class="p">(</span><span class="n">infections</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span></div></div>
+        <span class="n">clear_all_infections</span><span class="p">(</span><span class="n">infections</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">work</span><span class="p">,</span>
+                             <span class="n">play_infections</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">play</span><span class="p">,</span>
+                             <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_works</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_works</span><span class="p">)):</span>
+                <span class="n">clear_all_infections</span><span class="p">(</span><span class="n">infections</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_works</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                     <span class="n">play_infections</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_plays</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                     <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

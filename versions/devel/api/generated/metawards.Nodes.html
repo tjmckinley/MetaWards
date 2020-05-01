@@ -229,11 +229,17 @@ This should improve speed of loading and access.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.Nodes.assert_valid_index" title="metawards.Nodes.assert_valid_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_valid_index</span></code></a>(i)</td>
 <td>Assert that the passed index ‘i’ is valid for this collection.</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_null</span></code>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Nodes.copy" title="metawards.Nodes.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</td>
+<td>Return a copy of this network, using deep copies for things which are variable, but shallow copies for things which should stay the same (e.g.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_null</span></code>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Nodes.resize" title="metawards.Nodes.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize</span></code></a>(N)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Nodes.resize" title="metawards.Nodes.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize</span></code></a>(N)</td>
 <td>Resize this container to hold ‘N’ nodes.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Nodes.scale_susceptibles" title="metawards.Nodes.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio,&nbsp;work_ratio,&nbsp;play_ratio)</td>
+<td>Scale the number of susceptibles in these Nodes by the passed scale ratios.</td>
 </tr>
 </tbody>
 </table>
@@ -252,6 +258,18 @@ so that “-1” refers to the last node in the collection</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="metawards.Nodes.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_nodes.html#Nodes.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of this network, using deep copies for things
+which are variable, but shallow copies for things which
+should stay the same (e.g. x and y). This copy assumes that
+you are not changing the actual links between nodes, e.g.
+it shallow-copies label, begin_to, end_to, self_w, begin_p, end_p
+and self_p. If you are changing the links then you will
+need to recreate these arrays.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.Nodes.resize">
 <code class="descname">resize</code><span class="sig-paren">(</span><em>N: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_nodes.html#Nodes.resize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.resize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resize this container to hold ‘N’ nodes. This will expand
@@ -260,6 +278,37 @@ contract the container (deleting excess nodes) if ‘N’
 is less than len(self). This function is called typically
 when you pre-allocate a large Nodes container, and then
 want to reduce the size to fit the number of loaded nodes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Nodes.scale_susceptibles">
+<code class="descname">scale_susceptibles</code><span class="sig-paren">(</span><em>ratio: any = None</em>, <em>work_ratio: any = None</em>, <em>play_ratio: any = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_nodes.html#Nodes.scale_susceptibles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.scale_susceptibles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale the number of susceptibles in these Nodes
+by the passed scale ratios. These can be values, e.g.
+ratio = 2.0 will scale the total number of susceptibles
+in each ward by 2.0. They can also be lists of values,
+where ward[i] will be scaled by ratio[i]. They can also
+be dictionaries, e.g. ward[i] scaled by ratio[i]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ratio</strong> (<em>None</em><em>, </em><em>float</em><em>, </em><em>list</em><em> or </em><em>dict</em>) – The amount by which to scale the total population of
+susceptibles - evenly scales the work and play populations</li>
+<li><strong>work_ratio</strong> (<em>None</em><em>, </em><em>float</em><em>, </em><em>list</em><em> or </em><em>dict</em>) – Scale only the work population of susceptibles</li>
+<li><strong>play_ratio</strong> (<em>None</em><em>, </em><em>float</em><em>, </em><em>list</em><em> or </em><em>dict</em>) – Scale only the play population of susceptibles</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

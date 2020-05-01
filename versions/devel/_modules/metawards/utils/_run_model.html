@@ -178,9 +178,6 @@
 <span class="kn">from</span> <span class="nn">.._population</span> <span class="kn">import</span> <span class="n">Population</span><span class="p">,</span> <span class="n">Populations</span>
 <span class="kn">from</span> <span class="nn">._profiler</span> <span class="kn">import</span> <span class="n">Profiler</span><span class="p">,</span> <span class="n">NullProfiler</span>
 <span class="kn">from</span> <span class="nn">._iterate</span> <span class="kn">import</span> <span class="n">iterate</span>
-<span class="kn">from</span> <span class="nn">..iterators._iterate_default</span> <span class="kn">import</span> <span class="n">iterate_default</span>
-<span class="kn">from</span> <span class="nn">..extractors._extract_default</span> <span class="kn">import</span> <span class="n">extract_default</span>
-<span class="kn">from</span> <span class="nn">._clear_all_infections</span> <span class="kn">import</span> <span class="n">clear_all_infections</span>
 <span class="kn">from</span> <span class="nn">._extract</span> <span class="kn">import</span> <span class="n">extract</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;run_model&quot;</span><span class="p">]</span>
@@ -196,7 +193,9 @@
               <span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">iterator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+              <span class="n">extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">mixer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">mover</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Actually run the model... Real work happens here. The model</span>
 <span class="sd">       will run until completion or until &#39;nsteps&#39; have been</span>
 <span class="sd">       completed (whichever happens first)</span>
@@ -240,6 +239,12 @@
 <span class="sd">            Function that will be used to dynamically get the functions</span>
 <span class="sd">            that will be used at each iteration to extract data from</span>
 <span class="sd">            the model run</span>
+<span class="sd">        mixer: function</span>
+<span class="sd">            Function that will mix data from multiple demographics</span>
+<span class="sd">            so that this is shared during a model run</span>
+<span class="sd">        mover: function</span>
+<span class="sd">            Function that can move the population between different</span>
+<span class="sd">            demographics</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -247,16 +252,32 @@
 <span class="sd">            The trajectory of the population for every day of the model run</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">iterator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..iterators</span> <span class="kn">import</span> <span class="n">iterate_default</span>
         <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterate_default</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">..iterators._iterate_custom</span> <span class="kn">import</span> <span class="n">build_custom_iterator</span>
         <span class="n">iterator</span> <span class="o">=</span> <span class="n">build_custom_iterator</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">extractor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..extractors</span> <span class="kn">import</span> <span class="n">extract_default</span>
         <span class="n">extractor</span> <span class="o">=</span> <span class="n">extract_default</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">..extractors._extract_custom</span> <span class="kn">import</span> <span class="n">build_custom_extractor</span>
         <span class="n">extractor</span> <span class="o">=</span> <span class="n">build_custom_extractor</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mixer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..mixers</span> <span class="kn">import</span> <span class="n">mix_default</span>
+        <span class="n">mixer</span> <span class="o">=</span> <span class="n">mix_default</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mixer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..mixers._mix_custom</span> <span class="kn">import</span> <span class="n">build_custom_mixer</span>
+        <span class="n">mixer</span> <span class="o">=</span> <span class="n">build_custom_mixer</span><span class="p">(</span><span class="n">mixer</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mover</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..movers</span> <span class="kn">import</span> <span class="n">move_default</span>
+        <span class="n">mover</span> <span class="o">=</span> <span class="n">move_default</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mover</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..movers._move_custom</span> <span class="kn">import</span> <span class="n">build_custom_mover</span>
+        <span class="n">mover</span> <span class="o">=</span> <span class="n">build_custom_mover</span><span class="p">(</span><span class="n">mover</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">profiler</span><span class="p">:</span>
@@ -332,6 +353,33 @@
         <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;timing for day </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">start_population</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">population</span>
+
+        <span class="c1"># ideally should be split over the four stages of the day</span>
+        <span class="c1">#</span>
+        <span class="c1"># 1. changing the size of the population directly, e.g. seeding</span>
+        <span class="c1">#    infections, moving population between demographics etc.</span>
+        <span class="c1">#</span>
+        <span class="c1"># 2. calculating force of infections</span>
+        <span class="c1">#</span>
+        <span class="c1"># 3. using fois to advance the outbreak</span>
+        <span class="c1">#</span>
+        <span class="c1"># 4. combining together all results and (optionally) saving to file</span>
+        <span class="c1">#</span>
+        <span class="c1"># (then, stage 0 could be setup, replacing the setup flag)</span>
+
+        <span class="c1"># iterate(stage1)  - import, additional</span>
+
+        <span class="c1"># mover(stage1)    - move between demograpics</span>
+
+        <span class="c1"># iterate(stage2)  - calculate fois etc.</span>
+
+        <span class="c1"># mixer(stage2)    - merge together fois etc.</span>
+
+        <span class="c1"># iterate(stage3)  - advance play, work etc.</span>
+
+        <span class="c1"># mixer(stage4)    - merge together all infections/play into overall</span>
+
+        <span class="c1"># extract(stage4)  - extract overall, or even subnets</span>
 
         <span class="n">iterate</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
                 <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span>

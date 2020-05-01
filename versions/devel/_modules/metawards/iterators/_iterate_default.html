@@ -183,7 +183,7 @@
     <span class="k">return</span> <span class="s2">&quot;setup&quot;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span></div>
 
 
-<div class="viewcode-block" id="iterate_default"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.iterate_default.html#metawards.iterators.iterate_default">[docs]</a><span class="k">def</span> <span class="nf">iterate_default</span><span class="p">(</span><span class="n">setup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">iterate_default</span><span class="p">(</span><span class="n">setup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This returns the default list of &#39;advance_XXX&#39; functions that</span>
 <span class="sd">       are called in sequence for each iteration of the model run.</span>
 <span class="sd">       This is the default iterator. It models every day as though</span>
@@ -220,7 +220,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">funcs</span> <span class="o">=</span> <span class="n">iterate_core</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="n">iterate_weekday</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">funcs</span></div>
+    <span class="k">return</span> <span class="n">funcs</span>
 </pre></div>
 
            </div>

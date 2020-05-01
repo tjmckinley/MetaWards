@@ -232,7 +232,7 @@
             <span class="k">return</span> <span class="n">s</span></div>
 
 
-<div class="viewcode-block" id="Populations"><a class="viewcode-back" href="../../api/generated/metawards.Populations.html#metawards.Populations">[docs]</a><span class="nd">@_dataclass</span>
+<span class="nd">@_dataclass</span>
 <span class="k">class</span> <span class="nc">Populations</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This class holds the trajectory of Population objects recorded</span>
 <span class="sd">       for every step (day) of a model outbreak</span>
@@ -259,7 +259,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Populations.append"><a class="viewcode-back" href="../../api/generated/metawards.Populations.html#metawards.Populations.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Append the next step in the trajectory.</span>
 
 <span class="sd">           Parameters</span>
@@ -273,7 +273,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_deepcopy</span><span class="p">(</span><span class="n">population</span><span class="p">))</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_deepcopy</span><span class="p">(</span><span class="n">population</span><span class="p">))</span>
 </pre></div>
 
            </div>

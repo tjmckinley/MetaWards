@@ -203,7 +203,7 @@
 <h1>metawards.utils.run_models<a class="headerlink" href="#metawards-utils-run-models" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.run_models">
-<code class="descclassname">metawards.utils.</code><code class="descname">run_models</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>variables: metawards._variableset.VariableSets</em>, <em>population: metawards._population.Population</em>, <em>nprocs: int</em>, <em>nthreads: int</em>, <em>seed: int</em>, <em>nsteps: int</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>iterator: str</em>, <em>extractor: str</em>, <em>profile: bool</em>, <em>parallel_scheme: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_runner.html#run_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_models" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">run_models</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>variables: metawards._variableset.VariableSets</em>, <em>population: metawards._population.Population</em>, <em>nprocs: int</em>, <em>nthreads: int</em>, <em>seed: int</em>, <em>nsteps: int</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>iterator: str</em>, <em>extractor: str</em>, <em>mixer: str</em>, <em>mover: str</em>, <em>profile: bool</em>, <em>parallel_scheme: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_runner.html#run_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_models" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run all of the models on the passed Network that are described
 by the passed VariableSets</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -226,6 +226,9 @@ will run until the outbreak is over if this is None</li>
 output should be placed</li>
 <li><strong>iterator</strong> (<em>str</em>) – Iterator to load that will be used to iterate the outbreak</li>
 <li><strong>extractor</strong> (<em>str</em>) – Extractor to load that will be used to extract information</li>
+<li><strong>mixer</strong> (<em>str</em>) – Mixer to load that will be used to mix demographic data</li>
+<li><strong>mover</strong> (<em>str</em>) – Mover to load that will be used to move the population between
+different demographics</li>
 <li><strong>profile</strong> (<em>bool</em>) – Whether or not to profile the model run and print out live
 timing (useful for performance debugging)</li>
 <li><strong>parallel_scheme</strong> (<em>str</em>) – Which parallel scheme (multiprocessing, mpi4py or scoop) to use

@@ -26,6 +26,8 @@ metawards.Infections
    .. autosummary::
    
       ~Infections.play
+      ~Infections.sub_plays
+      ~Infections.sub_works
       ~Infections.work
    
    

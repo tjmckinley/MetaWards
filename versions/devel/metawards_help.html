@@ -195,18 +195,19 @@
 <p>The full set of command line options for metawards is below;</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: metawards [-h] [--version] [-i INPUT] [-l [LINE [LINE ...]]]
                  [-r REPEATS] [-s SEED] [-a [ADDITIONAL [ADDITIONAL ...]]]
-                 [-o OUTPUT] [-d DISEASE] [-m MODEL] [--start-date START_DATE]
-                 [--start-day START_DAY] [-p PARAMETERS] [-R REPOSITORY]
-                 [-P POPULATION] [-n NSTEPS] [-u USER_VARIABLES]
-                 [--iterator ITERATOR] [--extractor EXTRACTOR] [--UV UV]
-                 [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
-                 [--cores-per-node CORES_PER_NODE] [--auto-bzip]
-                 [--no-auto-bzip] [--force-overwrite-output]
+                 [-o OUTPUT] [-d DISEASE] [-m MODEL] [-D DEMOGRAPHICS]
+                 [--start-date START_DATE] [--start-day START_DAY]
+                 [-p PARAMETERS] [-R REPOSITORY] [-P POPULATION] [-n NSTEPS]
+                 [-u USER_VARIABLES] [--iterator ITERATOR]
+                 [--extractor EXTRACTOR] [--mixer MIXER] [--mover MOVER]
+                 [--UV UV] [--nthreads NTHREADS] [--nprocs NPROCS]
+                 [--hostfile HOSTFILE] [--cores-per-node CORES_PER_NODE]
+                 [--auto-bzip] [--no-auto-bzip] [--force-overwrite-output]
                  [--max-nodes MAX_NODES] [--max-links MAX_LINKS] [--profile]
                  [--no-profile] [--mpi] [--scoop]
 
-MetaWards epidemic modelling - see https://github.com/metawards/metawards for
-more information
+MetaWards epidemic modelling - see https://metawards.github.io for more
+information
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -247,6 +248,11 @@ optional arguments:
   -m MODEL, --model MODEL
                         Name of the input model data set for the network
                         (default is &#39;2011Data&#39;)
+  -D DEMOGRAPHICS, --demographics DEMOGRAPHICS
+                        Name of the demographics file that provides
+                        information about how a population is modelled as
+                        multiple demographics. If this is not supplied then
+                        the population is modelled as a single demographic
   --start-date START_DATE
                         Date of the start of the model outbreak. This accepts
                         dates either is iso-format, or fuzzy dates such as
@@ -287,6 +293,14 @@ optional arguments:
                         Name of the extractor to use to extract information
                         during a model run. For a full explanation see the
                         tutorial at https://metawards.github.io
+  --mixer MIXER         Name of the mixer to use to mix information from
+                        multiple demographics together during a model run. For
+                        a full explanation see the tutorial at
+                        https://metawards.github.io
+  --mover MOVER         Name of the mover to use to move the population
+                        between demographics during a model run. For a full
+                        explanation see the tutorial at
+                        https://metawards.github.io
   --UV UV               Value for the UV parameter for the model (default is
                         0.0)
   --nthreads NTHREADS   Number of threads over which parallelise an individual

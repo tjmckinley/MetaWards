@@ -179,18 +179,23 @@
 <div class="viewcode-block" id="Link"><a class="viewcode-back" href="../../api/generated/metawards.Link.html#metawards.Link">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Link</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This is a link between nodes in the network&quot;&quot;&quot;</span>
-    <span class="n">ifrom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>        <span class="c1"># integers (indexes) of origins and destinations</span>
+
+    <span class="c1">#: Index of the origin node (ward)</span>
+    <span class="n">ifrom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: Index of the destination node (ward)</span>
     <span class="n">ito</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>     <span class="c1"># weight of link, used to save the original</span>
-                             <span class="c1"># number of susceptibles in work matrix</span>
+    <span class="c1">#: Weight of the link, used to save the original number</span>
+    <span class="c1">#: of susceptibles in the work matrix</span>
+    <span class="n">weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">suscept</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>    <span class="c1"># number of susceptibles in the case of the</span>
-                             <span class="c1"># work matrix. Used to save the weight of</span>
-                             <span class="c1"># the play matrix</span>
+    <span class="c1">#: Number of susceptibles in the case of the work matrix. Used</span>
+    <span class="c1">#: to save the weight of the play matrix</span>
+    <span class="n">suscept</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>   <span class="c1"># the distance between two wards</span>
-    <span class="n">A</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>            <span class="c1"># Age index...</span></div>
+    <span class="c1">#: The distance between the two wards connected by this link</span>
+    <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span></div>
 </pre></div>
 
            </div>

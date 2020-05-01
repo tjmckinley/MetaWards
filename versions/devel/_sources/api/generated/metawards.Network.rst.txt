@@ -23,6 +23,8 @@ metawards.Network
       ~Network.rescale_play_matrix
       ~Network.reset_everything
       ~Network.run
+      ~Network.scale_susceptibles
+      ~Network.specialise
       ~Network.update
    
    
@@ -34,16 +36,15 @@ metawards.Network
    .. autosummary::
    
       ~Network.info
+      ~Network.links
       ~Network.max_links
       ~Network.max_nodes
       ~Network.nlinks
       ~Network.nnodes
       ~Network.nodes
+      ~Network.nplay
       ~Network.params
       ~Network.play
-      ~Network.plinks
-      ~Network.to_links
       ~Network.to_seed
-      ~Network.weekend
    
    
