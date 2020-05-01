@@ -1,6 +1,4 @@
 
-import numpy as np
-
 import metawards
 
 
@@ -13,6 +11,8 @@ def test_ran_binomial():
     # for both
 
     seed = 15324
+
+    import numpy as np
 
     rng = metawards.utils.seed_ran_binomial(seed)
     np.random.seed(seed)
