@@ -76,7 +76,9 @@ jobs:
           path: ./dist
         if: contains(github.ref, 'refs/tags/') && github.event_name == 'push'
       - name: Build Docs
-        run: python actions/build_docs.py
+        run: |
+          make install
+          python actions/build_docs.py
         if: matrix.python-version == 3.8 && matrix.config.os == 'ubuntu-latest' && github.event_name == 'push'
       - name: Checkout gh-pages branch
         uses: actions/checkout@v2
