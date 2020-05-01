@@ -37,7 +37,7 @@ def parse_args():
     import argparse
     import sys
 
-    metawards_url = "https://metawards.github.io"
+    metawards_url = "https://metawards.org"
 
     parser = argparse.ArgumentParser(
                     description=f"MetaWards epidemic modelling - see "

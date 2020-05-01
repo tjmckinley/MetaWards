@@ -132,8 +132,7 @@ def get_version_string():
 
     lines.append("")
     lines.append(center(f"-- Additional information --"))
-    lines.append(center(f"Visit https://metawards.github.io for more "
-                        f"information"))
+    lines.append(center(f"Visit https://metawards.org for more information"))
     lines.append(center(f"about metawards, its authors and its license"))
     lines.append("")
 
