@@ -9,17 +9,18 @@ metawards.Nodes
    .. automethod:: __init__
 
    
-   
-
-   
-   
-   .. rubric:: Attributes
+   .. rubric:: Methods
 
    .. autosummary::
    
+      ~Nodes.__init__
       ~Nodes.assert_not_null
       ~Nodes.assert_valid_index
       ~Nodes.is_null
       ~Nodes.resize
+   
+   
+
+   
    
    

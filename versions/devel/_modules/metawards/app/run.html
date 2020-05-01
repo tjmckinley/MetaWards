@@ -187,7 +187,7 @@
            <span class="s2">&quot;cli&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_parallel_scheme"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_parallel_scheme.html#metawards.app.get_parallel_scheme">[docs]</a><span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;This function tries to work out which of the different parallel</span>
 <span class="sd">       methods we should use to distribute work between multiple processes.</span>
 
@@ -201,10 +201,10 @@
     <span class="k">elif</span> <span class="s2">&quot;scoop&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;scoop&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span></div>
+        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../api/generated/metawards.app.parse_args.html#metawards.app.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Parse all of the command line arguments&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">argparse</span>
     <span class="kn">import</span> <span class="nn">sys</span>
@@ -417,10 +417,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">get_version_string</span><span class="p">())</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_hostfile"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_hostfile.html#metawards.app.get_hostfile">[docs]</a><span class="k">def</span> <span class="nf">get_hostfile</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_hostfile</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Attempt to find the name of the hostfile used to specify the hosts</span>
 <span class="sd">       to use in a cluster</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -441,10 +441,10 @@
     <span class="k">if</span> <span class="n">hostfile</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">hostfile</span>
 
-    <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="k">return</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="get_cores_per_node"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_cores_per_node.html#metawards.app.get_cores_per_node">[docs]</a><span class="k">def</span> <span class="nf">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the number of cores per node in the cluster&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cores_per_node</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">cores_per_node</span>
@@ -462,10 +462,10 @@
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must specify the number of cores per node &quot;</span>
                      <span class="s2">&quot;using --cores-per-node or by setting the &quot;</span>
-                     <span class="s2">&quot;environment variable METAWARDS_CORES_PER_NODE&quot;</span><span class="p">)</span></div>
+                     <span class="s2">&quot;environment variable METAWARDS_CORES_PER_NODE&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_threads_per_task"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_threads_per_task.html#metawards.app.get_threads_per_task">[docs]</a><span class="k">def</span> <span class="nf">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span>
 
@@ -487,10 +487,10 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must specify the number of threads per task &quot;</span>
                      <span class="s2">&quot;using --nthreads or by setting the &quot;</span>
                      <span class="s2">&quot;environment variables METAWARDS_THREADS_PER_TASK &quot;</span>
-                     <span class="s2">&quot;or OMP_NUM_THREADS&quot;</span><span class="p">)</span></div>
+                     <span class="s2">&quot;or OMP_NUM_THREADS&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">scoop_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="scoop_supervisor"><a class="viewcode-back" href="../../../api/generated/metawards.app.scoop_supervisor.html#metawards.app.scoop_supervisor">[docs]</a><span class="k">def</span> <span class="nf">scoop_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Function used by the scoop supervisor to get the information needed to</span>
 <span class="sd">       form the scoop call to run a scoop version of the program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -550,7 +550,7 @@
 
     <span class="c1"># Now write a new hostfile that round-robins the MPI tasks over</span>
     <span class="c1"># the nodes for &#39;tasks_per_node&#39; runs</span>
-    <span class="n">hostfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;hostfile&quot;</span><span class="p">)</span>
+    <span class="n">hostfile</span> <span class="o">=</span> <span class="s2">&quot;_metawards_hostfile&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing hostfile to </span><span class="si">{</span><span class="n">hostfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
@@ -589,10 +589,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scoop processes completed successfully&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scoop processes completed successfully&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">mpi_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="mpi_supervisor"><a class="viewcode-back" href="../../../api/generated/metawards.app.mpi_supervisor.html#metawards.app.mpi_supervisor">[docs]</a><span class="k">def</span> <span class="nf">mpi_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Function used by the MPI supervisor to get the information needed to</span>
 <span class="sd">       form the mpiexec call to run an MPI version of the program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -652,7 +652,7 @@
 
     <span class="c1"># Now write a new hostfile that round-robins the MPI tasks over</span>
     <span class="c1"># the nodes for &#39;tasks_per_node&#39; runs</span>
-    <span class="n">hostfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;hostfile&quot;</span><span class="p">)</span>
+    <span class="n">hostfile</span> <span class="o">=</span> <span class="s2">&quot;_metawards_hostfile&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing hostfile to </span><span class="si">{</span><span class="n">hostfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
@@ -708,10 +708,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MPI processes completed successfully&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MPI processes completed successfully&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="cli"><a class="viewcode-back" href="../../../api/generated/metawards.app.cli.html#metawards.app.cli">[docs]</a><span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Main function for the command line interface. This does one of three</span>
 <span class="sd">       things:</span>
 
@@ -880,7 +880,15 @@
         <span class="kn">import</span> <span class="nn">random</span>
         <span class="n">seed</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">99999999</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using random number seed </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">seed</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># this is a special mode that a developer can use to force</span>
+        <span class="c1"># all jobs to use the same random number seed (15324) that</span>
+        <span class="c1"># is used for comparing outputs. This should NEVER be used</span>
+        <span class="c1"># for production code</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** WARNING: Using special mode to fix all random number&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** WARNING: seeds to 15324. DO NOT USE IN PRODUCTION!!!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Using random number seed </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># get the starting day and date</span>
     <span class="n">start_day</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">start_day</span>
@@ -1051,7 +1059,8 @@
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite_output</span><span class="p">:</span>
         <span class="n">prompt</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">prompt</span> <span class="o">=</span> <span class="nb">input</span>
+        <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="nb">input</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">input</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
 
     <span class="n">auto_bzip</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -1138,7 +1147,7 @@
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;End of the run&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="mi">0</span></div>
+    <span class="k">return</span> <span class="mi">0</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -1161,7 +1170,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 27, 2020.
+        Last updated on May 01, 2020.
       </span>
 
     </p>

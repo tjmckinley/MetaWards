@@ -209,6 +209,18 @@
     <span class="c1">#: disease_class == 2)</span>
     <span class="n">incidence</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="c1">#: The size of the S population in each ward</span>
+    <span class="n">S_in_wards</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The size of the E population in each ward</span>
+    <span class="n">E_in_wards</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The size of the I population in each ward</span>
+    <span class="n">I_in_wards</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The size of the R population in each ward</span>
+    <span class="n">R_in_wards</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
 <div class="viewcode-block" id="Workspace.build"><a class="viewcode-back" href="../../api/generated/metawards.Workspace.html#metawards.Workspace.build">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the workspace needed to run the model for the</span>
@@ -235,6 +247,11 @@
         <span class="n">workspace</span><span class="o">.</span><span class="n">total_new_inf_ward</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">workspace</span><span class="o">.</span><span class="n">incidence</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
+        <span class="n">workspace</span><span class="o">.</span><span class="n">S_in_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">workspace</span><span class="o">.</span><span class="n">E_in_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">workspace</span><span class="o">.</span><span class="n">I_in_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">workspace</span><span class="o">.</span><span class="n">R_in_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">workspace</span></div>
 
 <div class="viewcode-block" id="Workspace.zero_all"><a class="viewcode-back" href="../../api/generated/metawards.Workspace.html#metawards.Workspace.zero_all">[docs]</a>    <span class="k">def</span> <span class="nf">zero_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -247,7 +264,11 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnodes</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">total_inf_ward</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">total_new_inf_ward</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">incidence</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">incidence</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">S_in_wards</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">E_in_wards</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">I_in_wards</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R_in_wards</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></div></div>
 </pre></div>
 
            </div>
@@ -261,7 +282,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 27, 2020.
+        Last updated on May 01, 2020.
       </span>
 
     </p>

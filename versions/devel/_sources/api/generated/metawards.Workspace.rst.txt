@@ -25,6 +25,10 @@ metawards.Workspace
 
    .. autosummary::
    
+      ~Workspace.E_in_wards
+      ~Workspace.I_in_wards
+      ~Workspace.R_in_wards
+      ~Workspace.S_in_wards
       ~Workspace.incidence
       ~Workspace.inf_tot
       ~Workspace.n_inf_classes
