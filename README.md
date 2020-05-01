@@ -28,7 +28,7 @@ The software supports running over a cluster using MPI
 simple networking (via [scoop](http://scoop.readthedocs.io)).
 
 Full instructions on how to use the program, plus example job submission
-scripts can be found on the [project website](https://metawards.github.io).
+scripts can be found on the [project website](https://metawards.org).
 
 ## Data
 
@@ -69,7 +69,7 @@ for running the tests.
 
 ## Installation
 
-[Full installation instructions are here](https://metawards.github.io/MetaWards/install.html).
+[Full installation instructions are here](https://metawards.org/install.html).
 
 As you are here, I guess you want to install the latest code from GitHub ;-)
 
@@ -99,7 +99,7 @@ make
 
 ## Running
 
-[Full usage instructions are here](https://metawards.github.io/MetaWards/usage.html)
+[Full usage instructions are here](https://metawards.org/usage.html)
 
 You can either load and use the Python classes directly, or you can
 run the `metawards` front-end command line program that is automatically installed.
@@ -132,7 +132,7 @@ This program supports parallel running of an ensemble of jobs using
 for single-node jobs, and [mpi4py](https://mpi4py.readthedocs.io/en/stable/)
 or [scoop](http://scoop.readthedocs.io) for multi-node cluster jobs.
 
-[Full instructions for running on a cluster are here](https://metawards.github.io/MetaWards/cluster_usage.html)
+[Full instructions for running on a cluster are here](https://metawards.org/cluster_usage.html)
 
 ### Next stages...
 

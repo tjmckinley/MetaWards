@@ -53,6 +53,5 @@ def run_command(cmd, dry=False):
 run_command("pip install sphinx sphinx_issues sphinx_rtd_theme "
             "sphinxcontrib-programoutput")
 
-# make the documentation (need to install to get metawards executable)
-run_command("make install")
+# make the documentation
 run_command("make doc")
