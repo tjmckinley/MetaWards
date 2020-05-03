@@ -69,7 +69,8 @@ class Networks:
         # WARDS
 
     @staticmethod
-    def build(network: Network, demographics: Demographics):
+    def build(network: Network, demographics: Demographics,
+              profiler=None):
         """Build the set of networks that will model the passed
            demographics based on the overall population model
            in the passed network
@@ -80,12 +81,13 @@ class Networks:
              The overall population model - this contains the base
              parameters, wards, work and play links that define
              the model outbreak
-
            demographics: Demographics
              Information about each of the demographics to be modelled.
              Note that the sum of the "work" and "play" populations
              across all demographics must be 1.0 in all wards in
              the model
+           profiler: Profiler
+             Optional profiler used to profile this build
 
            Returns
            -------
@@ -98,11 +100,19 @@ class Networks:
                              f"with a valid Demographics that contains "
                              f"more than one demographic")
 
+        if profiler is None:
+            from .utils._profiler import NullProfiler
+            profiler = NullProfiler()
+
+        p = profiler.start("specialise")
+
         networks = []
 
         # specialise the network for each demographic
         for i in range(0, len(demographics)):
+            p = p.start(f"demographic_{i}")
             networks.append(network.specialise(demographics[i]))
+            p = p.stop()
 
         # now verify that the sum of the populations in each ward across
         # all demographics equals the sum of the overall population in
@@ -113,20 +123,20 @@ class Networks:
         result.subnets = networks
         result.demographics = demographics
 
+        p = p.stop()
+
         return result
 
     def run(self, population: Population,
             output_dir: OutputFiles,
             seed: int = None,
             nsteps: int = None,
-            profile: bool = True,
-            s: int = None,
             nthreads: int = None,
             iterator=None,
             extractor=None,
             mover=None,
             mixer=None,
-            profiler=None):
+            profiler=None) -> Population:
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
            is None, then a random seed is used.
@@ -136,9 +146,6 @@ class Networks:
            The simulation will continue until the infection has
            died out or until 'nsteps' has passed (keep as 'None'
            to prevent exiting early).
-
-           s is used to select the 'to_seed' entry to seed
-           the nodes
 
            Parameters
            ----------
@@ -154,13 +161,8 @@ class Networks:
            nsteps: int
              The maximum number of steps to run in the outbreak. If None
              then run until the outbreak has finished
-           profile: bool
-             Whether or not to profile the model run and print out the
-             results
            profiler: Profiler
              The profiler to use - a new one is created if one isn't passed
-           s: int
-             Index of the seeding parameter to use
            nthreads: int
              Number of threads over which to parallelise this model run
            iterator: function
@@ -218,9 +220,9 @@ class Networks:
         population = run_model(network=self,
                                population=population,
                                infections=infections,
-                               rngs=rngs, s=s, output_dir=output_dir,
+                               rngs=rngs, output_dir=output_dir,
                                nsteps=nsteps,
-                               profile=profile, nthreads=nthreads,
+                               nthreads=nthreads,
                                profiler=profiler,
                                iterator=iterator, extractor=extractor,
                                mixer=mixer, mover=mover)
@@ -236,8 +238,7 @@ class Networks:
             subnet.reset_everything(nthreads=nthreads, profiler=profiler)
 
     def update(self, params: Parameters,
-               nthreads: int = 1, profile: bool = False,
-               profiler=None):
+               nthreads: int = 1, profiler=None):
         """Update the networks with a new set of parameters.
            This is used to update the parameters for the networks
            for a new run. The networks will be reset

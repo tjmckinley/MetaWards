@@ -1,8 +1,15 @@
 
+from typing import Union as _Union
+from typing import List as _List
+from typing import Tuple as _Tuple
+
 from .._network import Network
+from .._networks import Networks
 from .._population import Population
-from .._variableset import VariableSets
+from .._variableset import VariableSets, VariableSet
 from .._outputfiles import OutputFiles
+
+from ._get_functions import MetaFunction
 
 from contextlib import contextmanager as _contextmanager
 
@@ -74,20 +81,25 @@ def redirect_output(outdir):
         new_err.close()
 
 
-def run_models(network: Network, variables: VariableSets,
+def run_models(network: _Union[Network, Networks],
+               variables: VariableSets,
                population: Population,
                nprocs: int, nthreads: int, seed: int,
                nsteps: int, output_dir: OutputFiles,
-               iterator: str, extractor: str,
-               mixer: str, mover: str,
-               profile: bool, parallel_scheme: str):
+               iterator: MetaFunction = None,
+               extractor: MetaFunction = None,
+               mixer: MetaFunction = None,
+               mover: MetaFunction = None,
+               profile: bool = False,
+               parallel_scheme: str = "multiprocessing") \
+                   -> _List[_Tuple[VariableSet, Population]]:
     """Run all of the models on the passed Network that are described
        by the passed VariableSets
 
        Parameters
        ----------
-       network: Network
-         The network to model
+       network: Network or Networks
+         The network(s) to model
        variables: VariableSets
          The sets of VariableSet that represent all of the model
          runs to perform
@@ -122,6 +134,12 @@ def run_models(network: Network, variables: VariableSets,
        parallel_scheme: str
          Which parallel scheme (multiprocessing, mpi4py or scoop) to use
          to run multiple model runs in parallel
+
+       Returns
+       -------
+       results: List[ tuple(VariableSet, Population)]
+         The set of adjustable variables and final population at the
+         end of each run
     """
 
     # this variable is used to pick out some of the additional seeds?
@@ -231,12 +249,18 @@ def run_models(network: Network, variables: VariableSets,
         max_nodes = network.nnodes + 1
         max_links = max(network.nlinks, network.nplay) + 1
 
+        try:
+            demographics = network.demographics
+        except Exception:
+            demographics = None
+
         for i, variable in enumerate(variables):
             seed = seeds[i]
             outdir = outdirs[i]
 
             arguments.append({
                 "params": network.params.set_variables(variable),
+                "demographics": demographics,
                 "options": {"seed": seed,
                             "output_dir": outdir,
                             "auto_bzip": output_dir.auto_bzip(),

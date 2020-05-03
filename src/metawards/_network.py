@@ -55,7 +55,6 @@ class Network:
               max_nodes: int = 16384,
               max_links: int = 4194304,
               nthreads: int = 1,
-              profile: bool = True,
               profiler=None):
         """Builds and returns a new Network that is described by the
            passed parameters. If 'calculate_distances' is True, then
@@ -74,17 +73,11 @@ class Network:
            the maximum possible number of nodes and links. The memory buffers
            will be shrunk back after building.
         """
-        if profile:
-            if profiler is None:
-                from .utils import Profiler
-                p = Profiler()
-            else:
-                p = profiler
-        else:
+        if profiler is None:
             from .utils import NullProfiler
             p = NullProfiler()
 
-        p = p.start("Network.build")
+        p = profiler.start("Network.build")
 
         if build_function is None:
             from .utils import build_wards_network
@@ -221,25 +214,38 @@ class Network:
         from .utils import reset_everything
         reset_everything(network=self, nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters,
-               nthreads: int = 1, profile: bool = False,
-               profiler=None):
+    def update(self, params: Parameters, demographics=None,
+               nthreads: int = 1, profiler=None):
         """Update this network with a new set of parameters.
            This is used to update the parameters for the network
            for a new run. The network will be reset
            and ready for a new run.
-        """
-        if profile:
-            if profiler:
-                p = profiler
-            else:
-                from .utils import Profiler
-                p = Profiler()
-        else:
-            from .utils import NullProfiler
-            p = NullProfiler()
 
-        p = p.start("Network.update")
+           Parameters
+           ----------
+           params: Parameters
+             The new parameters with which to update this Network
+           demographics: Demographics
+             The new demographics with which to update this Network.
+             Note that this will return a Network object that contains
+             the specilisation of this Network
+           nthreads: int
+             Number of threads over which to parallelise this update
+           profiler: Profiler
+             The profiler used to profile this update
+
+           Returns
+           -------
+           network: Network or Networks
+             Either this Network after it has been updated, or the
+             resulting Networks from specialising this Network using
+             Demographics
+        """
+        if profiler is None:
+            from .utils._profiler import NullProfiler
+            profiler = NullProfiler()
+
+        p = profiler.start("Network.update")
 
         self.params = params
 
@@ -255,10 +261,16 @@ class Network:
         self.move_from_play_to_work(nthreads=nthreads, profiler=p)
         p = p.stop()
 
+        if demographics:
+            network = demographics.specialise(network=self,
+                                              profiler=profiler)
+
+        else:
+            network = self
+
         p = p.stop()
 
-        if profile and (profiler is None):
-            print(p)
+        return network
 
     def rescale_play_matrix(self, nthreads: int = 1,
                             profiler=None):
@@ -333,14 +345,12 @@ class Network:
             output_dir: OutputFiles,
             seed: int = None,
             nsteps: int = None,
-            profile: bool = True,
-            s: int = None,
             nthreads: int = None,
             iterator=None,
             extractor=None,
             mixer=None,
             mover=None,
-            profiler=None):
+            profiler=None) -> Population:
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
            is None, then a random seed is used.
@@ -350,9 +360,6 @@ class Network:
            The simulation will continue until the infection has
            died out or until 'nsteps' has passed (keep as 'None'
            to prevent exiting early).
-
-           s is used to select the 'to_seed' entry to seed
-           the nodes
 
            Parameters
            ----------
@@ -368,13 +375,8 @@ class Network:
            nsteps: int
              The maximum number of steps to run in the outbreak. If None
              then run until the outbreak has finished
-           profile: bool
-             Whether or not to profile the model run and print out the
-             results
            profiler: Profiler
              The profiler to use - a new one is created if one isn't passed
-           s: int
-             Index of the seeding parameter to use
            nthreads: int
              Number of threads over which to parallelise this model run
            iterator: function
@@ -431,9 +433,9 @@ class Network:
         population = run_model(network=self,
                                population=population,
                                infections=infections,
-                               rngs=rngs, s=s, output_dir=output_dir,
+                               rngs=rngs, output_dir=output_dir,
                                nsteps=nsteps,
-                               profile=profile, nthreads=nthreads,
+                               nthreads=nthreads,
                                profiler=profiler,
                                iterator=iterator, extractor=extractor)
 

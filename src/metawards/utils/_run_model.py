@@ -2,11 +2,12 @@
 from typing import Union as _Union
 
 from .._network import Network
+from .._networks import Networks
 from .._infections import Infections
 from .._outputfiles import OutputFiles
 from .._workspace import Workspace
 from .._population import Population, Populations
-from ._profiler import Profiler, NullProfiler
+from ._profiler import Profiler
 from ._get_functions import get_initialise_functions, \
                             get_model_loop_functions, \
                             get_finalise_functions, \
@@ -15,13 +16,12 @@ from ._get_functions import get_initialise_functions, \
 __all__ = ["run_model"]
 
 
-def run_model(network: Network,
+def run_model(network: _Union[Network, Networks],
               infections: Infections,
-              rngs, s: int,
+              rngs,
               output_dir: OutputFiles,
               population: Population = Population(initial=57104043),
               nsteps: int = None,
-              profile: bool = True,
               profiler: Profiler = None,
               nthreads: int = None,
               iterator: _Union[str, MetaFunction] = None,
@@ -34,8 +34,8 @@ def run_model(network: Network,
 
         Parameters
         ----------
-        network: Network
-            The network on which to run the model
+        network: Network or Networks
+            The network(s) on which to run the model
         infections: Infections
             The space used to record the infections
         rngs: list
@@ -111,15 +111,11 @@ def run_model(network: Network,
         from ..movers._move_default import move_default
         mover = move_default
 
-    if profile:
-        if profiler:
-            p = profiler
-        else:
-            p = Profiler()
-    else:
-        p = NullProfiler()
+    if profiler is None:
+        from ._profiler import NullProfiler
+        profiler = NullProfiler()
 
-    p = p.start("run_model")
+    p = profiler.start("run_model")
 
     params = network.params
 
@@ -172,10 +168,8 @@ def run_model(network: Network,
     # keep looping until the outbreak is over or until we have completed
     # at least 5 loop iterations
     while (infecteds != 0) or (iteration_count < 5):
-        if profile:
-            p2 = Profiler()
-        else:
-            p2 = NullProfiler()
+        # construct a new profiler of the same type as 'profiler'
+        p2 = profiler.__class__()
 
         p2 = p2.start(f"timing for day {population.day}")
 

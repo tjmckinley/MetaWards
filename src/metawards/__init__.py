@@ -38,6 +38,14 @@ Functions
 
 """
 
+import sys as _sys
+
+if _sys.version_info < (3, 7):
+    print("MetaWards requires Python version 3.7 or above.")
+    print("Your python is version")
+    print(_sys.version)
+    _sys.exit(-1)
+
 __all__ = ["get_version_string"]
 
 from ._parameters import *

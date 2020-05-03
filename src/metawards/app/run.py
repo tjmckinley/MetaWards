@@ -928,29 +928,21 @@ def cli():
 
     if args.iterator:
         iterator = args.iterator
-        # eventually I should get the filename and function from this,
-        # and then convert it into an absolute path to make this safe
-        # on a cluster. Then I should copy the file into the output to
-        # make sure that the calculation is reproducible. Will do this
-        # when I copy this work to extractor
     else:
         iterator = None
 
     if args.extractor:
         extractor = args.extractor
-        # see above ;-)
     else:
         extractor = None
 
     if args.mixer:
         mixer = args.mixer
-        # also see above :-)
     else:
         mixer = None
 
     if args.mover:
         mover = args.mover
-        # also see above :-)
     else:
         mover = None
 

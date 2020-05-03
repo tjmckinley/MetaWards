@@ -184,7 +184,7 @@ class Demographics:
 
         return demos
 
-    def specialise(self, network: Network):
+    def specialise(self, network: Network, profiler=None):
         """Build the set of networks that will model this set
            of demographics applied to the passed Network.
 
@@ -194,6 +194,8 @@ class Demographics:
              The overall population model - this contains the base
              parameters, wards, work and play links that define
              the model outbreak
+           profiler: Profiler
+             Profiler used to profile the specialisation
 
            Returns
            -------
@@ -202,4 +204,5 @@ class Demographics:
              full set of different demographics
         """
         from ._networks import Networks
-        return Networks.build(network=network, demographics=self)
+        return Networks.build(network=network, demographics=self,
+                              profiler=profiler)
