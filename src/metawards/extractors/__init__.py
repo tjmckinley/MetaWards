@@ -7,14 +7,11 @@ Functions
 .. autosummary::
     :toctree: generated/
 
-    extract_core
     extract_custom
     extract_default
     extract_large
     extract_none
     extract_small
-
-    extractor_needs_setup
 
     output_basic
     output_core
@@ -29,7 +26,6 @@ Functions
 """
 
 from ._extract_default import *
-from ._extract_core import *
 from ._extract_custom import *
 from ._extract_large import *
 from ._extract_none import *

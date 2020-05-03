@@ -1,12 +1,13 @@
 
 from typing import List as _List
+from typing import Union as _Union
 from ..utils._get_functions import MetaFunction, accepts_stage
 
 __all__ = ["iterate_custom",
            "build_custom_iterator"]
 
 
-def build_custom_iterator(custom_function,
+def build_custom_iterator(custom_function: _Union[str, MetaFunction],
                           parent_name="__main__") -> MetaFunction:
     """Build and return a custom iterator from the passed
        function. This will wrap 'iterate_custom' around

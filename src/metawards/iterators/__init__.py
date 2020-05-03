@@ -41,7 +41,6 @@ from ._advance_infprob import *
 from ._advance_play import *
 from ._advance_recovery import *
 
-from ._iterate_core import *
 from ._iterate_custom import *
 from ._iterate_default import *
 from ._iterate_weekday import *

@@ -1,9 +1,14 @@
 
+from typing import Union as _Union
+from typing import List as _List
+from ..utils._get_functions import MetaFunction, accepts_stage
+
 __all__ = ["extract_custom",
            "build_custom_extractor"]
 
 
-def build_custom_extractor(custom_function, parent_name="__main__"):
+def build_custom_extractor(custom_function: _Union[str, MetaFunction],
+                           parent_name="__main__") -> MetaFunction:
     """Build and return a custom extractor from the passed
        function. This will wrap 'extract_custom' around
        the function to double-check that the custom
@@ -11,7 +16,7 @@ def build_custom_extractor(custom_function, parent_name="__main__"):
 
        Parameters
        ----------
-       custom_function
+       custom_function: MetaFunction or str
          This can either be a function, which will be wrapped and
          returned, or it can be a string. If it is a string then
          we will attempt to locate or import the function associated
@@ -30,7 +35,7 @@ def build_custom_extractor(custom_function, parent_name="__main__"):
 
         Returns
         -------
-        extractor
+        extractor: MetaFunction
           The wrapped extractor that is suitable for using in the extract
           function.
     """
@@ -136,71 +141,43 @@ def build_custom_extractor(custom_function, parent_name="__main__"):
                                            **kwargs)
 
 
-def extract_custom(custom_function,
-                   setup=False, **kwargs):
+def extract_custom(custom_function: MetaFunction,
+                   stage: str, **kwargs) -> _List[MetaFunction]:
     """This returns the default list of 'output_XXX' functions that
-       are called in sequence to extract data after each iteration
-       of the model run.
-
-       This extractor provides a custom extractor that uses
-       'custom_function' passed from the user. This extractor makes
-       sure that 'setup' is called correctly and that the functions
-       needed by 'extract_core' are called first.
+       are called in sequence for each iteration of the model run.
+       This provides a custom extractor that uses
+       'custom_function' passed from the user. This makes
+       sure that if 'stage' is not handled by the custom function,
+       then the "extract_default" functions for that stage
+       are correctly called for all stages except "analyse"
 
        Parameters
        ----------
-       custom_function
+       custom_function: MetaFunction
          A custom user-supplied function that returns the
          functions that the user would like to be called for
          each step.
-       setup: bool
-         Whether or not to return the functions used to setup the
-         space and input for the output_XXX functions returned by
-         this extractor. This is called once at the start of a run
-         to return the functions that must be called to setup the
-         output. Note that most extractors don't need any setup.
+       stage: str
+         The stage of the day/model
 
        Returns
        -------
-       funcs: List[function]
-         The list of functions that ```extract``` will call in sequence
+       funcs: List[MetaFunction]
+         The list of functions that will be called in sequence
     """
 
-    kwargs["setup"] = setup
+    kwargs["stage"] = stage
 
-    from ._extract_core import extract_core
-    from ._extract_default import extractor_needs_setup
+    if custom_function is None:
+        from ._extract_default import extract_default
+        return extract_default(**kwargs)
 
-    if setup:
-        # Return the functions needed to initialise this extractor
-        core_funcs = extract_core(**kwargs)
-
-        if extractor_needs_setup(custom_function):
-            custom_funcs = custom_function(**kwargs)
-        else:
-            custom_funcs = None
+    elif stage == "analyse" or accepts_stage(custom_function):
+        # most custom functions operate at the 'analyse' stage,
+        # so extractors that don't specify a stage are assumed to
+        # only operate here (every other stage is 'extract_default')
+        return custom_function(**kwargs)
 
     else:
-        core_funcs = extract_core(**kwargs)
-        custom_funcs = custom_function(**kwargs)
-
-    # make sure that the core functions are called, and that
-    # their call is before the custom function (unless the user
-    # has moved them, which we hope was for a good reason!)
-    if core_funcs is None or len(core_funcs) == 0:
-        if custom_funcs is None:
-            return []
-        else:
-            return custom_funcs
-
-    elif custom_funcs is None or len(custom_funcs) == 0:
-        return core_funcs
-
-    else:
-        for i in range(len(core_funcs)-1, -1, -1):
-            # move backwards so that the first custom function
-            # is prepended last
-            if core_funcs[i] not in custom_funcs:
-                custom_funcs.insert(0, core_funcs[i])
-
-        return custom_funcs
+        from ._extract_default import extract_default
+        return extract_default(**kwargs)
