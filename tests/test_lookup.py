@@ -1,16 +1,10 @@
 
 import pytest
 
-from metawards import Network, Parameters
-
 
 @pytest.mark.slow
-def test_lookup():
-    params = Parameters()
-    params.set_input_files("2011Data")
-    params.set_disease("ncov")
-
-    network = Network.build(params, profile=True)
+def test_lookup(shared_network):
+    network = shared_network
 
     info = network.info
 

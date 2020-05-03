@@ -61,3 +61,15 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(skip_veryslow)
             elif "slow" in item.keywords:
                 item.add_marker(skip_slow)
+
+
+@pytest.fixture
+def shared_network():
+    from metawards import Network, Parameters
+    params = Parameters()
+    params.set_input_files("2011Data")
+    params.set_disease("ncov")
+
+    network = Network.build(params, profiler=None)
+
+    return network

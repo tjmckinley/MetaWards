@@ -75,7 +75,7 @@ class Network:
         """
         if profiler is None:
             from .utils import NullProfiler
-            p = NullProfiler()
+            profiler = NullProfiler()
 
         p = profiler.start("Network.build")
 
