@@ -99,8 +99,11 @@ class Workspace:
 
         return workspace
 
-    def zero_all(self):
-        """Reset the values of all of the arrays to zero"""
+    def zero_all(self, zero_subspaces=True):
+        """Reset the values of all of the arrays to zero.
+           By default we zero the subspace networks
+           (change this by setting zero_subspaces to False)
+        """
         for i in range(0, self.n_inf_classes):
             self.inf_tot[i] = 0
             self.pinf_tot[i] = 0
@@ -115,6 +118,6 @@ class Workspace:
             self.I_in_wards[i] = 0
             self.R_in_wards[i] = 0
 
-        if self.subspaces is not None:
+        if zero_subspaces and self.subspaces is not None:
             for subspace in self.subspaces:
                 subspace.zero_all()

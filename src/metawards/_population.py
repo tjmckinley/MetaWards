@@ -34,6 +34,9 @@ class Population:
     #: The date in the outbreak of this record
     date: _date = None
 
+    #: The populations in each of the multi-demographic subnetworks
+    subpops = None
+
     @property
     def population(self) -> int:
         """The total population in all wards"""
@@ -43,6 +46,19 @@ class Population:
     def infecteds(self) -> int:
         """The number who are infected across all wards"""
         return self.total + self.latent
+
+    def specialise(self, network):
+        """Specialise this population for the passed Networks"""
+        subpops = []
+
+        from copy import deepcopy
+
+        self.subpops = None
+
+        for i in range(0, len(network.subnets)):
+            subpops.append(deepcopy(self))
+
+        self.subpops = subpops
 
     def __str__(self):
         s = f"DAY: {self.day} " \

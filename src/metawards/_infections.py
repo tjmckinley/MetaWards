@@ -22,13 +22,8 @@ class Infections:
     #: of int arrays, size play[N_INF_CLASSES][nnodes+1]
     play = None
 
-    #: The work infections for each of the subnets of a Networks that
-    #: models multiple demographics
-    sub_works = None
-
-    #: The play infections for each of the subnets of a Networks that
-    #: models multiple demographics
-    sub_plays = None
+    #: The infections for the multi-demographic subnets
+    subinfs = None
 
     @staticmethod
     def build(network: _Union[Network, Networks] = None):
@@ -56,19 +51,14 @@ class Infections:
             return inf
 
         elif isinstance(network, Networks):
-            inf = Infections()
-            inf.work = initialise_infections(network=network.overall)
-            inf.play = initialise_play_infections(network=network.overall)
+            inf = Infections.build(network.overall)
 
-            works = []
-            plays = []
+            subinfs = []
 
             for subnet in network.subnets:
-                works.append(initialise_infections(network=subnet))
-                plays.append(initialise_play_infections(network=subnet))
+                subinfs.append(Infections.build(subnet))
 
-            inf.sub_works = works
-            inf.sub_plays = plays
+            inf.subinfs = subinfs
 
             return inf
 
@@ -86,8 +76,6 @@ class Infections:
                              play_infections=self.play,
                              nthreads=nthreads)
 
-        if self.sub_works:
-            for i in range(0, len(self.sub_works)):
-                clear_all_infections(infections=self.sub_works[i],
-                                     play_infections=self.sub_plays[i],
-                                     nthreads=nthreads)
+        if self.subinfs is not None:
+            for subinf in self.subinfs:
+                subinf.clear(nthreads=nthreads)
