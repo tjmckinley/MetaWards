@@ -27,7 +27,6 @@ Functions
     iterate_weekday
     iterate_weekend
     iterate_working_week
-    iterator_needs_setup
     setup_additional_seeds
     setup_seed_all_wards
     setup_seed_specified_ward
