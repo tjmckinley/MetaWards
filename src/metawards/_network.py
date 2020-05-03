@@ -148,10 +148,6 @@ class Network:
            to check every time the network is accessed
         """
         from .utils import assert_sane_network
-        if profiler is None:
-            from .profiler import NullProfiler
-            profiler = NullProfiler()
-
         assert_sane_network(network=self, profiler=profiler)
 
     def add_distances(self, distance_function=None, nthreads: int = 1):
@@ -216,7 +212,9 @@ class Network:
 
     def update(self, params: Parameters, demographics=None,
                nthreads: int = 1, profiler=None):
-        """Update this network with a new set of parameters.
+        """Update this network with a new set of parameters
+           (and optionally demographics).
+
            This is used to update the parameters for the network
            for a new run. The network will be reset
            and ready for a new run.

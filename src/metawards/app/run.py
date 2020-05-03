@@ -845,12 +845,13 @@ def cli():
         raise e
 
     # should we profile the code? (default no as it prints a lot)
-    profile = False
+    profiler = None
 
     if args.no_profile:
-        profile = False
+        profiler = None
     elif args.profile:
-        profile = True
+        from ..utils._profiler import Profiler
+        profiler = Profiler()
 
     # load the disease and starting-point input files
     if args.disease:
@@ -895,7 +896,7 @@ def cli():
     network = Network.build(params=params, calculate_distances=True,
                             max_nodes=args.max_nodes,
                             max_links=args.max_links,
-                            profile=profile)
+                            profiler=profiler)
 
     if args.demographics:
         from metawards import Demographics
@@ -957,7 +958,8 @@ def cli():
                             extractor=extractor,
                             mixer=mixer,
                             mover=mover,
-                            profile=profile, parallel_scheme=parallel_scheme)
+                            profiler=profiler,
+                            parallel_scheme=parallel_scheme)
 
         if result is None or len(result) == 0:
             print("No output - end of run")

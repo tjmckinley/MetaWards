@@ -52,14 +52,9 @@ def run_model(network: _Union[Network, Networks],
         nsteps: int
             The maximum number of steps to run in the outbreak. If None
             then run until the outbreak has finished
-        profile: bool
-            Whether or not to profile the model run and print out the
-            results
         profiler: Profiler
             The profiler to use to profile - a new one is created if
             one isn't passed
-        s: int
-            Index of the seeding parameter to use
         nthreads: int
             Number of threads over which to parallelise this model run
         iterator: MetaFunction or string

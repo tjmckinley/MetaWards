@@ -72,7 +72,7 @@ from ._read_done_file import *
 from ._string_to_ints import *
 from ._profiler import *
 from ._run_model import *
-from ._runner import *
+from ._run_models import *
 from ._worker import *
 from ._import_module import *
 from ._get_functions import *

@@ -1,8 +1,10 @@
 
 from dataclasses import dataclass as _dataclass
 from typing import List as _List
+from typing import Union as _Union
 
 from ._network import Network
+from ._networks import Networks
 
 __all__ = ["Workspace"]
 
@@ -49,8 +51,12 @@ class Workspace:
     #: The size of the R population in each ward
     R_in_wards: _List[int] = None
 
+    #: The sub-workspaces used for the subnets of a
+    #: multi-demographic Networks (list[Workspace])
+    subspaces = None
+
     @staticmethod
-    def build(network: Network):
+    def build(network: _Union[Network, Networks]):
         """Create the workspace needed to run the model for the
            passed network
         """
@@ -58,27 +64,38 @@ class Workspace:
 
         workspace = Workspace()
 
-        n_inf_classes = params.disease_params.N_INF_CLASSES()
+        if isinstance(network, Network):
+            n_inf_classes = params.disease_params.N_INF_CLASSES()
 
-        workspace.n_inf_classes = params.disease_params.N_INF_CLASSES()
-        workspace.nnodes = network.nnodes
+            workspace.n_inf_classes = params.disease_params.N_INF_CLASSES()
+            workspace.nnodes = network.nnodes
 
-        size = workspace.nnodes + 1  # 1-indexed
+            size = workspace.nnodes + 1  # 1-indexed
 
-        from .utils._array import create_int_array
+            from .utils._array import create_int_array
 
-        workspace.inf_tot = create_int_array(n_inf_classes, 0)
-        workspace.pinf_tot = create_int_array(n_inf_classes, 0)
-        workspace.n_inf_wards = create_int_array(n_inf_classes, 0)
+            workspace.inf_tot = create_int_array(n_inf_classes, 0)
+            workspace.pinf_tot = create_int_array(n_inf_classes, 0)
+            workspace.n_inf_wards = create_int_array(n_inf_classes, 0)
 
-        workspace.total_inf_ward = create_int_array(size, 0)
-        workspace.total_new_inf_ward = create_int_array(size, 0)
-        workspace.incidence = create_int_array(size, 0)
+            workspace.total_inf_ward = create_int_array(size, 0)
+            workspace.total_new_inf_ward = create_int_array(size, 0)
+            workspace.incidence = create_int_array(size, 0)
 
-        workspace.S_in_wards = create_int_array(size, 0)
-        workspace.E_in_wards = create_int_array(size, 0)
-        workspace.I_in_wards = create_int_array(size, 0)
-        workspace.R_in_wards = create_int_array(size, 0)
+            workspace.S_in_wards = create_int_array(size, 0)
+            workspace.E_in_wards = create_int_array(size, 0)
+            workspace.I_in_wards = create_int_array(size, 0)
+            workspace.R_in_wards = create_int_array(size, 0)
+
+        elif isinstance(network, Networks):
+            workspace = Workspace.build(network.overall)
+
+            subspaces = []
+
+            for subnet in network.subnets:
+                subspaces.append(Workspace.build(subnet))
+
+            workspace.subspaces = subspaces
 
         return workspace
 
@@ -97,3 +114,7 @@ class Workspace:
             self.E_in_wards[i] = 0
             self.I_in_wards[i] = 0
             self.R_in_wards[i] = 0
+
+        if self.subspaces is not None:
+            for subspace in self.subspaces:
+                subspace.zero_all()

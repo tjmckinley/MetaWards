@@ -9,6 +9,7 @@ from .._population import Population
 from .._variableset import VariableSets, VariableSet
 from .._outputfiles import OutputFiles
 
+from ._profiler import Profiler
 from ._get_functions import MetaFunction
 
 from contextlib import contextmanager as _contextmanager
@@ -90,7 +91,7 @@ def run_models(network: _Union[Network, Networks],
                extractor: MetaFunction = None,
                mixer: MetaFunction = None,
                mover: MetaFunction = None,
-               profile: bool = False,
+               profiler: Profiler = None,
                parallel_scheme: str = "multiprocessing") \
                    -> _List[_Tuple[VariableSet, Population]]:
     """Run all of the models on the passed Network that are described
@@ -128,9 +129,8 @@ def run_models(network: _Union[Network, Networks],
        mover: str
          Mover to load that will be used to move the population between
          different demographics
-       profile: bool
-         Whether or not to profile the model run and print out live
-         timing (useful for performance debugging)
+       profiler: Profiler
+         Profiler used to profile the model run
        parallel_scheme: str
          Which parallel scheme (multiprocessing, mpi4py or scoop) to use
          to run multiple model runs in parallel
@@ -142,23 +142,20 @@ def run_models(network: _Union[Network, Networks],
          end of each run
     """
 
-    # this variable is used to pick out some of the additional seeds?
-    s = -1
-
     if len(variables) == 1:
         # no need to do anything complex - just a single run
         params = network.params.set_variables(variables[0])
 
-        network.update(params, profile=profile)
+        network.update(params, profiler=profiler)
 
         trajectory = network.run(population=population, seed=seed,
-                                 s=s, nsteps=nsteps,
+                                 nsteps=nsteps,
                                  output_dir=output_dir,
                                  iterator=iterator,
                                  extractor=extractor,
                                  mixer=mixer,
                                  mover=mover,
-                                 profile=profile,
+                                 profiler=profiler,
                                  nthreads=nthreads)
 
         return [(variables[0], trajectory)]
@@ -221,16 +218,16 @@ def run_models(network: _Union[Network, Networks],
                     # no need to do anything complex - just a single run
                     params = network.params.set_variables(variable)
 
-                    network.update(params, profile=profile)
+                    network.update(params, profiler=profiler)
 
                     output = network.run(population=population, seed=seed,
-                                         s=s, nsteps=nsteps,
+                                         nsteps=nsteps,
                                          output_dir=subdir,
                                          iterator=iterator,
                                          extractor=extractor,
                                          mixer=mixer,
                                          mover=mover,
-                                         profile=profile,
+                                         profiler=profiler,
                                          nthreads=nthreads)
 
                     outputs.append((variable, output))
@@ -254,6 +251,12 @@ def run_models(network: _Union[Network, Networks],
         except Exception:
             demographics = None
 
+        # give the workers a clean copy of the profiler
+        if profiler is None:
+            worker_profiler = None
+        else:
+            worker_profiler = profiler.__class__()
+
         for i, variable in enumerate(variables):
             seed = seeds[i]
             outdir = outdirs[i]
@@ -265,13 +268,12 @@ def run_models(network: _Union[Network, Networks],
                             "output_dir": outdir,
                             "auto_bzip": output_dir.auto_bzip(),
                             "population": population,
-                            "s": s,
                             "nsteps": nsteps,
                             "iterator": iterator,
                             "extractor": extractor,
                             "mixer": mixer,
                             "mover": mover,
-                            "profile": profile,
+                            "profiler": worker_profiler,
                             "nthreads": nthreads,
                             "max_nodes": max_nodes,
                             "max_links": max_links}

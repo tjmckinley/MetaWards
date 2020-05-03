@@ -17,7 +17,7 @@ _default_demographics_path = _os.path.join(_pathlib.Path.home(),
 _default_folder_name = "demographics"
 
 
-@_dataclass
+@_dataclass(eq=False)
 class Demographics:
     """This class holds metadata about all of the demographics
        being modelled
@@ -51,10 +51,27 @@ class Demographics:
                f"repository: {self._repository}\n" \
                f"repository_branch: {self._repository_branch}\n" \
                f"repository_version: {self._repository_version}\n" \
-               f"demographics = [\n  {d}]"
+               f"demographics = [\n  {d}\n]"
 
     def __len__(self):
         return len(self.demographics)
+
+    def __eq__(self, other):
+        if not isinstance(other, Demographics):
+            return False
+
+        elif len(self) != len(other):
+            return False
+
+        else:
+            for name, index in self._names.items():
+                if other._names.get(name, None) != index:
+                    return False
+
+                if self.demographics[index] != other.demographics[index]:
+                    return False
+
+            return True
 
     def __getitem__(self, item):
         if isinstance(item, str):
@@ -203,6 +220,9 @@ class Demographics:
              The set of Networks that represent the model run over the
              full set of different demographics
         """
-        from ._networks import Networks
-        return Networks.build(network=network, demographics=self,
-                              profiler=profiler)
+        if len(self) == 0:
+            return network
+        else:
+            from ._networks import Networks
+            return Networks.build(network=network, demographics=self,
+                                  profiler=profiler)

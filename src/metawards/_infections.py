@@ -1,5 +1,6 @@
 
 from dataclasses import dataclass as _dataclass
+from typing import Union as _Union
 
 from ._network import Network
 from ._networks import Networks
@@ -30,16 +31,14 @@ class Infections:
     sub_plays = None
 
     @staticmethod
-    def build(network: Network = None, networks: Networks = None):
+    def build(network: _Union[Network, Networks] = None):
         """Construct and return the Infections object that will track
            infections during a model run on the passed Network (or Networks)
 
            Parameters
            ----------
-           network: Network
-             A single network that will be run
-           networks: Networks
-             The full set of networks with multiple demographics
+           network: Network or Networks
+             The network or networks that will be run
 
            Returns
            -------
@@ -49,29 +48,22 @@ class Infections:
         """
         from .utils import initialise_infections, initialise_play_infections
 
-        if network is None:
-            network = networks
-        elif networks is not None:
-            raise ValueError(f"Pass one of network or networks - not both!")
-
         if isinstance(network, Network):
             inf = Infections()
             inf.work = initialise_infections(network=network)
             inf.play = initialise_play_infections(network=network)
 
             return inf
-        else:
-            if networks is None:
-                networks = network
 
+        elif isinstance(network, Networks):
             inf = Infections()
-            inf.work = initialise_infections(network=networks.overall)
-            inf.play = initialise_play_infections(network=networks.overall)
+            inf.work = initialise_infections(network=network.overall)
+            inf.play = initialise_play_infections(network=network.overall)
 
             works = []
             plays = []
 
-            for subnet in networks.subnets:
+            for subnet in network.subnets:
                 works.append(initialise_infections(network=subnet))
                 plays.append(initialise_play_infections(network=subnet))
 

@@ -64,21 +64,25 @@ def prepare_worker(params: Parameters, demographics: Demographics,
         del options["max_nodes"]
         del options["max_links"]
 
+        profiler = options["profiler"]
+
         if global_network is None:
             network = Network.build(params=params,
                                     calculate_distances=True,
-                                    profile=False,
+                                    profiler=profiler,
                                     max_nodes=max_nodes,
                                     max_links=max_links)
 
             if demographics is not None:
-                network = demographics.specialise(network)
+                network = demographics.specialise(network,
+                                                  profiler=profiler)
 
             global_network = network
 
         else:
             global_network.update(params=params,
-                                  demographics=demographics)
+                                  demographics=demographics,
+                                  profiler=profiler)
 
         return global_network
 

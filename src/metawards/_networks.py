@@ -178,6 +178,11 @@ class Networks:
            mover: function
              Function that is called to move the population between
              different demographics
+
+           Returns
+           -------
+           population: Population
+             The final population at the end of the run
         """
         # Create the random number generator
         from .utils._ran_binomial import seed_ran_binomial, ran_binomial
@@ -237,26 +242,50 @@ class Networks:
         for subnet in self.subnets:
             subnet.reset_everything(nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters,
+    def update(self, params: Parameters, demographics=None,
                nthreads: int = 1, profiler=None):
-        """Update the networks with a new set of parameters.
-           This is used to update the parameters for the networks
-           for a new run. The networks will be reset
-           and ready for a new run.
-        """
-        if profile:
-            if profiler:
-                p = profiler
-            else:
-                from .utils import Profiler
-                p = Profiler()
-        else:
-            from .utils import NullProfiler
-            p = NullProfiler()
+        """Update this network with a new set of parameters
+           (and optionally demographics).
 
-        p = p.start("overall.update")
+           This is used to update the parameters for the network
+           for a new run. The network will be reset
+           and ready for a new run.
+
+           Parameters
+           ----------
+           params: Parameters
+             The new parameters with which to update this Network
+           demographics: Demographics
+             The new demographics with which to update this Network.
+             Note that this will return a Network object that contains
+             the specilisation of this Network
+           nthreads: int
+             Number of threads over which to parallelise this update
+           profiler: Profiler
+             The profiler used to profile this update
+
+           Returns
+           -------
+           network: Network or Networks
+             Either this Network after it has been updated, or the
+             resulting Networks from specialising this Network using
+             Demographics
+        """
+        if profiler is None:
+            from .utils import NullProfiler
+            profiler = NullProfiler()
+
+        p = profiler.start("overall.update")
         self.overall.update(params, profiler=p)
         p = p.stop()
+
+        if demographics is not None:
+            if demographics != self.demographics:
+                # we have a change in demographics, so need to re-specialise
+                networks = demographics.specialise(network=self.overall,
+                                                   profiler=p)
+                p.stop()
+                return networks
 
         for i in range(0, len(self.demographics)):
             demographic = self.demographics[i]
@@ -273,15 +302,12 @@ class Networks:
             self.subnets[i].update(subnet_params, profiler=p)
             p = p.stop()
 
-        if profile and (profiler is None):
-            print(p)
-
     def initialise_infections(self, nthreads: int = 1):
         """Initialise and return the space that will be used
            to track infections
         """
         from ._infections import Infections
-        return Infections.build(networks=self)
+        return Infections.build(network=self)
 
     def rescale_play_matrix(self, nthreads: int = 1, profiler=None):
         """Rescale the play matrix"""
