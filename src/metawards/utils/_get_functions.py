@@ -7,6 +7,8 @@ from .._network import Network
 from .._networks import Networks
 from .._population import Population
 from .._infections import Infections
+from .._outputfiles import OutputFiles
+from .._workspace import Workspace
 from ._profiler import Profiler
 
 __all__ = ["get_functions", "get_model_loop_functions",
@@ -39,6 +41,8 @@ def get_functions(stage: str,
                   network: _Union[Network, Networks],
                   population: Population,
                   infections: Infections,
+                  output_dir: OutputFiles,
+                  workspace: Workspace,
                   iterator: MetaFunction,
                   extractor: MetaFunction,
                   mixer: MetaFunction,

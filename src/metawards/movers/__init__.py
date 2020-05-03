@@ -8,8 +8,8 @@ Functions
     :toctree: generated/
 
     move_custom
+    move_default
 
-    go_weekend
 """
 
 from ._move_custom import *

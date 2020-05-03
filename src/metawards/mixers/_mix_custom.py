@@ -1,19 +1,13 @@
 
-__all__ = ["mix_custom",
-           "mixer_needs_setup",
-           "build_custom_mixer"]
+from typing import Union as _Union
+from typing import List as _List
+from ..utils._get_functions import MetaFunction, accepts_stage
+
+__all__ = ["mix_custom", "build_custom_mixer"]
 
 
-def mixer_needs_setup(mixer):
-    """Return whether or not the passed mixer function has
-       a "setup" argument, and thus needs to be setup before
-       it can be used
-    """
-    import inspect
-    return "setup" in inspect.signature(mixer).parameters
-
-
-def build_custom_mixer(custom_function, parent_name="__main__"):
+def build_custom_mixer(custom_function: _Union[str, MetaFunction],
+                       parent_name="__main__") -> MetaFunction:
     """Build and return a custom mixer from the passed
        function. This will wrap 'extract_mixer' around
        the function to double-check that the custom
@@ -40,7 +34,7 @@ def build_custom_mixer(custom_function, parent_name="__main__"):
 
         Returns
         -------
-        extractor
+        extractor: MetaFunction
           The wrapped mixer that is suitable for using in the move
           function.
     """
@@ -144,69 +138,43 @@ def build_custom_mixer(custom_function, parent_name="__main__"):
                                        **kwargs)
 
 
-def mix_custom(custom_function, setup=False, **kwargs):
+def mix_custom(custom_function: MetaFunction,
+               stage: str, **kwargs) -> _List[MetaFunction]:
     """This returns the default list of 'merge_XXX' functions that
-       are called in sequence to merge data from the outbreak,
-       e.g. fois, from across multiple demographics and to
-       merge that back to the overall population
-
-       This mixer provides a custom mixer that uses
-       'custom_function' passed from the user. This
-       mixer makes sure that 'custom_function' does everything
-       it should
+       are called in sequence for each iteration of the model run.
+       This provides a custom mixer that uses
+       'custom_function' passed from the user. This makes
+       sure that if 'stage' is not handled by the custom function,
+       then the "mix_default" functions for that stage
+       are correctly called for all stages except "foi"
 
        Parameters
        ----------
-       custom_function
+       custom_function: MetaFunction
          A custom user-supplied function that returns the
          functions that the user would like to be called for
          each step.
-       setup: bool
-         Whether or not to return the functions used to setup the
-         space and input for the merge_XXX functions returned by
-         this mixer. This is called once at the start of a run
-         to return the functions that must be called to setup the
-         movers. Note that most mixers shouldn't need any setup.
+       stage: str
+         The stage of the day/model
 
        Returns
        -------
-       funcs: List[function]
-         The list of functions that ```merge``` will call in sequence
+       funcs: List[MetaFunction]
+         The list of functions that will be called in sequence
     """
 
-    from ._merge_core import merge_core
+    kwargs["stage"] = stage
 
-    if setup:
-        # Return the functions needed to initialise this extractor
-        kwargs["setup"] = setup
-        core_funcs = merge_core(**kwargs)
+    if custom_function is None:
+        from ._mix_default import mix_default
+        return mix_default(**kwargs)
 
-        if mixer_needs_setup(custom_function):
-            custom_funcs = custom_function(**kwargs)
-        else:
-            custom_funcs = None
-
-    else:
-        core_funcs = merge_core(**kwargs)
-        custom_funcs = custom_function(**kwargs)
-
-    # make sure that the core functions are called, and that
-    # their call is before the custom function (unless the user
-    # has moved them, which we hope was for a good reason!)
-    if core_funcs is None or len(core_funcs) == 0:
-        if custom_funcs is None:
-            return []
-        else:
-            return custom_funcs
-
-    elif custom_funcs is None or len(custom_funcs) == 0:
-        return core_funcs
+    elif stage == "foi" or accepts_stage(custom_function):
+        # most custom functions operate at the 'foi' stage,
+        # so mixers that don't specify a stage are assumed to
+        # only operate here (every other stage is 'mix_default')
+        return custom_function(**kwargs)
 
     else:
-        for i in range(len(core_funcs)-1, -1, -1):
-            # move backwards so that the first custom function
-            # is prepended last
-            if core_funcs[i] not in custom_funcs:
-                custom_funcs.insert(0, core_funcs[i])
-
-        return custom_funcs
+        from ._mix_default import mix_default
+        return mix_default(**kwargs)
