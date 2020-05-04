@@ -127,6 +127,14 @@ class Networks:
 
         return result
 
+    def aggregate(self, infections, profiler=None):
+        """Aggregate all of the sub-network population infection data
+           so that this is available in the overall network
+        """
+        from .utils._aggregate import aggregate_networks
+        aggregate_networks(network=self, infections=infections,
+                           profiler=profiler)
+
     def run(self, population: Population,
             output_dir: OutputFiles,
             seed: int = None,

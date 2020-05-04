@@ -729,7 +729,9 @@ def output_core(network: _Union[Network, Networks],
                 population: Population,
                 workspace: Workspace,
                 infections: Infections,
-                nthreads: int, **kwargs):
+                nthreads: int,
+                profiler: Profiler,
+                **kwargs):
     """This is the core output function that must be called
        every iteration as it is responsible for accumulating
        the core data each day, which is used to report a summary
@@ -750,6 +752,8 @@ def output_core(network: _Union[Network, Networks],
          Space to hold the 'play' infections
        nthreads: int
          The number of threads to use to help extract the data
+       profiler: Profiler
+         Optional profiler to profile this output function
        kwargs
          Extra argumentst that are ignored by this function
     """
@@ -776,16 +780,18 @@ def output_core(network: _Union[Network, Networks],
                         population=population.subpops[i],
                         workspace=workspace.subspaces[i],
                         infections=infections.subinfs[i],
+                        profiler=profiler,
                         **kwargs)
-
-        print(population.summary(demographics=network.demographics))
 
         # aggregate the infection information from across
         # the different demographics
-        network.aggregate(infections=infections)
+        network.aggregate(infections=infections, profiler=profiler)
 
         output_func(network=network.overall,
                     population=population,
                     workspace=workspace,
                     infections=infections,
+                    profiler=profiler,
                     **kwargs)
+
+        print(population.summary(demographics=network.demographics))
