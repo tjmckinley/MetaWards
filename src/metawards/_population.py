@@ -86,7 +86,7 @@ class Population:
         """
         summary = f"S: {self.susceptibles}  E: {self.latent}  " \
                   f"I: {self.total}  R: {self.recovereds}  " \
-                  f"IW: {self.n_inf_wards}  T_POP: {self.population}"
+                  f"IW: {self.n_inf_wards}  POPULATION: {self.population}"
 
         if self.subpops is None or len(self.subpops) == 0:
             return summary
@@ -95,9 +95,12 @@ class Population:
         for i, subpop in enumerate(self.subpops):
             if demographics is not None:
                 name = demographics.get_name(i)
-                subs.append(f"name: {name}  {subpop.summary()}")
+                subs.append(f"{name}  {subpop.summary()}")
             else:
-                subs.append(f"index: {i}  {subpop.summary()}")
+                subs.append(f"{i}  {subpop.summary()}")
+
+        from .utils._align_strings import align_strings
+        subs = align_strings(subs, ":")
 
         return f"{summary}\n  " + "\n  ".join(subs)
 
