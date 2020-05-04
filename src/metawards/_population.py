@@ -75,6 +75,32 @@ class Population:
         else:
             return s
 
+    def summary(self, demographics=None):
+        """Return a short summary string that is suitable to be printed
+           out during a model run
+
+           Returns
+           -------
+           summary: str
+             The short summary string
+        """
+        summary = f"S: {self.susceptibles}  E: {self.latent}  " \
+                  f"I: {self.total}  R: {self.recovereds}  " \
+                  f"IW: {self.n_inf_wards}  T_POP: {self.population}"
+
+        if self.subpops is None or len(self.subpops) == 0:
+            return summary
+
+        subs = []
+        for i, subpop in enumerate(self.subpops):
+            if demographics is not None:
+                name = demographics.get_name(i)
+                subs.append(f"name: {name}  {subpop.summary()}")
+            else:
+                subs.append(f"index: {i}  {subpop.summary()}")
+
+        return f"{summary}\n  " + "\n  ".join(subs)
+
 
 @_dataclass
 class Populations:

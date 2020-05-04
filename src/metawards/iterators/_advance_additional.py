@@ -1,5 +1,8 @@
 
+from typing import Union as _Union
+
 from .._network import Network
+from .._networks import Networks
 from .._population import Population
 from ..utils._profiler import Profiler
 from .._infections import Infections
@@ -25,7 +28,13 @@ def _load_additional_seeds(filename: str):
 
             # yes, this is really the order of the seeds - "t num loc"
             # is in the file as "t loc num"
-            seeds.append((int(words[0]), int(words[2]), int(words[1])))
+            if len(words) == 4:
+                seeds.append((int(words[0]), int(words[2]),
+                              int(words[1]), words[3]))
+            else:
+                seeds.append((int(words[0]), int(words[2]),
+                              int(words[1]), None))
+
             print(seeds[-1])
             line = FILE.readline()
 
@@ -40,7 +49,7 @@ def _load_additional_seeds(filename: str):
 _additional_seeds = None
 
 
-def setup_additional_seeds(network: Network,
+def setup_additional_seeds(network: _Union[Network, Networks],
                            profiler: Profiler,
                            **kwargs):
     """Setup function that reads in the additional seeds held
@@ -51,7 +60,7 @@ def setup_additional_seeds(network: Network,
 
        Parameters
        ----------
-       network: Network
+       network: Network or Networks
          The network to be seeded
        profiler: Profiler
          Profiler used to profile this function
@@ -70,7 +79,7 @@ def setup_additional_seeds(network: Network,
     p = p.stop()
 
 
-def advance_additional_serial(network: Network,
+def advance_additional_serial(network: _Union[Network, Networks],
                               population: Population,
                               infections: Infections,
                               profiler: Profiler,
@@ -80,7 +89,7 @@ def advance_additional_serial(network: Network,
 
        Parameters
        ----------
-       network: Network
+       network: Network or Networks
          The network being modelled
        population: Population
          The population experiencing the outbreak - also contains the day
@@ -93,11 +102,6 @@ def advance_additional_serial(network: Network,
          Arguments that aren't used by this advancer
     """
 
-    wards = network.nodes
-
-    play_infections = infections.play
-    infections = infections.work
-
     # The 'setup_additional_seeds' function should have loaded
     # all additional seeds into this global '_additional_seeds' variable
     global _additional_seeds
@@ -105,12 +109,37 @@ def advance_additional_serial(network: Network,
     p = profiler.start("additional_seeds")
     for seed in _additional_seeds:
         if seed[0] == population.day:
-            if wards.play_suscept[seed[1]] < seed[2]:
+            ward = seed[1]
+            num = seed[2]
+
+            if isinstance(network, Networks):
+                demographic = seed[3]
+
+                if demographic is None:
+                    # have to choose a demographic randomly - choose based
+                    # on the relative populations of the demographics
+                    demographic = 0
+                else:
+                    demographic = network.demographics.get_index(demographic)
+
+                wards = network.subnets[demographic]
+                play_infections = infections.subinfs[demographic].play
+            else:
+                demographic = None
+                wards = network.wards
+                play_infections = infections.play
+
+            if wards.play_suscept[ward] < num:
                 print(f"Not enough susceptibles in ward for seeding")
             else:
-                wards.play_suscept[seed[1]] -= seed[2]
-                print(f"seeding play_infections[0][{seed[1]}] += {seed[2]}")
-                play_infections[0][seed[1]] += seed[2]
+                wards.play_suscept[ward] -= num
+                if demographic is not None:
+                    print(f"seeding demographic {demographic} "
+                          f"play_infections[0][{ward}] += {num}")
+                else:
+                    print(f"seeding play_infections[0][{ward}] += {num}")
+
+                play_infections[0][ward] += num
     p.stop()
 
 

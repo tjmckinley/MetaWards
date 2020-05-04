@@ -713,13 +713,6 @@ def output_core_serial(network: Network, population: Population,
             f"{S} vs {susceptibles}, {E} vs {latent}, {I} vs {total}, "
             f"{R} vs {recovereds}")
 
-    print(f"S: {susceptibles}    ", end="")
-    print(f"E: {latent}    ", end="")
-    print(f"I: {total}    ", end="")
-    print(f"R: {recovereds}    ", end="")
-    print(f"IW: {n_inf_wards[0]}   ", end="")
-    print(f"TOTAL POPULATION {susceptibles+latent+total+recovereds}")
-
     if population is not None:
         population.susceptibles = susceptibles
         population.total = total
@@ -772,6 +765,7 @@ def output_core(network: _Union[Network, Networks],
     if isinstance(network, Network):
         output_func(network=network, population=population,
                     workspace=workspace, infections=infections)
+        print(population.summary())
 
     elif isinstance(network, Networks):
         if population.subpops is None:
@@ -783,6 +777,8 @@ def output_core(network: _Union[Network, Networks],
                         workspace=workspace.subspaces[i],
                         infections=infections.subinfs[i],
                         **kwargs)
+
+        print(population.summary(demographics=network.demographics))
 
         # aggregate the infection information from across
         # the different demographics

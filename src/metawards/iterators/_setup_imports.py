@@ -29,7 +29,11 @@ def setup_seed_specified_ward(network: _Union[Network, Networks],
     """
     if isinstance(network, Networks):
         # only seed the overall ward
-        network = network.overall
+        raise NotImplementedError(
+            "Seeding a specific ward for a multi-demographic Network is "
+            "not yet supported. If you need this please raise an issue "
+            "at https://github.com/metawards/MetaWards/issues and we will "
+            "work as quickly as we can to implement it.")
 
     wards = network.nodes
     links = network.links
@@ -66,11 +70,20 @@ def setup_seed_all_wards(network: _Union[Network, Networks],
        in params.daily_imports
     """
     if isinstance(network, Networks):
-        # only seed the overall network
-        network = network.overall
+        if network.overall.params.daily_imports == 0:
+            return
+
+        raise NotImplementedError(
+            "Daily seeding of a multi-demographic network is not yet "
+            "supported. If you need this, please raise an issue on "
+            "https://github.com/metawards/MetaWards/issues and we will "
+            "work as quickly as we can to implement it.")
 
     wards = network.nodes
     params = network.params
+
+    if params.daily_imports == 0:
+        return
 
     play_infections = infections.play
     infections = infections.work

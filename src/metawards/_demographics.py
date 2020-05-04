@@ -85,12 +85,45 @@ class Demographics:
         """Add a demographic to the set to be modelled"""
         if demographic.name in self._names:
             raise ValueError(
-                    f"There is already a demographic called "
-                    f"{demographic.name} in this set. Please rename "
-                    f"and try again.")
+                f"There is already a demographic called "
+                f"{demographic.name} in this set. Please rename "
+                f"and try again.")
 
         self.demographics.append(demographic)
         self._names[demographic.name] = len(self.demographics) - 1
+
+    def get_name(self, item):
+        """Return the name of the demographic at 'item'"""
+        return self.demographics[self.get_index(item)].name
+
+    def get_index(self, item):
+        """Return the index of the passed item"""
+        try:
+            item = int(item)
+        except Exception:
+            pass
+
+        if isinstance(item, str):
+            try:
+                return self._names[item]
+            except Exception:
+                pass
+
+        elif isinstance(item, int):
+            try:
+                if self.demographics[item] is not None:
+                    return item
+            except Exception:
+                pass
+
+        elif isinstance(item, Demographic):
+            for i, d in enumerate(self.demographics):
+                if item == d:
+                    return i
+
+        # haven't found the item
+        raise KeyError(f"There is no demographic is this set that "
+                       f"matches {item}.")
 
     @staticmethod
     def load(name: str = None,
@@ -177,7 +210,7 @@ class Demographics:
         play_ratios = data.get("play_ratios", [])
 
         if (len(demographics) != len(work_ratios) or
-           len(demographics) != len(play_ratios)):
+                len(demographics) != len(play_ratios)):
             raise ValueError(
                 f"The number of work_ratios ({len(work_ratios)}) must "
                 f"equal to number of play_ratios "
