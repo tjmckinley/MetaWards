@@ -773,31 +773,44 @@ def output_core(network: _Union[Network, Networks],
         print(population.summary())
 
     elif isinstance(network, Networks):
+        if profiler is None:
+            from ..utils._profiler import NullProfiler
+            profiler = NullProfiler()
+
+        p = profiler.start("multi-network")
+
         if population.subpops is None:
             population.specialise(network)
 
         for i, subnet in enumerate(network.subnets):
+            p = p.start(f"output-{i}")
             output_func(network=subnet,
                         population=population.subpops[i],
                         workspace=workspace.subspaces[i],
                         infections=infections.subinfs[i],
-                        profiler=profiler,
+                        profiler=p,
                         **kwargs)
+            p = p.stop()
 
         # aggregate the infection information from across
         # the different demographics
-        infections.aggregate(profiler=profiler, nthreads=nthreads)
-        network.aggregate(profiler=profiler, nthreads=nthreads)
+        p = p.start("aggregate")
+        infections.aggregate(profiler=p, nthreads=nthreads)
+        network.aggregate(profiler=p, nthreads=nthreads)
+        p = p.stop()
 
+        p = p.start("overall_output")
         output_func(network=network.overall,
                     population=population,
                     workspace=workspace,
                     infections=infections,
                     profiler=profiler,
                     **kwargs)
+        p = p.stop()
 
         print(population.summary(demographics=network.demographics))
 
         # double-check that the sums all add up correctly
         population.assert_sane()
 
+        p = p.stop()
