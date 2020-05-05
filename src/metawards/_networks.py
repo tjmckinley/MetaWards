@@ -119,14 +119,14 @@ class Networks:
         for i in range(0, len(demographics)):
             p = p.start(f"demographic_{i}")
             subnets.append(network.specialise(demographic=demographics[i],
-                                              profiler=profiler,
+                                              profiler=p,
                                               nthreads=nthreads))
             p = p.stop()
 
         p = p.start("distribute_remainders")
         from .utils._scale_susceptibles import distribute_remainders
         distribute_remainders(network=network, subnets=subnets, rngs=rngs,
-                              profiler=profiler, nthreads=nthreads)
+                              profiler=p, nthreads=nthreads)
         p = p.stop()
 
         total_pop = network.population
@@ -144,10 +144,6 @@ class Networks:
                 f"The sum of the population of the demographic "
                 f"sub-networks ({sum_pop}) does not equal the population "
                 f"of the total network ({total_pop}). This is a bug!")
-
-        # now verify that the sum of the populations in each ward across
-        # all demographics equals the sum of the overall population in
-        # each ward
 
         result = Networks()
         result.overall = network

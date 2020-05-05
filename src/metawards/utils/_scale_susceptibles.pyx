@@ -234,9 +234,9 @@ def distribute_remainders(network: Network,
                           profiler: Profiler=None) -> None:
     """Distribute the remainder of the population in each ward and link from
        'network' who are not represented in any of the demographic
-       sub-networks in subnets. This uses a integer rounding algorithm
-       whereby each individual is added to the next-largest subnet
-       in a round-robin fashion
+       sub-networks in subnets. This uses a completely random algorithm
+       that adds to random demographics one by one until all of the
+       population is assigned
 
        Parameters
        ----------
