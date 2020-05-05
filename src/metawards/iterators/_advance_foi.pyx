@@ -633,4 +633,5 @@ def advance_foi(nthreads: int, **kwargs):
     call_function_on_network(nthreads=nthreads,
                              func=advance_foi_serial,
                              parallel=advance_foi_omp,
+                             switch_to_parallel=5,
                              **kwargs)
