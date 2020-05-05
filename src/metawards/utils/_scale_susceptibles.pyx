@@ -14,6 +14,9 @@ from ._profiler import Profiler
 from ._get_array_ptr cimport get_double_array_ptr, get_int_array_ptr
 from ._array import create_double_array
 
+from ._ran_binomial cimport _ran_binomial, _ran_integer, \
+                            _get_binomial_ptr, binomial_rng
+
 __all__ = ["scale_node_susceptibles", "scale_link_susceptibles",
            "distribute_remainders"]
 
@@ -198,7 +201,8 @@ def scale_link_susceptibles(links: Links, ratio: any):
                 links_suscept[i] = val
 
 
-cdef double redistribute(double target, double *values, int nvalues) nogil:
+cdef double redistribute(double target, double *values,
+                         int nvalues, binomial_rng *rng) nogil:
     """This will add or subtract numbers from 'values' until their sum
        equals 'target'
     """
@@ -210,23 +214,15 @@ cdef double redistribute(double target, double *values, int nvalues) nogil:
         diff = diff - values[i]
 
     if diff > 0:
-        i = 0
         while diff > 0:
+            i = _ran_integer(rng, 0, nvalues)
             values[i] += 1
             diff -= 1
-
-            i += 1
-            if i >= nvalues:
-                i = 0
     elif diff < 0:
-        i = 0
         while diff < 0:
+            i = _ran_integer(rng, 0, nvalues)
             values[i] -= 1
             diff += 1
-
-            i += 1
-            if i >= nvalues:
-                i = 0
 
     return diff
 
@@ -297,6 +293,9 @@ def distribute_remainders(network: Network,
     values = create_double_array(nsubnets)
     cdef double * values_array = get_double_array_ptr(values)
 
+    cdef unsigned long [::1] rngs_view = rngs
+    cdef binomial_rng* rng = _get_binomial_ptr(rngs_view[0])
+
     # calculate the number of remainders in each ward and link
     p = profiler.start("initialise")
     with nogil, parallel(num_threads=num_threads):
@@ -338,7 +337,7 @@ def distribute_remainders(network: Network,
                     values_array[j] = sub_nodes_save_play_suscept[i]
 
                 diff_nodes_array[i] = redistribute(target, values_array,
-                                                   nsubnets)
+                                                   nsubnets, rng)
 
                 for j in range(0, nsubnets):
                     with gil:
@@ -365,7 +364,7 @@ def distribute_remainders(network: Network,
                     values_array[j] = sub_links_weight[i]
 
                 diff_links_array[i] = redistribute(target, values_array,
-                                                   nsubnets)
+                                                   nsubnets, rng)
 
                 for j in range(0, nsubnets):
                     with gil:
