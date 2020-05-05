@@ -13,6 +13,7 @@ from .._network import Network
 from .._networks import Networks
 from .._population import Population
 from .._infections import Infections
+from ..utils._profiler import Profiler
 
 from .._workspace import Workspace
 
@@ -785,7 +786,8 @@ def output_core(network: _Union[Network, Networks],
 
         # aggregate the infection information from across
         # the different demographics
-        network.aggregate(infections=infections, profiler=profiler)
+        infections.aggregate(profiler=profiler, nthreads=nthreads)
+        network.aggregate(profiler=profiler, nthreads=nthreads)
 
         output_func(network=network.overall,
                     population=population,
@@ -795,3 +797,5 @@ def output_core(network: _Union[Network, Networks],
                     **kwargs)
 
         print(population.summary(demographics=network.demographics))
+
+        print(profiler)

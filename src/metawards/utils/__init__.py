@@ -10,6 +10,7 @@ Functions
     accepts_stage
     add_lookup
     add_wards_network_distance
+    aggregate_networks
     align_strings
     allocate_vaccination
     assert_sane_network
@@ -80,6 +81,7 @@ from ._get_functions import *
 from ._align_strings import *
 
 from ._add_lookup import *
+from ._aggregate import *
 from ._build_wards_network import *
 from ._add_wards_network_distance import *
 from ._get_min_max_distances import *

@@ -40,10 +40,10 @@ def parse_args():
     metawards_url = "https://metawards.org"
 
     parser = argparse.ArgumentParser(
-                    description=f"MetaWards epidemic modelling - see "
-                                f"{metawards_url} "
-                                f"for more information",
-                    prog="metawards")
+        description=f"MetaWards epidemic modelling - see "
+        f"{metawards_url} "
+        f"for more information",
+        prog="metawards")
 
     parser.add_argument('--version', action="store_true",
                         default=None,
@@ -711,10 +711,10 @@ def cli():
     # working out the number of processes and threads...
     from metawards.utils import guess_num_threads_and_procs
     (nthreads, nprocs) = guess_num_threads_and_procs(
-                                            njobs=len(variables),
-                                            nthreads=args.nthreads,
-                                            nprocs=args.nprocs,
-                                            parallel_scheme=parallel_scheme)
+        njobs=len(variables),
+        nthreads=args.nthreads,
+        nprocs=args.nprocs,
+        parallel_scheme=parallel_scheme)
 
     print(f"\nNumber of threads to use for each model run is {nthreads}")
 
@@ -762,9 +762,9 @@ def cli():
                 start_date = date.fromisoformat(args.start_date)
             except Exception as e:
                 raise ValueError(
-                        f"Cannot interpret a valid date from "
-                        f"'{args.start_date}'. Error is "
-                        f"{e.__class__} {e}")
+                    f"Cannot interpret a valid date from "
+                    f"'{args.start_date}'. Error is "
+                    f"{e.__class__} {e}")
 
     if start_date is None:
         from datetime import date
@@ -783,7 +783,7 @@ def cli():
     # now find the MetaWardsData repository as this will be needed
     # for the repeat command line too
     (repository, repository_version) = Parameters.get_repository(
-                                                        args.repository)
+        args.repository)
 
     print(f"\nUsing MetaWardsData at {repository}")
     print(f"This is cloned from {repository_version['repository']}")
@@ -850,7 +850,7 @@ def cli():
     if args.no_profile:
         profiler = None
     elif args.profile:
-        from ..utils._profiler import Profiler
+        from metawards.utils import Profiler
         profiler = Profiler()
 
     # load the disease and starting-point input files
@@ -918,7 +918,7 @@ def cli():
         prompt = None
     else:
         from metawards import input
-        prompt = lambda x: input(x, default="y")
+        def prompt(x): return input(x, default="y")
 
     auto_bzip = True
 

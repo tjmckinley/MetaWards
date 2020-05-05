@@ -47,6 +47,12 @@ class Network:
     #: The parameters used to generate this network
     params: Parameters = None
 
+    #: The index in the overall network's work matrix of the ith
+    #: index in this subnetworks work matrix. If this is None then
+    #: both this subnetwork has the same work matrix as the overall
+    #: network
+    _work_index = None
+
     @staticmethod
     def build(params: Parameters,
               calculate_distances: bool = True,
@@ -282,6 +288,23 @@ class Network:
         from .utils import move_population_from_play_to_work
         move_population_from_play_to_work(network=self, nthreads=nthreads,
                                           profiler=profiler)
+
+    def has_different_work_matrix(self):
+        """Return whether or not the sub-network work matrix
+           is different to that of the overall network
+        """
+        return self._work_index is not None
+
+    def get_work_index(self):
+        """Return the mapping from the index in this sub-networks work
+           matrix to the mapping in the overall network's work matrix
+        """
+        if self.has_different_work_matrix():
+            # remember this is 1-indexed, so work_index[1] is the first
+            # value
+            return self._work_index
+        else:
+            return range(1, self.nlinks + 1)
 
     def specialise(self, demographic):
         """Return a copy of this network that has been specialised
