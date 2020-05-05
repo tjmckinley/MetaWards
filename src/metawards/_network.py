@@ -53,6 +53,17 @@ class Network:
     #: network
     _work_index = None
 
+    @property
+    def population(self) -> int:
+        """Return the total population in the network"""
+        if self.nodes is None:
+            return 0
+
+        node_pop = self.nodes.population()
+        link_pop = self.links.population()
+
+        return int(node_pop + link_pop)
+
     @staticmethod
     def build(params: Parameters,
               calculate_distances: bool = True,
@@ -144,6 +155,8 @@ class Network:
         if not p.is_null():
             p = p.stop()
             print(p)
+
+        print(f"\nNetwork loaded: Population = {network.population}\n")
 
         return network
 

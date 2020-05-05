@@ -95,6 +95,9 @@ class Networks:
              The set of Networks that represent the model run over the
              full set of different demographics
         """
+        if not isinstance(network, Network):
+            raise TypeError(f"You can only specialise a Network")
+
         if demographics is None or len(demographics) < 2:
             raise ValueError(f"You can only create a Networks object "
                              f"with a valid Demographics that contains "
@@ -106,13 +109,34 @@ class Networks:
 
         p = profiler.start("specialise")
 
-        networks = []
+        subnets = []
 
         # specialise the network for each demographic
         for i in range(0, len(demographics)):
             p = p.start(f"demographic_{i}")
-            networks.append(network.specialise(demographics[i]))
+            subnets.append(network.specialise(demographics[i]))
             p = p.stop()
+
+        p = p.start("distribute_remainders")
+        from .utils._scale_susceptibles import distribute_remainders
+        distribute_remainders(network=network, subnets=subnets)
+        p = p.stop()
+
+        total_pop = network.population
+        sum_pop = 0
+
+        print(f"Specialising network - population = {total_pop}")
+
+        for i, subnet in enumerate(subnets):
+            pop = subnet.population
+            sum_pop += pop
+            print(f"  {demographics[i].name} - population = {pop}")
+
+        if total_pop != sum_pop:
+            raise AssertionError(
+                f"The sum of the population of the demongraphic "
+                f"sub-networks ({sum_pop}) does not equal the population "
+                f"of the total network ({total_pop}). This is a bug!")
 
         # now verify that the sum of the populations in each ward across
         # all demographics equals the sum of the overall population in
@@ -120,7 +144,7 @@ class Networks:
 
         result = Networks()
         result.overall = network
-        result.subnets = networks
+        result.subnets = subnets
         result.demographics = demographics
 
         p = p.stop()

@@ -9,6 +9,7 @@ class Links:
        to store a list of Link objects as a "struct of arrays".
        This should improve speed of loading and access.
     """
+
     def __init__(self, N: int = 0):
         """Create a container for up to "N" Links"""
         if N <= 0:
@@ -37,6 +38,13 @@ class Links:
             return 0
         else:
             return len(self.ifrom)
+
+    def population(self) -> int:
+        """Return the population of these links"""
+        if self.suscept is None:
+            return 0
+        else:
+            return sum(self.suscept)
 
     def copy(self):
         """Return a copy of these links, using a shallow copy for

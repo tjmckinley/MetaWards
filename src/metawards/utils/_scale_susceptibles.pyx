@@ -2,12 +2,16 @@
 #cython: linetrace=False
 # MUST ALWAYS DISABLE AS WAY TOO SLOW FOR ITERATE
 
+from typing import List as _List
+
 from .._nodes import Nodes
 from .._links import Links
+from .._network import Network
 
 from ._get_array_ptr cimport get_double_array_ptr, get_int_array_ptr
 
-__all__ = ["scale_node_susceptibles", "scale_link_susceptibles"]
+__all__ = ["scale_node_susceptibles", "scale_link_susceptibles",
+           "distribute_remainders"]
 
 
 def scale_node_susceptibles(nodes: Nodes, ratio: any = None,
@@ -171,3 +175,54 @@ def scale_link_susceptibles(links: Links, ratio: any):
             if v != 1.0:
                 links_weight[i] *= v
                 links_suscept[i] *= v
+
+
+def distribute_remainders(network: Network,
+                          subnets: _List[Network]) -> None:
+    """Distribute the remainder of the population in each ward and link from
+       'network' who are not represented in any of the demographic
+       sub-networks in subnets. This uses a integer rounding algorithm
+       whereby each individual is added to the next-largest subnet
+       in a round-robin fashion
+
+       Parameters
+       ----------
+       network: Network
+         The overall network
+       subnets: List[Network]
+         The demographic sub-networks
+    """
+
+    nodes = network.nodes
+    links = network.links
+    play = network.play
+
+    cdef int i = 0
+    cdef int nnodes_plus_one = network.nnodes + 1
+    cdef int nlinks_plus_one = network.nlinks + 1
+
+    cdef int nsubnets = len(subnets)
+
+    cdef int n = 0
+    cdef int sub_n = 0
+    cdef int diff = 0
+
+    cdef double * nodes_play_suscept = get_double_array_ptr(
+                                                nodes.play_suscept)
+    cdef double * nodes_save_play_suscept = get_double_array_ptr(
+                                                nodes.save_play_suscept)
+
+    cdef double * sub_nodes_play_suscept
+    cdef double * sub_nodes_save_play_suscept
+
+    for i in range(1, nnodes_plus_one):
+        n = [nodes_play_suscept[i]]
+
+        for j in range(0, nsubnets):
+            sub_nodes_play_suscept = get_double_array_ptr(subnet.play_suscept)
+            n.append(sub_nodes_play_suscept[i])
+
+        if redistribute(n):
+            # had to redistribute...
+
+    pass

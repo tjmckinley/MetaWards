@@ -64,7 +64,7 @@ def recalculate_work_denominator_day(network: Network, nthreads: int = 1,
         wards_denominator_n[ifrom] += suscept
         sum += suscept
 
-    print(f"recalculate_work_denominator_day sum = {sum}")
+    #print(f"recalculate_work_denominator_day sum = {sum}")
 
 
 def recalculate_play_denominator_day(network: Network, nthreads: int = 1,
@@ -118,7 +118,7 @@ def recalculate_play_denominator_day(network: Network, nthreads: int = 1,
 
             sum += denom
 
-    print(f"recalculate_play_denominator_day sum 1 = {sum}")
+    #print(f"recalculate_play_denominator_day sum 1 = {sum}")
 
     sum = 0.0
     cdef double play_suscept = 0
@@ -134,4 +134,4 @@ def recalculate_play_denominator_day(network: Network, nthreads: int = 1,
 
             sum += play_suscept
 
-    print(f"recalculate_play_denominator_day sum 2 = {sum}")
+    #print(f"recalculate_play_denominator_day sum 2 = {sum}")

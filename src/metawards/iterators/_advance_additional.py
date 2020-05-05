@@ -122,11 +122,11 @@ def advance_additional_serial(network: _Union[Network, Networks],
                 else:
                     demographic = network.demographics.get_index(demographic)
 
-                wards = network.subnets[demographic]
+                wards = network.subnets[demographic].nodes
                 play_infections = infections.subinfs[demographic].play
             else:
                 demographic = None
-                wards = network.wards
+                wards = network.nodes
                 play_infections = infections.play
 
             if wards.play_suscept[ward] < num:
