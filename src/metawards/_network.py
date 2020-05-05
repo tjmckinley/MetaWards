@@ -229,7 +229,7 @@ class Network:
         from .utils import reset_everything
         reset_everything(network=self, nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters, demographics=None,
+    def update(self, params: Parameters, demographics=None, rngs=None,
                nthreads: int = 1, profiler=None):
         """Update this network with a new set of parameters
            (and optionally demographics).
@@ -246,6 +246,9 @@ class Network:
              The new demographics with which to update this Network.
              Note that this will return a Network object that contains
              the specilisation of this Network
+           rngs
+             Thread-safe random number generators - needed if you are
+             updating the demographics
            nthreads: int
              Number of threads over which to parallelise this update
            profiler: Profiler
@@ -270,20 +273,21 @@ class Network:
         self.reset_everything(nthreads=nthreads, profiler=p)
         p = p.stop()
 
-        p = p.start("rescale_play_matrix")
-        self.rescale_play_matrix(nthreads=nthreads, profiler=p)
-        p = p.stop()
-
-        p = p.start("move_from_play_to_work")
-        self.move_from_play_to_work(nthreads=nthreads, profiler=p)
-        p = p.stop()
-
         if demographics:
-            network = demographics.specialise(network=self,
-                                              profiler=profiler)
+            network = demographics.specialise(network=self, rngs=rngs,
+                                              profiler=profiler,
+                                              nthreads=nthreads)
 
         else:
             network = self
+
+        p = p.start("rescale_play_matrix")
+        network.rescale_play_matrix(nthreads=nthreads, profiler=p)
+        p = p.stop()
+
+        p = p.start("move_from_play_to_work")
+        network.move_from_play_to_work(nthreads=nthreads, profiler=p)
+        p = p.stop()
 
         p = p.stop()
 
@@ -319,7 +323,8 @@ class Network:
         else:
             return range(1, self.nlinks + 1)
 
-    def specialise(self, demographic):
+    def specialise(self, demographic, rngs=None, profiler=None,
+                   nthreads: int = 1):
         """Return a copy of this network that has been specialised
            for the passed demographic. The returned network will
            contain only members of that demographic, with the
@@ -330,13 +335,23 @@ class Network:
            ----------
            demographic: Demographic
              The demographic with which to specialise
+           rngs
+             Thread-safe random number generators
 
            Returns
            -------
            network: Network
              The specialised network
         """
-        return demographic.specialise(network=self)
+        from ._demographics import Demographics
+        if isinstance(demographic, Demographics):
+            return demographic.specialise(network=self, rngs=rngs,
+                                          profiler=profiler,
+                                          nthreads=nthreads)
+        else:
+            return demographic.specialise(network=self,
+                                          profiler=profiler,
+                                          nthreads=nthreads)
 
     def scale_susceptibles(self, ratio: any = None,
                            work_ratio: any = None, play_ratio: any = None):

@@ -234,7 +234,8 @@ class Demographics:
 
         return demos
 
-    def specialise(self, network: Network, profiler=None):
+    def specialise(self, network: Network, rngs, profiler=None,
+                   nthreads: int = 1):
         """Build the set of networks that will model this set
            of demographics applied to the passed Network.
 
@@ -244,8 +245,12 @@ class Demographics:
              The overall population model - this contains the base
              parameters, wards, work and play links that define
              the model outbreak
+           rngs
+             Thread-safe random number generators
            profiler: Profiler
              Profiler used to profile the specialisation
+           nthreads: int
+             Number of threads over which to parallelise the work
 
            Returns
            -------
@@ -258,4 +263,5 @@ class Demographics:
         else:
             from ._networks import Networks
             return Networks.build(network=network, demographics=self,
-                                  profiler=profiler)
+                                  rngs=rngs,
+                                  profiler=profiler, nthreads=nthreads)

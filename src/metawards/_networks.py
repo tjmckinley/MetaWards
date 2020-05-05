@@ -69,8 +69,8 @@ class Networks:
         # WARDS
 
     @staticmethod
-    def build(network: Network, demographics: Demographics,
-              profiler=None):
+    def build(network: Network, demographics: Demographics, rngs,
+              profiler=None, nthreads: int = 1):
         """Build the set of networks that will model the passed
            demographics based on the overall population model
            in the passed network
@@ -86,8 +86,12 @@ class Networks:
              Note that the sum of the "work" and "play" populations
              across all demographics must be 1.0 in all wards in
              the model
+           rngs
+             Thread-safe random number generators
            profiler: Profiler
              Optional profiler used to profile this build
+           nthreads: int
+             Number of threads over which to distribute the work
 
            Returns
            -------
@@ -114,12 +118,15 @@ class Networks:
         # specialise the network for each demographic
         for i in range(0, len(demographics)):
             p = p.start(f"demographic_{i}")
-            subnets.append(network.specialise(demographics[i]))
+            subnets.append(network.specialise(demographic=demographics[i],
+                                              profiler=profiler,
+                                              nthreads=nthreads))
             p = p.stop()
 
         p = p.start("distribute_remainders")
         from .utils._scale_susceptibles import distribute_remainders
-        distribute_remainders(network=network, subnets=subnets)
+        distribute_remainders(network=network, subnets=subnets, rngs=rngs,
+                              profiler=profiler, nthreads=nthreads)
         p = p.stop()
 
         total_pop = network.population
@@ -134,7 +141,7 @@ class Networks:
 
         if total_pop != sum_pop:
             raise AssertionError(
-                f"The sum of the population of the demongraphic "
+                f"The sum of the population of the demographic "
                 f"sub-networks ({sum_pop}) does not equal the population "
                 f"of the total network ({total_pop}). This is a bug!")
 
@@ -273,7 +280,7 @@ class Networks:
         for subnet in self.subnets:
             subnet.reset_everything(nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters, demographics=None,
+    def update(self, params: Parameters, demographics=None, rngs=None,
                nthreads: int = 1, profiler=None):
         """Update this network with a new set of parameters
            (and optionally demographics).
@@ -290,6 +297,9 @@ class Networks:
              The new demographics with which to update this Network.
              Note that this will return a Network object that contains
              the specilisation of this Network
+           rngs
+             Thread-safe random number generators - needed if you are
+             updating the demographics
            nthreads: int
              Number of threads over which to parallelise this update
            profiler: Profiler
@@ -314,7 +324,8 @@ class Networks:
             if demographics != self.demographics:
                 # we have a change in demographics, so need to re-specialise
                 networks = demographics.specialise(network=self.overall,
-                                                   profiler=p)
+                                                   rngs=rngs, profiler=p,
+                                                   nthreads=nthreads)
                 p.stop()
                 return networks
 
