@@ -16,6 +16,7 @@ Functions
     assert_sane_network
     build_play_matrix
     build_wards_network
+    call_function_on_network
     clear_all_infections
     create_int_array
     create_double_array

@@ -9,11 +9,13 @@ cimport openmp
 from libc.stdlib cimport calloc, free
 from libc.math cimport cos, pi
 
+
 from .._network import Network
 from .._population import Population
 from .._infections import Infections
 
 from ..utils._profiler import Profiler
+from ..utils._get_functions import call_function_on_network
 
 from ..utils._ran_binomial cimport _ran_binomial, \
                                    _get_binomial_ptr, binomial_rng
@@ -611,7 +613,7 @@ def advance_foi(nthreads: int, **kwargs):
 
        Parameters
        ----------
-       network: Network
+       network: Network or Networks
          The network being modelled
        population: Population
          The population experiencing the outbreak - contains the
@@ -628,7 +630,7 @@ def advance_foi(nthreads: int, **kwargs):
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
     """
-    if nthreads == 1:
-        advance_foi_serial(**kwargs)
-    else:
-        advance_foi_omp(nthreads=nthreads, **kwargs)
+    call_function_on_network(nthreads=nthreads,
+                             func=advance_foi_serial,
+                             parallel=advance_foi_omp,
+                             **kwargs)

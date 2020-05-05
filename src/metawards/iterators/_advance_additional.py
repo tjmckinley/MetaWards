@@ -116,8 +116,7 @@ def advance_additional_serial(network: _Union[Network, Networks],
                 demographic = seed[3]
 
                 if demographic is None:
-                    # have to choose a demographic randomly - choose based
-                    # on the relative populations of the demographics
+                    # not specified, so seed the first demographic
                     demographic = 0
                 else:
                     demographic = network.demographics.get_index(demographic)

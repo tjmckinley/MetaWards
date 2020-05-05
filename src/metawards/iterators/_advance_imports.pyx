@@ -10,6 +10,7 @@ from .._population import Population
 from .._infections import Infections
 
 from ..utils._profiler import Profiler
+from ..utils._get_functions import call_function_on_network
 
 from ..utils._ran_binomial cimport _ran_binomial, \
                                    _get_binomial_ptr, binomial_rng
@@ -213,7 +214,7 @@ def advance_imports(nthreads: int, **kwargs):
          Extra arguments that may be used by other advancers, but which
          are not used by advance_play
     """
-    if nthreads == 1:
-        advance_imports_serial(**kwargs)
-    else:
-        advance_imports_omp(nthreads=nthreads, **kwargs)
+    call_function_on_network(nthreads=nthreads,
+                             func=advance_imports_serial,
+                             parallel=advance_imports_omp,
+                             **kwargs)

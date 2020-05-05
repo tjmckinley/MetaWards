@@ -13,7 +13,8 @@ from ._profiler import Profiler
 
 __all__ = ["get_functions", "get_model_loop_functions",
            "get_initialise_functions", "get_finalise_functions",
-           "accepts_stage", "MetaFunction"]
+           "accepts_stage", "MetaFunction",
+           "call_function_on_network"]
 
 
 MetaFunction = _Callable[..., None]
@@ -106,8 +107,8 @@ def get_functions(stage: str,
 
     if stage not in stages:
         raise ValueError(
-                f"Cannot recognise the stage {stage}. Available stages "
-                f"are {stages}")
+            f"Cannot recognise the stage {stage}. Available stages "
+            f"are {stages}")
 
     kwargs = {"stage": stage,
               "network": network,
@@ -241,3 +242,43 @@ def get_finalise_functions(**kwargs) -> _List[MetaFunction]:
          stage of the day
     """
     return get_functions(stage="finalise", **kwargs)
+
+
+def call_function_on_network(network: _Union[Network, Networks],
+                             func: MetaFunction = None,
+                             parallel: MetaFunction = None,
+                             nthreads: int = 1,
+                             switch_to_parallel: int = 2,
+                             **kwargs):
+    """Call either 'func' or 'parallel' (depending on the
+       number of threads, nthreads) on the passed Network,
+       or on all demographic subnetworks
+
+       Parameters
+       ----------
+       network: Network or Networks
+         The network that is being modelled
+       nthreads: int
+         The number of threads to use to perform the work
+       func: MetaFunction
+         Function that performs the work in serial
+       parallel: MetaFunction
+         Function that performs the work in parallel
+       switch_to_parallel: int
+         Use the parallel function when nthreads is greater or equal
+         to this value
+    """
+    if func is None or nthreads >= switch_to_parallel:
+        kwargs["nthreads"] = nthreads
+        func = parallel
+
+    if func is None:
+        # nothing to do...
+        return
+
+    if isinstance(network, Networks):
+        # call the function on all of the demographic sub-networks
+        for subnet in network.subnets:
+            func(network=subnet, **kwargs)
+    else:
+        func(network=network, **kwargs)
