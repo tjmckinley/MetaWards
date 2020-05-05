@@ -245,6 +245,9 @@ def get_finalise_functions(**kwargs) -> _List[MetaFunction]:
 
 
 def call_function_on_network(network: _Union[Network, Networks],
+                             infections: Infections,
+                             workspace: Workspace,
+                             population: Population,
                              func: MetaFunction = None,
                              parallel: MetaFunction = None,
                              nthreads: int = 1,
@@ -268,17 +271,22 @@ def call_function_on_network(network: _Union[Network, Networks],
          Use the parallel function when nthreads is greater or equal
          to this value
     """
-    if func is None or nthreads >= switch_to_parallel:
-        kwargs["nthreads"] = nthreads
-        func = parallel
-
-    if func is None:
-        # nothing to do...
-        return
+    if parallel is not None:
+        if func is None or nthreads >= switch_to_parallel:
+            kwargs["nthreads"] = nthreads
+            func = parallel
 
     if isinstance(network, Networks):
         # call the function on all of the demographic sub-networks
-        for subnet in network.subnets:
-            func(network=subnet, **kwargs)
+        for i, subnet in enumerate(network.subnets):
+            subinf = infections.subinfs[i]
+            subwork = workspace.subspaces[i]
+            subpop = population.subpops[i]
+
+            func(network=subnet, infections=subinf,
+                 population=subpop, workspace=subwork,
+                 **kwargs)
     else:
-        func(network=network, **kwargs)
+        func(network=network, infections=infections,
+             population=population, workspace=workspace,
+             **kwargs)

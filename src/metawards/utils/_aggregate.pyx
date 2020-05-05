@@ -136,17 +136,15 @@ def aggregate_networks(network: Networks, profiler: Profiler,
     cdef int idx = 0
     cdef int num_threads = nthreads
 
+    nodes = network.overall.nodes
     links = network.overall.links
-    play = network.overall.play
 
     cdef int nnodes_plus_one = network.overall.nnodes + 1
     cdef int nlinks_plus_one = network.overall.nlinks + 1
     cdef int nsublinks_plus_one = 0
 
-    cdef double * play_weight = get_double_array_ptr(play.weight)
-    cdef double * play_suscept = get_double_array_ptr(play.suscept)
-    cdef double * sub_play_weight
-    cdef double * sub_play_suscept
+    cdef double * nodes_play_suscept = get_double_array_ptr(nodes.play_suscept)
+    cdef double * sub_nodes_play_suscept
 
     cdef double * links_weight = get_double_array_ptr(links.weight)
     cdef double * links_suscept = get_double_array_ptr(links.suscept)
@@ -162,8 +160,7 @@ def aggregate_networks(network: Networks, profiler: Profiler,
             links_suscept[i] = 0
 
         for i in prange(1, nnodes_plus_one):
-            play_weight[i] = 0
-            play_suscept[i] = 0
+            nodes_play_suscept[i] = 0
     p = p.stop()
 
     for ii, subnet in enumerate(network.subnets):
@@ -193,16 +190,14 @@ def aggregate_networks(network: Networks, profiler: Profiler,
 
         p = p.stop()
 
-    for ii, subnet in enumerate(network.subnets):
         p = p.start(f"aggregate_play_{ii}")
-        subplay = subnet.play
-        sub_play_weight = get_double_array_ptr(subplay.weight)
-        sub_play_suscept = get_double_array_ptr(subplay.suscept)
+        subnodes = subnet.nodes
+        sub_nodes_play_suscept = get_double_array_ptr(subnodes.play_suscept)
 
         with nogil, parallel(num_threads=num_threads):
             for i in prange(1, nnodes_plus_one):
-                play_weight[i] = play_weight[i] + sub_play_weight[i]
-                play_suscept[i] = play_suscept[i] + sub_play_suscept[i]
+                nodes_play_suscept[i] = nodes_play_suscept[i] + \
+                                        sub_nodes_play_suscept[i]
 
         p = p.stop()
 
