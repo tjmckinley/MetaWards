@@ -798,4 +798,6 @@ def output_core(network: _Union[Network, Networks],
 
         print(population.summary(demographics=network.demographics))
 
-        print(profiler)
+        # double-check that the sums all add up correctly
+        population.assert_sane()
+
