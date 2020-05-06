@@ -4,6 +4,7 @@
 
 cimport cython
 from cython.parallel import parallel, prange
+from libc.stdint cimport uintptr_t
 
 from .._network import Network
 from .._population import Population
@@ -65,7 +66,7 @@ def advance_imports_omp(network: Network, population: Population,
     cdef double frac = float(params.daily_imports) / float(population.initial)
 
     # get the random number generator
-    cdef unsigned long [::1] rngs_view = rngs
+    cdef uintptr_t [::1] rngs_view = rngs
     cdef binomial_rng* rng   # pointer to parallel rng
 
     # create and initialise variables used in the loop

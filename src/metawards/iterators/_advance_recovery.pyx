@@ -4,6 +4,7 @@
 
 cimport cython
 from cython.parallel import parallel, prange
+from libc.stdint cimport uintptr_t
 
 from .._network import Network
 from .._infections import Infections
@@ -57,7 +58,7 @@ def advance_recovery_omp(network: Network, infections: Infections, rngs,
     cdef int * play_infections_i_plus_one
 
     # get the random number generator
-    cdef unsigned long [::1] rngs_view = rngs
+    cdef uintptr_t [::1] rngs_view = rngs
     cdef binomial_rng* rng   # pointer to parallel rng
 
     # create and initialise variables used in the loop

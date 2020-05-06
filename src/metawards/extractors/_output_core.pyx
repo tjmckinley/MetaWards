@@ -759,8 +759,6 @@ def output_core(network: _Union[Network, Networks],
          Extra argumentst that are ignored by this function
     """
 
-    print("I AM HERE IN OUTPUT_CORE")
-
     # serial version is much faster than parallel - only worth
     # parallelising when more than 4 cores
     if nthreads <= 4:

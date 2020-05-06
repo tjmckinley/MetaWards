@@ -7,6 +7,7 @@ from cython.parallel import parallel, prange
 cimport openmp
 
 from libc.stdlib cimport calloc, free
+from libc.stdint cimport uintptr_t
 from libc.math cimport cos, pi
 
 
@@ -184,7 +185,7 @@ def advance_foi_omp(network: Network, population: Population,
     cdef double cutoff = params.dyn_dist_cutoff
 
     # get the random number generator
-    cdef unsigned long [::1] rngs_view = rngs
+    cdef uintptr_t [::1] rngs_view = rngs
     cdef binomial_rng* rng   # pointer to parallel rng
 
     # create and initialise variables used in the loop

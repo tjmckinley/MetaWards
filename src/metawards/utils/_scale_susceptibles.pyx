@@ -5,6 +5,7 @@
 from typing import List as _List
 
 from libc.math cimport floor
+from libc.stdint cimport uintptr_t
 
 from .._nodes import Nodes
 from .._links import Links
@@ -293,7 +294,7 @@ def distribute_remainders(network: Network,
     values = create_double_array(nsubnets)
     cdef double * values_array = get_double_array_ptr(values)
 
-    cdef unsigned long [::1] rngs_view = rngs
+    cdef uintptr_t [::1] rngs_view = rngs
     cdef binomial_rng* rng = _get_binomial_ptr(rngs_view[0])
 
     # calculate the number of remainders in each ward and link
