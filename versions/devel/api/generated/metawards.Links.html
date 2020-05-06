@@ -235,10 +235,13 @@ This should improve speed of loading and access.</p>
 <tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_null</span></code>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Links.resize" title="metawards.Links.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize</span></code></a>(N)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Links.population" title="metawards.Links.population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">population</span></code></a>()</td>
+<td>Return the population of these links</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Links.resize" title="metawards.Links.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize</span></code></a>(N)</td>
 <td>Resize this container to hold ‘N’ links.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Links.scale_susceptibles" title="metawards.Links.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Links.scale_susceptibles" title="metawards.Links.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio)</td>
 <td>Scale the number of susceptibles in these Links by the passed scale ratio.</td>
 </tr>
 </tbody>
@@ -264,6 +267,12 @@ so that “-1” refers to the last link in the collection</p>
 things that stay the same (e.g. ifrom, ito, distance)
 and a deep copy for things that are variable
 (e.g. weight and suscept)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Links.population">
+<code class="descname">population</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../../_modules/metawards/_links.html#Links.population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Links.population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the population of these links</p>
 </dd></dl>
 
 <dl class="method">
@@ -326,7 +335,7 @@ susceptibles - evenly scales the work and play populations</td>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 01, 2020.
+        Last updated on May 06, 2020.
       </span>
 
     </p>

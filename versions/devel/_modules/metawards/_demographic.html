@@ -211,7 +211,8 @@
     <span class="c1">#: parameters as the whole population</span>
     <span class="n">adjustment</span><span class="p">:</span> <span class="n">VariableSet</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Demographic.specialise"><a class="viewcode-back" href="../../api/generated/metawards.Demographic.html#metawards.Demographic.specialise">[docs]</a>    <span class="k">def</span> <span class="nf">specialise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">):</span>
+<div class="viewcode-block" id="Demographic.specialise"><a class="viewcode-back" href="../../api/generated/metawards.Demographic.html#metawards.Demographic.specialise">[docs]</a>    <span class="k">def</span> <span class="nf">specialise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a copy of the passed network that has been specialised</span>
 <span class="sd">           for this demographic. The returned network will</span>
 <span class="sd">           contain only members of this demographic, with the</span>
@@ -265,7 +266,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 01, 2020.
+        Last updated on May 06, 2020.
       </span>
 
     </p>

@@ -18,6 +18,8 @@ metawards.Network
       ~Network.assert_sane
       ~Network.build
       ~Network.get_min_max_distances
+      ~Network.get_work_index
+      ~Network.has_different_work_matrix
       ~Network.initialise_infections
       ~Network.move_from_play_to_work
       ~Network.rescale_play_matrix
@@ -45,6 +47,7 @@ metawards.Network
       ~Network.nplay
       ~Network.params
       ~Network.play
+      ~Network.population
       ~Network.to_seed
    
    

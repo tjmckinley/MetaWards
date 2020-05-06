@@ -256,10 +256,10 @@ Run <code class="docutils literal notranslate"><span class="pre">metawards</span
 <div class="section" id="extract-xxx-and-output-xxx">
 <h2>extract_XXX and output_XXX<a class="headerlink" href="#extract-xxx-and-output-xxx" title="Permalink to this headline">¶</a></h2>
 <p>At the end of each model day, <code class="docutils literal notranslate"><span class="pre">metawards</span></code> calls the
-<a class="reference internal" href="../../api/generated/metawards.utils.extract.html#metawards.utils.extract" title="metawards.utils.extract"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code></a> function. This calls your <code class="docutils literal notranslate"><span class="pre">extract_XXX</span></code>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code> function. This calls your <code class="docutils literal notranslate"><span class="pre">extract_XXX</span></code>
 function. The signature is very similar to the custom iterator functions,
 namely it should take <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>, and then return a list of functions
-that <a class="reference internal" href="../../api/generated/metawards.utils.extract.html#metawards.utils.extract" title="metawards.utils.extract"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code></a> will then call to output data
+that <code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code> will then call to output data
 (what we term <code class="docutils literal notranslate"><span class="pre">output_XXX</span></code> functions).</p>
 <p>At the moment, nothing is being written to the output directory. We
 can change this by adding an <code class="docutils literal notranslate"><span class="pre">output_XXX</span></code> function. For example,
@@ -427,7 +427,7 @@ infected population grows above a certain size.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 01, 2020.
+        Last updated on May 06, 2020.
       </span>
 
     </p>

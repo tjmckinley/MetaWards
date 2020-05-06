@@ -18,6 +18,7 @@ metawards.Nodes
       ~Nodes.assert_valid_index
       ~Nodes.copy
       ~Nodes.is_null
+      ~Nodes.population
       ~Nodes.resize
       ~Nodes.scale_susceptibles
    

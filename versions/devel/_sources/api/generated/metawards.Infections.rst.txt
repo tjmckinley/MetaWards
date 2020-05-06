@@ -14,8 +14,11 @@ metawards.Infections
    .. autosummary::
    
       ~Infections.__init__
+      ~Infections.aggregate
       ~Infections.build
       ~Infections.clear
+      ~Infections.get_work_index
+      ~Infections.has_different_work_matrix
    
    
 
@@ -25,9 +28,12 @@ metawards.Infections
 
    .. autosummary::
    
+      ~Infections.N_INF_CLASSES
+      ~Infections.nlinks
+      ~Infections.nnodes
+      ~Infections.nsubnets
       ~Infections.play
-      ~Infections.sub_plays
-      ~Infections.sub_works
+      ~Infections.subinfs
       ~Infections.work
    
    

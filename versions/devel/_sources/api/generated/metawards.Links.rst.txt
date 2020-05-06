@@ -18,6 +18,7 @@ metawards.Links
       ~Links.assert_valid_index
       ~Links.copy
       ~Links.is_null
+      ~Links.population
       ~Links.resize
       ~Links.scale_susceptibles
    

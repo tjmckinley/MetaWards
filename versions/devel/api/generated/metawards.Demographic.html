@@ -220,7 +220,7 @@
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.Demographic.__init__" title="metawards.Demographic.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(name,&nbsp;work_ratio,&nbsp;play_ratio,&nbsp;…)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Demographic.specialise" title="metawards.Demographic.specialise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specialise</span></code></a>(network)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Demographic.specialise" title="metawards.Demographic.specialise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specialise</span></code></a>(network[,&nbsp;profiler])</td>
 <td>Return a copy of the passed network that has been specialised for this demographic.</td>
 </tr>
 </tbody>
@@ -277,7 +277,7 @@ must be represented)</p>
 
 <dl class="method">
 <dt id="metawards.Demographic.specialise">
-<code class="descname">specialise</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_demographic.html#Demographic.specialise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Demographic.specialise" title="Permalink to this definition">¶</a></dt>
+<code class="descname">specialise</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>profiler=None</em>, <em>nthreads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_demographic.html#Demographic.specialise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Demographic.specialise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a copy of the passed network that has been specialised
 for this demographic. The returned network will
 contain only members of this demographic, with the
@@ -333,7 +333,7 @@ must be represented)</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 01, 2020.
+        Last updated on May 06, 2020.
       </span>
 
     </p>

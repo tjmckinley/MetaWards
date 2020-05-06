@@ -203,14 +203,14 @@
 <h1>metawards.utils.run_model<a class="headerlink" href="#metawards-utils-run-model" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.run_model">
-<code class="descclassname">metawards.utils.</code><code class="descname">run_model</code><span class="sig-paren">(</span><em>network: metawards._network.Network</em>, <em>infections: metawards._infections.Infections</em>, <em>rngs</em>, <em>s: int</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>population: metawards._population.Population = Population(initial=57104043</em>, <em>susceptibles=0</em>, <em>latent=0</em>, <em>total=0</em>, <em>recovereds=0</em>, <em>n_inf_wards=0</em>, <em>scale_uv=1.0</em>, <em>day=0</em>, <em>date=None)</em>, <em>nsteps: int = None</em>, <em>profile: bool = True</em>, <em>profiler: metawards.utils._profiler.Profiler = None</em>, <em>nthreads: int = None</em>, <em>iterator=None</em>, <em>extractor=None</em>, <em>mixer=None</em>, <em>mover=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_run_model.html#run_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">run_model</code><span class="sig-paren">(</span><em>network: Union[metawards._network.Network, metawards._networks.Networks], infections: metawards._infections.Infections, rngs, output_dir: metawards._outputfiles.OutputFiles, population: metawards._population.Population = Population(initial=57104043, susceptibles=0, latent=0, total=0, recovereds=0, n_inf_wards=0, scale_uv=1.0, day=0, date=None), nsteps: int = None, profiler: metawards.utils._profiler.Profiler = None, nthreads: int = None, iterator: Union[str, Callable[[...], None]] = None, extractor: Union[str, Callable[[...], None]] = None, mixer: Union[str, Callable[[...], None]] = None, mover: Union[str, Callable[[...], None]] = None</em><span class="sig-paren">)</span> &#x2192; metawards._population.Populations<a class="reference internal" href="../../_modules/metawards/utils/_run_model.html#run_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.run_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Actually run the model… Real work happens here. The model
 will run until completion or until ‘nsteps’ have been
 completed (whichever happens first)</p>
 <blockquote>
 <div><dl class="docutils">
-<dt>network: Network</dt>
-<dd>The network on which to run the model</dd>
+<dt>network: Network or Networks</dt>
+<dd>The network(s) on which to run the model</dd>
 <dt>infections: Infections</dt>
 <dd>The space used to record the infections</dd>
 <dt>rngs: list</dt>
@@ -227,29 +227,24 @@ None then a very random random number seed will be used</dd>
 <dt>nsteps: int</dt>
 <dd>The maximum number of steps to run in the outbreak. If None
 then run until the outbreak has finished</dd>
-<dt>profile: bool</dt>
-<dd>Whether or not to profile the model run and print out the
-results</dd>
 <dt>profiler: Profiler</dt>
 <dd>The profiler to use to profile - a new one is created if
 one isn’t passed</dd>
-<dt>s: int</dt>
-<dd>Index of the seeding parameter to use</dd>
 <dt>nthreads: int</dt>
 <dd>Number of threads over which to parallelise this model run</dd>
-<dt>iterator: function</dt>
+<dt>iterator: MetaFunction or string</dt>
 <dd>Function that will be used to dynamically get the functions
 that will be used at each iteration to advance the
 model. Any additional files or parameters needed by these
 functions should be included in the <em class="xref py py-obj">network.params</em> object.</dd>
-<dt>extractor: function</dt>
+<dt>extractor: MetaFunction or string</dt>
 <dd>Function that will be used to dynamically get the functions
 that will be used at each iteration to extract data from
 the model run</dd>
-<dt>mixer: function</dt>
+<dt>mixer: MetaFunction or string</dt>
 <dd>Function that will mix data from multiple demographics
 so that this is shared during a model run</dd>
-<dt>mover: function</dt>
+<dt>mover: MetaFunction or string</dt>
 <dd>Function that can move the population between different
 demographics</dd>
 </dl>
@@ -283,7 +278,7 @@ demographics</dd>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 01, 2020.
+        Last updated on May 06, 2020.
       </span>
 
     </p>

@@ -235,10 +235,13 @@ This should improve speed of loading and access.</p>
 <tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_null</span></code>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Nodes.resize" title="metawards.Nodes.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize</span></code></a>(N)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Nodes.population" title="metawards.Nodes.population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">population</span></code></a>()</td>
+<td>Return the total population of the nodes</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Nodes.resize" title="metawards.Nodes.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize</span></code></a>(N)</td>
 <td>Resize this container to hold ‘N’ nodes.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Nodes.scale_susceptibles" title="metawards.Nodes.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio,&nbsp;work_ratio,&nbsp;play_ratio)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Nodes.scale_susceptibles" title="metawards.Nodes.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio,&nbsp;work_ratio,&nbsp;play_ratio)</td>
 <td>Scale the number of susceptibles in these Nodes by the passed scale ratios.</td>
 </tr>
 </tbody>
@@ -267,6 +270,22 @@ you are not changing the actual links between nodes, e.g.
 it shallow-copies label, begin_to, end_to, self_w, begin_p, end_p
 and self_p. If you are changing the links then you will
 need to recreate these arrays.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Nodes.population">
+<code class="descname">population</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../../_modules/metawards/_nodes.html#Nodes.population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the total population of the nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Total population</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -336,7 +355,7 @@ susceptibles - evenly scales the work and play populations</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 01, 2020.
+        Last updated on May 06, 2020.
       </span>
 
     </p>

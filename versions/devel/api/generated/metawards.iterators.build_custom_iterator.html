@@ -202,7 +202,7 @@
 <h1>metawards.iterators.build_custom_iterator<a class="headerlink" href="#metawards-iterators-build-custom-iterator" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.iterators.build_custom_iterator">
-<code class="descclassname">metawards.iterators.</code><code class="descname">build_custom_iterator</code><span class="sig-paren">(</span><em>custom_function</em>, <em>parent_name='__main__'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/iterators/_iterate_custom.html#build_custom_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.iterators.build_custom_iterator" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.iterators.</code><code class="descname">build_custom_iterator</code><span class="sig-paren">(</span><em>custom_function: Union[str, Callable[[...], None]], parent_name='__main__'</em><span class="sig-paren">)</span> &#x2192; Callable[[...], None]<a class="reference internal" href="../../_modules/metawards/iterators/_iterate_custom.html#build_custom_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.iterators.build_custom_iterator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build and return a custom iterator from the passed
 function. This will wrap ‘iterate_custom’ around
 the function to double-check that the custom
@@ -232,10 +232,9 @@ call this function as build_custom_iterator(func, __name__)</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">returns:</th><td class="field-body">The wrapped iterator that is suitable for using in the iterate
-function.</td>
+<tr class="field-odd field"><th class="field-name">returns:</th><td class="field-body"><strong>iterator</strong> – The wrapped iterator</td>
 </tr>
-<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">iterator</td>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">MetaFunction</td>
 </tr>
 </tbody>
 </table>
@@ -268,7 +267,7 @@ function.</td>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 01, 2020.
+        Last updated on May 06, 2020.
       </span>
 
     </p>
