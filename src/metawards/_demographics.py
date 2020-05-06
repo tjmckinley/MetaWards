@@ -17,6 +17,32 @@ _default_demographics_path = _os.path.join(_pathlib.Path.home(),
 _default_folder_name = "demographics"
 
 
+def _get_value(value):
+    """Extract a numeric value from the passed value - this is used
+       to allow the demographics.json file to store numbers is
+       a variety of formats
+    """
+    from metawards.utils import safe_eval_float
+
+    if value is None:
+        return 0.0
+
+    elif isinstance(value, list):
+        lst = []
+        for v in value:
+            lst.append(safe_eval_float(v))
+        return lst
+
+    elif isinstance(value, dict):
+        d = []
+        for k, v in value.items():
+            d[k] = safe_eval_float(v)
+
+        return d
+    else:
+        return safe_eval_float(value)
+
+
 @_dataclass(eq=False)
 class Demographics:
     """This class holds metadata about all of the demographics
@@ -228,8 +254,8 @@ class Demographics:
 
         for i in range(0, len(demographics)):
             demographic = Demographic(name=demographics[i],
-                                      work_ratio=work_ratios[i],
-                                      play_ratio=play_ratios[i])
+                                      work_ratio=_get_value(work_ratios[i]),
+                                      play_ratio=_get_value(play_ratios[i]))
             demos.add(demographic)
 
         return demos

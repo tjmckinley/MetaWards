@@ -3,11 +3,12 @@ import pytest
 
 from metawards import VariableSet
 
+
 @pytest.mark.parametrize('vals',
-                         [ [0.4],
-                           [0, 1, 2, 3, 4],
-                           [0.5, 0.7, True, False, 1.3, 22.9]
-                         ])
+                         [[0.4],
+                          [0, 1, 2, 3, 4],
+                          [0.5, 0.7, True, False, 1.3, 22.9]
+                          ])
 def test_fingerprints(vals):
     fingerprint = VariableSet.create_fingerprint(vals=vals)
 

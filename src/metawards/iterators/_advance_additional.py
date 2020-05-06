@@ -24,7 +24,11 @@ def _load_additional_seeds(filename: str):
         seeds = []
 
         while line:
-            words = line.split()
+            words = line.strip().split()
+
+            if len(words) == 0:
+                line = FILE.readline()
+                continue
 
             # yes, this is really the order of the seeds - "t num loc"
             # is in the file as "t loc num"
