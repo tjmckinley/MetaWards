@@ -184,6 +184,15 @@ class Populations:
         else:
             return len(self._trajectory)
 
+    def strip_demographics(self):
+        """Remove the demographics information from this trajectory. This
+           makes it much smaller and easier to transmit over a network
+        """
+        for value in self._trajectory:
+            value._subpops = None
+
+        return self
+
     def append(self, population: Population):
         """Append the next step in the trajectory.
 

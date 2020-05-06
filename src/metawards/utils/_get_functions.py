@@ -6,6 +6,7 @@ from typing import List as _List
 from .._network import Network
 from .._networks import Networks
 from .._population import Population
+from .._population import Populations
 from .._infections import Infections
 from .._outputfiles import OutputFiles
 from .._workspace import Workspace
@@ -13,6 +14,7 @@ from ._profiler import Profiler
 
 __all__ = ["get_functions", "get_model_loop_functions",
            "get_initialise_functions", "get_finalise_functions",
+           "get_summary_functions",
            "accepts_stage", "MetaFunction",
            "call_function_on_network"]
 
@@ -48,7 +50,9 @@ def get_functions(stage: str,
                   extractor: MetaFunction,
                   mixer: MetaFunction,
                   mover: MetaFunction,
-                  rngs, nthreads, profiler: Profiler) -> _List[MetaFunction]:
+                  rngs, nthreads, profiler: Profiler,
+                  trajectory: Populations = None,
+                  results=None) -> _List[MetaFunction]:
     """Return the functions that must be called for the specified
        stage of the day;
 
@@ -69,6 +73,9 @@ def get_functions(stage: str,
                     the data and extrac the results
        * "finalise": Called at the end of the model run to finalise
                      any outputs or produce overall summary files
+       * "summary": Called at the end of lots of model runs, to write
+                    overview summary files. Only the extractor has
+                    a summary stage
 
        Parameters
        ----------
@@ -103,7 +110,8 @@ def get_functions(stage: str,
          stage of the day
     """
 
-    stages = ["initialise", "setup", "foi", "infect", "analyse", "finalise"]
+    stages = ["initialise", "setup", "foi", "infect",
+              "analyse", "finalise", "summary"]
 
     if stage not in stages:
         raise ValueError(
@@ -116,10 +124,15 @@ def get_functions(stage: str,
               "infections": infections,
               "rngs": rngs,
               "nthreads": nthreads,
-              "profiler": profiler}
+              "profiler": profiler,
+              "trajectory": trajectory,
+              "results": results}
 
-    funcs = mover(**kwargs) + iterator(**kwargs) + \
-        mixer(**kwargs) + extractor(**kwargs)
+    if stage == "summary":
+        funcs = extractor(**kwargs)
+    else:
+        funcs = mover(**kwargs) + iterator(**kwargs) + \
+            mixer(**kwargs) + extractor(**kwargs)
 
     return funcs
 
@@ -206,7 +219,8 @@ def get_initialise_functions(**kwargs) -> _List[MetaFunction]:
     return get_functions(stage="initialise", **kwargs)
 
 
-def get_finalise_functions(**kwargs) -> _List[MetaFunction]:
+def get_finalise_functions(trajectory: Populations,
+                           **kwargs) -> _List[MetaFunction]:
     """Convenience function that returns all of the functions
        that should be called during the finalisation step
        of the model (e.g. the "finalise" stage)
@@ -217,6 +231,8 @@ def get_finalise_functions(**kwargs) -> _List[MetaFunction]:
          The network(s) to be modelled
        population: Population
          The population experiencing the outbreak
+       trajectory: Populations
+         The trajectory of populations over time
        infections: Infections
          Space to record the infections through the day
        iterator: function
@@ -242,6 +258,29 @@ def get_finalise_functions(**kwargs) -> _List[MetaFunction]:
          stage of the day
     """
     return get_functions(stage="finalise", **kwargs)
+
+
+def get_summary_functions(network: _Union[Network, Networks],
+                          results, output_dir: OutputFiles,
+                          extractor: MetaFunction,
+                          nthreads: int = 1, **kwargs
+                          ):
+    """Convenience function that returns all of the functions
+       that should be called during the summary report
+       stage of the simulation
+    """
+    kwargs["workspace"] = Workspace()
+    kwargs["infections"] = Infections()
+    kwargs["population"] = Population()
+    kwargs["iterator"] = None
+    kwargs["mixer"] = None
+    kwargs["mover"] = None
+    kwargs["rngs"] = None
+    kwargs["profiler"] = None
+
+    return get_functions(stage="summary", network=network,
+                         output_dir=output_dir, results=results,
+                         extractor=extractor, nthreads=nthreads, **kwargs)
 
 
 def call_function_on_network(network: _Union[Network, Networks],

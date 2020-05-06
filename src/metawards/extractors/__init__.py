@@ -20,6 +20,7 @@ Functions
     output_incidence
     output_dispersal
     output_prevalence
+    output_trajectory
     output_wards_trajectory
 
     setup_core
@@ -36,5 +37,5 @@ from ._output_core import *
 from ._output_dispersal import *
 from ._output_incidence import *
 from ._output_prevalence import *
+from ._output_trajectory import *
 from ._output_wards_trajectory import *
-

@@ -9,9 +9,9 @@ from .._workspace import Workspace
 from .._population import Population, Populations
 from ._profiler import Profiler
 from ._get_functions import get_initialise_functions, \
-                            get_model_loop_functions, \
-                            get_finalise_functions, \
-                            MetaFunction
+    get_model_loop_functions, \
+    get_finalise_functions, \
+    MetaFunction
 
 __all__ = ["run_model"]
 
@@ -171,13 +171,13 @@ def run_model(network: _Union[Network, Networks],
         start_population = population.population
 
         funcs = get_model_loop_functions(
-                                    network=network, population=population,
-                                    infections=infections,
-                                    output_dir=output_dir,
-                                    workspace=workspace, rngs=rngs,
-                                    iterator=iterator, extractor=extractor,
-                                    mixer=mixer, mover=mover,
-                                    nthreads=nthreads, profiler=p)
+            network=network, population=population,
+            infections=infections,
+            output_dir=output_dir,
+            workspace=workspace, rngs=rngs,
+            iterator=iterator, extractor=extractor,
+            mixer=mixer, mover=mover,
+            nthreads=nthreads, profiler=p)
 
         for func in funcs:
             p2 = p2.start(str(func))
@@ -193,11 +193,11 @@ def run_model(network: _Union[Network, Networks],
             # something went wrong as the population should be conserved
             # during the day
             raise AssertionError(
-                    f"The total population changed during the day. This "
-                    f"should not happen and indicates a program bug. "
-                    f"The starting population was {start_population}, "
-                    f"while the end population is {population.population}. "
-                    f"Detail is {population}")
+                f"The total population changed during the day. This "
+                f"should not happen and indicates a program bug. "
+                f"The starting population was {start_population}, "
+                f"while the end population is {population.population}. "
+                f"Detail is {population}")
 
         infecteds = population.infecteds
 
@@ -236,14 +236,15 @@ def run_model(network: _Union[Network, Networks],
                                    workspace=workspace, rngs=rngs,
                                    iterator=iterator, extractor=extractor,
                                    mixer=mixer, mover=mover,
-                                   nthreads=nthreads, profiler=p)
+                                   nthreads=nthreads, trajectory=trajectory,
+                                   profiler=p)
 
     for func in funcs:
         p = p.start(str(func))
         func(network=network, population=population,
              infections=infections, output_dir=output_dir,
              workspace=workspace, rngs=rngs, nthreads=nthreads,
-             profiler=p)
+             trajectory=trajectory, profiler=p)
         p = p.stop()
 
     p = p.stop()
@@ -255,4 +256,5 @@ def run_model(network: _Union[Network, Networks],
 
     print(f"Infection died ... Ending on day {population.day}")
 
-    return trajectory
+    # only send back the overall statistics
+    return trajectory.strip_demographics()

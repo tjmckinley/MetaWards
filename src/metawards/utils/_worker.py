@@ -134,7 +134,7 @@ def run_worker(arguments):
                              options=options)
 
     # next, run the job, writing to output
-    from ._runner import redirect_output
+    from ._run_models import redirect_output
 
     outdir = options["output_dir"]
     auto_bzip = options["auto_bzip"]

@@ -769,7 +769,8 @@ def output_core(network: _Union[Network, Networks],
 
     if isinstance(network, Network):
         output_func(network=network, population=population,
-                    workspace=workspace, infections=infections)
+                    workspace=workspace, infections=infections,
+                    profiler=profiler, **kwargs)
         print(population.summary())
 
     elif isinstance(network, Networks):

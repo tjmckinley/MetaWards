@@ -78,7 +78,13 @@ def create_overview_plot(df, output_dir: str = None,
     """
     _, plt = import_graphics_modules()
 
-    fingerprints = df["fingerprint"].unique()
+    try:
+        fingerprints = df["fingerprint"].unique()
+        repeat = "repeat"
+    except Exception:
+        # no fingerprints
+        fingerprints = [None]
+        repeat = "demographic"
 
     figs = {}
 
@@ -120,7 +126,10 @@ def create_overview_plot(df, output_dir: str = None,
                         max_y[column] = max_val
 
     for fingerprint in fingerprints:
-        df2 = df[df["fingerprint"] == fingerprint]
+        if fingerprint is None:
+            df2 = df
+        else:
+            df2 = df[df["fingerprint"] == fingerprint]
 
         fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
 
@@ -128,7 +137,7 @@ def create_overview_plot(df, output_dir: str = None,
         j = 0
 
         for column in columns:
-            ax = df2.pivot(index="date", columns="repeat",
+            ax = df2.pivot(index="date", columns=repeat,
                            values=column).plot.line(ax=axes[i][j])
             ax.tick_params('x', labelrotation=90)
             ax.get_legend().remove()
@@ -345,6 +354,14 @@ def save_summary_plots(results: str, output_dir: str = None,
     if verbose:
         print(f"Creating overview plot(s)...")
 
+    # is this an output from multiple runs?
+    try:
+        df["fingerprint"]
+        has_fingerprint = True
+    except Exception:
+        has_fingerprint = False
+        pass
+
     figs = create_overview_plot(df, output_dir=output_dir,
                                 format=format, dpi=dpi,
                                 align_axes=align_axes)
@@ -354,16 +371,17 @@ def save_summary_plots(results: str, output_dir: str = None,
     elif figs is not None:
         filenames.append(figs)
 
-    if verbose:
-        print(f"Creating average plot(s)...")
+    if has_fingerprint:
+        if verbose:
+            print(f"Creating average plot(s)...")
 
-    figs = create_average_plot(df, output_dir=output_dir,
-                               format=format, dpi=dpi,
-                               align_axes=align_axes)
+        figs = create_average_plot(df, output_dir=output_dir,
+                                   format=format, dpi=dpi,
+                                   align_axes=align_axes)
 
-    if isinstance(figs, dict):
-        filenames += list(figs.values())
-    elif figs is not None:
-        filenames.append(figs)
+        if isinstance(figs, dict):
+            filenames += list(figs.values())
+        elif figs is not None:
+            filenames.append(figs)
 
     return filenames

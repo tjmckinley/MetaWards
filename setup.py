@@ -85,7 +85,7 @@ def setup_package():
                 return _system_input(prompt)
             else:
                 print(f"Not connected to a console, so having to use "
-                    f"the default ({default})")
+                      f"the default ({default})")
                 return default
         except Exception as e:
             print(f"Unable to get the input: {e.__class__} {e}")
@@ -210,11 +210,11 @@ def setup_package():
     sources = ["mt19937.c", "distributions.c"]
 
     ext_libraries = [['metawards_random', {
-                    'sources': [os.path.join(ext_lib_path, src)
-                                for src in sources],
-                    'include_dirs': [],
-                    'macros': [],
-                    }]]
+        'sources': [os.path.join(ext_lib_path, src)
+                    for src in sources],
+        'include_dirs': [],
+        'macros': [],
+    }]]
 
     def no_cythonize(extensions, **_ignore):
         # https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#distributing-cython-modules
@@ -235,6 +235,8 @@ def setup_package():
     utils_pyx_files = glob("src/metawards/utils/*.pyx")
     iterator_pyx_files = glob("src/metawards/iterators/*.pyx")
     extractor_pyx_files = glob("src/metawards/extractors/*.pyx")
+    mixer_pyx_files = glob("src/metawards/mixers/*.pyx")
+    mover_pyx_files = glob("src/metawards/movers/*.pyx")
 
     libraries = ["metawards_random"]
 
@@ -262,6 +264,24 @@ def setup_package():
         _, name = os.path.split(pyx)
         name = name[0:-4]
         module = f"metawards.extractors.{name}"
+
+        extensions.append(Extension(module, [pyx], define_macros=define_macros,
+                                    libraries=libraries,
+                                    include_dirs=include_dirs))
+
+    for pyx in mixer_pyx_files:
+        _, name = os.path.split(pyx)
+        name = name[0:-4]
+        module = f"metawards.mixers.{name}"
+
+        extensions.append(Extension(module, [pyx], define_macros=define_macros,
+                                    libraries=libraries,
+                                    include_dirs=include_dirs))
+
+    for pyx in mover_pyx_files:
+        _, name = os.path.split(pyx)
+        name = name[0:-4]
+        module = f"metawards.movers.{name}"
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
