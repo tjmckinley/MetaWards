@@ -133,16 +133,11 @@ def create_thread_generators(rng, nthreads):
             print(f"Random seed for thread {i} equals {seed}")
             rngs.append(seed_ran_binomial(seed))
 
-    print("What is the platform?")
-    print(platform)
-
     # need to return these as an array so that they are more easily
     # accessible from the OpenMP loops - rng is a unsigned 64-bit integer
     # as a uintptr_t - this best corresponds to unsigned long ("L")
     if platform == "win32":
         # Use unsigned long long ("Q") on Windows since it has a 32-bit long.
-        print("WINDOWS RETURN Q")
         return array("Q", rngs)
     else:
-        print("NOT WINDOWS RETURN L")
         return array("L", rngs)
