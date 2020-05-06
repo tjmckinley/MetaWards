@@ -158,7 +158,24 @@ def run_models(network: _Union[Network, Networks],
                                  profiler=profiler,
                                  nthreads=nthreads)
 
-        return [(variables[0], trajectory)]
+        results = [(variables[0], trajectory)]
+
+        # perform the final summary
+        from ._get_functions import get_summary_functions
+
+        if extractor is None:
+            from ..extractors._extract_default import extract_default
+            extractor = extract_default
+
+        funcs = get_summary_functions(network=network, results=results,
+                                      output_dir=output_dir,
+                                      extractor=extractor,
+                                      nthreads=nthreads)
+
+        for func in funcs:
+            func(network=network, output_dir=output_dir, results=results)
+
+        return results
 
     # generate the random number seeds for all of the jobs
     # (for testing, we will use the same seed so that I can check
@@ -243,8 +260,12 @@ def run_models(network: _Union[Network, Networks],
         # create all of the parameters and options to run
         arguments = []
 
-        max_nodes = network.overall.nnodes + 1
-        max_links = max(network.overall.nlinks, network.overall.nplay) + 1
+        if isinstance(network, Networks):
+            max_nodes = network.overall.nnodes + 1
+            max_links = max(network.overall.nlinks, network.overall.nplay) + 1
+        else:
+            max_nodes = network.nnodes + 1
+            max_links = max(network.nlinks, network.nplay) + 1
 
         try:
             demographics = network.demographics
@@ -321,5 +342,19 @@ def run_models(network: _Union[Network, Networks],
         else:
             raise ValueError(f"Unrecognised parallelisation scheme "
                              f"{parallel_scheme}.")
+
+    # perform the final summary
+    from ._get_functions import get_summary_functions
+    if extractor is None:
+        from ..extractors._extract_default import extract_default
+        extractor = extract_default
+
+    funcs = get_summary_functions(network=network, results=outputs,
+                                  output_dir=output_dir, extractor=extractor,
+                                  nthreads=nthreads)
+
+    for func in funcs:
+        func(network=network, output_dir=output_dir,
+             results=outputs, nthreads=nthreads)
 
     return outputs

@@ -1,12 +1,11 @@
 
-from .._population import Population
 from .._outputfiles import OutputFiles
 
 __all__ = ["output_final_report"]
 
 
 def output_final_report(output_dir: OutputFiles,
-                        population: Population) -> None:
+                        results, **kwargs) -> None:
     """Call in the "finalise" stage to output the final
        report of the population trajectory to
        'results.csv'
@@ -19,14 +18,14 @@ def output_final_report(output_dir: OutputFiles,
           f"You can use this to quickly look at statistics across\n"
           f"all runs using e.g. R or pandas")
 
-    varnames = result[0][0].variable_names()
+    varnames = results[0][0].variable_names()
 
     if varnames is None or len(varnames) == 0:
         varnames = ""
     else:
         varnames = ",".join(varnames) + ","
 
-    has_date = result[0][1][0].date
+    has_date = results[0][1][0].date
 
     if has_date:
         datestring = "date,"
@@ -35,7 +34,7 @@ def output_final_report(output_dir: OutputFiles,
 
     RESULTS.write(f"fingerprint,repeat,{varnames}"
                   f"day,{datestring}S,E,I,R,IW,UV\n")
-    for varset, trajectory in result:
+    for varset, trajectory in results:
         varvals = varset.variable_values()
         if varvals is None or len(varvals) == 0:
             varvals = ""

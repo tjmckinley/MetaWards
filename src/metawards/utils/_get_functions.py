@@ -14,6 +14,7 @@ from ._profiler import Profiler
 
 __all__ = ["get_functions", "get_model_loop_functions",
            "get_initialise_functions", "get_finalise_functions",
+           "get_summary_functions",
            "accepts_stage", "MetaFunction",
            "call_function_on_network"]
 
@@ -50,7 +51,8 @@ def get_functions(stage: str,
                   mixer: MetaFunction,
                   mover: MetaFunction,
                   rngs, nthreads, profiler: Profiler,
-                  trajectory: Populations = None) -> _List[MetaFunction]:
+                  trajectory: Populations = None,
+                  results=None) -> _List[MetaFunction]:
     """Return the functions that must be called for the specified
        stage of the day;
 
@@ -122,7 +124,9 @@ def get_functions(stage: str,
               "infections": infections,
               "rngs": rngs,
               "nthreads": nthreads,
-              "profiler": profiler}
+              "profiler": profiler,
+              "trajectory": trajectory,
+              "results": results}
 
     if stage == "summary":
         funcs = extractor(**kwargs)
@@ -254,6 +258,29 @@ def get_finalise_functions(trajectory: Populations,
          stage of the day
     """
     return get_functions(stage="finalise", **kwargs)
+
+
+def get_summary_functions(network: _Union[Network, Networks],
+                          results, output_dir: OutputFiles,
+                          extractor: MetaFunction,
+                          nthreads: int = 1, **kwargs
+                          ):
+    """Convenience function that returns all of the functions
+       that should be called during the summary report
+       stage of the simulation
+    """
+    kwargs["workspace"] = Workspace()
+    kwargs["infections"] = Infections()
+    kwargs["population"] = Population()
+    kwargs["iterator"] = None
+    kwargs["mixer"] = None
+    kwargs["mover"] = None
+    kwargs["rngs"] = None
+    kwargs["profiler"] = None
+
+    return get_functions(stage="summary", network=network,
+                         output_dir=output_dir, results=results,
+                         extractor=extractor, nthreads=nthreads, **kwargs)
 
 
 def call_function_on_network(network: _Union[Network, Networks],

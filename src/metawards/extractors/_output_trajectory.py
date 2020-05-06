@@ -19,11 +19,6 @@ def output_trajectory(network: _Union[Network, Networks],
 
     RESULTS = output_dir.open("trajectory.csv")
 
-    print(f"\nWriting a summary of all results into the\n"
-          f"csv file {output_dir.get_filename('trajectory.csv')}.\n"
-          f"You can use this to quickly look at statistics across\n"
-          f"all runs using e.g. R or pandas")
-
     has_date = trajectory[0].date
 
     if has_date:
