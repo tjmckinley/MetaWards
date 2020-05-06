@@ -12,24 +12,6 @@ _default_disease_path = _os.path.join(_pathlib.Path.home(),
 _default_folder_name = "diseases"
 
 
-def _safe_eval_float(s):
-    """Convert 's' to a float. This supports normal floats,
-       but also simple maths expressions like 1/1.2
-    """
-    try:
-        return float(s)
-    except Exception:
-        pass
-
-    try:
-        # this is about as save as eval gets in python
-        return float(eval(s, {"__builtins__":None},{}))
-    except Exception:
-        pass
-
-    raise ValueError(f"Cannot interpret '{s}' as a float")
-
-
 @_dataclass
 class Disease:
     """This class holds the parameters about a single disease
@@ -92,10 +74,10 @@ class Disease:
 
     def __eq__(self, other):
         return self.beta == other.beta and \
-               self.progress == other.progress and \
-               self.too_ill_to_move == other.too_ill_to_move and \
-               self.contrib_foi == other.contrib_foi and \
-               self.start_symptom == other.start_symptom
+            self.progress == other.progress and \
+            self.too_ill_to_move == other.too_ill_to_move and \
+            self.contrib_foi == other.contrib_foi and \
+            self.start_symptom == other.start_symptom
 
     def __len__(self):
         if self.beta:
@@ -126,13 +108,15 @@ class Disease:
 
         self.start_symptom = int(self.start_symptom)
 
+        from .utils._safe_eval_float import safe_eval_float
+
         for i in range(0, n):
             try:
-                self.progress[i] = _safe_eval_float(self.progress[i])
-                self.too_ill_to_move[i] = _safe_eval_float(
-                                                self.too_ill_to_move[i])
-                self.beta[i] = _safe_eval_float(self.beta[i])
-                self.contrib_foi[i] = _safe_eval_float(self.contrib_foi[i])
+                self.progress[i] = safe_eval_float(self.progress[i])
+                self.too_ill_to_move[i] = safe_eval_float(
+                    self.too_ill_to_move[i])
+                self.beta[i] = safe_eval_float(self.beta[i])
+                self.contrib_foi[i] = safe_eval_float(self.contrib_foi[i])
             except Exception as e:
                 raise AssertionError(
                     f"Invalid disease parameter at index {i}: "

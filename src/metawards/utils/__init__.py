@@ -53,6 +53,7 @@ Functions
     run_model
     run_models
     run_worker
+    safe_eval_float
     scale_link_susceptibles
     scale_node_susceptibles
     seed_ran_binomial
@@ -80,6 +81,7 @@ from ._worker import *
 from ._import_module import *
 from ._get_functions import *
 from ._align_strings import *
+from ._safe_eval_float import *
 
 from ._add_lookup import *
 from ._aggregate import *
