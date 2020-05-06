@@ -16,3 +16,4 @@ In this fifth part of the tutorial you will:
    :maxdepth: 2
 
    part05/01_demographics
+   part05/02_mixers

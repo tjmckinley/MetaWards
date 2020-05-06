@@ -34,6 +34,7 @@ class Node:
     night_foi: float = 0.0      # numerator only
     weekend_foi: float = 0.0    # numerator only
 
+    #: The number of susceptible players in this ward
     play_suscept: float = 0.0
     save_play_suscept: float = 0.0
 

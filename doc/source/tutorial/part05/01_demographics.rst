@@ -11,8 +11,8 @@ during the day, and random interactions within their home ward in
 the evening, and "players", who just made random interactions within
 their home ward.
 
-Network
--------
+Understanding Network
+---------------------
 
 The :class:`~metawards.Network` class models this network of "workers" and
 "players". It holds a set of :class:`~metawards.Nodes` that represent each
@@ -20,11 +20,11 @@ electoral ward, and a set of :class:`~metawards.Links` that represent the
 fixed motions between wards made by the "workers".
 
 The :class:`~metawards.Node` class holds the number of "players" who
-are susceptible to infection (S) in :meth:`~metawards.Node.play_suscept`.
+are susceptible to infection (S) in :data:`~metawards.Node.play_suscept`.
 
 The :class:`~metawards.Link` contains the number of "workers" who are
 susceptible to infection (S) who travel regularlay between their
-"home" ward and their "work" ward in :meth:`~metawards.Link.suscept`.
+"home" ward and their "work" ward in :data:`~metawards.Link.suscept`.
 
 During a *model run* these values will be reduced as individuals are
 infected and then progressed through the disease stages.
@@ -35,8 +35,8 @@ infected and then progressed through the disease stages.
   the *model run*. However, they only have integer values as they
   count the number of susceptible individuals.
 
-Networks
---------
+Understanding Networks
+----------------------
 
 To model multiple demographics, we need to create space for multiple different
 sets of "workers" and "players". This is achieved in ``metawards`` by
@@ -47,8 +47,9 @@ demographic sub-networks are merged into a single overall
 
 We create the :class:`~metawards.Networks` by first specifying the way
 we would like to distribute the population between different demographics.
-We do this by writing a "demographics" file, which is a simple JSON-format
-file. First, create a file called "demographics.json" and copy in the below;
+We do this by writing a "demographics" file, which is a simple
+`JSON-format <https://guide.couchdb.org/draft/json.html>`__
+file. First, create a file called ``demographics.json`` and copy in the below;
 
 ::
 
@@ -309,3 +310,62 @@ You can seed different demographics by specifying the demographic in
 the additional seeding file. Create a new seeding file called
 ``ExtraSeedsLondonBlue.dat`` and copy in the below;
 
+::
+
+  1  5  255  blue
+
+The format of this file is a list of lines that say which wards should
+be seeded. In this case, there is just one line containing four values.
+
+* The first value (``1``) is the day of seeding, in this case on day 1.
+* The second value  (``5``) is the number of individuals to infect, in
+  this case 5.
+* The third value (``255``) is the index of the ward to infect. You can find
+  the index of the ward you want using the :class:`~metawards.WardInfos`
+  object, e.g. via ``network.info.find("...")``.
+* The fourth value (``blue``) is the name or index of the demographic
+  you want to seed. In this case the "blue" demographic (which is also
+  at index ``1``, so ``1`` could have been used instead).
+
+The "blue" demographic contains all of the "workers", so we would expect
+to see a different outbreak. Perform a *model run* using;
+
+.. code-block:: bash
+
+  metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondonBlue.dat
+
+You should see a more sustained outbreak, ending in a similar way to this;
+
+::
+
+    135 3
+    S: 19079821  E: 1  I: 1  R: 37002254  IW: 0  POPULATION: 56082077
+       red  S: 16806610  E: 0  I: 0  R:        0  IW: 0  POPULATION: 16806610
+      blue  S:  2273211  E: 1  I: 1  R: 37002254  IW: 0  POPULATION: 39275467
+
+    136 1
+    S: 19079821  E: 0  I: 2  R: 37002254  IW: 0  POPULATION: 56082077
+       red  S: 16806610  E: 0  I: 0  R:        0  IW: 0  POPULATION: 16806610
+      blue  S:  2273211  E: 0  I: 2  R: 37002254  IW: 0  POPULATION: 39275467
+
+    137 2
+    S: 19079821  E: 0  I: 2  R: 37002254  IW: 0  POPULATION: 56082077
+       red  S: 16806610  E: 0  I: 0  R:        0  IW: 0  POPULATION: 16806610
+      blue  S:  2273211  E: 0  I: 2  R: 37002254  IW: 0  POPULATION: 39275467
+
+    138 2
+    S: 19079821  E: 0  I: 2  R: 37002254  IW: 0  POPULATION: 56082077
+       red  S: 16806610  E: 0  I: 0  R:        0  IW: 0  POPULATION: 16806610
+      blue  S:  2273211  E: 0  I: 2  R: 37002254  IW: 0  POPULATION: 39275467
+
+    139 2
+    S: 19079821  E: 0  I: 0  R: 37002256  IW: 0  POPULATION: 56082077
+       red  S: 16806610  E: 0  I: 0  R:        0  IW: 0  POPULATION: 16806610
+      blue  S:  2273211  E: 0  I: 0  R: 37002256  IW: 0  POPULATION: 39275467
+
+    140 2
+    Infection died ... Ending on day 141
+
+Because the "blue" workers could move between wards, they were able to carry
+the infection across the country, meaning that most "blue" workers were
+infected.

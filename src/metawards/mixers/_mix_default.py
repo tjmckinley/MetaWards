@@ -6,4 +6,5 @@ def mix_default(**kwargs):
     """This is the default mixer. By default, nothing extra is mixed
        at any stage of the model run
     """
-    return []
+    from ._mix_none import mix_none
+    return mix_none()
