@@ -33,6 +33,10 @@ def extract_default(stage: str, **kwargs) -> _List[MetaFunction]:
         return [output_core]
 
     elif stage == "finalise":
+        from ._output_results import output_results
+        return [output_results]
+
+    elif stage == "summary":
         # output the summary results.csv.bz2 file
         from ._output_final_report import output_final_report
         return [output_final_report]

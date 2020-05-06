@@ -981,51 +981,6 @@ def cli():
             print("No output - end of run")
             return 0
 
-        # write the result to a csv file that can be easily read by R or
-        # pandas - this will be written compressed to save space
-        RESULTS = output_dir.open("results.csv", auto_bzip=auto_bzip)
-        print(f"\nWriting a summary of all results into the\n"
-              f"csv file {output_dir.get_filename('results.csv')}.\n"
-              f"You can use this to quickly look at statistics across\n"
-              f"all runs using e.g. R or pandas")
-
-        varnames = result[0][0].variable_names()
-
-        if varnames is None or len(varnames) == 0:
-            varnames = ""
-        else:
-            varnames = ",".join(varnames) + ","
-
-        has_date = result[0][1][0].date
-
-        if has_date:
-            datestring = "date,"
-        else:
-            datestring = ""
-
-        RESULTS.write(f"fingerprint,repeat,{varnames}"
-                      f"day,{datestring}S,E,I,R,IW,UV\n")
-        for varset, trajectory in result:
-            varvals = varset.variable_values()
-            if varvals is None or len(varvals) == 0:
-                varvals = ""
-            else:
-                varvals = ",".join(map(str, varvals)) + ","
-
-            start = f"{varset.fingerprint()}," \
-                    f"{varset.repeat_index()},{varvals}"
-
-            for i, pop in enumerate(trajectory):
-                if pop.date:
-                    d = pop.date.isoformat() + ","
-                else:
-                    d = ""
-
-                RESULTS.write(f"{start}{pop.day},{d}{pop.susceptibles},"
-                              f"{pop.latent},{pop.total},"
-                              f"{pop.recovereds},{pop.n_inf_wards},"
-                              f"{pop.scale_uv}\n")
-
     print("End of the run")
 
     return 0

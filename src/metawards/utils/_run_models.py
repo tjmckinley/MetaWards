@@ -10,7 +10,7 @@ from .._variableset import VariableSets, VariableSet
 from .._outputfiles import OutputFiles
 
 from ._profiler import Profiler
-from ._get_functions import MetaFunction
+from ._get_functions import get_functions, MetaFunction
 
 from contextlib import contextmanager as _contextmanager
 
@@ -34,12 +34,12 @@ def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
             return nprocs
         elif parallel_scheme == "scoop":
             raise ValueError(
-                    f"You must specify the number of processes for "
-                    f"scoop to parallelise over")
+                f"You must specify the number of processes for "
+                f"scoop to parallelise over")
         else:
             raise ValueError(
-                    f"You must specify the number of processes to "
-                    f"use for parallel scheme '{parallel_scheme}'")
+                f"You must specify the number of processes to "
+                f"use for parallel scheme '{parallel_scheme}'")
 
     if parallel_scheme == "mpi4py":
         from mpi4py import MPI
@@ -93,7 +93,7 @@ def run_models(network: _Union[Network, Networks],
                mover: MetaFunction = None,
                profiler: Profiler = None,
                parallel_scheme: str = "multiprocessing") \
-                   -> _List[_Tuple[VariableSet, Population]]:
+        -> _List[_Tuple[VariableSet, Population]]:
     """Run all of the models on the passed Network that are described
        by the passed VariableSets
 

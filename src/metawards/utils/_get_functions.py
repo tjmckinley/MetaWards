@@ -6,6 +6,7 @@ from typing import List as _List
 from .._network import Network
 from .._networks import Networks
 from .._population import Population
+from .._population import Populations
 from .._infections import Infections
 from .._outputfiles import OutputFiles
 from .._workspace import Workspace
@@ -48,7 +49,8 @@ def get_functions(stage: str,
                   extractor: MetaFunction,
                   mixer: MetaFunction,
                   mover: MetaFunction,
-                  rngs, nthreads, profiler: Profiler) -> _List[MetaFunction]:
+                  rngs, nthreads, profiler: Profiler,
+                  trajectory: Populations = None) -> _List[MetaFunction]:
     """Return the functions that must be called for the specified
        stage of the day;
 
@@ -69,6 +71,9 @@ def get_functions(stage: str,
                     the data and extrac the results
        * "finalise": Called at the end of the model run to finalise
                      any outputs or produce overall summary files
+       * "summary": Called at the end of lots of model runs, to write
+                    overview summary files. Only the extractor has
+                    a summary stage
 
        Parameters
        ----------
@@ -103,7 +108,8 @@ def get_functions(stage: str,
          stage of the day
     """
 
-    stages = ["initialise", "setup", "foi", "infect", "analyse", "finalise"]
+    stages = ["initialise", "setup", "foi", "infect",
+              "analyse", "finalise", "summary"]
 
     if stage not in stages:
         raise ValueError(
@@ -118,8 +124,11 @@ def get_functions(stage: str,
               "nthreads": nthreads,
               "profiler": profiler}
 
-    funcs = mover(**kwargs) + iterator(**kwargs) + \
-        mixer(**kwargs) + extractor(**kwargs)
+    if stage == "summary":
+        funcs = extractor(**kwargs)
+    else:
+        funcs = mover(**kwargs) + iterator(**kwargs) + \
+            mixer(**kwargs) + extractor(**kwargs)
 
     return funcs
 
@@ -206,7 +215,8 @@ def get_initialise_functions(**kwargs) -> _List[MetaFunction]:
     return get_functions(stage="initialise", **kwargs)
 
 
-def get_finalise_functions(**kwargs) -> _List[MetaFunction]:
+def get_finalise_functions(trajectory: Populations,
+                           **kwargs) -> _List[MetaFunction]:
     """Convenience function that returns all of the functions
        that should be called during the finalisation step
        of the model (e.g. the "finalise" stage)
@@ -217,6 +227,8 @@ def get_finalise_functions(**kwargs) -> _List[MetaFunction]:
          The network(s) to be modelled
        population: Population
          The population experiencing the outbreak
+       trajectory: Populations
+         The trajectory of populations over time
        infections: Infections
          Space to record the infections through the day
        iterator: function
