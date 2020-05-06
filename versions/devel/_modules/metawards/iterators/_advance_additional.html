@@ -196,7 +196,11 @@
         <span class="n">seeds</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
-            <span class="n">words</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">words</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">continue</span>
 
             <span class="c1"># yes, this is really the order of the seeds - &quot;t num loc&quot;</span>
             <span class="c1"># is in the file as &quot;t loc num&quot;</span>

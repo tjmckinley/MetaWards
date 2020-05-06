@@ -189,6 +189,32 @@
 <span class="n">_default_folder_name</span> <span class="o">=</span> <span class="s2">&quot;demographics&quot;</span>
 
 
+<span class="k">def</span> <span class="nf">_get_value</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract a numeric value from the passed value - this is used</span>
+<span class="sd">       to allow the demographics.json file to store numbers is</span>
+<span class="sd">       a variety of formats</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">safe_eval_float</span>
+
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">safe_eval_float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">lst</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">safe_eval_float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="Demographics"><a class="viewcode-back" href="../../api/generated/metawards.Demographics.html#metawards.Demographics">[docs]</a><span class="nd">@_dataclass</span><span class="p">(</span><span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Demographics</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This class holds metadata about all of the demographics</span>
@@ -400,8 +426,8 @@
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">demographics</span><span class="p">)):</span>
             <span class="n">demographic</span> <span class="o">=</span> <span class="n">Demographic</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">demographics</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                      <span class="n">work_ratio</span><span class="o">=</span><span class="n">work_ratios</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                      <span class="n">play_ratio</span><span class="o">=</span><span class="n">play_ratios</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                                      <span class="n">work_ratio</span><span class="o">=</span><span class="n">_get_value</span><span class="p">(</span><span class="n">work_ratios</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                                      <span class="n">play_ratio</span><span class="o">=</span><span class="n">_get_value</span><span class="p">(</span><span class="n">play_ratios</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
             <span class="n">demos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">demographic</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">demos</span></div>

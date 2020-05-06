@@ -203,7 +203,7 @@
 <h1>metawards.utils.get_finalise_functions<a class="headerlink" href="#metawards-utils-get-finalise-functions" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.get_finalise_functions">
-<code class="descclassname">metawards.utils.</code><code class="descname">get_finalise_functions</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span> &#x2192; List[Callable[[...], None]]<a class="reference internal" href="../../_modules/metawards/utils/_get_functions.html#get_finalise_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.get_finalise_functions" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">get_finalise_functions</code><span class="sig-paren">(</span><em>trajectory: metawards._population.Populations</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; List[Callable[[...], None]]<a class="reference internal" href="../../_modules/metawards/utils/_get_functions.html#get_finalise_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.get_finalise_functions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function that returns all of the functions
 that should be called during the finalisation step
 of the model (e.g. the “finalise” stage)</p>
@@ -214,6 +214,7 @@ of the model (e.g. the “finalise” stage)</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>network</strong> (<a class="reference internal" href="metawards.Network.html#metawards.Network" title="metawards.Network"><em>Network</em></a><em> or </em><a class="reference internal" href="metawards.Networks.html#metawards.Networks" title="metawards.Networks"><em>Networks</em></a>) – The network(s) to be modelled</li>
 <li><strong>population</strong> (<a class="reference internal" href="metawards.Population.html#metawards.Population" title="metawards.Population"><em>Population</em></a>) – The population experiencing the outbreak</li>
+<li><strong>trajectory</strong> (<a class="reference internal" href="metawards.Populations.html#metawards.Populations" title="metawards.Populations"><em>Populations</em></a>) – The trajectory of populations over time</li>
 <li><strong>infections</strong> (<a class="reference internal" href="metawards.Infections.html#metawards.Infections" title="metawards.Infections"><em>Infections</em></a>) – Space to record the infections through the day</li>
 <li><strong>iterator</strong> (<em>function</em>) – Iterator used to obtain the function used to advance
 the outbreak</li>

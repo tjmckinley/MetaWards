@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for build/lib.linux-x86_64-3.8/metawards/app/run.py: 1.99%</title>
+    <title>Coverage for build/lib.linux-x86_64-3.8/metawards/app/run.py: 2.10%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -17,13 +17,13 @@
 <div id="header">
     <div class="content">
         <h1>Coverage for <b>build/lib.linux-x86_64-3.8/metawards/app/run.py</b> :
-            <span class="pc_cov">1.99%</span>
+            <span class="pc_cov">2.10%</span>
         </h1>
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
         <h2 class="stats">
-            474 statements &nbsp;
+            452 statements &nbsp;
             <span class="run shortkey_r button_toggle_run">12 run</span>
-            <span class="mis show_mis shortkey_m button_toggle_mis">462 missing</span>
+            <span class="mis show_mis shortkey_m button_toggle_mis">440 missing</span>
             <span class="exc show_exc shortkey_x button_toggle_exc">0 excluded</span>
                 <span class="par run show_par shortkey_p button_toggle_par">1 partial</span>
         </h2>
@@ -1035,71 +1035,26 @@
     <p id="t981" class="mis show_mis"><span class="n"><a href="#t981">981</a></span><span class="t">            <span class="nam">print</span><span class="op">(</span><span class="str">"No output - end of run"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t982" class="mis show_mis"><span class="n"><a href="#t982">982</a></span><span class="t">            <span class="key">return</span> <span class="num">0</span>&nbsp;</span><span class="r"></span></p>
     <p id="t983" class="pln"><span class="n"><a href="#t983">983</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t984" class="pln"><span class="n"><a href="#t984">984</a></span><span class="t">        <span class="com"># write the result to a csv file that can be easily read by R or</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t985" class="pln"><span class="n"><a href="#t985">985</a></span><span class="t">        <span class="com"># pandas - this will be written compressed to save space</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t986" class="mis show_mis"><span class="n"><a href="#t986">986</a></span><span class="t">        <span class="nam">RESULTS</span> <span class="op">=</span> <span class="nam">output_dir</span><span class="op">.</span><span class="nam">open</span><span class="op">(</span><span class="str">"results.csv"</span><span class="op">,</span> <span class="nam">auto_bzip</span><span class="op">=</span><span class="nam">auto_bzip</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t987" class="mis show_mis"><span class="n"><a href="#t987">987</a></span><span class="t">        <span class="nam">print</span><span class="op">(</span><span class="str">f"\nWriting a summary of all results into the\n"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t988" class="pln"><span class="n"><a href="#t988">988</a></span><span class="t">              <span class="str">f"csv file {output_dir.get_filename('results.csv')}.\n"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t989" class="pln"><span class="n"><a href="#t989">989</a></span><span class="t">              <span class="str">f"You can use this to quickly look at statistics across\n"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t990" class="pln"><span class="n"><a href="#t990">990</a></span><span class="t">              <span class="str">f"all runs using e.g. R or pandas"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t991" class="pln"><span class="n"><a href="#t991">991</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t992" class="mis show_mis"><span class="n"><a href="#t992">992</a></span><span class="t">        <span class="nam">varnames</span> <span class="op">=</span> <span class="nam">result</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">.</span><span class="nam">variable_names</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t984" class="mis show_mis"><span class="n"><a href="#t984">984</a></span><span class="t">    <span class="nam">print</span><span class="op">(</span><span class="str">"End of the run"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t985" class="pln"><span class="n"><a href="#t985">985</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p id="t986" class="mis show_mis"><span class="n"><a href="#t986">986</a></span><span class="t">    <span class="key">return</span> <span class="num">0</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t987" class="pln"><span class="n"><a href="#t987">987</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p id="t988" class="pln"><span class="n"><a href="#t988">988</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p id="t989" class="par run show_par"><span class="n"><a href="#t989">989</a></span><span class="t"><span class="key">if</span> <span class="nam">__name__</span> <span class="op">==</span> <span class="str">"__main__"</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">989&#x202F;&#x219B;&#x202F;990</span><span class="annotate long">line 989 didn't jump to line 990, because the condition on line 989 was never true</span></span></p>
+    <p id="t990" class="mis show_mis"><span class="n"><a href="#t990">990</a></span><span class="t">    <span class="key">import</span> <span class="nam">multiprocessing</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t991" class="mis show_mis"><span class="n"><a href="#t991">991</a></span><span class="t">    <span class="nam">multiprocessing</span><span class="op">.</span><span class="nam">freeze_support</span><span class="op">(</span><span class="op">)</span>  <span class="com"># needed to stop fork bombs</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t992" class="mis show_mis"><span class="n"><a href="#t992">992</a></span><span class="t">    <span class="nam">cli</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t993" class="pln"><span class="n"><a href="#t993">993</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t994" class="mis show_mis"><span class="n"><a href="#t994">994</a></span><span class="t">        <span class="key">if</span> <span class="nam">varnames</span> <span class="key">is</span> <span class="key">None</span> <span class="key">or</span> <span class="nam">len</span><span class="op">(</span><span class="nam">varnames</span><span class="op">)</span> <span class="op">==</span> <span class="num">0</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t995" class="mis show_mis"><span class="n"><a href="#t995">995</a></span><span class="t">            <span class="nam">varnames</span> <span class="op">=</span> <span class="str">""</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t996" class="pln"><span class="n"><a href="#t996">996</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t997" class="mis show_mis"><span class="n"><a href="#t997">997</a></span><span class="t">            <span class="nam">varnames</span> <span class="op">=</span> <span class="str">","</span><span class="op">.</span><span class="nam">join</span><span class="op">(</span><span class="nam">varnames</span><span class="op">)</span> <span class="op">+</span> <span class="str">","</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t998" class="pln"><span class="n"><a href="#t998">998</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t999" class="mis show_mis"><span class="n"><a href="#t999">999</a></span><span class="t">        <span class="nam">has_date</span> <span class="op">=</span> <span class="nam">result</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">[</span><span class="num">1</span><span class="op">]</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">.</span><span class="nam">date</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1000" class="pln"><span class="n"><a href="#t1000">1000</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1001" class="mis show_mis"><span class="n"><a href="#t1001">1001</a></span><span class="t">        <span class="key">if</span> <span class="nam">has_date</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1002" class="mis show_mis"><span class="n"><a href="#t1002">1002</a></span><span class="t">            <span class="nam">datestring</span> <span class="op">=</span> <span class="str">"date,"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1003" class="pln"><span class="n"><a href="#t1003">1003</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1004" class="mis show_mis"><span class="n"><a href="#t1004">1004</a></span><span class="t">            <span class="nam">datestring</span> <span class="op">=</span> <span class="str">""</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1005" class="pln"><span class="n"><a href="#t1005">1005</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1006" class="mis show_mis"><span class="n"><a href="#t1006">1006</a></span><span class="t">        <span class="nam">RESULTS</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="str">f"fingerprint,repeat,{varnames}"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1007" class="pln"><span class="n"><a href="#t1007">1007</a></span><span class="t">                      <span class="str">f"day,{datestring}S,E,I,R,IW,UV\n"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1008" class="mis show_mis"><span class="n"><a href="#t1008">1008</a></span><span class="t">        <span class="key">for</span> <span class="nam">varset</span><span class="op">,</span> <span class="nam">trajectory</span> <span class="key">in</span> <span class="nam">result</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1009" class="mis show_mis"><span class="n"><a href="#t1009">1009</a></span><span class="t">            <span class="nam">varvals</span> <span class="op">=</span> <span class="nam">varset</span><span class="op">.</span><span class="nam">variable_values</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1010" class="mis show_mis"><span class="n"><a href="#t1010">1010</a></span><span class="t">            <span class="key">if</span> <span class="nam">varvals</span> <span class="key">is</span> <span class="key">None</span> <span class="key">or</span> <span class="nam">len</span><span class="op">(</span><span class="nam">varvals</span><span class="op">)</span> <span class="op">==</span> <span class="num">0</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1011" class="mis show_mis"><span class="n"><a href="#t1011">1011</a></span><span class="t">                <span class="nam">varvals</span> <span class="op">=</span> <span class="str">""</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1012" class="pln"><span class="n"><a href="#t1012">1012</a></span><span class="t">            <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1013" class="mis show_mis"><span class="n"><a href="#t1013">1013</a></span><span class="t">                <span class="nam">varvals</span> <span class="op">=</span> <span class="str">","</span><span class="op">.</span><span class="nam">join</span><span class="op">(</span><span class="nam">map</span><span class="op">(</span><span class="nam">str</span><span class="op">,</span> <span class="nam">varvals</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="str">","</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1014" class="pln"><span class="n"><a href="#t1014">1014</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1015" class="mis show_mis"><span class="n"><a href="#t1015">1015</a></span><span class="t">            <span class="nam">start</span> <span class="op">=</span> <span class="str">f"{varset.fingerprint()},"</span> <span class="xx">\</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1016" class="pln"><span class="n"><a href="#t1016">1016</a></span><span class="t">                    <span class="str">f"{varset.repeat_index()},{varvals}"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1017" class="pln"><span class="n"><a href="#t1017">1017</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1018" class="mis show_mis"><span class="n"><a href="#t1018">1018</a></span><span class="t">            <span class="key">for</span> <span class="nam">i</span><span class="op">,</span> <span class="nam">pop</span> <span class="key">in</span> <span class="nam">enumerate</span><span class="op">(</span><span class="nam">trajectory</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1019" class="mis show_mis"><span class="n"><a href="#t1019">1019</a></span><span class="t">                <span class="key">if</span> <span class="nam">pop</span><span class="op">.</span><span class="nam">date</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1020" class="mis show_mis"><span class="n"><a href="#t1020">1020</a></span><span class="t">                    <span class="nam">d</span> <span class="op">=</span> <span class="nam">pop</span><span class="op">.</span><span class="nam">date</span><span class="op">.</span><span class="nam">isoformat</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="str">","</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1021" class="pln"><span class="n"><a href="#t1021">1021</a></span><span class="t">                <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1022" class="mis show_mis"><span class="n"><a href="#t1022">1022</a></span><span class="t">                    <span class="nam">d</span> <span class="op">=</span> <span class="str">""</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1023" class="pln"><span class="n"><a href="#t1023">1023</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1024" class="mis show_mis"><span class="n"><a href="#t1024">1024</a></span><span class="t">                <span class="nam">RESULTS</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="str">f"{start}{pop.day},{d}{pop.susceptibles},"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1025" class="pln"><span class="n"><a href="#t1025">1025</a></span><span class="t">                              <span class="str">f"{pop.latent},{pop.total},"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1026" class="pln"><span class="n"><a href="#t1026">1026</a></span><span class="t">                              <span class="str">f"{pop.recovereds},{pop.n_inf_wards},"</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1027" class="pln"><span class="n"><a href="#t1027">1027</a></span><span class="t">                              <span class="str">f"{pop.scale_uv}\n"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1028" class="pln"><span class="n"><a href="#t1028">1028</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1029" class="mis show_mis"><span class="n"><a href="#t1029">1029</a></span><span class="t">    <span class="nam">print</span><span class="op">(</span><span class="str">"End of the run"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1030" class="pln"><span class="n"><a href="#t1030">1030</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1031" class="mis show_mis"><span class="n"><a href="#t1031">1031</a></span><span class="t">    <span class="key">return</span> <span class="num">0</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1032" class="pln"><span class="n"><a href="#t1032">1032</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1033" class="pln"><span class="n"><a href="#t1033">1033</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1034" class="par run show_par"><span class="n"><a href="#t1034">1034</a></span><span class="t"><span class="key">if</span> <span class="nam">__name__</span> <span class="op">==</span> <span class="str">"__main__"</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">1034&#x202F;&#x219B;&#x202F;1035</span><span class="annotate long">line 1034 didn't jump to line 1035, because the condition on line 1034 was never true</span></span></p>
-    <p id="t1035" class="mis show_mis"><span class="n"><a href="#t1035">1035</a></span><span class="t">    <span class="key">import</span> <span class="nam">multiprocessing</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1036" class="mis show_mis"><span class="n"><a href="#t1036">1036</a></span><span class="t">    <span class="nam">multiprocessing</span><span class="op">.</span><span class="nam">freeze_support</span><span class="op">(</span><span class="op">)</span>  <span class="com"># needed to stop fork bombs</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1037" class="mis show_mis"><span class="n"><a href="#t1037">1037</a></span><span class="t">    <span class="nam">cli</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1038" class="pln"><span class="n"><a href="#t1038">1038</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t1039" class="pln"><span class="n"><a href="#t1039">1039</a></span><span class="t"><span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1040" class="pln"><span class="n"><a href="#t1040">1040</a></span><span class="t">    <span class="com"># this is one of the worker processes - make sure that they</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1041" class="pln"><span class="n"><a href="#t1041">1041</a></span><span class="t">    <span class="com"># have imported metawards</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t1042" class="run"><span class="n"><a href="#t1042">1042</a></span><span class="t">    <span class="key">from</span> <span class="nam">metawards</span><span class="op">.</span><span class="nam">utils</span> <span class="key">import</span> <span class="nam">run_worker</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t994" class="pln"><span class="n"><a href="#t994">994</a></span><span class="t"><span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t995" class="pln"><span class="n"><a href="#t995">995</a></span><span class="t">    <span class="com"># this is one of the worker processes - make sure that they</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t996" class="pln"><span class="n"><a href="#t996">996</a></span><span class="t">    <span class="com"># have imported metawards</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t997" class="run"><span class="n"><a href="#t997">997</a></span><span class="t">    <span class="key">from</span> <span class="nam">metawards</span><span class="op">.</span><span class="nam">utils</span> <span class="key">import</span> <span class="nam">run_worker</span>&nbsp;</span><span class="r"></span></p>
 </div>
 <div id="footer">
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.1</a>,
-            created at 2020-05-06 15:03
+            created at 2020-05-06 18:14
         </p>
     </div>
 </div>

@@ -203,7 +203,7 @@
 <h1>metawards.utils.get_functions<a class="headerlink" href="#metawards-utils-get-functions" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.utils.get_functions">
-<code class="descclassname">metawards.utils.</code><code class="descname">get_functions</code><span class="sig-paren">(</span><em>stage: str, network: Union[metawards._network.Network, metawards._networks.Networks], population: metawards._population.Population, infections: metawards._infections.Infections, output_dir: metawards._outputfiles.OutputFiles, workspace: metawards._workspace.Workspace, iterator: Callable[[...], None], extractor: Callable[[...], None], mixer: Callable[[...], None], mover: Callable[[...], None], rngs, nthreads, profiler: metawards.utils._profiler.Profiler</em><span class="sig-paren">)</span> &#x2192; List[Callable[[...], None]]<a class="reference internal" href="../../_modules/metawards/utils/_get_functions.html#get_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.get_functions" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.utils.</code><code class="descname">get_functions</code><span class="sig-paren">(</span><em>stage: str, network: Union[metawards._network.Network, metawards._networks.Networks], population: metawards._population.Population, infections: metawards._infections.Infections, output_dir: metawards._outputfiles.OutputFiles, workspace: metawards._workspace.Workspace, iterator: Callable[[...], None], extractor: Callable[[...], None], mixer: Callable[[...], None], mover: Callable[[...], None], rngs, nthreads, profiler: metawards.utils._profiler.Profiler, trajectory: metawards._population.Populations = None, results=None</em><span class="sig-paren">)</span> &#x2192; List[Callable[[...], None]]<a class="reference internal" href="../../_modules/metawards/utils/_get_functions.html#get_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.get_functions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the functions that must be called for the specified
 stage of the day;</p>
 <ul class="simple">
@@ -240,6 +240,12 @@ in each ward in each demographic</dd>
 <li><dl class="first docutils">
 <dt>“finalise”: Called at the end of the model run to finalise</dt>
 <dd>any outputs or produce overall summary files</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>“summary”: Called at the end of lots of model runs, to write</dt>
+<dd>overview summary files. Only the extractor has
+a summary stage</dd>
 </dl>
 </li>
 </ul>
