@@ -257,4 +257,5 @@ def run_model(network: _Union[Network, Networks],
 
     print(f"Infection died ... Ending on day {population.day}")
 
-    return trajectory
+    # only send back the overall statistics
+    return trajectory.strip_demographics()
