@@ -37,13 +37,13 @@ def parse_args():
     import argparse
     import sys
 
-    metawards_url = "https://metawards.github.io"
+    metawards_url = "https://metawards.org"
 
     parser = argparse.ArgumentParser(
-                    description=f"MetaWards epidemic modelling - see "
-                                f"{metawards_url} "
-                                f"for more information",
-                    prog="metawards")
+        description=f"MetaWards epidemic modelling - see "
+        f"{metawards_url} "
+        f"for more information",
+        prog="metawards")
 
     parser.add_argument('--version', action="store_true",
                         default=None,
@@ -711,10 +711,10 @@ def cli():
     # working out the number of processes and threads...
     from metawards.utils import guess_num_threads_and_procs
     (nthreads, nprocs) = guess_num_threads_and_procs(
-                                            njobs=len(variables),
-                                            nthreads=args.nthreads,
-                                            nprocs=args.nprocs,
-                                            parallel_scheme=parallel_scheme)
+        njobs=len(variables),
+        nthreads=args.nthreads,
+        nprocs=args.nprocs,
+        parallel_scheme=parallel_scheme)
 
     print(f"\nNumber of threads to use for each model run is {nthreads}")
 
@@ -762,9 +762,9 @@ def cli():
                 start_date = date.fromisoformat(args.start_date)
             except Exception as e:
                 raise ValueError(
-                        f"Cannot interpret a valid date from "
-                        f"'{args.start_date}'. Error is "
-                        f"{e.__class__} {e}")
+                    f"Cannot interpret a valid date from "
+                    f"'{args.start_date}'. Error is "
+                    f"{e.__class__} {e}")
 
     if start_date is None:
         from datetime import date
@@ -783,7 +783,7 @@ def cli():
     # now find the MetaWardsData repository as this will be needed
     # for the repeat command line too
     (repository, repository_version) = Parameters.get_repository(
-                                                        args.repository)
+        args.repository)
 
     print(f"\nUsing MetaWardsData at {repository}")
     print(f"This is cloned from {repository_version['repository']}")
@@ -845,12 +845,13 @@ def cli():
         raise e
 
     # should we profile the code? (default no as it prints a lot)
-    profile = False
+    profiler = None
 
     if args.no_profile:
-        profile = False
+        profiler = None
     elif args.profile:
-        profile = True
+        from metawards.utils import Profiler
+        profiler = Profiler()
 
     # load the disease and starting-point input files
     if args.disease:
@@ -895,14 +896,30 @@ def cli():
     network = Network.build(params=params, calculate_distances=True,
                             max_nodes=args.max_nodes,
                             max_links=args.max_links,
-                            profile=profile)
+                            profiler=profiler)
 
     if args.demographics:
         from metawards import Demographics
         print("\nSpecialising the network into different demographics:")
         demographics = Demographics.load(args.demographics)
         print(demographics)
-        network = network.specialise(demographics)
+
+        from metawards.utils import seed_ran_binomial, \
+            create_thread_generators
+
+        if seed == 0:
+            # this is a special mode that a developer can use to force
+            # all jobs to use the same random number seed (15324) that
+            # is used for comparing outputs. This should NEVER be used
+            # for production code
+            rng = seed_ran_binomial(seed=15324)
+        else:
+            rng = seed_ran_binomial(seed=seed+7)
+            rngs = create_thread_generators(rng, nthreads)
+
+        network = network.specialise(demographics, rngs=rngs,
+                                     profiler=profiler,
+                                     nthreads=nthreads)
 
     print("\nRun the model...")
     from metawards import OutputFiles
@@ -917,7 +934,7 @@ def cli():
         prompt = None
     else:
         from metawards import input
-        prompt = lambda x: input(x, default="y")
+        def prompt(x): return input(x, default="y")
 
     auto_bzip = True
 
@@ -928,29 +945,21 @@ def cli():
 
     if args.iterator:
         iterator = args.iterator
-        # eventually I should get the filename and function from this,
-        # and then convert it into an absolute path to make this safe
-        # on a cluster. Then I should copy the file into the output to
-        # make sure that the calculation is reproducible. Will do this
-        # when I copy this work to extractor
     else:
         iterator = None
 
     if args.extractor:
         extractor = args.extractor
-        # see above ;-)
     else:
         extractor = None
 
     if args.mixer:
         mixer = args.mixer
-        # also see above :-)
     else:
         mixer = None
 
     if args.mover:
         mover = args.mover
-        # also see above :-)
     else:
         mover = None
 
@@ -965,7 +974,8 @@ def cli():
                             extractor=extractor,
                             mixer=mixer,
                             mover=mover,
-                            profile=profile, parallel_scheme=parallel_scheme)
+                            profiler=profiler,
+                            parallel_scheme=parallel_scheme)
 
         if result is None or len(result) == 0:
             print("No output - end of run")

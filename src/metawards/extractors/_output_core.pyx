@@ -7,9 +7,13 @@ cimport cython
 from libc.stdlib cimport calloc, free
 cimport openmp
 
+from typing import Union as _Union
+
 from .._network import Network
+from .._networks import Networks
 from .._population import Population
 from .._infections import Infections
+from ..utils._profiler import Profiler
 
 from .._workspace import Workspace
 
@@ -160,7 +164,7 @@ cdef _red_variables * _redvars = <_red_variables*>0
 _files = None
 
 
-def setup_core(network: Network, nthreads: int = 1, **kwargs):
+def setup_core(nthreads: int = 1, **kwargs):
     """This is the setup function that corresponds with
        :meth:`~metawards.extractors.output_core`.
     """
@@ -568,7 +572,9 @@ def output_core_serial(network: Network, population: Population,
     ###
 
     # reset the workspace so that we can accumulate new data for a new day
-    workspace.zero_all()
+    # (make sure not to zero the subspace networks else we lose all our
+    #  hard work!)
+    workspace.zero_all(zero_subspaces=False)
 
     # loop over each of the disease stages
     for i in range(0, N_INF_CLASSES):
@@ -708,13 +714,6 @@ def output_core_serial(network: Network, population: Population,
             f"{S} vs {susceptibles}, {E} vs {latent}, {I} vs {total}, "
             f"{R} vs {recovereds}")
 
-    print(f"S: {susceptibles}    ", end="")
-    print(f"E: {latent}    ", end="")
-    print(f"I: {total}    ", end="")
-    print(f"R: {recovereds}    ", end="")
-    print(f"IW: {n_inf_wards[0]}   ", end="")
-    print(f"TOTAL POPULATION {susceptibles+latent+total+recovereds}")
-
     if population is not None:
         population.susceptibles = susceptibles
         population.total = total
@@ -727,7 +726,13 @@ def output_core_serial(network: Network, population: Population,
     return total + latent
 
 
-def output_core(nthreads: int, **kwargs):
+def output_core(network: _Union[Network, Networks],
+                population: Population,
+                workspace: Workspace,
+                infections: Infections,
+                nthreads: int,
+                profiler: Profiler,
+                **kwargs):
     """This is the core output function that must be called
        every iteration as it is responsible for accumulating
        the core data each day, which is used to report a summary
@@ -736,8 +741,8 @@ def output_core(nthreads: int, **kwargs):
 
        Parameters
        ----------
-       network: Network
-         The network over which the outbreak is being modelled
+       network: Network or Networks
+         The network(s) over which the outbreak is being modelled
        population: Population
          The population experiencing the outbreak
        workspace: Workspace
@@ -748,6 +753,8 @@ def output_core(nthreads: int, **kwargs):
          Space to hold the 'play' infections
        nthreads: int
          The number of threads to use to help extract the data
+       profiler: Profiler
+         Optional profiler to profile this output function
        kwargs
          Extra argumentst that are ignored by this function
     """
@@ -755,6 +762,55 @@ def output_core(nthreads: int, **kwargs):
     # serial version is much faster than parallel - only worth
     # parallelising when more than 4 cores
     if nthreads <= 4:
-        output_core_serial(**kwargs)
+        output_func = output_core_serial
     else:
-        output_core_omp(nthreads=nthreads, **kwargs)
+        kwargs["nthreads"] = nthreads
+        output_func = output_core_omp
+
+    if isinstance(network, Network):
+        output_func(network=network, population=population,
+                    workspace=workspace, infections=infections)
+        print(population.summary())
+
+    elif isinstance(network, Networks):
+        if profiler is None:
+            from ..utils._profiler import NullProfiler
+            profiler = NullProfiler()
+
+        p = profiler.start("multi-network")
+
+        if population.subpops is None:
+            population.specialise(network)
+
+        for i, subnet in enumerate(network.subnets):
+            p = p.start(f"output-{i}")
+            output_func(network=subnet,
+                        population=population.subpops[i],
+                        workspace=workspace.subspaces[i],
+                        infections=infections.subinfs[i],
+                        profiler=p,
+                        **kwargs)
+            p = p.stop()
+
+        # aggregate the infection information from across
+        # the different demographics
+        p = p.start("aggregate")
+        infections.aggregate(profiler=p, nthreads=nthreads)
+        network.aggregate(profiler=p, nthreads=nthreads)
+        p = p.stop()
+
+        p = p.start("overall_output")
+        output_func(network=network.overall,
+                    population=population,
+                    workspace=workspace,
+                    infections=infections,
+                    profiler=profiler,
+                    **kwargs)
+        p = p.stop()
+
+        print(population.summary(demographics=network.demographics))
+
+        # double-check that the sums all add up correctly
+        population.assert_sane()
+
+        p = p.stop()

@@ -1,37 +1,41 @@
 
+from typing import Union as _Union
+
 from .._network import Network
+from .._networks import Networks
 from .._infections import Infections
 from .._outputfiles import OutputFiles
 from .._workspace import Workspace
 from .._population import Population, Populations
-from ._profiler import Profiler, NullProfiler
-from ._iterate import iterate
-from ._extract import extract
+from ._profiler import Profiler
+from ._get_functions import get_initialise_functions, \
+                            get_model_loop_functions, \
+                            get_finalise_functions, \
+                            MetaFunction
 
 __all__ = ["run_model"]
 
 
-def run_model(network: Network,
+def run_model(network: _Union[Network, Networks],
               infections: Infections,
-              rngs, s: int,
+              rngs,
               output_dir: OutputFiles,
               population: Population = Population(initial=57104043),
               nsteps: int = None,
-              profile: bool = True,
               profiler: Profiler = None,
               nthreads: int = None,
-              iterator=None,
-              extractor=None,
-              mixer=None,
-              mover=None):
+              iterator: _Union[str, MetaFunction] = None,
+              extractor: _Union[str, MetaFunction] = None,
+              mixer: _Union[str, MetaFunction] = None,
+              mover: _Union[str, MetaFunction] = None) -> Populations:
     """Actually run the model... Real work happens here. The model
        will run until completion or until 'nsteps' have been
        completed (whichever happens first)
 
         Parameters
         ----------
-        network: Network
-            The network on which to run the model
+        network: Network or Networks
+            The network(s) on which to run the model
         infections: Infections
             The space used to record the infections
         rngs: list
@@ -48,29 +52,24 @@ def run_model(network: Network,
         nsteps: int
             The maximum number of steps to run in the outbreak. If None
             then run until the outbreak has finished
-        profile: bool
-            Whether or not to profile the model run and print out the
-            results
         profiler: Profiler
             The profiler to use to profile - a new one is created if
             one isn't passed
-        s: int
-            Index of the seeding parameter to use
         nthreads: int
             Number of threads over which to parallelise this model run
-        iterator: function
+        iterator: MetaFunction or string
             Function that will be used to dynamically get the functions
             that will be used at each iteration to advance the
             model. Any additional files or parameters needed by these
             functions should be included in the `network.params` object.
-        extractor: function
+        extractor: MetaFunction or string
             Function that will be used to dynamically get the functions
             that will be used at each iteration to extract data from
             the model run
-        mixer: function
+        mixer: MetaFunction or string
             Function that will mix data from multiple demographics
             so that this is shared during a model run
-        mover: function
+        mover: MetaFunction or string
             Function that can move the population between different
             demographics
 
@@ -79,43 +78,39 @@ def run_model(network: Network,
         trajectory: Populations
             The trajectory of the population for every day of the model run
     """
-    if iterator is None:
-        from ..iterators import iterate_default
-        iterator = iterate_default
-    elif isinstance(iterator, str):
+    if isinstance(iterator, str):
         from ..iterators._iterate_custom import build_custom_iterator
         iterator = build_custom_iterator(iterator, __name__)
+    elif iterator is None:
+        from ..iterators._iterate_default import iterate_default
+        iterator = iterate_default
 
-    if extractor is None:
-        from ..extractors import extract_default
-        extractor = extract_default
-    elif isinstance(extractor, str):
+    if isinstance(extractor, str):
         from ..extractors._extract_custom import build_custom_extractor
         extractor = build_custom_extractor(extractor, __name__)
+    elif extractor is None:
+        from ..extractors._extract_default import extract_default
+        extractor = extract_default
 
-    if mixer is None:
-        from ..mixers import mix_default
-        mixer = mix_default
-    elif isinstance(mixer, str):
+    if isinstance(mixer, str):
         from ..mixers._mix_custom import build_custom_mixer
         mixer = build_custom_mixer(mixer, __name__)
+    elif mixer is None:
+        from ..mixers._mix_default import mix_default
+        mixer = mix_default
 
-    if mover is None:
-        from ..movers import move_default
-        mover = move_default
-    elif isinstance(mover, str):
+    if isinstance(mover, str):
         from ..movers._move_custom import build_custom_mover
         mover = build_custom_mover(mover, __name__)
+    elif mover is None:
+        from ..movers._move_default import move_default
+        mover = move_default
 
-    if profile:
-        if profiler:
-            p = profiler
-        else:
-            p = Profiler()
-    else:
-        p = NullProfiler()
+    if profiler is None:
+        from ._profiler import NullProfiler
+        profiler = NullProfiler()
 
-    p = p.start("run_model")
+    p = profiler.start("run_model")
 
     params = network.params
 
@@ -132,35 +127,30 @@ def run_model(network: Network,
     infections.clear(nthreads=nthreads)
     p = p.stop()
 
-    # get and call all of the functions that need to be called to set
-    # up the model run
-    p = p.start("setup_funcs")
-    setup_funcs = iterator(nthreads=nthreads, setup=True)
-
-    for setup_func in setup_funcs:
-        setup_func(network=network, population=population,
-                   infections=infections, rngs=rngs, profiler=p,
-                   nthreads=nthreads)
-
-    setup_funcs = extractor(nthreads=nthreads, setup=True)
-
-    for setup_func in setup_funcs:
-        setup_func(network=network, population=population,
-                   output_dir=output_dir, profiler=p, nthreads=nthreads)
-    p = p.stop()
-
-    # create a workspace that is used as part of extract to
+    # create a workspace that is used as part of the "analyse" stage to
     # provide a scratch-pad while extracting data from the model
     workspace = Workspace.build(network=network)
 
-    # Now get the population and network data for the first day of the
-    # model ("day zero", unless a future day has been set by the user)
-    from metawards.extractors import output_core
+    # get and call all of the functions that need to be called to
+    # initialise the model run
+    p = p.start("initialise_funcs")
+    funcs = get_initialise_functions(network=network, population=population,
+                                     infections=infections,
+                                     output_dir=output_dir,
+                                     workspace=workspace, rngs=rngs,
+                                     iterator=iterator, extractor=extractor,
+                                     mixer=mixer, mover=mover,
+                                     nthreads=nthreads, profiler=p)
 
-    output_core(network=network, population=population, workspace=workspace,
-                output_dir=output_dir, infections=infections,
-                rngs=rngs, get_output_functions=extractor,
-                nthreads=nthreads, profiler=p)
+    for func in funcs:
+        p = p.start(str(func))
+        func(network=network, population=population,
+             infections=infections, output_dir=output_dir,
+             workspace=workspace, rngs=rngs, nthreads=nthreads,
+             profiler=p)
+        p = p.stop()
+
+    p = p.stop()
 
     infecteds = population.infecteds
 
@@ -173,54 +163,31 @@ def run_model(network: Network,
     # keep looping until the outbreak is over or until we have completed
     # at least 5 loop iterations
     while (infecteds != 0) or (iteration_count < 5):
-        if profile:
-            p2 = Profiler()
-        else:
-            p2 = NullProfiler()
+        # construct a new profiler of the same type as 'profiler'
+        p2 = profiler.__class__()
 
         p2 = p2.start(f"timing for day {population.day}")
 
         start_population = population.population
 
-        # ideally should be split over the four stages of the day
-        #
-        # 1. changing the size of the population directly, e.g. seeding
-        #    infections, moving population between demographics etc.
-        #
-        # 2. calculating force of infections
-        #
-        # 3. using fois to advance the outbreak
-        #
-        # 4. combining together all results and (optionally) saving to file
-        #
-        # (then, stage 0 could be setup, replacing the setup flag)
+        funcs = get_model_loop_functions(
+                                    network=network, population=population,
+                                    infections=infections,
+                                    output_dir=output_dir,
+                                    workspace=workspace, rngs=rngs,
+                                    iterator=iterator, extractor=extractor,
+                                    mixer=mixer, mover=mover,
+                                    nthreads=nthreads, profiler=p)
 
-        # iterate(stage1)  - import, additional
-
-        # mover(stage1)    - move between demograpics
-
-        # iterate(stage2)  - calculate fois etc.
-
-        # mixer(stage2)    - merge together fois etc.
-
-        # iterate(stage3)  - advance play, work etc.
-
-        # mixer(stage4)    - merge together all infections/play into overall
-
-        # extract(stage4)  - extract overall, or even subnets
-
-        iterate(network=network, population=population,
-                infections=infections, rngs=rngs,
-                get_advance_functions=iterator,
-                nthreads=nthreads, profiler=p2)
+        for func in funcs:
+            p2 = p2.start(str(func))
+            func(network=network, population=population,
+                 infections=infections, output_dir=output_dir,
+                 workspace=workspace, rngs=rngs, nthreads=nthreads,
+                 profiler=p2)
+            p2 = p2.stop()
 
         print(f"\n {population.day} {infecteds}")
-
-        extract(network=network, population=population,
-                workspace=workspace, output_dir=output_dir,
-                infections=infections, rngs=rngs,
-                get_output_functions=extractor,
-                nthreads=nthreads, profiler=p2)
 
         if population.population != start_population:
             # something went wrong as the population should be conserved
@@ -257,6 +224,30 @@ def run_model(network: Network,
 
     # end of while loop
     p = p.stop()
+
+    # finally get and call all of the functions needed to finalise
+    # the model run, e.g. closing files, performing overall analyses,
+    # writing summary files etc
+    p = p.start("finalise_funcs")
+
+    funcs = get_finalise_functions(network=network, population=population,
+                                   infections=infections,
+                                   output_dir=output_dir,
+                                   workspace=workspace, rngs=rngs,
+                                   iterator=iterator, extractor=extractor,
+                                   mixer=mixer, mover=mover,
+                                   nthreads=nthreads, profiler=p)
+
+    for func in funcs:
+        p = p.start(str(func))
+        func(network=network, population=population,
+             infections=infections, output_dir=output_dir,
+             workspace=workspace, rngs=rngs, nthreads=nthreads,
+             profiler=p)
+        p = p.stop()
+
+    p = p.stop()
+
     p.stop()
 
     if not p.is_null():

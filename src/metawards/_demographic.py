@@ -39,7 +39,8 @@ class Demographic:
     #: parameters as the whole population
     adjustment: VariableSet = None
 
-    def specialise(self, network: Network):
+    def specialise(self, network: Network, profiler=None,
+                   nthreads: int = 1):
         """Return a copy of the passed network that has been specialised
            for this demographic. The returned network will
            contain only members of this demographic, with the

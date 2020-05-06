@@ -47,6 +47,23 @@ class Network:
     #: The parameters used to generate this network
     params: Parameters = None
 
+    #: The index in the overall network's work matrix of the ith
+    #: index in this subnetworks work matrix. If this is None then
+    #: both this subnetwork has the same work matrix as the overall
+    #: network
+    _work_index = None
+
+    @property
+    def population(self) -> int:
+        """Return the total population in the network"""
+        if self.nodes is None:
+            return 0
+
+        node_pop = self.nodes.population()
+        link_pop = self.links.population()
+
+        return int(node_pop + link_pop)
+
     @staticmethod
     def build(params: Parameters,
               calculate_distances: bool = True,
@@ -55,7 +72,6 @@ class Network:
               max_nodes: int = 16384,
               max_links: int = 4194304,
               nthreads: int = 1,
-              profile: bool = True,
               profiler=None):
         """Builds and returns a new Network that is described by the
            passed parameters. If 'calculate_distances' is True, then
@@ -74,17 +90,11 @@ class Network:
            the maximum possible number of nodes and links. The memory buffers
            will be shrunk back after building.
         """
-        if profile:
-            if profiler is None:
-                from .utils import Profiler
-                p = Profiler()
-            else:
-                p = profiler
-        else:
+        if profiler is None:
             from .utils import NullProfiler
-            p = NullProfiler()
+            profiler = NullProfiler()
 
-        p = p.start("Network.build")
+        p = profiler.start("Network.build")
 
         if build_function is None:
             from .utils import build_wards_network
@@ -146,6 +156,8 @@ class Network:
             p = p.stop()
             print(p)
 
+        print(f"\nNetwork loaded: Population = {network.population}\n")
+
         return network
 
     def assert_sane(self, profiler: None):
@@ -155,10 +167,6 @@ class Network:
            to check every time the network is accessed
         """
         from .utils import assert_sane_network
-        if profiler is None:
-            from .profiler import NullProfiler
-            profiler = NullProfiler()
-
         assert_sane_network(network=self, profiler=profiler)
 
     def add_distances(self, distance_function=None, nthreads: int = 1):
@@ -221,25 +229,43 @@ class Network:
         from .utils import reset_everything
         reset_everything(network=self, nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters,
-               nthreads: int = 1, profile: bool = False,
-               profiler=None):
-        """Update this network with a new set of parameters.
+    def update(self, params: Parameters, demographics=None, rngs=None,
+               nthreads: int = 1, profiler=None):
+        """Update this network with a new set of parameters
+           (and optionally demographics).
+
            This is used to update the parameters for the network
            for a new run. The network will be reset
            and ready for a new run.
-        """
-        if profile:
-            if profiler:
-                p = profiler
-            else:
-                from .utils import Profiler
-                p = Profiler()
-        else:
-            from .utils import NullProfiler
-            p = NullProfiler()
 
-        p = p.start("Network.update")
+           Parameters
+           ----------
+           params: Parameters
+             The new parameters with which to update this Network
+           demographics: Demographics
+             The new demographics with which to update this Network.
+             Note that this will return a Network object that contains
+             the specilisation of this Network
+           rngs
+             Thread-safe random number generators - needed if you are
+             updating the demographics
+           nthreads: int
+             Number of threads over which to parallelise this update
+           profiler: Profiler
+             The profiler used to profile this update
+
+           Returns
+           -------
+           network: Network or Networks
+             Either this Network after it has been updated, or the
+             resulting Networks from specialising this Network using
+             Demographics
+        """
+        if profiler is None:
+            from .utils._profiler import NullProfiler
+            profiler = NullProfiler()
+
+        p = profiler.start("Network.update")
 
         self.params = params
 
@@ -247,18 +273,25 @@ class Network:
         self.reset_everything(nthreads=nthreads, profiler=p)
         p = p.stop()
 
+        if demographics:
+            network = demographics.specialise(network=self, rngs=rngs,
+                                              profiler=profiler,
+                                              nthreads=nthreads)
+
+        else:
+            network = self
+
         p = p.start("rescale_play_matrix")
-        self.rescale_play_matrix(nthreads=nthreads, profiler=p)
+        network.rescale_play_matrix(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         p = p.start("move_from_play_to_work")
-        self.move_from_play_to_work(nthreads=nthreads, profiler=p)
+        network.move_from_play_to_work(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         p = p.stop()
 
-        if profile and (profiler is None):
-            print(p)
+        return network
 
     def rescale_play_matrix(self, nthreads: int = 1,
                             profiler=None):
@@ -273,7 +306,25 @@ class Network:
         move_population_from_play_to_work(network=self, nthreads=nthreads,
                                           profiler=profiler)
 
-    def specialise(self, demographic):
+    def has_different_work_matrix(self):
+        """Return whether or not the sub-network work matrix
+           is different to that of the overall network
+        """
+        return self._work_index is not None
+
+    def get_work_index(self):
+        """Return the mapping from the index in this sub-networks work
+           matrix to the mapping in the overall network's work matrix
+        """
+        if self.has_different_work_matrix():
+            # remember this is 1-indexed, so work_index[1] is the first
+            # value
+            return self._work_index
+        else:
+            return range(1, self.nlinks + 1)
+
+    def specialise(self, demographic, rngs=None, profiler=None,
+                   nthreads: int = 1):
         """Return a copy of this network that has been specialised
            for the passed demographic. The returned network will
            contain only members of that demographic, with the
@@ -284,13 +335,23 @@ class Network:
            ----------
            demographic: Demographic
              The demographic with which to specialise
+           rngs
+             Thread-safe random number generators
 
            Returns
            -------
            network: Network
              The specialised network
         """
-        return demographic.specialise(network=self)
+        from ._demographics import Demographics
+        if isinstance(demographic, Demographics):
+            return demographic.specialise(network=self, rngs=rngs,
+                                          profiler=profiler,
+                                          nthreads=nthreads)
+        else:
+            return demographic.specialise(network=self,
+                                          profiler=profiler,
+                                          nthreads=nthreads)
 
     def scale_susceptibles(self, ratio: any = None,
                            work_ratio: any = None, play_ratio: any = None):
@@ -333,14 +394,12 @@ class Network:
             output_dir: OutputFiles,
             seed: int = None,
             nsteps: int = None,
-            profile: bool = True,
-            s: int = None,
             nthreads: int = None,
             iterator=None,
             extractor=None,
             mixer=None,
             mover=None,
-            profiler=None):
+            profiler=None) -> Population:
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
            is None, then a random seed is used.
@@ -350,9 +409,6 @@ class Network:
            The simulation will continue until the infection has
            died out or until 'nsteps' has passed (keep as 'None'
            to prevent exiting early).
-
-           s is used to select the 'to_seed' entry to seed
-           the nodes
 
            Parameters
            ----------
@@ -368,13 +424,8 @@ class Network:
            nsteps: int
              The maximum number of steps to run in the outbreak. If None
              then run until the outbreak has finished
-           profile: bool
-             Whether or not to profile the model run and print out the
-             results
            profiler: Profiler
              The profiler to use - a new one is created if one isn't passed
-           s: int
-             Index of the seeding parameter to use
            nthreads: int
              Number of threads over which to parallelise this model run
            iterator: function
@@ -431,9 +482,9 @@ class Network:
         population = run_model(network=self,
                                population=population,
                                infections=infections,
-                               rngs=rngs, s=s, output_dir=output_dir,
+                               rngs=rngs, output_dir=output_dir,
                                nsteps=nsteps,
-                               profile=profile, nthreads=nthreads,
+                               nthreads=nthreads,
                                profiler=profiler,
                                iterator=iterator, extractor=extractor)
 

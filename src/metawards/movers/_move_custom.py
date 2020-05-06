@@ -1,19 +1,13 @@
 
-__all__ = ["move_custom",
-           "mover_needs_setup",
-           "build_custom_mover"]
+from typing import Union as _Union
+from typing import List as _List
+from ..utils._get_functions import MetaFunction, accepts_stage
+
+__all__ = ["move_custom", "build_custom_mover"]
 
 
-def mover_needs_setup(mover):
-    """Return whether or not the passed mover function has
-       a "setup" argument, and thus needs to be setup before
-       it can be used
-    """
-    import inspect
-    return "setup" in inspect.signature(mover).parameters
-
-
-def build_custom_mover(custom_function, parent_name="__main__"):
+def build_custom_mover(custom_function: _Union[str, MetaFunction],
+                       parent_name="__main__") -> MetaFunction:
     """Build and return a custom mover from the passed
        function. This will wrap 'extract_mover' around
        the function to double-check that the custom
@@ -144,44 +138,43 @@ def build_custom_mover(custom_function, parent_name="__main__"):
                                         **kwargs)
 
 
-def move_custom(custom_function, setup=False, **kwargs):
+def move_custom(custom_function: MetaFunction,
+                stage: str, **kwargs) -> _List[MetaFunction]:
     """This returns the default list of 'go_XXX' functions that
-       are called in sequence to move the population between
-       different demographics.
-
-       This mover provides a custom mover that uses
-       'custom_function' passed from the user. This
-       mover makes sure that 'custom_function' does everything
-       it should
+       are called in sequence for each iteration of the model run.
+       This provides a custom mover that uses
+       'custom_function' passed from the user. This makes
+       sure that if 'stage' is not handled by the custom function,
+       then the "move_default" functions for that stage
+       are correctly called for all stages except "setup"
 
        Parameters
        ----------
-       custom_function
+       custom_function: MetaFunction
          A custom user-supplied function that returns the
          functions that the user would like to be called for
          each step.
-       setup: bool
-         Whether or not to return the functions used to setup the
-         space and input for the go_XXX functions returned by
-         this mover. This is called once at the start of a run
-         to return the functions that must be called to setup the
-         movers. Note that most movers shouldn't need any setup.
+       stage: str
+         The stage of the day/model
 
        Returns
        -------
-       funcs: List[function]
-         The list of functions that ```extract``` will call in sequence
+       funcs: List[MetaFunction]
+         The list of functions that will be called in sequence
     """
 
-    if setup:
-        kwargs["setup"] = setup
+    kwargs["stage"] = stage
 
-        if mover_needs_setup(custom_function):
-            custom_funcs = custom_function(**kwargs)
-        else:
-            custom_funcs = None
+    if custom_function is None:
+        from ._move_default import move_default
+        return move_default(**kwargs)
+
+    elif stage == "analyse" or accepts_stage(custom_function):
+        # most custom functions operate at the 'setup' stage,
+        # so movers that don't specify a stage are assumed to
+        # only operate here (every other stage is 'move_default')
+        return custom_function(**kwargs)
 
     else:
-        custom_funcs = custom_function(**kwargs)
-
-    return custom_funcs
+        from ._move_default import move_default
+        return move_default(**kwargs)

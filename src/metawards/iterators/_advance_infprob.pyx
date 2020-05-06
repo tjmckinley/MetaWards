@@ -6,7 +6,10 @@ cimport cython
 from cython.parallel import parallel, prange
 
 from .._network import Network
+
 from ..utils._profiler import Profiler
+from ..utils._get_functions import call_function_on_network
+
 from ..utils._rate_to_prob cimport rate_to_prob
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
@@ -214,7 +217,7 @@ def advance_infprob(nthreads: int, **kwargs):
          Extra arguments that may be used by other advancers, but which
          are not used by advance_infprob
     """
-    if nthreads == 1:
-        advance_infprob_serial(**kwargs)
-    else:
-        advance_infprob_omp(nthreads=nthreads, **kwargs)
+    call_function_on_network(nthreads=nthreads,
+                             func=advance_infprob_serial,
+                             parallel=advance_infprob_omp,
+                             **kwargs)

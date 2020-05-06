@@ -17,7 +17,7 @@ _default_demographics_path = _os.path.join(_pathlib.Path.home(),
 _default_folder_name = "demographics"
 
 
-@_dataclass
+@_dataclass(eq=False)
 class Demographics:
     """This class holds metadata about all of the demographics
        being modelled
@@ -51,10 +51,27 @@ class Demographics:
                f"repository: {self._repository}\n" \
                f"repository_branch: {self._repository_branch}\n" \
                f"repository_version: {self._repository_version}\n" \
-               f"demographics = [\n  {d}]"
+               f"demographics = [\n  {d}\n]"
 
     def __len__(self):
         return len(self.demographics)
+
+    def __eq__(self, other):
+        if not isinstance(other, Demographics):
+            return False
+
+        elif len(self) != len(other):
+            return False
+
+        else:
+            for name, index in self._names.items():
+                if other._names.get(name, None) != index:
+                    return False
+
+                if self.demographics[index] != other.demographics[index]:
+                    return False
+
+            return True
 
     def __getitem__(self, item):
         if isinstance(item, str):
@@ -68,12 +85,45 @@ class Demographics:
         """Add a demographic to the set to be modelled"""
         if demographic.name in self._names:
             raise ValueError(
-                    f"There is already a demographic called "
-                    f"{demographic.name} in this set. Please rename "
-                    f"and try again.")
+                f"There is already a demographic called "
+                f"{demographic.name} in this set. Please rename "
+                f"and try again.")
 
         self.demographics.append(demographic)
         self._names[demographic.name] = len(self.demographics) - 1
+
+    def get_name(self, item):
+        """Return the name of the demographic at 'item'"""
+        return self.demographics[self.get_index(item)].name
+
+    def get_index(self, item):
+        """Return the index of the passed item"""
+        try:
+            item = int(item)
+        except Exception:
+            pass
+
+        if isinstance(item, str):
+            try:
+                return self._names[item]
+            except Exception:
+                pass
+
+        elif isinstance(item, int):
+            try:
+                if self.demographics[item] is not None:
+                    return item
+            except Exception:
+                pass
+
+        elif isinstance(item, Demographic):
+            for i, d in enumerate(self.demographics):
+                if item == d:
+                    return i
+
+        # haven't found the item
+        raise KeyError(f"There is no demographic is this set that "
+                       f"matches {item}.")
 
     @staticmethod
     def load(name: str = None,
@@ -160,7 +210,7 @@ class Demographics:
         play_ratios = data.get("play_ratios", [])
 
         if (len(demographics) != len(work_ratios) or
-           len(demographics) != len(play_ratios)):
+                len(demographics) != len(play_ratios)):
             raise ValueError(
                 f"The number of work_ratios ({len(work_ratios)}) must "
                 f"equal to number of play_ratios "
@@ -184,7 +234,8 @@ class Demographics:
 
         return demos
 
-    def specialise(self, network: Network):
+    def specialise(self, network: Network, rngs, profiler=None,
+                   nthreads: int = 1):
         """Build the set of networks that will model this set
            of demographics applied to the passed Network.
 
@@ -194,6 +245,12 @@ class Demographics:
              The overall population model - this contains the base
              parameters, wards, work and play links that define
              the model outbreak
+           rngs
+             Thread-safe random number generators
+           profiler: Profiler
+             Profiler used to profile the specialisation
+           nthreads: int
+             Number of threads over which to parallelise the work
 
            Returns
            -------
@@ -201,5 +258,10 @@ class Demographics:
              The set of Networks that represent the model run over the
              full set of different demographics
         """
-        from ._networks import Networks
-        return Networks.build(network=network, demographics=self)
+        if len(self) == 0:
+            return network
+        else:
+            from ._networks import Networks
+            return Networks.build(network=network, demographics=self,
+                                  rngs=rngs,
+                                  profiler=profiler, nthreads=nthreads)

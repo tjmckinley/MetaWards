@@ -69,7 +69,8 @@ class Networks:
         # WARDS
 
     @staticmethod
-    def build(network: Network, demographics: Demographics):
+    def build(network: Network, demographics: Demographics, rngs,
+              profiler=None, nthreads: int = 1):
         """Build the set of networks that will model the passed
            demographics based on the overall population model
            in the passed network
@@ -80,12 +81,17 @@ class Networks:
              The overall population model - this contains the base
              parameters, wards, work and play links that define
              the model outbreak
-
            demographics: Demographics
              Information about each of the demographics to be modelled.
              Note that the sum of the "work" and "play" populations
              across all demographics must be 1.0 in all wards in
              the model
+           rngs
+             Thread-safe random number generators
+           profiler: Profiler
+             Optional profiler used to profile this build
+           nthreads: int
+             Number of threads over which to distribute the work
 
            Returns
            -------
@@ -93,40 +99,78 @@ class Networks:
              The set of Networks that represent the model run over the
              full set of different demographics
         """
+        if not isinstance(network, Network):
+            raise TypeError(f"You can only specialise a Network")
+
         if demographics is None or len(demographics) < 2:
             raise ValueError(f"You can only create a Networks object "
                              f"with a valid Demographics that contains "
                              f"more than one demographic")
 
-        networks = []
+        if profiler is None:
+            from .utils._profiler import NullProfiler
+            profiler = NullProfiler()
+
+        p = profiler.start("specialise")
+
+        subnets = []
 
         # specialise the network for each demographic
         for i in range(0, len(demographics)):
-            networks.append(network.specialise(demographics[i]))
+            p = p.start(f"demographic_{i}")
+            subnets.append(network.specialise(demographic=demographics[i],
+                                              profiler=p,
+                                              nthreads=nthreads))
+            p = p.stop()
 
-        # now verify that the sum of the populations in each ward across
-        # all demographics equals the sum of the overall population in
-        # each ward
+        p = p.start("distribute_remainders")
+        from .utils._scale_susceptibles import distribute_remainders
+        distribute_remainders(network=network, subnets=subnets, rngs=rngs,
+                              profiler=p, nthreads=nthreads)
+        p = p.stop()
+
+        total_pop = network.population
+        sum_pop = 0
+
+        print(f"Specialising network - population = {total_pop}")
+
+        for i, subnet in enumerate(subnets):
+            pop = subnet.population
+            sum_pop += pop
+            print(f"  {demographics[i].name} - population = {pop}")
+
+        if total_pop != sum_pop:
+            raise AssertionError(
+                f"The sum of the population of the demographic "
+                f"sub-networks ({sum_pop}) does not equal the population "
+                f"of the total network ({total_pop}). This is a bug!")
 
         result = Networks()
         result.overall = network
-        result.subnets = networks
+        result.subnets = subnets
         result.demographics = demographics
 
+        p = p.stop()
+
         return result
+
+    def aggregate(self, profiler=None, nthreads: int = 1):
+        """Aggregate all of the sub-network population infection data
+           so that this is available in the overall network
+        """
+        from .utils._aggregate import aggregate_networks
+        aggregate_networks(network=self, profiler=profiler, nthreads=nthreads)
 
     def run(self, population: Population,
             output_dir: OutputFiles,
             seed: int = None,
             nsteps: int = None,
-            profile: bool = True,
-            s: int = None,
             nthreads: int = None,
             iterator=None,
             extractor=None,
             mover=None,
             mixer=None,
-            profiler=None):
+            profiler=None) -> Population:
         """Run the model simulation for the passed population.
            The random number seed is given in 'seed'. If this
            is None, then a random seed is used.
@@ -136,9 +180,6 @@ class Networks:
            The simulation will continue until the infection has
            died out or until 'nsteps' has passed (keep as 'None'
            to prevent exiting early).
-
-           s is used to select the 'to_seed' entry to seed
-           the nodes
 
            Parameters
            ----------
@@ -154,13 +195,8 @@ class Networks:
            nsteps: int
              The maximum number of steps to run in the outbreak. If None
              then run until the outbreak has finished
-           profile: bool
-             Whether or not to profile the model run and print out the
-             results
            profiler: Profiler
              The profiler to use - a new one is created if one isn't passed
-           s: int
-             Index of the seeding parameter to use
            nthreads: int
              Number of threads over which to parallelise this model run
            iterator: function
@@ -176,6 +212,11 @@ class Networks:
            mover: function
              Function that is called to move the population between
              different demographics
+
+           Returns
+           -------
+           population: Population
+             The final population at the end of the run
         """
         # Create the random number generator
         from .utils._ran_binomial import seed_ran_binomial, ran_binomial
@@ -218,9 +259,9 @@ class Networks:
         population = run_model(network=self,
                                population=population,
                                infections=infections,
-                               rngs=rngs, s=s, output_dir=output_dir,
+                               rngs=rngs, output_dir=output_dir,
                                nsteps=nsteps,
-                               profile=profile, nthreads=nthreads,
+                               nthreads=nthreads,
                                profiler=profiler,
                                iterator=iterator, extractor=extractor,
                                mixer=mixer, mover=mover)
@@ -235,27 +276,54 @@ class Networks:
         for subnet in self.subnets:
             subnet.reset_everything(nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters,
-               nthreads: int = 1, profile: bool = False,
-               profiler=None):
-        """Update the networks with a new set of parameters.
-           This is used to update the parameters for the networks
-           for a new run. The networks will be reset
-           and ready for a new run.
-        """
-        if profile:
-            if profiler:
-                p = profiler
-            else:
-                from .utils import Profiler
-                p = Profiler()
-        else:
-            from .utils import NullProfiler
-            p = NullProfiler()
+    def update(self, params: Parameters, demographics=None, rngs=None,
+               nthreads: int = 1, profiler=None):
+        """Update this network with a new set of parameters
+           (and optionally demographics).
 
-        p = p.start("overall.update")
+           This is used to update the parameters for the network
+           for a new run. The network will be reset
+           and ready for a new run.
+
+           Parameters
+           ----------
+           params: Parameters
+             The new parameters with which to update this Network
+           demographics: Demographics
+             The new demographics with which to update this Network.
+             Note that this will return a Network object that contains
+             the specilisation of this Network
+           rngs
+             Thread-safe random number generators - needed if you are
+             updating the demographics
+           nthreads: int
+             Number of threads over which to parallelise this update
+           profiler: Profiler
+             The profiler used to profile this update
+
+           Returns
+           -------
+           network: Network or Networks
+             Either this Network after it has been updated, or the
+             resulting Networks from specialising this Network using
+             Demographics
+        """
+        if profiler is None:
+            from .utils import NullProfiler
+            profiler = NullProfiler()
+
+        p = profiler.start("overall.update")
         self.overall.update(params, profiler=p)
         p = p.stop()
+
+        if demographics is not None:
+            if demographics != self.demographics:
+                # we have a change in demographics, so need to re-specialise
+                networks = demographics.specialise(network=self.overall,
+                                                   rngs=rngs, profiler=p,
+                                                   nthreads=nthreads)
+                p.stop()
+                return networks
 
         for i in range(0, len(self.demographics)):
             demographic = self.demographics[i]
@@ -272,15 +340,12 @@ class Networks:
             self.subnets[i].update(subnet_params, profiler=p)
             p = p.stop()
 
-        if profile and (profiler is None):
-            print(p)
-
     def initialise_infections(self, nthreads: int = 1):
         """Initialise and return the space that will be used
            to track infections
         """
         from ._infections import Infections
-        return Infections.build(networks=self)
+        return Infections.build(network=self)
 
     def rescale_play_matrix(self, nthreads: int = 1, profiler=None):
         """Rescale the play matrix"""

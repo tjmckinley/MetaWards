@@ -7,27 +7,33 @@ Functions
 .. autosummary::
     :toctree: generated/
 
+    accepts_stage
     add_lookup
     add_wards_network_distance
+    aggregate_networks
+    align_strings
     allocate_vaccination
     assert_sane_network
     build_play_matrix
     build_wards_network
+    call_function_on_network
     clear_all_infections
     create_int_array
     create_double_array
     create_string_array
     create_thread_generators
     delete_ran_binomial
-    extract
     fill_in_gaps
     get_available_num_threads
+    get_functions
+    get_initialise_functions
+    get_finalise_functions
+    get_model_loop_functions
     get_min_max_distances
     get_number_of_processes
     how_many_vaccinated
     initialise_infections
     initialise_play_infections
-    iterate
     move_population_from_work_to_play
     move_population_from_play_to_work
     prepare_worker
@@ -69,13 +75,14 @@ from ._read_done_file import *
 from ._string_to_ints import *
 from ._profiler import *
 from ._run_model import *
-from ._runner import *
-from ._iterate import *
+from ._run_models import *
 from ._worker import *
-from ._extract import *
 from ._import_module import *
+from ._get_functions import *
+from ._align_strings import *
 
 from ._add_lookup import *
+from ._aggregate import *
 from ._build_wards_network import *
 from ._add_wards_network_distance import *
 from ._get_min_max_distances import *
@@ -92,4 +99,3 @@ from ._scale_susceptibles import *
 from ._assert_sane_network import *
 from ._vaccination import *
 from ._clear_all_infections import *
-

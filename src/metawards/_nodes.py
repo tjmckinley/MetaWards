@@ -9,6 +9,7 @@ class Nodes:
        to store a list of Node objects as a "struct of arrays".
        This should improve speed of loading and access.
     """
+
     def __init__(self, N: int = 0):
         """Create a container for up to "N" nodes"""
         if N <= 0:
@@ -110,6 +111,16 @@ class Nodes:
                              f"in this container equals {n}")
 
         return i
+
+    def population(self) -> int:
+        """Return the total population of the nodes
+
+           Returns
+           -------
+           int
+               Total population
+        """
+        return sum(self.save_play_suscept)
 
     def __getitem__(self, i: int):
         """Return the node at index 'i'. Note that this is a

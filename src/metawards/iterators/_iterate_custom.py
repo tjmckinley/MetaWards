@@ -1,12 +1,14 @@
 
+from typing import List as _List
+from typing import Union as _Union
+from ..utils._get_functions import MetaFunction, accepts_stage
+
 __all__ = ["iterate_custom",
            "build_custom_iterator"]
 
-from ._iterate_core import iterate_core
-from ._iterate_default import iterator_needs_setup
 
-
-def build_custom_iterator(custom_function, parent_name="__main__"):
+def build_custom_iterator(custom_function: _Union[str, MetaFunction],
+                          parent_name="__main__") -> MetaFunction:
     """Build and return a custom iterator from the passed
        function. This will wrap 'iterate_custom' around
        the function to double-check that the custom
@@ -33,9 +35,8 @@ def build_custom_iterator(custom_function, parent_name="__main__"):
 
         Returns
         -------
-        iterator
-          The wrapped iterator that is suitable for using in the iterate
-          function.
+        iterator: MetaFunction
+          The wrapped iterator
     """
     if isinstance(custom_function, str):
         print(f"Importing a custom iterator from {custom_function}")
@@ -136,66 +137,43 @@ def build_custom_iterator(custom_function, parent_name="__main__"):
                                            **kwargs)
 
 
-def iterate_custom(custom_function,
-                   setup=False, **kwargs):
+def iterate_custom(custom_function: MetaFunction, stage: str,
+                   **kwargs) -> _List[MetaFunction]:
     """This returns the default list of 'advance_XXX' functions that
        are called in sequence for each iteration of the model run.
        This iterator provides a custom iterator that uses
        'custom_function' passed from the user. This iterator makes
-       sure that 'setup' is called correctly and that the functions
-       needed by 'iterate_core' are called first.
+       sure that if 'stage' is not handled by the custom function,
+       then the "iterate_default" functions for that stage
+       are correctly called for all stages except "infect"
 
        Parameters
        ----------
-       custom_function
+       custom_function: MetaFunction
          A custom user-supplied function that returns the
          functions that the user would like to be called for
          each step.
-       setup: bool
-         Whether or not to return the functions used to setup the
-         space and input for the advance_XXX functions returned by
-         this iterator. This is called once at the start of a run
-         to return the functions that must be called to setup the
-         model
+       stage: str
+         The stage of the day/model
 
        Returns
        -------
-       funcs: List[function]
-         The list of functions that ```iterate``` will call in sequence
+       funcs: List[MetaFunction]
+         The list of functions that will be called in sequence
     """
 
-    kwargs["setup"] = setup
+    kwargs["stage"] = stage
 
-    if setup:
-        # Return the functions needed to initialise this iterator
-        core_funcs = iterate_core(**kwargs)
+    if custom_function is None:
+        from ._iterate_default import iterate_default
+        return iterate_default(**kwargs)
 
-        if iterator_needs_setup(custom_function):
-            custom_funcs = custom_function(**kwargs)
-        else:
-            custom_funcs = None
-
-    else:
-        core_funcs = iterate_core(**kwargs)
-        custom_funcs = custom_function(**kwargs)
-
-    # make sure that the core functions are called, and that
-    # their call is before the custom function (unless the user
-    # has moved them, which we hope was for a good reason!)
-    if core_funcs is None or len(core_funcs) == 0:
-        if custom_funcs is None:
-            return []
-        else:
-            return custom_funcs
-
-    elif custom_funcs is None or len(custom_funcs) == 0:
-        return core_funcs
+    elif stage == "infect" or accepts_stage(custom_function):
+        # most custom functions operate at the 'infect' stage,
+        # so iterators that don't specify a stage are assumed to
+        # only operate here (every other stage is 'iterate_default')
+        return custom_function(**kwargs)
 
     else:
-        for i in range(len(core_funcs)-1, -1, -1):
-            # move backwards so that the first custom function
-            # is prepended last
-            if core_funcs[i] not in custom_funcs:
-                custom_funcs.insert(0, core_funcs[i])
-
-        return custom_funcs
+        from ._iterate_default import iterate_default
+        return iterate_default(**kwargs)
