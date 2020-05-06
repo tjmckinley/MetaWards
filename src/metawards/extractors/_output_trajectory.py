@@ -31,18 +31,7 @@ def output_trajectory(network: _Union[Network, Networks],
     else:
         datestring = ""
 
-    RESULTS.write(f"day,{datestring}S,E,I,R,IW")
-
-    if isinstance(network, Networks):
-        for i, demographic in enumerate(network.demographics):
-            name = demographic.name
-            if name is None or len(name) == 0:
-                name = str(i)
-
-            RESULTS.write(
-                f",S({name}),E({name}),I({name}),R({name}),IW({name})")
-
-    RESULTS.write("\n")
+    RESULTS.write(f"day,{datestring}demographic,S,E,I,R,IW\n")
 
     for i, pop in enumerate(trajectory):
         if pop.date:
@@ -50,14 +39,18 @@ def output_trajectory(network: _Union[Network, Networks],
         else:
             d = ""
 
-        RESULTS.write(f"{pop.day},{d}{pop.susceptibles},"
+        RESULTS.write(f"{pop.day},{d}overall,{pop.susceptibles},"
                       f"{pop.latent},{pop.total},"
-                      f"{pop.recovereds},{pop.n_inf_wards}")
+                      f"{pop.recovereds},{pop.n_inf_wards}\n")
 
         if isinstance(network, Networks):
-            for subpop in pop.subpops:
-                RESULTS.write(f",{subpop.susceptibles},"
-                              f"{subpop.latent},{subpop.total},"
-                              f"{subpop.recovereds},{subpop.n_inf_wards}")
+            for i, demographic in enumerate(network.demographics):
+                subpop = pop.subpops[i]
+                name = demographic.name
 
-        RESULTS.write("\n")
+                if name is None or len(name) == 0:
+                    name = str(i)
+
+                RESULTS.write(f"{subpop.day},{d}{name},{subpop.susceptibles},"
+                              f"{subpop.latent},{subpop.total},"
+                              f"{subpop.recovereds},{subpop.n_inf_wards}\n")
