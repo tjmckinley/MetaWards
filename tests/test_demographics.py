@@ -36,15 +36,15 @@ def test_demographics():
     assert d0[2] == blue
 
     assert red.name == "red"
-    assert red.work_ratio == 0.2
+    assert red.work_ratio == 0.0
     assert red.play_ratio == 0.1
 
     assert blue.name == "blue"
-    assert blue.work_ratio == 0.3
+    assert blue.work_ratio == 0.4
     assert blue.play_ratio == 0.1
 
     assert green.name == "green"
-    assert green.work_ratio == 0.5
+    assert green.work_ratio == 0.6
     assert green.play_ratio == 0.8
 
     d2 = Demographics()
