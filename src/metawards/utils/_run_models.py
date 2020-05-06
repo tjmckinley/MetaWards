@@ -243,8 +243,8 @@ def run_models(network: _Union[Network, Networks],
         # create all of the parameters and options to run
         arguments = []
 
-        max_nodes = network.nnodes + 1
-        max_links = max(network.nlinks, network.nplay) + 1
+        max_nodes = network.overall.nnodes + 1
+        max_links = max(network.overall.nlinks, network.overall.nplay) + 1
 
         try:
             demographics = network.demographics

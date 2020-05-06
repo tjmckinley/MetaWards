@@ -240,6 +240,7 @@ def run_model(network: _Union[Network, Networks],
                                    profiler=p)
 
     for func in funcs:
+        print(func)
         p = p.start(str(func))
         func(network=network, population=population,
              infections=infections, output_dir=output_dir,

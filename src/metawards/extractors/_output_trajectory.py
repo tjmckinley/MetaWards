@@ -20,7 +20,7 @@ def output_trajectory(network: _Union[Network, Networks],
     RESULTS = output_dir.open("trajectory.csv")
 
     print(f"\nWriting a summary of all results into the\n"
-          f"csv file {output_dir.get_filename('results.csv')}.\n"
+          f"csv file {output_dir.get_filename('trajectory.csv')}.\n"
           f"You can use this to quickly look at statistics across\n"
           f"all runs using e.g. R or pandas")
 
@@ -40,7 +40,7 @@ def output_trajectory(network: _Union[Network, Networks],
                 name = str(i)
 
             RESULTS.write(
-                f"S({name}),E({name}),I({name}),R({name}),IW({name})")
+                f",S({name}),E({name}),I({name}),R({name}),IW({name})")
 
     RESULTS.write("\n")
 
@@ -53,3 +53,11 @@ def output_trajectory(network: _Union[Network, Networks],
         RESULTS.write(f"{pop.day},{d}{pop.susceptibles},"
                       f"{pop.latent},{pop.total},"
                       f"{pop.recovereds},{pop.n_inf_wards}")
+
+        if isinstance(network, Networks):
+            for subpop in pop.subpops:
+                RESULTS.write(f",{subpop.susceptibles},"
+                              f"{subpop.latent},{subpop.total},"
+                              f"{subpop.recovereds},{subpop.n_inf_wards}")
+
+        RESULTS.write("\n")
