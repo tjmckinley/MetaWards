@@ -1,11 +1,16 @@
 
+from typing import Union as _Union
+
+from .._network import Network
+from .._networks import Networks
 from .._population import Populations
 from .._outputfiles import OutputFiles
 
 __all__ = ["output_trajectory"]
 
 
-def output_trajectory(output_dir: OutputFiles,
+def output_trajectory(network: _Union[Network, Networks],
+                      output_dir: OutputFiles,
                       trajectory: Populations,
                       **kwargs) -> None:
     """Call in the "finalise" stage to output the
@@ -26,7 +31,19 @@ def output_trajectory(output_dir: OutputFiles,
     else:
         datestring = ""
 
-    RESULTS.write(f"day,{datestring}S,E,I,R,IW,UV\n")
+    RESULTS.write(f"day,{datestring}S,E,I,R,IW")
+
+    if isinstance(network, Networks):
+        for i, demographic in enumerate(network.demographics):
+            name = demographic.name
+            if name is None or len(name) == 0:
+                name = str(i)
+
+            RESULTS.write(
+                f"S({name}),E({name}),I({name}),R({name}),IW({name})")
+
+    RESULTS.write("\n")
+
     for i, pop in enumerate(trajectory):
         if pop.date:
             d = pop.date.isoformat() + ","
@@ -35,5 +52,4 @@ def output_trajectory(output_dir: OutputFiles,
 
         RESULTS.write(f"{pop.day},{d}{pop.susceptibles},"
                       f"{pop.latent},{pop.total},"
-                      f"{pop.recovereds},{pop.n_inf_wards},"
-                      f"{pop.scale_uv}\n")
+                      f"{pop.recovereds},{pop.n_inf_wards}")
