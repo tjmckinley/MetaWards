@@ -49,6 +49,9 @@ clean:
 	$(RM) -r src/metawards/utils/*.c
 	$(RM) -r src/metawards/iterators/*.c
 	$(RM) -r src/metawards/extractors/*.c
+	$(RM) -r src/metawards/movers/*.c
+	$(RM) -r src/metawards/mixers/*.c
+
 
 uninstall:
 	pip uninstall metawards

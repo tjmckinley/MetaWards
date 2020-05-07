@@ -3,6 +3,9 @@
 [![Build status](https://github.com/metawards/MetaWards/workflows/Build/badge.svg)](https://github.com/metawards/MetaWards/actions?query=workflow%3ABuild)
 [![PyPI version](https://badge.fury.io/py/metawards.svg)](https://pypi.python.org/pypi/metawards)
 
+For the most accurate and up to date information please
+[visit the project website](https://metawards.org).
+
 This is a Python port of the [MetaWards](https://github.com/ldanon/MetaWards)
 package originally written by Leon Danon. The port is kept in sync with
 the original C code, with checks in place to ensure that the two codes
@@ -79,10 +82,18 @@ To do that, type;
 git clone https://github.com/metawards/MetaWards
 cd MetaWards
 pip install -r requirements-dev.txt
+CYTHONIZE=1 python setup.py build
 CYTHONIZE=1 python setup.py install
 ```
 
-(assuming that `python` is version 3.7)
+Alternatively, you can also use the makefile, e.g.
+
+```
+make
+make install
+```
+
+(assuming that `python` is version 3.7 or above)
 
 You can run tests using pytest, e.g.
 
@@ -93,8 +104,7 @@ METAWARDSDATA="/path/to/MetaWardsData" pytest tests
 You can generate the docs using
 
 ```
-cd docs
-make
+make docs
 ```
 
 ## Running
@@ -133,12 +143,3 @@ for single-node jobs, and [mpi4py](https://mpi4py.readthedocs.io/en/stable/)
 or [scoop](http://scoop.readthedocs.io) for multi-node cluster jobs.
 
 [Full instructions for running on a cluster are here](https://metawards.org/cluster_usage.html)
-
-### Next stages...
-
-The next stages of the program includes finishing up the custom extractor
-code, improving some of the analysis, providing more integrators,
-optimising the random number generator and finishing up the tutorial.
-
-In addition, we plan to integrate the software into the Bayesian / MCMC
-package [PyMC3](https://docs.pymc.io).

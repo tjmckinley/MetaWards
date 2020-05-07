@@ -78,6 +78,21 @@ Create a file called ``shield.py`` and add the following;
 
         return [merge_using_matrix]
 
+Here we have created a new mixer called ``mix_shield``. This function
+has two purposes:
+
+1. It sets :data:`~metawards.Demographics.interaction_matrix` equal to
+   the desired interaction matrix in the :class:`~metawards.Demographics`
+   object in the network (which is of type :class:`~metawards.Networks`.
+   The matrix is as described above, and represents shielding of
+   the "red" demographic by the "blue" demographic.
+
+2. It returns the :meth:`~metawards.mixers.merge_using_matrix` merge
+   function as the function to use to merge the FOIs between multiple
+   demographics together. :meth:`~metawards.mixers.merge_using_matrix`
+   reads the interaction matrix from
+   ``network.demographics.interaction_matrix``, meaning that the
+   value set in step 1 will be used for the merge.
 
 You set the mixer to use using the `--mixer` flag, e.g. run ``metawards``
 using;
@@ -114,9 +129,121 @@ needed to protect the "red" demographic. To do this, update your
 
 .. code-block:: python
 
+    from metawards.mixers import merge_using_matrix
 
+    def mix_shield(network, **kwargs):
+        params = network.params
+
+        red_red = params.user_params["red_red"]
+        red_blue = params.user_params["red_blue"]
+        blue_red = params.user_params["blue_red"]
+        blue_blue = params.user_params["blue_blue"]
+
+        matrix = [ [red_red , red_blue ],
+                   [blue_red, blue_blue] ]
+
+        network.demographics.interaction_matrix = matrix
+
+        return [merge_using_matrix]
+
+Here we have adapted our ``mix_shield`` function to get the values for
+the interaction matrix from adjustable user parameters that have been
+set using :doc:`same mechanism as before <../part03/05_scanning>`.
+In this case we have called the parameters ``red_red``, for the impact
+of "red" on "red", ``red_blue`` for the impact of "blue" or "red" etc.
+
+We then need to create an input file to set the initial values of these
+parameters. Create such a file called "shield.inp" and copy in;
+
+::
+
+    .red_red   = 0.2
+    .red_blue  = 0.1
+    .blue_red  = 0.8
+    .blue_blue = 1.0
+
+Finally, we would like to scan through the different value of
+``red_red`` and ``red_blue`` to see how much the "red" demographic
+needs to be shielded. Create a scan file called ``scan.dat`` and copy in;
+
+::
+
+  .red_red  .red_blue
+     0.2       0.1
+     0.2       0.2
+     0.2       0.3
+     0.2       0.4
+     0.2       0.5
+
+     0.3       0.1
+     0.3       0.2
+     0.3       0.3
+     0.3       0.4
+     0.3       0.5
+
+     0.4       0.1
+     0.4       0.2
+     0.4       0.3
+     0.4       0.4
+     0.4       0.5
+
+     0.5       0.1
+     0.5       0.2
+     0.5       0.3
+     0.5       0.4
+     0.5       0.5
+
+This scans ``red_red`` between 0.2 and 0.5 while scanning ``red_blue``
+from 0.1 to 0.5
+
+You can run these jobs using this command;
 
 .. code-block:: bash
 
    metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondonBlue.dat --mixer shield --user-variables shield.inp -i scan.dat
+
+or, alternatively if you have a cluster you could use a job script such
+as this to run multiple repeats (always a good idea for a stochastic
+simulation).
+
+.. code-block:: bash
+
+    #!/bin/bash
+    #PBS -l walltime=12:00:00
+    #PBS -l select=4:ncpus=64:mem=64GB
+    # The above sets 4 nodes with 64 cores each
+
+    # Assume you have metawards in $HOME/envs/metawards
+    source $HOME/metawards/bin/activate
+
+    # change into the directory from which this job was submitted
+    cd $PBS_O_WORKDIR
+
+    metawards -u shield.inp -i scan.dat -d lurgy2 \
+              -D demographics.json -a ExtraSeedsLondonBlue.dat \
+              --mixer shield \
+              --repeats 8 --nthreads 16 --force-overwrite-output
+
+if you are using PBS, or
+
+::
+
+    #!/bin/bash
+    #SBATCH --time=01:00:00
+    #SBATCH --ntasks=4
+    #SBATCH --cpus-per-task=64
+    # The above sets 4 nodes with 64 cores each
+
+    # Assume you have metawards in $HOME/envs/metawards
+    source $HOME/metawards/bin/activate
+
+    metawards -u shield.inp -i scan.dat -d lurgy2 \
+              -D demographics.json -a ExtraSeedsLondonBlue.dat \
+              --mixer shield \
+              --repeats 8 --nthreads 16 --force-overwrite-output
+
+This job may take a while (likely 1-2 minutes per *model run*, and then
+scaled by number of jobs divided by number of cores). In my case,
+this took about 16 minutes on 256 cores of
+`Catalyst <https://www.bristol.ac.uk/news/2018/april/supercomputer-collaboration.html>`__.
 
