@@ -351,9 +351,6 @@ def save_summary_plots(results: str, output_dir: str = None,
 
     filenames = []
 
-    if verbose:
-        print(f"Creating overview plot(s)...")
-
     # is this an output from multiple runs?
     try:
         df["fingerprint"]
@@ -362,16 +359,19 @@ def save_summary_plots(results: str, output_dir: str = None,
         has_fingerprint = False
         pass
 
-    figs = create_overview_plot(df, output_dir=output_dir,
-                                format=format, dpi=dpi,
-                                align_axes=align_axes)
-
-    if isinstance(figs, dict):
-        filenames += list(figs.values())
-    elif figs is not None:
-        filenames.append(figs)
-
     if has_fingerprint:
+        if verbose:
+            print(f"Creating overview plot(s)...")
+
+        figs = create_overview_plot(df, output_dir=output_dir,
+                                    format=format, dpi=dpi,
+                                    align_axes=align_axes)
+
+        if isinstance(figs, dict):
+            filenames += list(figs.values())
+        elif figs is not None:
+            filenames.append(figs)
+
         if verbose:
             print(f"Creating average plot(s)...")
 
