@@ -41,6 +41,7 @@ metawards.Network
       ~Network.links
       ~Network.max_links
       ~Network.max_nodes
+      ~Network.name
       ~Network.nlinks
       ~Network.nnodes
       ~Network.nodes

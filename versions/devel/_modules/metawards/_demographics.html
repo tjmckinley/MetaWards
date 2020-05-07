@@ -281,6 +281,10 @@
 
 <div class="viewcode-block" id="Demographics.add"><a class="viewcode-back" href="../../api/generated/metawards.Demographics.html#metawards.Demographics.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demographic</span><span class="p">:</span> <span class="n">Demographic</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a demographic to the set to be modelled&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">demographic</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;You can only add named demographics to the set.&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">demographic</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;There is already a demographic called &quot;</span>
@@ -476,7 +480,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 06, 2020.
+        Last updated on May 07, 2020.
       </span>
 
     </p>
