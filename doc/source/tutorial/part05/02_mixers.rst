@@ -48,4 +48,4 @@ using;
 
 You should now see that the outbreak spreads from the initial infection in
 the "red" demographic to the "blue workers", who then spread it around
-the country to both the "red" and "blue" groups. For example,
+the country to both the "red" and "blue" groups. You can plot

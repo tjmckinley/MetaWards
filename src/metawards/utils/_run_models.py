@@ -166,6 +166,9 @@ def run_models(network: _Union[Network, Networks],
         if extractor is None:
             from ..extractors._extract_default import extract_default
             extractor = extract_default
+        else:
+            from ..extractors._extract_custom import build_custom_extractor
+            extractor = build_custom_extractor(extractor)
 
         funcs = get_summary_functions(network=network, results=results,
                                       output_dir=output_dir,
@@ -345,9 +348,13 @@ def run_models(network: _Union[Network, Networks],
 
     # perform the final summary
     from ._get_functions import get_summary_functions
+
     if extractor is None:
         from ..extractors._extract_default import extract_default
         extractor = extract_default
+    else:
+        from ..extractors._extract_custom import build_custom_extractor
+        extractor = build_custom_extractor(extractor)
 
     funcs = get_summary_functions(network=network, results=outputs,
                                   output_dir=output_dir, extractor=extractor,

@@ -109,6 +109,10 @@ class Demographics:
 
     def add(self, demographic: Demographic):
         """Add a demographic to the set to be modelled"""
+        if demographic.name is None:
+            raise ValueError(
+                f"You can only add named demographics to the set.")
+
         if demographic.name in self._names:
             raise ValueError(
                 f"There is already a demographic called "
