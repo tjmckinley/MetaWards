@@ -302,6 +302,24 @@ def create_average_plot(df, output_dir: str = None, format: str = "jpg",
         return figs
 
 
+def get_color(name):
+    """Return a good color for the passed name"""
+    name = str(name).strip().lower()
+
+    if name == "overall":
+        return "black"
+
+    elif name in ["red", "blue", "green", "orange", "yellow", "black",
+                  "white", "gray", "pink"]:
+        return name
+
+    else:
+        # return a random colour
+        import random
+        rgb = (random.random(), random.random(), random.random())
+        return rgb
+
+
 def create_demographics_plot(df, output_dir: str = None,
                              format: str = "jpg", dpi: int = 150,
                              verbose: bool = True):
@@ -343,12 +361,22 @@ def create_demographics_plot(df, output_dir: str = None,
 
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
 
+    # see if any of these give colour names
+    colors = []
+
+    demographics = df.pivot(index="date", columns="demographic",
+                            values="day").columns
+
+    for demographic in demographics:
+        colors.append(get_color(demographic))
+
     i = 0
     j = 0
 
     for column in columns:
         ax = df.pivot(index="date", columns="demographic",
-                      values=column).plot.line(ax=axes[i][j])
+                      values=column).plot.line(ax=axes[i][j],
+                                               color=colors)
         ax.tick_params('x', labelrotation=90)
         ax.set_ylabel("Population")
         ax.set_title(column)

@@ -52,6 +52,11 @@ class Demographics:
     #: demographic being modelled
     demographics: _List[Demographic] = _field(default_factory=list)
 
+    #: The interaction matrix between demographics. This should
+    #: be a list of lists that shows how demographic 'i' affects
+    #: demographic 'j'
+    interaction_matrix: _List[_List[int]] = None
+
     #: Map from index to names of demographics - enables lookup by name
     _names: _Dict[str, int] = _field(default_factory=dict)
 

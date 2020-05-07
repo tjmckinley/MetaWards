@@ -107,6 +107,9 @@ def output_dispersal_serial(network: Network, population: Population,
 
         if var_x + var_y > 0:
             dispersal = sqrt(var_x + var_y)
+        elif var_x + var_y > -0.1:
+            # numeric rounding error
+            dispersal = 0.0
         else:
             print(f"Negative var? {var_x+var_y}, {var_x} {var_y}")
             dispersal = 0.0
