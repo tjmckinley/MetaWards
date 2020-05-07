@@ -18,6 +18,9 @@ class Network:
        nodes (representing wards), connected with links which represent
        work (predictable movements) and play (unpredictable movements)
     """
+    #: The name of the Network. This equals the name of the demographic
+    #: if this is a multi-demographic sub-network
+    name: str = None
 
     #: The list of nodes (wards) in the network
     nodes: Nodes = None

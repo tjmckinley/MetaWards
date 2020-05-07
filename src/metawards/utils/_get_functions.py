@@ -291,6 +291,7 @@ def call_function_on_network(network: _Union[Network, Networks],
                              parallel: MetaFunction = None,
                              nthreads: int = 1,
                              switch_to_parallel: int = 2,
+                             call_on_overall: bool = False,
                              **kwargs):
     """Call either 'func' or 'parallel' (depending on the
        number of threads, nthreads) on the passed Network,
@@ -325,6 +326,11 @@ def call_function_on_network(network: _Union[Network, Networks],
             func(network=subnet, infections=subinf,
                  population=subpop, workspace=subwork,
                  **kwargs)
+
+            if call_on_overall:
+                func(network=network.overall, infections=infections,
+                     population=population, workspace=workspace,
+                     **kwargs)
     else:
         func(network=network, infections=infections,
              population=population, workspace=workspace,

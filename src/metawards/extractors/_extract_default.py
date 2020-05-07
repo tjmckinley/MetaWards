@@ -32,6 +32,15 @@ def extract_default(stage: str, **kwargs) -> _List[MetaFunction]:
         from ._output_core import output_core
         return [output_core]
 
+    elif stage == "analyse":
+        from ._output_basic import output_basic
+        from ._output_dispersal import output_dispersal
+        from ._output_incidence import output_incidence
+        from ._output_prevalence import output_prevalence
+
+        return [output_basic, output_dispersal,
+                output_incidence, output_prevalence]
+
     elif stage == "finalise":
         from ._output_trajectory import output_trajectory
         return [output_trajectory]

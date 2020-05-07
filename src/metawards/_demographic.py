@@ -80,4 +80,6 @@ class Demographic:
         if self.adjustment is not None:
             subnet.params = network.params.set_variables(self.adjustment)
 
+        subnet.name = self.name
+
         return subnet
