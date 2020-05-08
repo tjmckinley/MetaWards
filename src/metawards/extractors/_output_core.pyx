@@ -468,13 +468,6 @@ def output_core_omp(network: Network, population: Population,
             f"{S} vs {susceptibles}, {E} vs {latent}, {I} vs {total}, "
             f"{R} vs {recovereds}")
 
-    print(f"S: {susceptibles}    ", end="")
-    print(f"E: {latent}    ", end="")
-    print(f"I: {total}    ", end="")
-    print(f"R: {recovereds}    ", end="")
-    print(f"IW: {n_inf_wards[0]}   ", end="")
-    print(f"TOTAL POPULATION {susceptibles+latent+total+recovereds}")
-
     if population is not None:
         population.susceptibles = susceptibles
         population.total = total
