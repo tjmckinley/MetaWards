@@ -230,7 +230,6 @@ cdef double redistribute(double target, double *values,
 
 def distribute_remainders(network: Network,
                           subnets: _List[Network],
-                          rngs,
                           nthreads: int = 1,
                           profiler: Profiler=None) -> None:
     """Distribute the remainder of the population in each ward and link from
@@ -245,8 +244,6 @@ def distribute_remainders(network: Network,
          The overall network
        subnets: List[Network]
          The demographic sub-networks
-       rngs
-         Thread-safe random number generators
     """
 
     from cython.parallel import parallel, prange
@@ -294,9 +291,6 @@ def distribute_remainders(network: Network,
     values = create_double_array(nsubnets)
     cdef double * values_array = get_double_array_ptr(values)
 
-    cdef uintptr_t [::1] rngs_view = rngs
-    cdef binomial_rng* rng = _get_binomial_ptr(rngs_view[0])
-
     # calculate the number of remainders in each ward and link
     p = profiler.start("initialise")
     with nogil, parallel(num_threads=num_threads):
@@ -323,7 +317,42 @@ def distribute_remainders(network: Network,
                                       sub_links_weight[i]
     p = p.stop()
 
-    # go through and take action on all of the differences
+    # go through and take action on all of the differences. These differences
+    # are rounding issues, e.g. dividing 5 people evenly between 2
+    # demographics is not possible - we will assign 2 people to each
+    # demographic, and would have 1 remainder. To solve this we could
+    # either
+
+    # 1. assign the person to the first demographic, or
+    # 2. assign the person to the largest demographic, or
+    # 3. assign the person to the smallest demographic, or
+    # 4. assign the person to a random demographic
+
+    # Solutions 1-3 have major issues that, because this happens for each
+    # of the 1 million+ wards, we get massive biases to the first, or
+    # largest, or smallest demographics (e.g. if this happens in all wards
+    # then the "chosen" demographic has >1m more members than would be
+    # expected). The solution appears to be that we assign randomly,
+    # as, on average, the additions will occur to demographics evenly,
+    # and so shouldn't affect their relative sizes.
+
+    # HOWEVER, when we run multiple runs, we need the initial assignment
+    # of population to demographics to be the same, otherwise this can
+    # be a major confounding factor. What we need is for every time
+    # MetaWards is run, that the same decision is taken about how to
+    # round, and thus the same distribution of population amongst
+    # demographics is each ward is made. The only way to achieve this
+    # is to use a semi-random algorithm, i.e. we use random number
+    # generator with a fixed random number seed to make the decisions.
+
+    # While I don't like this, in most production use there will be
+    # real data on the demographic splits, and so real, rather than
+    # rounded values will be used and this algorithm will not be needed.
+
+    from ._ran_binomial import seed_ran_binomial
+    bin_rng = seed_ran_binomial(47518284712)  # picked using random.randint
+    cdef binomial_rng* rng = _get_binomial_ptr(bin_rng)
+
     p = p.start("distribute_nodes")
     with nogil:
         for i in range(1, nnodes_plus_one):

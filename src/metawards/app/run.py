@@ -904,24 +904,7 @@ def cli():
         demographics = Demographics.load(args.demographics)
         print(demographics)
 
-        from metawards.utils import seed_ran_binomial, \
-            create_thread_generators
-
-        if seed == 0:
-            # this is a special mode that a developer can use to force
-            # all jobs to use the same random number seed (15324) that
-            # is used for comparing outputs. This should NEVER be used
-            # for production code
-            print("Using special debugging seed '15324'. The results of "
-                  "this calculation are not correct and are only used "
-                  "for debugging")
-            rng = seed_ran_binomial(seed=15324)
-            rngs = create_thread_generators(rng, nthreads)
-        else:
-            rng = seed_ran_binomial(seed=seed+7)
-            rngs = create_thread_generators(rng, nthreads)
-
-        network = network.specialise(demographics, rngs=rngs,
+        network = network.specialise(demographics,
                                      profiler=profiler,
                                      nthreads=nthreads)
 

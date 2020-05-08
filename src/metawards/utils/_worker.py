@@ -61,24 +61,6 @@ def prepare_worker(params: Parameters, demographics: Demographics,
         max_nodes = options["max_nodes"]
         max_links = options["max_links"]
         nthreads = options["nthreads"]
-        seed = options["seed"]
-
-        if demographics is not None:
-            from ._ran_binomial import seed_ran_binomial
-            from ._parallel import create_thread_generators
-
-            if seed == 0:
-                # this is a special mode that a developer can use to force
-                # all jobs to use the same random number seed (15324) that
-                # is used for comparing outputs. This should NEVER be used
-                # for production code
-                rng = seed_ran_binomial(seed=15324)
-            else:
-                rng = seed_ran_binomial(seed=seed+7)
-
-                rngs = create_thread_generators(rng, nthreads)
-        else:
-            rngs = None
 
         del options["max_nodes"]
         del options["max_links"]
@@ -93,7 +75,7 @@ def prepare_worker(params: Parameters, demographics: Demographics,
                                     max_links=max_links)
 
             if demographics is not None:
-                network = demographics.specialise(network, rngs=rngs,
+                network = demographics.specialise(network,
                                                   nthreads=nthreads,
                                                   profiler=profiler)
 
@@ -102,7 +84,7 @@ def prepare_worker(params: Parameters, demographics: Demographics,
         else:
             global_network.update(params=params,
                                   demographics=demographics,
-                                  rngs=rngs, nthreads=nthreads,
+                                  nthreads=nthreads,
                                   profiler=profiler)
 
         return global_network

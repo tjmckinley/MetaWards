@@ -69,7 +69,7 @@ class Networks:
         # WARDS
 
     @staticmethod
-    def build(network: Network, demographics: Demographics, rngs,
+    def build(network: Network, demographics: Demographics,
               profiler=None, nthreads: int = 1):
         """Build the set of networks that will model the passed
            demographics based on the overall population model
@@ -86,8 +86,6 @@ class Networks:
              Note that the sum of the "work" and "play" populations
              across all demographics must be 1.0 in all wards in
              the model
-           rngs
-             Thread-safe random number generators
            profiler: Profiler
              Optional profiler used to profile this build
            nthreads: int
@@ -125,7 +123,7 @@ class Networks:
 
         p = p.start("distribute_remainders")
         from .utils._scale_susceptibles import distribute_remainders
-        distribute_remainders(network=network, subnets=subnets, rngs=rngs,
+        distribute_remainders(network=network, subnets=subnets,
                               profiler=p, nthreads=nthreads)
         p = p.stop()
 
@@ -276,7 +274,7 @@ class Networks:
         for subnet in self.subnets:
             subnet.reset_everything(nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters, demographics=None, rngs=None,
+    def update(self, params: Parameters, demographics=None,
                nthreads: int = 1, profiler=None):
         """Update this network with a new set of parameters
            (and optionally demographics).
@@ -293,9 +291,6 @@ class Networks:
              The new demographics with which to update this Network.
              Note that this will return a Network object that contains
              the specilisation of this Network
-           rngs
-             Thread-safe random number generators - needed if you are
-             updating the demographics
            nthreads: int
              Number of threads over which to parallelise this update
            profiler: Profiler
@@ -320,7 +315,7 @@ class Networks:
             if demographics != self.demographics:
                 # we have a change in demographics, so need to re-specialise
                 networks = demographics.specialise(network=self.overall,
-                                                   rngs=rngs, profiler=p,
+                                                   profiler=p,
                                                    nthreads=nthreads)
                 p.stop()
                 return networks
