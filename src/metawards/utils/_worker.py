@@ -93,7 +93,6 @@ def prepare_worker(params: Parameters, demographics: Demographics,
                                     max_links=max_links)
 
             if demographics is not None:
-
                 network = demographics.specialise(network, rngs=rngs,
                                                   nthreads=nthreads,
                                                   profiler=profiler)
