@@ -97,7 +97,11 @@ recommend that developers install and use
 a linter such as `flake8 <https://flake8.pycqa.org/en/latest/>`__.
 
 For the Cython pyx code we also try to maintain a PEP8 style where possible,
-and require that non-python code is strictly C. While C++ is an excellent
+and recommend using a tool such as `autopep8 <https://pypi.org/project/autopep8/>`__
+to keep this style (it is used by the lead developers, so contributions
+will be formatted using it eventually ;-)).
+
+We require that non-python code is strictly C. While C++ is an excellent
 language, it is too bulky for use in MetaWards and makes it more
 challenging to create portable binary distributions.
 
@@ -105,6 +109,9 @@ For ease of installation and support, we also minimise or bundle
 external dependencies (e.g. we use a
 `bundled version <https://github.com/metawards/MetaWards/tree/devel/src/metawards/ran_binomial>`__
 of the binomial random number generator from `numpy <https://numpy.org>`__).
+This code has to run on a wide variety of architectures, operating
+systems and machines - some of which don't have any graphic libraries,
+so please be careful when adding a dependency.
 
 With this in mind, we use the following coding conventions:
 
@@ -166,6 +173,19 @@ itself.
 In addition, there is a ``metawards.app`` module which contains the
 code for the various command-line applications (e.g. the
 metawards executable).
+
+MetaWards uses a plugin-style interface for most new development.
+The plugins are for :doc:`iterators <api/index_MetaWards_iterators>`,
+:doc:`extractors <api/index_MetaWards_extractors>`,
+:doc:`mixers <api/index_MetaWards_mixers>` and
+:doc:`movers <api/index_MetaWards_movers>`. Ideally, most new code
+should be added as one of these plugins. If you can't fit your code
+into a plugin then please
+`raise an issue <https://github.com/metawards/MetaWards/issues>`__
+to discuss your idea with the core developers, so that a way
+forward can be found. We really appreciate your help, and want
+to make sure that your ideas can be included in the most compatible
+way in the code.
 
 To make MetaWards easy for new developers
 to understand, we have a set of rules that will ensure that only
@@ -446,6 +466,22 @@ to run or skip tests with a particular mark.
 
 The custom attribute can just be a label, as in this case, or could be your
 own function decorator.
+
+Continuous integration and delivery
+-----------------------------------
+
+We use GitHub Actions to run a full continuous integration (CI)
+on all pull requests to devel and
+master, and all pushes to devel and master. We will not merge a pull
+request until all tests pass. We only accept pull requests to devel.
+We only allow pull requests from devel to master. In addition to CI,
+we also perform a build of the website on pushes to devel and tags
+to master. The website is versioned, so that old the docs for old
+versions of the code are always available. Finally, we are setting up
+continuous delivery (CD) on tags to master, which will build the
+pypi source and binary wheels for Windows, Linux (manylinux2010)
+and OS X. These are manually uploaded to pypi, but we expect
+to automate this process soon.
 
 Documentation
 =============

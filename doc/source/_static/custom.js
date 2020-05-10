@@ -52,7 +52,7 @@ function fill_versions(){
         }
     };
 
-    xmlhttp.open("GET", "https://metawards.github.io/MetaWards/versions.json",
+    xmlhttp.open("GET", "https://metawards.org/versions.json",
                  true);
     xmlhttp.send();
 }

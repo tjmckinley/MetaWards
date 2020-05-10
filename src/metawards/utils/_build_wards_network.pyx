@@ -148,7 +148,7 @@ def build_wards_network(params: Parameters,
     network = Network(nnodes=nnodes, nlinks=nlinks)
 
     network.nodes = nodes
-    network.to_links = links
+    network.links = links
 
     print(f"Number of nodes equals {nnodes}")
     print(f"Number of links equals {nlinks}")
@@ -191,11 +191,11 @@ def build_wards_network(params: Parameters,
 
     print(f"Resize nodes to {network.nnodes + 1}")
     print(f"Resize links to {network.nlinks + 1}")
-    print(f"Resize play links to {network.plinks + 1}")
+    print(f"Resize play links to {network.nplay + 1}")
     p = p.start("resize_nodes_and_links")
     network.nodes.resize(network.nnodes + 1)     # remember 1-indexed
-    network.to_links.resize(network.nlinks + 1)  # remember 1-indexed
-    network.play.resize(network.plinks + 1)      # remember 1-indexed
+    network.links.resize(network.nlinks + 1)  # remember 1-indexed
+    network.play.resize(network.nplay + 1)      # remember 1-indexed
     p = p.stop()
 
     p.stop()
