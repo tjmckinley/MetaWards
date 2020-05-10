@@ -1,0 +1,32 @@
+metawards.Link
+==============
+
+.. currentmodule:: metawards
+
+.. autoclass:: Link
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Link.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Link.distance
+      ~Link.ifrom
+      ~Link.ito
+      ~Link.suscept
+      ~Link.weight
+   
+   
