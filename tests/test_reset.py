@@ -21,7 +21,8 @@ def can_run_multiprocessing():
         return False
 
     else:
-        return True
+        # if seems like nothing can run multiprocessing on github actions...
+        return False
 
 
 @pytest.mark.slow
@@ -76,6 +77,8 @@ def test_reset(prompt=None):
     network = Network.build(params=params, calculate_distances=True,
                             profiler=profiler)
 
+    outdir = os.path.join(script_dir, "test_integration_output")
+
     if can_run_multiprocessing():
         print("Running in parallel...")
         variable = variables[0]
@@ -85,8 +88,6 @@ def test_reset(prompt=None):
 
         params = params.set_variables(variables[0])
         network.update(params, profiler=profiler)
-
-        outdir = os.path.join(script_dir, "test_integration_output")
 
         with OutputFiles(outdir, force_empty=True,
                          prompt=prompt) as output_dir:

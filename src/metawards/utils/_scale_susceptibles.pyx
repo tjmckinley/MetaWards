@@ -350,7 +350,7 @@ def distribute_remainders(network: Network,
     # rounded values will be used and this algorithm will not be needed.
 
     from ._ran_binomial import seed_ran_binomial
-    bin_rng = seed_ran_binomial(47518284712)  # picked using random.randint
+    bin_rng = seed_ran_binomial(4751828)  # picked using random.randint
     cdef binomial_rng* rng = _get_binomial_ptr(bin_rng)
 
     p = p.start("distribute_nodes")
