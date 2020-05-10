@@ -60,7 +60,7 @@ jobs:
           METAWARDSDATA: ./MetaWardsData
       - name: Install packaging requirements
         run: pip install --upgrade setuptools wheel
-        if: matrix.python-version == 3.8 && matrix.config.os == 'ubuntu-latest' && contains(github.ref, 'refs/tags/') && github.event_name == 'push'
+        if: github.event_name == 'push'
       - name: Make bdist package
         run: |
           pip install --upgrade setuptools wheel
