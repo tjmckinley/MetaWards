@@ -54,9 +54,12 @@ def build_wheels():
         os.environ["PATH"] = f"{pybin}:{old_path}"
         sys.stdout.flush()
         os.chdir("/io/")
+        run_command("mv build build_tmp")
         run_command("make")
         run_command(
             f"{pybin}/python setup.py bdist_wheel --dist-dir /wheelhouse")
+        run_command("rm -rf build")
+        run_command("mv build_tmp build")
         os.chdir(old_cwd)
         os.environ["PATH"] = old_path
 
