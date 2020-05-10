@@ -21,7 +21,7 @@ def mix_shield(network, **kwargs):
     return [merge_using_matrix]
 
 
-def can_run_multiprocessing():
+def can_run_multiprocessing(force_multi=False):
     import sys
     if sys.platform == "win32":
         # Cannot use multiprocessing in tests on windows
@@ -33,11 +33,11 @@ def can_run_multiprocessing():
 
     else:
         # if seems like nothing can run multiprocessing on github actions...
-        return False
+        return force_multi
 
 
 @pytest.mark.slow
-def test_demographics_reset(prompt=None):
+def test_demographics_reset(prompt=None, nthreads=1, force_multi=False):
     """This test runs several runs one after another with the expectation
        that they should all give the same result. This tests that the
        network is being correctly reset after each run. This test
@@ -95,7 +95,7 @@ def test_demographics_reset(prompt=None):
 
     outdir = os.path.join(script_dir, "test_integration_output")
 
-    if can_run_multiprocessing():
+    if can_run_multiprocessing(force_multi):
         print("Running parallel...")
         variable = variables[0]
         variables = VariableSets()
@@ -110,7 +110,7 @@ def test_demographics_reset(prompt=None):
             results = run_models(network=network, mixer=mix_shield,
                                  output_dir=output_dir, variables=variables,
                                  population=population, nsteps=nsteps,
-                                 nthreads=2, nprocs=2, seed=seed,
+                                 nthreads=nthreads, nprocs=2, seed=seed,
                                  debug_seeds=True)
 
         OutputFiles.remove(outdir, prompt=None)
@@ -132,7 +132,7 @@ def test_demographics_reset(prompt=None):
                                   output_dir=output_dir,
                                   nsteps=nsteps, profiler=None,
                                   mixer=mix_shield,
-                                  nthreads=2)
+                                  nthreads=nthreads)
 
     OutputFiles.remove(outdir, prompt=None)
 
@@ -145,7 +145,7 @@ def test_demographics_reset(prompt=None):
                                   output_dir=output_dir,
                                   nsteps=nsteps, profiler=None,
                                   mixer=mix_shield,
-                                  nthreads=2)
+                                  nthreads=nthreads)
 
     OutputFiles.remove(outdir, prompt=None)
 
@@ -158,7 +158,7 @@ def test_demographics_reset(prompt=None):
                                   output_dir=output_dir,
                                   nsteps=nsteps, profiler=None,
                                   mixer=mix_shield,
-                                  nthreads=2)
+                                  nthreads=nthreads)
 
     OutputFiles.remove(outdir, prompt=None)
 
@@ -173,7 +173,7 @@ def test_demographics_reset(prompt=None):
     assert trajectory1 == trajectory2
     assert trajectory1 == trajectory3
 
-    if can_run_multiprocessing():
+    if can_run_multiprocessing(force_multi):
         # this should also be the same result as the multiprocessing run
         assert trajectory1 == results[0][1]
 
@@ -181,4 +181,4 @@ def test_demographics_reset(prompt=None):
 if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()  # needed to stop fork bombs
-    test_demographics_reset()
+    test_demographics_reset(nthreads=2, force_multi=True)
