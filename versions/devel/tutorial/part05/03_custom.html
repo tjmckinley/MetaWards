@@ -427,6 +427,35 @@ metawards -u shield.inp -i scan.dat -d lurgy2 \
 scaled by number of jobs divided by number of cores). In my case,
 this took about 16 minutes on 256 cores of
 <a class="reference external" href="https://www.bristol.ac.uk/news/2018/april/supercomputer-collaboration.html">Catalyst</a>.</p>
+<p>Once you have performed this calculation you can generate an animation
+of the overview graphs using;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot -i output/results.csv.bz2
+metawards-plot --animate output/overview*.jpg -o output/overview.gif
+</pre></div>
+</div>
+<p>(assuming all of your output is in the <code class="docutils literal notranslate"><span class="pre">output</span></code> directory)</p>
+<p>Your animation should look something like this;</p>
+<img alt="Overview image of shielding with custom parameters" src="../../_images/tutorial_5_3_2.gif" />
+<p>You can also generate the individual demographic trajectory overview plots
+and animate those using;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot -i output/*x001/trajectory.csv.bz2
+metawards-plot --animate output/*x001/demographics.jpg -o output/demographics.gif
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We’ve only generated and animated the first repeat here (directories
+are all named “SOMETHINGx001”). This makes processing quicker and the
+resulting animation smaller, as each repeat has almost the same plot.</p>
+</div>
+<p>Your animation should look something like this;</p>
+<img alt="Demographic trajectories when shielding with custom parameters" src="../../_images/tutorial_5_3_3.gif" />
+<p>From this scan it is clear that the <code class="docutils literal notranslate"><span class="pre">red-blue</span></code> scale has a much bigger
+impact on the success of shielding than <code class="docutils literal notranslate"><span class="pre">red-red</span></code>.
+This suggests, at least in this model,
+that it is more important for the <code class="docutils literal notranslate"><span class="pre">blue</span></code> demographic to take care when
+interacting with the <code class="docutils literal notranslate"><span class="pre">red</span></code> demographic than it is to control the level
+of lockdown of the <code class="docutils literal notranslate"><span class="pre">red</span></code> demographic.</p>
 </div>
 </div>
 

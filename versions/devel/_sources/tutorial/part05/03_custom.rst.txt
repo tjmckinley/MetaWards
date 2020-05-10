@@ -247,3 +247,42 @@ scaled by number of jobs divided by number of cores). In my case,
 this took about 16 minutes on 256 cores of
 `Catalyst <https://www.bristol.ac.uk/news/2018/april/supercomputer-collaboration.html>`__.
 
+Once you have performed this calculation you can generate an animation
+of the overview graphs using;
+
+.. code-block:: bash
+
+   metawards-plot -i output/results.csv.bz2
+   metawards-plot --animate output/overview*.jpg -o output/overview.gif
+
+(assuming all of your output is in the ``output`` directory)
+
+Your animation should look something like this;
+
+.. image:: ../../images/tutorial_5_3_2.gif
+   :alt: Overview image of shielding with custom parameters
+
+You can also generate the individual demographic trajectory overview plots
+and animate those using;
+
+.. code-block:: bash
+
+   metawards-plot -i output/*x001/trajectory.csv.bz2
+   metawards-plot --animate output/*x001/demographics.jpg -o output/demographics.gif
+
+.. note::
+   We've only generated and animated the first repeat here (directories
+   are all named "SOMETHINGx001"). This makes processing quicker and the
+   resulting animation smaller, as each repeat has almost the same plot.
+
+Your animation should look something like this;
+
+.. image:: ../../images/tutorial_5_3_3.gif
+   :alt: Demographic trajectories when shielding with custom parameters
+
+From this scan it is clear that the ``red-blue`` scale has a much bigger
+impact on the success of shielding than ``red-red``.
+This suggests, at least in this model,
+that it is more important for the ``blue`` demographic to take care when
+interacting with the ``red`` demographic than it is to control the level
+of lockdown of the ``red`` demographic.

@@ -745,6 +745,48 @@
 
         <span class="k">return</span> <span class="n">v</span></div>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_extract_values</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">fingerprint</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span>
+
+        <span class="c1"># has this fingerprint been added onto the end of a filename</span>
+        <span class="c1"># using a hyphen or underscore? If so, then remove this</span>
+        <span class="k">if</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">fingerprint</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="c1"># does this have a repeat index - if so, this is the last</span>
+        <span class="c1"># value at the end after the &#39;x&#39;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">repeat_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">fingerprint</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">repeat_index</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># now get the values</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">fingerprint</span> <span class="o">!=</span> <span class="s2">&quot;REPEAT&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">part</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">part</span> <span class="o">==</span> <span class="s2">&quot;F&quot;</span><span class="p">:</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)))</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="c1"># this is not part of the fingerprint</span>
+                    <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">repeat_index</span><span class="p">)</span>
+
 <div class="viewcode-block" id="VariableSet.extract_values"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.extract_values">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">extract_values</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the original values from the passed fingerprint</span>
@@ -766,52 +808,55 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
+        <span class="n">path</span> <span class="o">=</span> <span class="n">fingerprint</span>
+
         <span class="c1"># if this is a filename then extract only the fingerprint</span>
         <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">suffixes</span><span class="p">:</span>
             <span class="n">fingerprint</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-        <span class="n">fingerprint</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span>
+        <span class="n">values</span><span class="p">,</span> <span class="n">repeat_idx</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="o">.</span><span class="n">_extract_values</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span>
 
-        <span class="c1"># does this have a repeat index - if so, this is the last</span>
-        <span class="c1"># value at the end after the &#39;x&#39;</span>
-        <span class="n">parts</span> <span class="o">=</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">repeat_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">repeat_idx</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">repeat_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">fingerprint</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="kn">import</span> <span class="nn">os</span>
+
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">VariableSet</span><span class="o">.</span><span class="n">extract_values</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">repeat_index</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># now get the values</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">fingerprint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)))</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="c1"># this is not part of the fingerprint</span>
-                <span class="k">pass</span>
-
-        <span class="k">return</span> <span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">repeat_index</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">repeat_idx</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VariableSet.create_fingerprint"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.create_fingerprint">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_fingerprint</span><span class="p">(</span><span class="n">vals</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                            <span class="n">include_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the fingerprint for the passed values&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
-                <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="s2">&quot;REPEAT&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">val</span><span class="p">:</span>
+                        <span class="n">v</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">v</span> <span class="o">=</span> <span class="s2">&quot;F&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-            <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+                        <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                        <span class="n">v</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">.0&quot;</span>
 
-            <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">f</span> <span class="o">+=</span> <span class="s2">&quot;v&quot;</span> <span class="o">+</span> <span class="n">v</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">f</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">f</span> <span class="o">+=</span> <span class="s2">&quot;v&quot;</span> <span class="o">+</span> <span class="n">v</span>
 
         <span class="k">if</span> <span class="n">include_index</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">x</span><span class="si">%03d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
@@ -835,15 +880,9 @@
 <span class="sd">           fingerprint: str</span>
 <span class="sd">             The fingerprint for this VariableSet</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">include_index</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s2">&quot;NO_CHANGE_</span><span class="si">%03d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idx</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s2">&quot;NO_CHANGE&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">VariableSet</span><span class="o">.</span><span class="n">create_fingerprint</span><span class="p">(</span><span class="n">vals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">,</span>
-                                                  <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_idx</span><span class="p">,</span>
-                                                  <span class="n">include_index</span><span class="o">=</span><span class="n">include_index</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">VariableSet</span><span class="o">.</span><span class="n">create_fingerprint</span><span class="p">(</span><span class="n">vals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">,</span>
+                                              <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_idx</span><span class="p">,</span>
+                                              <span class="n">include_index</span><span class="o">=</span><span class="n">include_index</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VariableSet.read"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.read">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
