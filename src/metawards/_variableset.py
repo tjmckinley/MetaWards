@@ -592,6 +592,16 @@ class VariableSet:
 
         fingerprint = str(fingerprint)
 
+        # has this fingerprint been added onto the end of a filename
+        # using a hyphen or underscore? If so, then remove this
+        if fingerprint.find("-") != -1:
+            fingerprint = fingerprint.split("-")[-1]
+
+        if fingerprint.find("_") != -1:
+            fingerprint = fingerprint.split("_")[-1]
+
+        fingerprint.strip()
+
         # does this have a repeat index - if so, this is the last
         # value at the end after the 'x'
         parts = fingerprint.split("x")
@@ -605,12 +615,18 @@ class VariableSet:
         # now get the values
         values = []
 
-        for part in fingerprint.split("v"):
-            try:
-                values.append(float(part.replace("_", ".")))
-            except Exception:
-                # this is not part of the fingerprint
-                pass
+        if fingerprint != "REPEAT":
+            for part in fingerprint.split("v"):
+                try:
+                    if part == "T":
+                        values.append(True)
+                    elif part == "F":
+                        values.append(False)
+                    else:
+                        values.append(float(part.replace("i", ".")))
+                except Exception:
+                    # this is not part of the fingerprint
+                    pass
 
         return (values, repeat_index)
 
@@ -619,18 +635,29 @@ class VariableSet:
                            include_index: bool = False):
         """Create the fingerprint for the passed values"""
         f = None
-        for val in vals:
-            v = float(val)
 
-            if v.is_integer():
-                v = int(val)
+        if vals is None or len(vals) == 0:
+            f = "REPEAT"
+        else:
+            for val in vals:
+                if isinstance(val, bool):
+                    if val:
+                        v = "T"
+                    else:
+                        v = "F"
+                else:
+                    v = float(val)
 
-            v = str(v).replace(".", "_")
+                    if v.is_integer():
+                        v = int(val)
+                        v = f"{v}.0"
 
-            if f is None:
-                f = v
-            else:
-                f += "v" + v
+                    v = str(v).replace(".", "i")
+
+                if f is None:
+                    f = v
+                else:
+                    f += "v" + v
 
         if include_index:
             return "%sx%03d" % (f, index)
@@ -654,15 +681,9 @@ class VariableSet:
            fingerprint: str
              The fingerprint for this VariableSet
         """
-        if self._vals is None or len(self._vals) == 0:
-            if include_index:
-                return "NO_CHANGE_%03d" % self._idx
-            else:
-                return "NO_CHANGE"
-        else:
-            return VariableSet.create_fingerprint(vals=self._vals,
-                                                  index=self._idx,
-                                                  include_index=include_index)
+        return VariableSet.create_fingerprint(vals=self._vals,
+                                              index=self._idx,
+                                              include_index=include_index)
 
     @staticmethod
     def read(filename: str):

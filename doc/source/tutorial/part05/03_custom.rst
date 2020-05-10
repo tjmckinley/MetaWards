@@ -244,6 +244,6 @@ if you are using PBS, or
 
 This job may take a while (likely 1-2 minutes per *model run*, and then
 scaled by number of jobs divided by number of cores). In my case,
-this took about 16 minutes on 256 cores of
+this took about 17 minutes on 256 cores of
 `Catalyst <https://www.bristol.ac.uk/news/2018/april/supercomputer-collaboration.html>`__.
 

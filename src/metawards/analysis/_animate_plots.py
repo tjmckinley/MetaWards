@@ -26,7 +26,7 @@ def import_animate_modules():
 def animate_plots(plots: _List[str], output: str,
                   delay: int = 500,
                   ordering: str = "fingerprint",
-                  verbose = False):
+                  verbose=False):
     """Animate the plots contained in the filenames 'plots', writing
        the output to 'output'. Creates an animated gif of the plots
        and writes them to the file 'output'
@@ -56,6 +56,7 @@ def animate_plots(plots: _List[str], output: str,
             print("Arranging into fingerprint order...")
 
         fingerprints = {}
+        filenames = []
 
         for plot in plots:
             try:
@@ -64,6 +65,12 @@ def animate_plots(plots: _List[str], output: str,
                 raise ValueError(
                     f"Could not extract a fingerprint from '{plot}'. "
                     f"Error was {e.__class__} {e}")
+
+            if len(values) == 0:
+                # no fingerprint - write these first in filename order
+                filenames.append(plot)
+
+            print(values, repeat_idx)
 
             if repeat_idx:
                 values.append(repeat_idx)
@@ -80,6 +87,10 @@ def animate_plots(plots: _List[str], output: str,
         plots = []
         for key in keys:
             plots.append(fingerprints[key])
+
+        filenames.sort()
+
+        plots = plots + filenames
 
     elif ordering == "filename":
         if verbose:

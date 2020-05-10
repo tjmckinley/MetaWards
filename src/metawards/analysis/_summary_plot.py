@@ -149,7 +149,9 @@ def create_overview_plot(df, output_dir: str = None,
                 ax.set_ylim(min_y[column], 1.1*max_y[column])
 
             if len(fingerprints) > 1:
-                ax.set_title(f"{fingerprint} : {column}")
+                from metawards import VariableSet
+                fvals, _rpt = VariableSet.extract_values(fingerprint)
+                ax.set_title(f"{fvals} : {column}")
             else:
                 ax.set_title(column)
 
