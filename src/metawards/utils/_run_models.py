@@ -92,7 +92,8 @@ def run_models(network: _Union[Network, Networks],
                mixer: MetaFunction = None,
                mover: MetaFunction = None,
                profiler: Profiler = None,
-               parallel_scheme: str = "multiprocessing") \
+               parallel_scheme: str = "multiprocessing",
+               debug_seeds=False) \
         -> _List[_Tuple[VariableSet, Population]]:
     """Run all of the models on the passed Network that are described
        by the passed VariableSets
@@ -134,6 +135,10 @@ def run_models(network: _Union[Network, Networks],
        parallel_scheme: str
          Which parallel scheme (multiprocessing, mpi4py or scoop) to use
          to run multiple model runs in parallel
+       debug_seeds: bool (False)
+         Set this parameter to force all runs to use the same seed
+         (seed) - this is used for debugging and should never be set
+         in production runs
 
        Returns
        -------
@@ -196,6 +201,14 @@ def run_models(network: _Union[Network, Networks],
         for i in range(0, len(variables)):
             seeds.append(15324)
 
+    elif debug_seeds:
+        print("** WARNING: Using special model to make all jobs use the")
+        print(f"** WARNING: Same random number seed {seed}.")
+        print(f"** WARNING: DO NOT USE IN PRODUCTION!")
+
+        for i in range(0, len(variables)):
+            seeds.append(seed)
+
     else:
         from ._ran_binomial import seed_ran_binomial, ran_int
         rng = seed_ran_binomial(seed)
@@ -220,6 +233,8 @@ def run_models(network: _Union[Network, Networks],
     if nprocs == 1:
         # no need to use a pool, as we will repeat this calculation
         # several times
+        save_network = network.copy()
+
         for i, variable in enumerate(variables):
             seed = seeds[i]
             outdir = outdirs[i]
@@ -256,6 +271,11 @@ def run_models(network: _Union[Network, Networks],
                 print(variable)
                 print(output[-1])
             # end of OutputDirs context manager
+
+            if i != len(variables) - 1:
+                # still another run to perform, restore the network
+                # to the original state
+                network = save_network.copy()
         # end of loop over variable sets
     else:
         from ._worker import run_worker

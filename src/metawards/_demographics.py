@@ -52,6 +52,11 @@ class Demographics:
     #: demographic being modelled
     demographics: _List[Demographic] = _field(default_factory=list)
 
+    #: The interaction matrix between demographics. This should
+    #: be a list of lists that shows how demographic 'i' affects
+    #: demographic 'j'
+    interaction_matrix: _List[_List[int]] = None
+
     #: Map from index to names of demographics - enables lookup by name
     _names: _Dict[str, int] = _field(default_factory=dict)
 
@@ -106,6 +111,19 @@ class Demographics:
         else:
             # Lookup by index
             return self.demographics[item]
+
+    def copy(self):
+        """Return a copy of this demographics object that should
+           allow a safe reset between runs. This deepcopies things
+           that may change, while shallow copying things that won't
+        """
+        from copy import copy, deepcopy
+        demographics = copy(self)
+
+        demographics.interaction_matrix = deepcopy(self.interaction_matrix)
+        demographics.demographics = copy(self.demographics)
+
+        return demographics
 
     def add(self, demographic: Demographic):
         """Add a demographic to the set to be modelled"""
@@ -264,7 +282,7 @@ class Demographics:
 
         return demos
 
-    def specialise(self, network: Network, rngs, profiler=None,
+    def specialise(self, network: Network, profiler=None,
                    nthreads: int = 1):
         """Build the set of networks that will model this set
            of demographics applied to the passed Network.
@@ -275,8 +293,6 @@ class Demographics:
              The overall population model - this contains the base
              parameters, wards, work and play links that define
              the model outbreak
-           rngs
-             Thread-safe random number generators
            profiler: Profiler
              Profiler used to profile the specialisation
            nthreads: int
@@ -293,5 +309,4 @@ class Demographics:
         else:
             from ._networks import Networks
             return Networks.build(network=network, demographics=self,
-                                  rngs=rngs,
                                   profiler=profiler, nthreads=nthreads)

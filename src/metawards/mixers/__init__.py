@@ -17,6 +17,7 @@ Functions
 """
 
 from ._merge_evenly import *
+from ._merge_using_matrix import *
 
 from ._mix_custom import *
 from ._mix_default import *

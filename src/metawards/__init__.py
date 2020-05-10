@@ -38,6 +38,31 @@ Functions
 
 """
 
+from . import analysis
+from . import app
+from . import movers
+from . import mixers
+from . import extractors
+from . import iterators
+from . import utils
+from ._version import get_versions
+from ._links import *
+from ._nodes import *
+from ._wardinfo import *
+from ._workspace import *
+from ._infections import *
+from ._variableset import *
+from ._outputfiles import *
+from ._networks import *
+from ._network import *
+from ._population import *
+from ._link import *
+from ._node import *
+from ._inputfiles import *
+from ._disease import *
+from ._demographics import *
+from ._demographic import *
+from ._parameters import *
 import sys as _sys
 
 if _sys.version_info < (3, 7):
@@ -48,29 +73,11 @@ if _sys.version_info < (3, 7):
 
 __all__ = ["get_version_string"]
 
-from ._parameters import *
-from ._demographic import *
-from ._demographics import *
-from ._disease import *
-from ._inputfiles import *
-from ._node import *
-from ._link import *
-from ._population import *
-from ._network import *
-from ._networks import *
-from ._outputfiles import *
-from ._variableset import *
-from ._infections import *
-from ._workspace import *
-from ._wardinfo import *
 
 # import the pyx cython-compiled modules
-from ._nodes import *
-from ._links import *
 
 __manual_version__ = "0.9.0"
 
-from ._version import get_versions
 _v = get_versions()
 __version__ = _v['version']
 
@@ -82,12 +89,6 @@ __repository__ = _v['repository']
 __revisionid__ = _v['full-revisionid']
 del _v
 del get_versions
-
-from . import utils
-from . import iterators
-from . import extractors
-from . import app
-from . import analysis
 
 
 def get_version_string():

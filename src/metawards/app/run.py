@@ -904,20 +904,7 @@ def cli():
         demographics = Demographics.load(args.demographics)
         print(demographics)
 
-        from metawards.utils import seed_ran_binomial, \
-            create_thread_generators
-
-        if seed == 0:
-            # this is a special mode that a developer can use to force
-            # all jobs to use the same random number seed (15324) that
-            # is used for comparing outputs. This should NEVER be used
-            # for production code
-            rng = seed_ran_binomial(seed=15324)
-        else:
-            rng = seed_ran_binomial(seed=seed+7)
-            rngs = create_thread_generators(rng, nthreads)
-
-        network = network.specialise(demographics, rngs=rngs,
+        network = network.specialise(demographics,
                                      profiler=profiler,
                                      nthreads=nthreads)
 
@@ -990,8 +977,3 @@ if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()  # needed to stop fork bombs
     cli()
-
-else:
-    # this is one of the worker processes - make sure that they
-    # have imported metawards
-    from metawards.utils import run_worker

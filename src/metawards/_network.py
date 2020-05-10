@@ -163,6 +163,22 @@ class Network:
 
         return network
 
+    def copy(self):
+        """Return a copy of this Network. Use this to hold a copy of
+           the network that you can use to reset between runs
+        """
+        from copy import copy, deepcopy
+        network = copy(self)
+
+        network.nodes = self.nodes.copy()
+        network.links = self.links.copy()
+        network.play = self.play.copy()
+
+        network.to_seed = deepcopy(self.to_seed)
+        network.params = deepcopy(self.params)
+
+        return network
+
     def assert_sane(self, profiler: None):
         """Assert that this network is sane. This checks that the network
            is laid out correctly in memory and that it doesn't have
@@ -232,7 +248,7 @@ class Network:
         from .utils import reset_everything
         reset_everything(network=self, nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters, demographics=None, rngs=None,
+    def update(self, params: Parameters, demographics=None,
                nthreads: int = 1, profiler=None):
         """Update this network with a new set of parameters
            (and optionally demographics).
@@ -249,9 +265,6 @@ class Network:
              The new demographics with which to update this Network.
              Note that this will return a Network object that contains
              the specilisation of this Network
-           rngs
-             Thread-safe random number generators - needed if you are
-             updating the demographics
            nthreads: int
              Number of threads over which to parallelise this update
            profiler: Profiler
@@ -277,7 +290,7 @@ class Network:
         p = p.stop()
 
         if demographics:
-            network = demographics.specialise(network=self, rngs=rngs,
+            network = demographics.specialise(network=self,
                                               profiler=profiler,
                                               nthreads=nthreads)
 
@@ -326,7 +339,7 @@ class Network:
         else:
             return range(1, self.nlinks + 1)
 
-    def specialise(self, demographic, rngs=None, profiler=None,
+    def specialise(self, demographic, profiler=None,
                    nthreads: int = 1):
         """Return a copy of this network that has been specialised
            for the passed demographic. The returned network will
@@ -338,23 +351,15 @@ class Network:
            ----------
            demographic: Demographic
              The demographic with which to specialise
-           rngs
-             Thread-safe random number generators
 
            Returns
            -------
            network: Network
              The specialised network
         """
-        from ._demographics import Demographics
-        if isinstance(demographic, Demographics):
-            return demographic.specialise(network=self, rngs=rngs,
-                                          profiler=profiler,
-                                          nthreads=nthreads)
-        else:
-            return demographic.specialise(network=self,
-                                          profiler=profiler,
-                                          nthreads=nthreads)
+        return demographic.specialise(network=self,
+                                      profiler=profiler,
+                                      nthreads=nthreads)
 
     def scale_susceptibles(self, ratio: any = None,
                            work_ratio: any = None, play_ratio: any = None):

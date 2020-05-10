@@ -187,7 +187,7 @@ def run_model(network: _Union[Network, Networks],
                  profiler=p2)
             p2 = p2.stop()
 
-        print(f"\n {population.day} {infecteds}")
+        print(f"\n {population.day} {infecteds}\n")
 
         if population.population != start_population:
             # something went wrong as the population should be conserved

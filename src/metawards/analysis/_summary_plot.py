@@ -2,7 +2,8 @@
 __all__ = ["import_graphics_modules",
            "save_summary_plots",
            "create_overview_plot",
-           "create_average_plot"]
+           "create_average_plot",
+           "create_demographics_plot"]
 
 
 def import_graphics_modules(verbose=False):
@@ -301,6 +302,107 @@ def create_average_plot(df, output_dir: str = None, format: str = "jpg",
         return figs
 
 
+def get_color(name):
+    """Return a good color for the passed name"""
+    name = str(name).strip().lower()
+
+    if name == "overall":
+        return "black"
+
+    elif name in ["red", "blue", "green", "orange", "yellow", "black",
+                  "white", "gray", "pink"]:
+        return name
+
+    else:
+        # return a random colour
+        import random
+        rgb = (random.random(), random.random(), random.random())
+        return rgb
+
+
+def create_demographics_plot(df, output_dir: str = None,
+                             format: str = "jpg", dpi: int = 150,
+                             verbose: bool = True):
+    """Create a demographics plot of the trajectory.csv data held in the
+       passed pandas dataframe. This returns the figure for you
+       to save if desired (or just call ``plt.show()`` to show
+       it in Jupyter)
+
+       Parameters
+       ----------
+       df : Pandas Dataframe
+         The pandas dataframe containing the data from trajectory.csv.bz2
+       output_dir: str
+         The name of the directory in which to draw the graphs. If this
+         is set then the graphs are written to files as they are generated
+         and the filenames of the figures are returned. This is necessary
+         when the number of graphs to draw is high and you don't want
+         to waste too much memory
+       format: str
+         Format to save the figures in if output_dir is supplied
+       dpi: int
+         dpi (dots per inch) resolution to save the figures with if
+         a bitmap format is used and output_dir is supplied
+       align_axes: bool
+         If true (default) then this will ensure that all of the plots
+         for different fingerprints are put on the same axis scale
+       verbose: bool
+         Whether or not to print progress to the screen
+
+       Returns
+       -------
+       fig
+         The matplotlib figure containing the demographics plot, or
+         the filename if output_dir was supplied
+    """
+    _, plt = import_graphics_modules()
+
+    columns = ["E", "I", "IW", "R"]
+
+    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10, 10))
+
+    # see if any of these give colour names
+    colors = []
+
+    demographics = df.pivot(index="date", columns="demographic",
+                            values="day").columns
+
+    for demographic in demographics:
+        colors.append(get_color(demographic))
+
+    i = 0
+    j = 0
+
+    for column in columns:
+        ax = df.pivot(index="date", columns="demographic",
+                      values=column).plot.line(ax=axes[i][j],
+                                               color=colors)
+        ax.tick_params('x', labelrotation=90)
+        ax.set_ylabel("Population")
+        ax.set_title(column)
+
+        j += 1
+        if j == 2:
+            j = 0
+            i += 1
+
+    fig.tight_layout(pad=1)
+
+    if output_dir:
+        import os
+
+        filename = os.path.join(output_dir, f"demographics.{format}")
+
+        if verbose:
+            print(f"Saving figure {filename}")
+
+        fig.savefig(filename, dpi=dpi)
+        plt.close()
+        fig = filename
+
+    return fig
+
+
 def save_summary_plots(results: str, output_dir: str = None,
                        format: str = "jpg", dpi: int = 150,
                        align_axes: bool = True,
@@ -351,9 +453,6 @@ def save_summary_plots(results: str, output_dir: str = None,
 
     filenames = []
 
-    if verbose:
-        print(f"Creating overview plot(s)...")
-
     # is this an output from multiple runs?
     try:
         df["fingerprint"]
@@ -362,16 +461,26 @@ def save_summary_plots(results: str, output_dir: str = None,
         has_fingerprint = False
         pass
 
-    figs = create_overview_plot(df, output_dir=output_dir,
-                                format=format, dpi=dpi,
-                                align_axes=align_axes)
-
-    if isinstance(figs, dict):
-        filenames += list(figs.values())
-    elif figs is not None:
-        filenames.append(figs)
+    # does this have demographic data?
+    try:
+        df["demographic"]
+        has_demographics = True
+    except Exception:
+        has_demographics = False
 
     if has_fingerprint:
+        if verbose:
+            print(f"Creating overview plot(s)...")
+
+        figs = create_overview_plot(df, output_dir=output_dir,
+                                    format=format, dpi=dpi,
+                                    align_axes=align_axes)
+
+        if isinstance(figs, dict):
+            filenames += list(figs.values())
+        elif figs is not None:
+            filenames.append(figs)
+
         if verbose:
             print(f"Creating average plot(s)...")
 
@@ -383,5 +492,12 @@ def save_summary_plots(results: str, output_dir: str = None,
             filenames += list(figs.values())
         elif figs is not None:
             filenames.append(figs)
+
+    if has_demographics:
+        fig = create_demographics_plot(df, output_dir=output_dir,
+                                       format=format, dpi=dpi)
+
+        if fig is not None:
+            filenames.append(fig)
 
     return filenames

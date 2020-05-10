@@ -197,7 +197,7 @@ _adjustable["work_to_play"] = _set_work_to_play
 _adjustable["local_vaccination_thesh"] = _set_local_vaccination_thresh
 _adjustable["global_detection_thresh"] = _set_global_detection_thresh
 _adjustable["daily_ward_vaccination_capacity"] = \
-                            _set_daily_ward_vaccination_capacity
+    _set_daily_ward_vaccination_capacity
 _adjustable["neighbour_weight_threshold"] = _set_neighbour_weight_threshold
 _adjustable["daily_imports"] = _set_daily_imports
 
@@ -246,6 +246,7 @@ class VariableSet:
        >>>       params.disease_params.beta[2])
        0.95 0.9
     """
+
     def __init__(self,
                  variables: _Dict[str, float] = None,
                  repeat_index: int = 1,
@@ -592,21 +593,21 @@ class VariableSet:
         fingerprint = str(fingerprint)
 
         # does this have a repeat index - if so, this is the last
-        # value at the end after the hyphen (negative numbers are ~)
-        parts = fingerprint.split("@")
+        # value at the end after the 'x'
+        parts = fingerprint.split("x")
 
         if len(parts) > 1:
             repeat_index = int(parts[-1])
-            fingerprint = "@".join(parts[0:-1])
+            fingerprint = "x".join(parts[0:-1])
         else:
             repeat_index = None
 
         # now get the values
         values = []
 
-        for part in fingerprint.split(":"):
+        for part in fingerprint.split("v"):
             try:
-                values.append(float(part.replace("_",".")))
+                values.append(float(part.replace("_", ".")))
             except Exception:
                 # this is not part of the fingerprint
                 pass
@@ -629,10 +630,10 @@ class VariableSet:
             if f is None:
                 f = v
             else:
-                f += ":" + v
+                f += "v" + v
 
         if include_index:
-            return "%s@%03d" % (f, index)
+            return "%sx%03d" % (f, index)
         else:
             return f
 
@@ -865,6 +866,7 @@ class VariableSets:
        beta[2]=0.89)[repeat 1], (beta[2]=0.95, beta[3]=0.9)[repeat 2],
        (beta[1]=0.86, beta[2]=0.89)[repeat 2]}
     """
+
     def __init__(self):
         """Initialise an empty VariableSets object
 
@@ -1070,8 +1072,8 @@ class VariableSets:
                             vals.append(float(word))
                     except Exception:
                         raise ValueError(
-                               f"Corrupted input file. Expected {len(titles)} "
-                               f"numbers. Received {line}")
+                            f"Corrupted input file. Expected {len(titles)} "
+                            f"numbers. Received {line}")
 
                     variables.append(VariableSet(names=titles,
                                                  values=vals))
@@ -1088,5 +1090,5 @@ class VariableSets:
             return variables
         else:
             raise ValueError(
-                    f"Cannot read parameters from line {line_numbers} "
-                    f"as the number of lines in the file is {i+1}")
+                f"Cannot read parameters from line {line_numbers} "
+                f"as the number of lines in the file is {i+1}")
