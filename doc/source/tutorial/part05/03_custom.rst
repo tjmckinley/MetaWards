@@ -244,6 +244,38 @@ if you are using PBS, or
 
 This job may take a while (likely 1-2 minutes per *model run*, and then
 scaled by number of jobs divided by number of cores). In my case,
-this took about 17 minutes on 256 cores of
+this took about 16 minutes on 256 cores of
 `Catalyst <https://www.bristol.ac.uk/news/2018/april/supercomputer-collaboration.html>`__.
 
+Once you have performed this calculation you can generate an animation
+of the overview graphs using;
+
+.. code-block:: bash
+
+   metawards-plot -i output/results.csv.bz2
+   metawards-plot --animate output/overview*.jpg -o output/overview.gif
+
+(assuming all of your output is in the ``output`` directory)
+
+Your animation should look something like this;
+
+.. image:: ../../images/tutorial_5_3_1.gif
+   :alt: Overview image of shielding with custom parameters
+
+You can also generate the individual demographic trajectory overview plots
+and animate those using;
+
+.. code-block:: bash
+
+   metawards-plot -i output/*x001/trajectory.csv.bz2
+   metawards-plot --animate output/*x001/demographics.jpg -o output/demographics.gif
+
+.. note::
+   We've only generated and animated the first repeat here (directories
+   are all named "SOMETHINGx001"). This makes processing quicker and the
+   resulting animation smaller, as each repeat has almost the same plot.
+
+Your animation should look something like this;
+
+.. image:: ../../images/tutorial_5_3_2.gif
+   :alt: Demographic trajectories when shielding with custom parameters

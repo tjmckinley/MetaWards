@@ -565,31 +565,7 @@ class VariableSet:
         return v
 
     @staticmethod
-    def extract_values(fingerprint: str):
-        """Return the original values from the passed fingerprint
-           or filename. This assumes that the fingerprint
-           was created using the 'fingerprint' function, namely
-           that any integers are actually 0.INTEGER
-
-           Parameters
-           ----------
-           fingerprint: str
-             The fingerprint (or filename) to decode
-
-           Returns
-           -------
-           (values, repeat): (List[float], int)
-             The list of values of the variables and the repeat
-             index. The repeat index is None if it wasn't included
-             in the fingerprint
-        """
-        from pathlib import Path
-
-        # if this is a filename then extract only the fingerprint
-        fingerprint = Path(Path(fingerprint).name)
-        for suffix in fingerprint.suffixes:
-            fingerprint = str(fingerprint).replace(suffix, "")
-
+    def _extract_values(fingerprint: str):
         fingerprint = str(fingerprint)
 
         # has this fingerprint been added onto the end of a filename
@@ -629,6 +605,48 @@ class VariableSet:
                     pass
 
         return (values, repeat_index)
+
+    @staticmethod
+    def extract_values(fingerprint: str):
+        """Return the original values from the passed fingerprint
+           or filename. This assumes that the fingerprint
+           was created using the 'fingerprint' function, namely
+           that any integers are actually 0.INTEGER
+
+           Parameters
+           ----------
+           fingerprint: str
+             The fingerprint (or filename) to decode
+
+           Returns
+           -------
+           (values, repeat): (List[float], int)
+             The list of values of the variables and the repeat
+             index. The repeat index is None if it wasn't included
+             in the fingerprint
+        """
+        from pathlib import Path
+
+        path = fingerprint
+
+        # if this is a filename then extract only the fingerprint
+        fingerprint = Path(Path(fingerprint).name)
+        for suffix in fingerprint.suffixes:
+            fingerprint = str(fingerprint).replace(suffix, "")
+
+        values, repeat_idx = VariableSet._extract_values(fingerprint)
+
+        if len(values) > 0 or repeat_idx is not None:
+            return (values, repeat_idx)
+
+        import os
+
+        if path.find(os.path.sep) != -1:
+            fingerprint = os.path.sep.join(
+                path.split(os.path.sep)[0:-1])
+            return VariableSet.extract_values(fingerprint)
+        else:
+            return (values, repeat_idx)
 
     @staticmethod
     def create_fingerprint(vals: _List[float], index: int = None,

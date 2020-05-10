@@ -4,6 +4,17 @@ from typing import List as _List
 __all__ = ["animate_plots", "import_animate_modules"]
 
 
+def import_font_modules():
+    """Imports matplotlib.font_manager"""
+    try:
+        from matplotlib import font_manager
+        return font_manager
+    except ImportError as e:
+        print("Unable to import the matplotlib.font_manager module...")
+        print(f"Error is {e}")
+        return None
+
+
 def import_animate_modules():
     """Import the python modules needed to animate plots. This
        imports Python Pillow
@@ -14,13 +25,13 @@ def import_animate_modules():
          The PIL.Image and PIL.ImageDraw modules
     """
     try:
-        from PIL import Image, ImageDraw
+        from PIL import Image, ImageDraw, ImageFont
     except ImportError:
         print("Could not import Python Pillow to create animated plot.")
         print("Please install using 'pip install Pillow>=6.2.1'")
         print("(or by running metawards-install --optional)")
 
-    return (Image, ImageDraw)
+    return (Image, ImageDraw, ImageFont)
 
 
 def animate_plots(plots: _List[str], output: str,
@@ -58,6 +69,8 @@ def animate_plots(plots: _List[str], output: str,
         fingerprints = {}
         filenames = []
 
+        legends = {}
+
         for plot in plots:
             try:
                 (values, repeat_idx) = VariableSet.extract_values(plot)
@@ -66,11 +79,11 @@ def animate_plots(plots: _List[str], output: str,
                     f"Could not extract a fingerprint from '{plot}'. "
                     f"Error was {e.__class__} {e}")
 
-            if len(values) == 0:
+            if len(values) == 0 and repeat_idx is None:
                 # no fingerprint - write these first in filename order
                 filenames.append(plot)
-
-            print(values, repeat_idx)
+                legends[plot] = None
+                continue
 
             if repeat_idx:
                 values.append(repeat_idx)
@@ -80,6 +93,7 @@ def animate_plots(plots: _List[str], output: str,
             # now create a sortable string from these values
             key = " ".join([("%.5f" % x) for x in values])
             fingerprints[key] = plot
+            legends[plot] = values
 
         keys = list(fingerprints.keys())
         keys.sort()
@@ -126,10 +140,26 @@ def animate_plots(plots: _List[str], output: str,
     # open all of the images
     images = []
 
-    (Image, ImageDraw) = import_animate_modules()
+    (Image, ImageDraw, ImageFont) = import_animate_modules()
 
     for plot in plots:
-        images.append(Image.open(plot))
+        image = Image.open(plot)
+
+        if legends[plot]:
+            try:
+                font_manager = import_font_modules()
+
+                if font_manager:
+                    print(f"writing {legends[plot]}")
+                    fontfile = font_manager.findfont("Arial")
+                    font = ImageFont.truetype(fontfile, size=28)
+                    draw = ImageDraw.Draw(image)
+                    draw.text((0, 0), str(legends[plot]), (0, 0, 0), font=font)
+            except Exception:
+                # couldn't tag it - don't break the animation
+                pass
+
+        images.append(image)
 
     images[0].save(output, save_all=True, append_images=images[1:],
                    optimize=False, duration=delay, loop=0)
