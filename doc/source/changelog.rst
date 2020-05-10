@@ -2,6 +2,11 @@
 Changelog
 =========
 
+`0.11.0 <https://github.com/metawards/MetaWards/compare/0.11.0...0.11.1>`__ - May 10th 2020
+--------------------------------------------------------------------------------------------
+
+* Fixed CI/CD to produce working sdist and bdist packages
+
 `0.11.0 <https://github.com/metawards/MetaWards/compare/0.10.0...0.11.0>`__ - May 10th 2020
 --------------------------------------------------------------------------------------------
 

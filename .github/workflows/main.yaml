@@ -89,6 +89,8 @@ jobs:
         run: |
           pip install --upgrade setuptools wheel
           python setup.py bdist_wheel
+        env:
+          CYTHONIZE: 1
         if: github.event_name == 'push' && (matrix.config.os == 'windows-latest' || matrix.config.os == 'macos-latest')
       - name: Make manylinux package
         # this is run by python 3.8, but it actually builds 3.7 and 3.8 bdists
@@ -98,6 +100,8 @@ jobs:
       - name: Make sdist package
         # Give Python 3.7 the sdist, so that this has something to upload
         run: python setup.py sdist
+        env:
+          CYTHONIZE: 1
         if: github.event_name == 'push' && matrix.python-version == 3.7 && matrix.config.os == 'ubuntu-latest'
       - name: Upload sdist/bdist package(s)
         uses: actions/upload-artifact@v1
