@@ -565,6 +565,48 @@ class VariableSet:
         return v
 
     @staticmethod
+    def _extract_values(fingerprint: str):
+        fingerprint = str(fingerprint)
+
+        # has this fingerprint been added onto the end of a filename
+        # using a hyphen or underscore? If so, then remove this
+        if fingerprint.find("-") != -1:
+            fingerprint = fingerprint.split("-")[-1]
+
+        if fingerprint.find("_") != -1:
+            fingerprint = fingerprint.split("_")[-1]
+
+        fingerprint.strip()
+
+        # does this have a repeat index - if so, this is the last
+        # value at the end after the 'x'
+        parts = fingerprint.split("x")
+
+        if len(parts) > 1:
+            repeat_index = int(parts[-1])
+            fingerprint = "x".join(parts[0:-1])
+        else:
+            repeat_index = None
+
+        # now get the values
+        values = []
+
+        if fingerprint != "REPEAT":
+            for part in fingerprint.split("v"):
+                try:
+                    if part == "T":
+                        values.append(True)
+                    elif part == "F":
+                        values.append(False)
+                    else:
+                        values.append(float(part.replace("i", ".")))
+                except Exception:
+                    # this is not part of the fingerprint
+                    pass
+
+        return (values, repeat_index)
+
+    @staticmethod
     def extract_values(fingerprint: str):
         """Return the original values from the passed fingerprint
            or filename. This assumes that the fingerprint
@@ -585,52 +627,55 @@ class VariableSet:
         """
         from pathlib import Path
 
+        path = fingerprint
+
         # if this is a filename then extract only the fingerprint
         fingerprint = Path(Path(fingerprint).name)
         for suffix in fingerprint.suffixes:
             fingerprint = str(fingerprint).replace(suffix, "")
 
-        fingerprint = str(fingerprint)
+        values, repeat_idx = VariableSet._extract_values(fingerprint)
 
-        # does this have a repeat index - if so, this is the last
-        # value at the end after the 'x'
-        parts = fingerprint.split("x")
+        if len(values) > 0 or repeat_idx is not None:
+            return (values, repeat_idx)
 
-        if len(parts) > 1:
-            repeat_index = int(parts[-1])
-            fingerprint = "x".join(parts[0:-1])
+        import os
+
+        if path.find(os.path.sep) != -1:
+            fingerprint = os.path.sep.join(
+                path.split(os.path.sep)[0:-1])
+            return VariableSet.extract_values(fingerprint)
         else:
-            repeat_index = None
-
-        # now get the values
-        values = []
-
-        for part in fingerprint.split("v"):
-            try:
-                values.append(float(part.replace("_", ".")))
-            except Exception:
-                # this is not part of the fingerprint
-                pass
-
-        return (values, repeat_index)
+            return (values, repeat_idx)
 
     @staticmethod
     def create_fingerprint(vals: _List[float], index: int = None,
                            include_index: bool = False):
         """Create the fingerprint for the passed values"""
         f = None
-        for val in vals:
-            v = float(val)
 
-            if v.is_integer():
-                v = int(val)
+        if vals is None or len(vals) == 0:
+            f = "REPEAT"
+        else:
+            for val in vals:
+                if isinstance(val, bool):
+                    if val:
+                        v = "T"
+                    else:
+                        v = "F"
+                else:
+                    v = float(val)
 
-            v = str(v).replace(".", "_")
+                    if v.is_integer():
+                        v = int(val)
+                        v = f"{v}.0"
 
-            if f is None:
-                f = v
-            else:
-                f += "v" + v
+                    v = str(v).replace(".", "i")
+
+                if f is None:
+                    f = v
+                else:
+                    f += "v" + v
 
         if include_index:
             return "%sx%03d" % (f, index)
@@ -654,15 +699,9 @@ class VariableSet:
            fingerprint: str
              The fingerprint for this VariableSet
         """
-        if self._vals is None or len(self._vals) == 0:
-            if include_index:
-                return "NO_CHANGE_%03d" % self._idx
-            else:
-                return "NO_CHANGE"
-        else:
-            return VariableSet.create_fingerprint(vals=self._vals,
-                                                  index=self._idx,
-                                                  include_index=include_index)
+        return VariableSet.create_fingerprint(vals=self._vals,
+                                              index=self._idx,
+                                              include_index=include_index)
 
     @staticmethod
     def read(filename: str):
