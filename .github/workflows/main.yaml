@@ -87,7 +87,6 @@ jobs:
         if: matrix.python-version == 3.8 && matrix.config.os == 'ubuntu-latest' && github.event_name == 'push'
       - name: Make bdist package
         run: |
-          pip install --upgrade setuptools wheel
           python setup.py bdist_wheel
         env:
           CYTHONIZE: 1
