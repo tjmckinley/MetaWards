@@ -21,6 +21,20 @@ def mix_shield(network, **kwargs):
     return [merge_using_matrix]
 
 
+def can_run_multiprocessing():
+    import sys
+    if sys.platform == "win32":
+        # Cannot use multiprocessing in tests on windows
+        return False
+
+    elif sys.version_info >= (3, 8):
+        # Cannot use multiprocessing in tests for Python 3.8 or above
+        return False
+
+    else:
+        return True
+
+
 @pytest.mark.slow
 def test_demographics_reset(prompt=None):
     """This test runs several runs one after another with the expectation
@@ -78,35 +92,38 @@ def test_demographics_reset(prompt=None):
 
     network = network.specialise(demographics, nthreads=2, profiler=profiler)
 
-    variable = variables[0]
-    variables = VariableSets()
-    variables.append(variable)
-    variables = variables.repeat(3)
+    if can_run_multiprocessing():
+        print("Running parallel...")
+        variable = variables[0]
+        variables = VariableSets()
+        variables.append(variable)
+        variables = variables.repeat(3)
 
-    params = params.set_variables(variables[0])
-    network.update(params, profiler=profiler)
+        params = params.set_variables(variables[0])
+        network.update(params, profiler=profiler)
+
+        outdir = os.path.join(script_dir, "test_integration_output")
+
+        with OutputFiles(outdir, force_empty=True,
+                         prompt=prompt) as output_dir:
+            results = run_models(network=network, mixer=mix_shield,
+                                 output_dir=output_dir, variables=variables,
+                                 population=population, nsteps=nsteps,
+                                 nthreads=2, nprocs=2, seed=seed,
+                                 debug_seeds=True)
+
+        OutputFiles.remove(outdir, prompt=None)
+
+        assert len(results) == 3
+
+        print(f"Result 1\n{results[0][1][-1]}")
+        print(f"Result 2\n{results[1][1][-1]}")
+        print(f"Result 3\n{results[2][1][-1]}")
+
+        assert results[0][1] == results[1][1]
+        assert results[0][1] == results[2][1]
 
     print("Running model 1...")
-    outdir = os.path.join(script_dir, "test_integration_output")
-
-    with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
-        results = run_models(network=network, mixer=mix_shield,
-                             output_dir=output_dir, variables=variables,
-                             population=population, nsteps=nsteps,
-                             nthreads=2, nprocs=2, seed=seed,
-                             debug_seeds=True)
-
-    OutputFiles.remove(outdir, prompt=None)
-
-    assert len(results) == 3
-
-    print(f"Result 1\n{results[0][1][-1]}")
-    print(f"Result 2\n{results[1][1][-1]}")
-    print(f"Result 3\n{results[2][1][-1]}")
-
-    assert results[0][1] == results[1][1]
-    assert results[0][1] == results[2][1]
-
     network.update(params, profiler=profiler)
 
     with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
@@ -155,10 +172,12 @@ def test_demographics_reset(prompt=None):
     assert trajectory1 == trajectory2
     assert trajectory1 == trajectory3
 
-    # this should also be the same result as the multiprocessing run
-    assert trajectory1 == results[0][1]
+    if can_run_multiprocessing():
+        # this should also be the same result as the multiprocessing run
+        assert trajectory1 == results[0][1]
 
 
-if __name__ == "__main__" or __name__ == "test_demographics_reset":
+if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()  # needed to stop fork bombs
+    test_demographics_reset()
