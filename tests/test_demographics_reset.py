@@ -2,10 +2,10 @@
 import os
 import pytest
 
-from metawards import Parameters, Network, Population, OutputFiles, \
-    Demographics
+from metawards import Parameters, Network, Population, \
+    OutputFiles, VariableSets, Demographics
 from metawards.mixers import merge_using_matrix
-from metawards.utils import Profiler
+from metawards.utils import Profiler, run_models
 
 script_dir = os.path.dirname(__file__)
 ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
@@ -78,18 +78,41 @@ def test_demographics_reset(prompt=None):
 
     network = network.specialise(demographics, nthreads=2, profiler=profiler)
 
+    variable = variables[0]
+    variables = VariableSets()
+    variables.append(variable)
+    variables = variables.repeat(3)
+
     params = params.set_variables(variables[0])
     network.update(params, profiler=profiler)
 
     print("Running model 1...")
     outdir = os.path.join(script_dir, "test_integration_output")
 
+    with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
+        results = run_models(network=network, mixer=mix_shield,
+                             output_dir=output_dir, variables=variables,
+                             population=population, nsteps=nsteps,
+                             nthreads=2, nprocs=2, seed=seed,
+                             debug_seeds=True)
+
+    OutputFiles.remove(outdir, prompt=None)
+
+    assert len(results) == 3
+
+    print(f"Result 1\n{results[0][1][-1]}")
+    print(f"Result 2\n{results[1][1][-1]}")
+    print(f"Result 3\n{results[2][1][-1]}")
+
+    assert results[0][1] == results[1][1]
+    assert results[0][1] == results[2][1]
+
     network.update(params, profiler=profiler)
 
     with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
         trajectory1 = network.run(population=population, seed=seed,
                                   output_dir=output_dir,
-                                  nsteps=nsteps, profiler=profiler,
+                                  nsteps=nsteps, profiler=None,
                                   mixer=mix_shield,
                                   nthreads=2)
 
@@ -102,7 +125,7 @@ def test_demographics_reset(prompt=None):
     with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
         trajectory2 = network.run(population=population, seed=seed,
                                   output_dir=output_dir,
-                                  nsteps=nsteps, profiler=profiler,
+                                  nsteps=nsteps, profiler=None,
                                   mixer=mix_shield,
                                   nthreads=2)
 
@@ -115,7 +138,7 @@ def test_demographics_reset(prompt=None):
     with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
         trajectory3 = network.run(population=population, seed=seed,
                                   output_dir=output_dir,
-                                  nsteps=nsteps, profiler=profiler,
+                                  nsteps=nsteps, profiler=None,
                                   mixer=mix_shield,
                                   nthreads=2)
 
@@ -131,6 +154,9 @@ def test_demographics_reset(prompt=None):
 
     assert trajectory1 == trajectory2
     assert trajectory1 == trajectory3
+
+    # this should also be the same result as the multiprocessing run
+    assert trajectory1 == results[0][1]
 
 
 if __name__ == "__main__":

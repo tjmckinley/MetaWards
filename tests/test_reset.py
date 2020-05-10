@@ -77,7 +77,7 @@ def test_reset(prompt=None):
         results = run_models(network=network,
                              output_dir=output_dir, variables=variables,
                              population=population, nsteps=nsteps,
-                             nthreads=2, nprocs=1, seed=seed,
+                             nthreads=2, nprocs=2, seed=seed,
                              debug_seeds=True)
 
     OutputFiles.remove(outdir, prompt=None)
