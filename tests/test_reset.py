@@ -141,4 +141,5 @@ def test_reset(prompt=None):
 
 
 if __name__ == "__main__":
-    test_reset()
+    import multiprocessing
+    multiprocessing.freeze_support()  # needed to stop fork bombs

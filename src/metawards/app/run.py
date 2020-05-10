@@ -977,8 +977,3 @@ if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()  # needed to stop fork bombs
     cli()
-
-else:
-    # this is one of the worker processes - make sure that they
-    # have imported metawards
-    from metawards.utils import run_worker
