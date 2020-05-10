@@ -40,7 +40,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="MetaWards.app" href="index_MetaWards_app.html" />
-    <link rel="prev" title="Running on a cluster" href="../cluster_usage.html" /> 
+    <link rel="prev" title="Snag list" href="../snaglist.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,12 +99,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cluster_usage.html">Running on a cluster</a></li>
 </ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_app.html">MetaWards.app</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards.html">MetaWards</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_iterators.html">MetaWards.iterators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_extractors.html">MetaWards.extractors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_mixers.html">MetaWards.mixers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_movers.html">MetaWards.movers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_analysis.html">MetaWards.analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
 </ul>
@@ -115,6 +123,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -177,7 +188,7 @@
         <a href="index_MetaWards_app.html" class="btn btn-neutral float-right" title="MetaWards.app" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../cluster_usage.html" class="btn btn-neutral float-left" title="Running on a cluster" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../snaglist.html" class="btn btn-neutral float-left" title="Snag list" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -199,18 +210,33 @@ what you should use if you want to write new Python programs that
 integrate metawards functionality. These could include plugging
 metawards as a model into a higher-level statictical
 analysis package.</li>
-<li>The <a class="reference internal" href="index_MetaWards_iterators.html"><span class="doc">metawards.iterators</span></a> which contains
+<li>The <a class="reference internal" href="index_MetaWards_iterators.html"><span class="doc">metawards.iterators</span></a> module,
+which contains
 all of the package-supplied iterators that are used to advance the
 model infection from day to day. These are used to customise exactly
 how an infection progresses, and how control measures are applied.
-This is described in the <a class="reference internal" href="../tutorial/tutorial.html"><span class="doc">tutorial</span></a>.</li>
-<li>The <a class="reference internal" href="index_MetaWards_extractors.html"><span class="doc">metawards.extractors</span></a> which contains
+This is described in the <a class="reference internal" href="../tutorial/index_part03.html"><span class="doc">tutorial</span></a>.</li>
+<li>The <a class="reference internal" href="index_MetaWards_extractors.html"><span class="doc">metawards.extractors</span></a> module,
+which contains
 all of the package-supplied extractors that are used to extract and
 output data gathered live during a model run and write them to files.
 These are used to customise exactly what information is gathered,
 how it is processed, and where it is written as the infection progresses.
 You can see how to use these to customise output in
-the <a class="reference internal" href="../tutorial/tutorial.html"><span class="doc">tutorial</span></a>.</li>
+the <a class="reference internal" href="../tutorial/index_part04.html"><span class="doc">tutorial</span></a>.</li>
+<li>The <a class="reference internal" href="index_MetaWards_mixers.html"><span class="doc">metawards.mixers</span></a> module, which
+contains all of
+the package-supplied mixers that are used to merge and mix values
+calculated across multiple demographic sub-networks. These are used
+to customise exactly how different demographics interact and how
+the disease should move between demographics. You can see how to use
+mixers in the <a class="reference internal" href="../tutorial/index_part05.html"><span class="doc">tutorial</span></a>.</li>
+<li>The <a class="reference internal" href="index_MetaWards_movers.html"><span class="doc">metawards.movers</span></a> module, which
+contains all of package-supplied movers that are used to move
+individuals between different demographics during an outbreak
+(e.g. move between home and hospital, work and holiday etc.).
+You can see how to use movers in the
+<span class="xref std std-doc">tutorial</span>.</li>
 <li>The <a class="reference internal" href="index_MetaWards_analysis.html"><span class="doc">metawards.analysis</span></a> contains
 analysis functions that can be used to process the results of a
 <code class="docutils literal notranslate"><span class="pre">metawards</span></code> run to generate insights and useful graphics.</li>
@@ -223,15 +249,7 @@ not designed to be used outside of this program.</li>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="index_MetaWards_app.html">MetaWards.app</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="index_api_MetaWards_app.html">MetaWards.app API Detail</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="index_api_MetaWards_app.html#functions">Functions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="generated/metawards.app.get_parallel_scheme.html">metawards.app.get_parallel_scheme</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/metawards.app.parse_args.html">metawards.app.parse_args</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/metawards.app.get_hostfile.html">metawards.app.get_hostfile</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/metawards.app.get_cores_per_node.html">metawards.app.get_cores_per_node</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/metawards.app.get_threads_per_task.html">metawards.app.get_threads_per_task</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/metawards.app.scoop_supervisor.html">metawards.app.scoop_supervisor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/metawards.app.mpi_supervisor.html">metawards.app.mpi_supervisor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/metawards.app.cli.html">metawards.app.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index_api_MetaWards_app.html#functions">Functions</a><ul class="simple">
 </ul>
 </li>
 </ul>
@@ -322,6 +340,31 @@ not designed to be used outside of this program.</li>
 <li class="toctree-l4"><a class="reference internal" href="generated/metawards.extractors.output_trajectory.html">metawards.extractors.output_trajectory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/metawards.extractors.output_wards_trajectory.html">metawards.extractors.output_wards_trajectory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/metawards.extractors.setup_core.html">metawards.extractors.setup_core</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index_MetaWards_mixers.html">MetaWards.mixers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index_api_MetaWards_mixers.html">MetaWards.mixers API Detail</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index_api_MetaWards_mixers.html#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/metawards.mixers.merge_evenly.html">metawards.mixers.merge_evenly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/metawards.mixers.mix_custom.html">metawards.mixers.mix_custom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/metawards.mixers.mix_default.html">metawards.mixers.mix_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/metawards.mixers.mix_evenly.html">metawards.mixers.mix_evenly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/metawards.mixers.mix_none.html">metawards.mixers.mix_none</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index_MetaWards_movers.html">MetaWards.movers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index_api_MetaWards_movers.html">MetaWards.movers API Detail</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index_api_MetaWards_movers.html#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/metawards.movers.move_custom.html">metawards.movers.move_custom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/metawards.movers.move_default.html">metawards.movers.move_default</a></li>
 </ul>
 </li>
 </ul>
@@ -424,7 +467,7 @@ not designed to be used outside of this program.</li>
         <a href="index_MetaWards_app.html" class="btn btn-neutral float-right" title="MetaWards.app" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../cluster_usage.html" class="btn btn-neutral float-left" title="Running on a cluster" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../snaglist.html" class="btn btn-neutral float-left" title="Snag list" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -434,7 +477,7 @@ not designed to be used outside of this program.</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 07, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

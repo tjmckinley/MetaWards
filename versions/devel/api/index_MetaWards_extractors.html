@@ -99,6 +99,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cluster_usage.html">Running on a cluster</a></li>
 </ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_app.html">MetaWards.app</a></li>
@@ -108,6 +114,8 @@
 <li class="toctree-l3"><a class="reference internal" href="index_api_MetaWards_extractors.html">MetaWards.extractors API Detail</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_mixers.html">MetaWards.mixers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_movers.html">MetaWards.movers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_analysis.html">MetaWards.analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
 </ul>
@@ -118,6 +126,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -195,10 +206,10 @@
 <h1>MetaWards.extractors<a class="headerlink" href="#metawards-extractors" title="Permalink to this headline">¶</a></h1>
 <p>These are the extractor functions that are used during a model run
 to extract data from the outbreak to process and write live to files.
-The functions divide into three main types,
+The functions divide into two main types,
 the most important of which are described below;</p>
 <dl class="docutils">
-<dt>The functions that decide which output functions will be called</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">extract_functions</span></code> which determine which functions will be called to output data</dt>
 <dd><ul class="first last simple">
 <li><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract_core()</span></code></li>
 <li><a class="reference internal" href="generated/metawards.extractors.extract_custom.html#metawards.extractors.extract_custom" title="metawards.extractors.extract_custom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract_custom()</span></code></a></li>
@@ -207,7 +218,7 @@ the most important of which are described below;</p>
 <li><a class="reference internal" href="generated/metawards.extractors.extract_none.html#metawards.extractors.extract_none" title="metawards.extractors.extract_none"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract_none()</span></code></a></li>
 </ul>
 </dd>
-<dt>Functions that extract and output information from the outbreak</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">output_functions</span></code> which perform the actual work of outputting data</dt>
 <dd><ul class="first last simple">
 <li><a class="reference internal" href="generated/metawards.extractors.output_basic.html#metawards.extractors.output_basic" title="metawards.extractors.output_basic"><code class="xref py py-meth docutils literal notranslate"><span class="pre">output_basic()</span></code></a></li>
 <li><a class="reference internal" href="generated/metawards.extractors.output_core.html#metawards.extractors.output_core" title="metawards.extractors.output_core"><code class="xref py py-meth docutils literal notranslate"><span class="pre">output_core()</span></code></a></li>
@@ -247,7 +258,7 @@ described <a class="reference internal" href="index_api_MetaWards_extractors.htm
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 07, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

@@ -113,6 +113,12 @@
 <li class="toctree-l1"><a class="reference internal" href="cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -120,6 +126,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -196,10 +205,10 @@
   <div class="section" id="command-line-options">
 <h1>Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h1>
 <p>The full set of command line options for metawards-plot is below;</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: metawards-plot [-h] [--version] [-i INPUT] [-a [ANIMATE [ANIMATE ...]]]
-                      [-o OUTPUT] [--format FORMAT] [--align-axes]
-                      [--no-align-axes] [--dpi DPI] [--delay DELAY]
-                      [--ordering ORDERING]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: metawards-plot [-h] [--version] [-i [INPUT [INPUT ...]]]
+                      [-a [ANIMATE [ANIMATE ...]]] [-o OUTPUT]
+                      [--format FORMAT] [--align-axes] [--no-align-axes]
+                      [--dpi DPI] [--delay DELAY] [--ordering ORDERING]
 
 MetaWards simple plotting program - see https://github.com/metawards/metawards
 for more information
@@ -207,7 +216,7 @@ for more information
 optional arguments:
   -h, --help            show this help message and exit
   --version             Print the version information about metawards-plot
-  -i INPUT, --input INPUT
+  -i [INPUT [INPUT ...]], --input [INPUT [INPUT ...]]
                         Full path to the &#39;results.csv.bz2&#39; file that you want
                         to quickly plot.
   -a [ANIMATE [ANIMATE ...]], --animate [ANIMATE [ANIMATE ...]]
@@ -254,7 +263,7 @@ optional arguments:
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 07, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

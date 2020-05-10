@@ -110,6 +110,8 @@ Have a go using;
 
 As well as :meth:`~metawards.extractors.extract_default`, there is also
 :meth:`~metawards.extractors.extract_small` (only extracting the
-"small" files), and
+"small" files),
+"meth:`~metawards.extractors.extract_large` (extract everything, including
+producing large trajectory files) and
 :meth:`~metawards.extractors.extract_none` (extract nothing - useful if
 you want to restrict output only to ``results.csv.bz2``).

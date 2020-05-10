@@ -101,6 +101,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Part 5 - Modelling multiple demographics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="part05/01_demographics.html">Multi-demographic sub-networks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="part05/02_mixers.html">Mixers and Merge-functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="part05/03_custom.html">Using custom merge functions to model shielding</a></li>
 </ul>
 </li>
 </ul>
@@ -111,6 +112,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -118,6 +125,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -198,7 +208,7 @@
 <li>Understand how different demographics can be modelled using <code class="docutils literal notranslate"><span class="pre">metawards</span></code></li>
 <li>Learn about <a class="reference internal" href="../api/generated/metawards.Demographics.html#metawards.Demographics" title="metawards.Demographics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.Demographics</span></code></a> and how to distribute a population
 between multiple demographics</li>
-<li>Learn about <code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.mixers</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.movers</span></code></li>
+<li>Learn about <a class="reference internal" href="../api/index_api_MetaWards_mixers.html#module-metawards.mixers" title="metawards.mixers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.mixers</span></code></a> and <a class="reference internal" href="../api/index_api_MetaWards_movers.html#module-metawards.movers" title="metawards.movers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metawards.movers</span></code></a></li>
 <li>Learn about the different stages modelled during a day</li>
 <li>Learn how to write custom movers and mixers to model complex behaviour</li>
 </ul>
@@ -213,6 +223,12 @@ between multiple demographics</li>
 <li class="toctree-l1"><a class="reference internal" href="part05/02_mixers.html">Mixers and Merge-functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="part05/02_mixers.html#force-of-infection-foi">Force of infection (FOI)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="part05/02_mixers.html#mix-evenly">Mix evenly</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part05/03_custom.html">Using custom merge functions to model shielding</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part05/03_custom.html#interaction-matrix">Interaction matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part05/03_custom.html#custom-mixers">Custom mixers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part05/03_custom.html#adjusting-shielding-parameters">Adjusting shielding parameters</a></li>
 </ul>
 </li>
 </ul>
@@ -240,7 +256,7 @@ between multiple demographics</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 07, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

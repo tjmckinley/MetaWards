@@ -31,7 +31,7 @@ on Linux or Mac OS X, or type;
 
 .. code-block:: bash
 
-  copy $env:METAWARDSDATA\diseases\lurgy.json lurgy2.json
+  copy $Env:METAWARDSDATA\diseases\lurgy.json lurgy2.json
 
 on Windows.
 

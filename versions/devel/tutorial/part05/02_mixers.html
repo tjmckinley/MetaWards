@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Usage" href="../../usage.html" />
+    <link rel="next" title="Using custom merge functions to model shielding" href="03_custom.html" />
     <link rel="prev" title="Multi-demographic sub-networks" href="01_demographics.html" /> 
 </head>
 
@@ -105,6 +105,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#mix-evenly">Mix evenly</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="03_custom.html">Using custom merge functions to model shielding</a></li>
 </ul>
 </li>
 </ul>
@@ -115,6 +116,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -122,6 +129,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -185,7 +195,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../../usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="03_custom.html" class="btn btn-neutral float-right" title="Using custom merge functions to model shielding" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="01_demographics.html" class="btn btn-neutral float-left" title="Multi-demographic sub-networks" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -217,15 +227,15 @@ individuals in a ward will become infected.</p>
 based only on the infected individuals from that demographic. We can thus
 use the FOI calculation as a way of enabling different demographics to
 mix. We do this in <code class="docutils literal notranslate"><span class="pre">metawards</span></code> using custom functions, called
-<code class="xref py py-obj docutils literal notranslate"><span class="pre">mixers</span></code>, that choose different “merge functions” that are
+<a class="reference internal" href="../../api/index_api_MetaWards_mixers.html#module-metawards.mixers" title="metawards.mixers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mixers</span></code></a>, that choose different “merge functions” that are
 used to mix and merge calculations of FOIs across different demographics
 together.</p>
-<p>The default mixer is <code class="xref py py-func docutils literal notranslate"><span class="pre">mix_none()</span></code>, which, as the
+<p>The default mixer is <a class="reference internal" href="../../api/generated/metawards.mixers.mix_none.html#metawards.mixers.mix_none" title="metawards.mixers.mix_none"><code class="xref py py-func docutils literal notranslate"><span class="pre">mix_none()</span></code></a>, which, as the
 name suggests, performs no mixing between demographics.</p>
 </div>
 <div class="section" id="mix-evenly">
 <h2>Mix evenly<a class="headerlink" href="#mix-evenly" title="Permalink to this headline">¶</a></h2>
-<p>An alternative is to use <code class="xref py py-func docutils literal notranslate"><span class="pre">mix_evenly()</span></code>. This evenly
+<p>An alternative is to use <a class="reference internal" href="../../api/generated/metawards.mixers.mix_evenly.html#metawards.mixers.mix_evenly" title="metawards.mixers.mix_evenly"><code class="xref py py-func docutils literal notranslate"><span class="pre">mix_evenly()</span></code></a>. This evenly
 mixes all demographics. It sets the FOI in each ward in each demographic
 equal to the sum of the FOIs in that ward across all demographics.</p>
 <p>You can choose this mixer using the <code class="docutils literal notranslate"><span class="pre">--mixer</span></code> argument. Run <code class="docutils literal notranslate"><span class="pre">metawards</span></code>
@@ -235,7 +245,44 @@ using;</p>
 </div>
 <p>You should now see that the outbreak spreads from the initial infection in
 the “red” demographic to the “blue workers”, who then spread it around
-the country to both the “red” and “blue” groups. You can plot</p>
+the country to both the “red” and “blue” groups.</p>
+<p>The trajectories for each of the demographics are written into a single
+csv file called <code class="docutils literal notranslate"><span class="pre">output/trajectory.csv.bz2</span></code>. This can be loaded
+into tools such as Excel, R or Pandas for detailed analysis. For example,
+in Pandas you can load the file using;</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;output/trajectory.csv.bz2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="go">      day        date demographic         S  E  I         R  IW</span>
+<span class="go"> 0      0  2020-05-07     overall  56082077  0  0         0   0</span>
+<span class="go"> 1      0  2020-05-07         red  16806501  0  0         0   0</span>
+<span class="go"> 2      0  2020-05-07        blue  39275576  0  0         0   0</span>
+<span class="go"> 3      1  2020-05-08     overall  56082077  0  0         0   0</span>
+<span class="go"> 4      0  2020-05-08         red  16806501  0  0         0   0</span>
+<span class="go"> ..   ...         ...         ...       ... .. ..       ...  ..</span>
+<span class="go"> 388    0  2020-09-13         red   1609032  0  0  15197469   0</span>
+<span class="go"> 389    0  2020-09-13        blue   1101473  0  1  38174102   0</span>
+<span class="go"> 390  130  2020-09-14     overall   2710505  0  0  53371572   0</span>
+<span class="go"> 391    0  2020-09-14         red   1609032  0  0  15197469   0</span>
+<span class="go"> 392    0  2020-09-14        blue   1101473  0  0  38174103   0</span>
+
+<span class="go"> [393 rows x 8 columns]</span>
+</pre></div>
+</div>
+<p>You can see that the values for each day for each demographic are printed
+in turn. The column called <code class="docutils literal notranslate"><span class="pre">demographic</span></code> holds the name of the demographic,
+with the overall total network called <code class="docutils literal notranslate"><span class="pre">overall</span></code>.</p>
+<p>You can plot this data easily using <code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code>, e.g.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot -i output/trajectory.csv.bz2
+</pre></div>
+</div>
+<p>This will produce a graph called <code class="docutils literal notranslate"><span class="pre">output/demographics.jpg</span></code>.
+This should look similar to this;</p>
+<img alt="Disease trajectory across the red and blue demographics" src="../../_images/tutorial_5_2_demographics.jpg" />
+<p>Notice how infections in the red demographic lag behind those of the
+blue demographic. This makes sense, as it is only the workers from the
+blue demographic that can be infected outside their home ward. The
+blue workers are thus the source of the infection for the red demographic.</p>
 </div>
 </div>
 
@@ -247,7 +294,7 @@ the country to both the “red” and “blue” groups. You can plot</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="03_custom.html" class="btn btn-neutral float-right" title="Using custom merge functions to model shielding" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="01_demographics.html" class="btn btn-neutral float-left" title="Multi-demographic sub-networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -260,7 +307,7 @@ the country to both the “red” and “blue” groups. You can plot</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 07, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

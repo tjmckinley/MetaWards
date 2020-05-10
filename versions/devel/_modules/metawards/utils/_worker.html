@@ -98,6 +98,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -105,6 +111,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -233,24 +242,6 @@
         <span class="n">max_nodes</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;max_nodes&quot;</span><span class="p">]</span>
         <span class="n">max_links</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;max_links&quot;</span><span class="p">]</span>
         <span class="n">nthreads</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;nthreads&quot;</span><span class="p">]</span>
-        <span class="n">seed</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">demographics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">._ran_binomial</span> <span class="kn">import</span> <span class="n">seed_ran_binomial</span>
-            <span class="kn">from</span> <span class="nn">._parallel</span> <span class="kn">import</span> <span class="n">create_thread_generators</span>
-
-            <span class="k">if</span> <span class="n">seed</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># this is a special mode that a developer can use to force</span>
-                <span class="c1"># all jobs to use the same random number seed (15324) that</span>
-                <span class="c1"># is used for comparing outputs. This should NEVER be used</span>
-                <span class="c1"># for production code</span>
-                <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">15324</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="o">+</span><span class="mi">7</span><span class="p">)</span>
-
-                <span class="n">rngs</span> <span class="o">=</span> <span class="n">create_thread_generators</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">rngs</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">del</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;max_nodes&quot;</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;max_links&quot;</span><span class="p">]</span>
@@ -265,20 +256,18 @@
                                     <span class="n">max_links</span><span class="o">=</span><span class="n">max_links</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">demographics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-                <span class="n">network</span> <span class="o">=</span> <span class="n">demographics</span><span class="o">.</span><span class="n">specialise</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span>
+                <span class="n">network</span> <span class="o">=</span> <span class="n">demographics</span><span class="o">.</span><span class="n">specialise</span><span class="p">(</span><span class="n">network</span><span class="p">,</span>
                                                   <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
                                                   <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
 
             <span class="n">global_network</span> <span class="o">=</span> <span class="n">network</span>
 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">global_network</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-                                  <span class="n">demographics</span><span class="o">=</span><span class="n">demographics</span><span class="p">,</span>
-                                  <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
-                                  <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
+        <span class="c1"># always work in a copy</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="n">global_network</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">demographics</span><span class="o">=</span><span class="n">demographics</span><span class="p">,</span>
+                       <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">global_network</span></div>
+        <span class="k">return</span> <span class="n">network</span></div>
 
 
 <span class="k">def</span> <span class="nf">run_worker</span><span class="p">(</span><span class="n">arguments</span><span class="p">):</span>
@@ -335,7 +324,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 07, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

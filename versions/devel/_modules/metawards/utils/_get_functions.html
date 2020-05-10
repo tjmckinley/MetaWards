@@ -98,6 +98,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -105,6 +111,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -194,7 +203,7 @@
 <span class="n">MetaFunction</span> <span class="o">=</span> <span class="n">_Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">accepts_stage</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">MetaFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="accepts_stage"><a class="viewcode-back" href="../../../api/generated/metawards.utils.accepts_stage.html#metawards.utils.accepts_stage">[docs]</a><span class="k">def</span> <span class="nf">accepts_stage</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">MetaFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return whether the passed function accepts the &quot;stage&quot; argument,</span>
 <span class="sd">       meaning that it can do different things for different day stages</span>
 
@@ -209,10 +218,10 @@
 <span class="sd">         Whether or not the function accepts the &quot;stage&quot; argument</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">inspect</span>
-    <span class="k">return</span> <span class="s2">&quot;stage&quot;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+    <span class="k">return</span> <span class="s2">&quot;stage&quot;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span></div>
 
 
-<div class="viewcode-block" id="get_functions"><a class="viewcode-back" href="../../../api/generated/metawards.utils.get_functions.html#metawards.utils.get_functions">[docs]</a><span class="k">def</span> <span class="nf">get_functions</span><span class="p">(</span><span class="n">stage</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">get_functions</span><span class="p">(</span><span class="n">stage</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                   <span class="n">network</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">Network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">],</span>
                   <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
                   <span class="n">infections</span><span class="p">:</span> <span class="n">Infections</span><span class="p">,</span>
@@ -306,7 +315,7 @@
         <span class="n">funcs</span> <span class="o">=</span> <span class="n">mover</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="n">iterator</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> \
             <span class="n">mixer</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="n">extractor</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">funcs</span></div>
+    <span class="k">return</span> <span class="n">funcs</span>
 
 
 <span class="k">def</span> <span class="nf">get_model_loop_functions</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_List</span><span class="p">[</span><span class="n">MetaFunction</span><span class="p">]:</span>
@@ -353,7 +362,7 @@
     <span class="k">return</span> <span class="n">funcs</span>
 
 
-<div class="viewcode-block" id="get_initialise_functions"><a class="viewcode-back" href="../../../api/generated/metawards.utils.get_initialise_functions.html#metawards.utils.get_initialise_functions">[docs]</a><span class="k">def</span> <span class="nf">get_initialise_functions</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_List</span><span class="p">[</span><span class="n">MetaFunction</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">get_initialise_functions</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_List</span><span class="p">[</span><span class="n">MetaFunction</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Convenience function that returns all of the functions</span>
 <span class="sd">       that should be called during the initialisation step</span>
 <span class="sd">       of the model (e.g. the &quot;initialise&quot; stage)</span>
@@ -388,10 +397,10 @@
 <span class="sd">         The list of all functions that should be called for this</span>
 <span class="sd">         stage of the day</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">get_functions</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="s2">&quot;initialise&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">get_functions</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="s2">&quot;initialise&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_finalise_functions"><a class="viewcode-back" href="../../../api/generated/metawards.utils.get_finalise_functions.html#metawards.utils.get_finalise_functions">[docs]</a><span class="k">def</span> <span class="nf">get_finalise_functions</span><span class="p">(</span><span class="n">trajectory</span><span class="p">:</span> <span class="n">Populations</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">get_finalise_functions</span><span class="p">(</span><span class="n">trajectory</span><span class="p">:</span> <span class="n">Populations</span><span class="p">,</span>
                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_List</span><span class="p">[</span><span class="n">MetaFunction</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Convenience function that returns all of the functions</span>
 <span class="sd">       that should be called during the finalisation step</span>
@@ -429,7 +438,7 @@
 <span class="sd">         The list of all functions that should be called for this</span>
 <span class="sd">         stage of the day</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">get_functions</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="s2">&quot;finalise&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">get_functions</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="s2">&quot;finalise&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">get_summary_functions</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">Network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">],</span>
@@ -520,7 +529,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 07, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

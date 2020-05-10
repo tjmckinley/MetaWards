@@ -98,6 +98,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -105,6 +111,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -174,7 +183,8 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;import_graphics_modules&quot;</span><span class="p">,</span>
            <span class="s2">&quot;save_summary_plots&quot;</span><span class="p">,</span>
            <span class="s2">&quot;create_overview_plot&quot;</span><span class="p">,</span>
-           <span class="s2">&quot;create_average_plot&quot;</span><span class="p">]</span>
+           <span class="s2">&quot;create_average_plot&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;create_demographics_plot&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="import_graphics_modules"><a class="viewcode-back" href="../../../api/generated/metawards.analysis.import_graphics_modules.html#metawards.analysis.import_graphics_modules">[docs]</a><span class="k">def</span> <span class="nf">import_graphics_modules</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -473,6 +483,107 @@
         <span class="k">return</span> <span class="n">figs</span></div>
 
 
+<span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a good color for the passed name&quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;overall&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;black&quot;</span>
+
+    <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="s2">&quot;pink&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">name</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># return a random colour</span>
+        <span class="kn">import</span> <span class="nn">random</span>
+        <span class="n">rgb</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">rgb</span>
+
+
+<span class="k">def</span> <span class="nf">create_demographics_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;jpg&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span>
+                             <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a demographics plot of the trajectory.csv data held in the</span>
+<span class="sd">       passed pandas dataframe. This returns the figure for you</span>
+<span class="sd">       to save if desired (or just call ``plt.show()`` to show</span>
+<span class="sd">       it in Jupyter)</span>
+
+<span class="sd">       Parameters</span>
+<span class="sd">       ----------</span>
+<span class="sd">       df : Pandas Dataframe</span>
+<span class="sd">         The pandas dataframe containing the data from trajectory.csv.bz2</span>
+<span class="sd">       output_dir: str</span>
+<span class="sd">         The name of the directory in which to draw the graphs. If this</span>
+<span class="sd">         is set then the graphs are written to files as they are generated</span>
+<span class="sd">         and the filenames of the figures are returned. This is necessary</span>
+<span class="sd">         when the number of graphs to draw is high and you don&#39;t want</span>
+<span class="sd">         to waste too much memory</span>
+<span class="sd">       format: str</span>
+<span class="sd">         Format to save the figures in if output_dir is supplied</span>
+<span class="sd">       dpi: int</span>
+<span class="sd">         dpi (dots per inch) resolution to save the figures with if</span>
+<span class="sd">         a bitmap format is used and output_dir is supplied</span>
+<span class="sd">       align_axes: bool</span>
+<span class="sd">         If true (default) then this will ensure that all of the plots</span>
+<span class="sd">         for different fingerprints are put on the same axis scale</span>
+<span class="sd">       verbose: bool</span>
+<span class="sd">         Whether or not to print progress to the screen</span>
+
+<span class="sd">       Returns</span>
+<span class="sd">       -------</span>
+<span class="sd">       fig</span>
+<span class="sd">         The matplotlib figure containing the demographics plot, or</span>
+<span class="sd">         the filename if output_dir was supplied</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">plt</span> <span class="o">=</span> <span class="n">import_graphics_modules</span><span class="p">()</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;IW&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+    <span class="c1"># see if any of these give colour names</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">demographics</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;demographic&quot;</span><span class="p">,</span>
+                            <span class="n">values</span><span class="o">=</span><span class="s2">&quot;day&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span>
+
+    <span class="k">for</span> <span class="n">demographic</span> <span class="ow">in</span> <span class="n">demographics</span><span class="p">:</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_color</span><span class="p">(</span><span class="n">demographic</span><span class="p">))</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;demographic&quot;</span><span class="p">,</span>
+                      <span class="n">values</span><span class="o">=</span><span class="n">column</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span>
+                                               <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">labelrotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Population&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+        <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">output_dir</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">os</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;demographics.</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving figure </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">filename</span>
+
+    <span class="k">return</span> <span class="n">fig</span>
+
+
 <div class="viewcode-block" id="save_summary_plots"><a class="viewcode-back" href="../../../api/generated/metawards.analysis.save_summary_plots.html#metawards.analysis.save_summary_plots">[docs]</a><span class="k">def</span> <span class="nf">save_summary_plots</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;jpg&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span>
                        <span class="n">align_axes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -523,9 +634,6 @@
 
     <span class="n">filenames</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating overview plot(s)...&quot;</span><span class="p">)</span>
-
     <span class="c1"># is this an output from multiple runs?</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">]</span>
@@ -534,16 +642,26 @@
         <span class="n">has_fingerprint</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">pass</span>
 
-    <span class="n">figs</span> <span class="o">=</span> <span class="n">create_overview_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
-                                <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span>
-                                <span class="n">align_axes</span><span class="o">=</span><span class="n">align_axes</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">figs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">filenames</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">figs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-    <span class="k">elif</span> <span class="n">figs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span>
+    <span class="c1"># does this have demographic data?</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;demographic&quot;</span><span class="p">]</span>
+        <span class="n">has_demographics</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">has_demographics</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">if</span> <span class="n">has_fingerprint</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating overview plot(s)...&quot;</span><span class="p">)</span>
+
+        <span class="n">figs</span> <span class="o">=</span> <span class="n">create_overview_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+                                    <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span>
+                                    <span class="n">align_axes</span><span class="o">=</span><span class="n">align_axes</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">figs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">filenames</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">figs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="n">figs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating average plot(s)...&quot;</span><span class="p">)</span>
 
@@ -555,6 +673,13 @@
             <span class="n">filenames</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">figs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="k">elif</span> <span class="n">figs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">has_demographics</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">create_demographics_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+                                       <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">filenames</span></div>
 </pre></div>
@@ -570,7 +695,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 07, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

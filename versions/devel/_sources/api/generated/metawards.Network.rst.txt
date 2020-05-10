@@ -17,6 +17,7 @@ metawards.Network
       ~Network.add_distances
       ~Network.assert_sane
       ~Network.build
+      ~Network.copy
       ~Network.get_min_max_distances
       ~Network.get_work_index
       ~Network.has_different_work_matrix

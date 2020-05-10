@@ -98,6 +98,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -105,6 +111,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -192,7 +201,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get_number_of_processes&quot;</span><span class="p">,</span> <span class="s2">&quot;run_models&quot;</span><span class="p">,</span> <span class="s2">&quot;redirect_output&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_number_of_processes"><a class="viewcode-back" href="../../../api/generated/metawards.utils.get_number_of_processes.html#metawards.utils.get_number_of_processes">[docs]</a><span class="k">def</span> <span class="nf">get_number_of_processes</span><span class="p">(</span><span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_number_of_processes</span><span class="p">(</span><span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nprocs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function works out how many processes have been set</span>
 <span class="sd">       by the paralellisation system called &#39;parallel_scheme&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -228,10 +237,10 @@
         <span class="k">return</span> <span class="n">nprocs</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unrecognised parallelisation scheme </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="sa">f</span><span class="s2">&quot;Unrecognised parallelisation scheme </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<span class="nd">@_contextmanager</span>
+<div class="viewcode-block" id="redirect_output"><a class="viewcode-back" href="../../../api/generated/metawards.utils.redirect_output.html#metawards.utils.redirect_output">[docs]</a><span class="nd">@_contextmanager</span>
 <span class="k">def</span> <span class="nf">redirect_output</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Nice way to redirect stdout and stderr - thanks to</span>
 <span class="sd">       Emil Stenström in</span>
@@ -251,7 +260,7 @@
         <span class="n">_sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">old_out</span>
         <span class="n">_sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">old_err</span>
         <span class="n">new_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">new_err</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">new_err</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <span class="k">def</span> <span class="nf">run_models</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">Network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">],</span>
@@ -264,7 +273,8 @@
                <span class="n">mixer</span><span class="p">:</span> <span class="n">MetaFunction</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                <span class="n">mover</span><span class="p">:</span> <span class="n">MetaFunction</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                <span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-               <span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">)</span> \
+               <span class="n">parallel_scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
+               <span class="n">debug_seeds</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">_List</span><span class="p">[</span><span class="n">_Tuple</span><span class="p">[</span><span class="n">VariableSet</span><span class="p">,</span> <span class="n">Population</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Run all of the models on the passed Network that are described</span>
 <span class="sd">       by the passed VariableSets</span>
@@ -306,6 +316,10 @@
 <span class="sd">       parallel_scheme: str</span>
 <span class="sd">         Which parallel scheme (multiprocessing, mpi4py or scoop) to use</span>
 <span class="sd">         to run multiple model runs in parallel</span>
+<span class="sd">       debug_seeds: bool (False)</span>
+<span class="sd">         Set this parameter to force all runs to use the same seed</span>
+<span class="sd">         (seed) - this is used for debugging and should never be set</span>
+<span class="sd">         in production runs</span>
 
 <span class="sd">       Returns</span>
 <span class="sd">       -------</span>
@@ -368,6 +382,14 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)):</span>
             <span class="n">seeds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">15324</span><span class="p">)</span>
 
+    <span class="k">elif</span> <span class="n">debug_seeds</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** WARNING: Using special model to make all jobs use the&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;** WARNING: Same random number seed </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;** WARNING: DO NOT USE IN PRODUCTION!&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)):</span>
+            <span class="n">seeds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">._ran_binomial</span> <span class="kn">import</span> <span class="n">seed_ran_binomial</span><span class="p">,</span> <span class="n">ran_int</span>
         <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
@@ -392,6 +414,8 @@
     <span class="k">if</span> <span class="n">nprocs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1"># no need to use a pool, as we will repeat this calculation</span>
         <span class="c1"># several times</span>
+        <span class="n">save_network</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">variable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>
             <span class="n">seed</span> <span class="o">=</span> <span class="n">seeds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">outdir</span> <span class="o">=</span> <span class="n">outdirs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -428,6 +452,11 @@
                 <span class="nb">print</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="c1"># end of OutputDirs context manager</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># still another run to perform, restore the network</span>
+                <span class="c1"># to the original state</span>
+                <span class="n">network</span> <span class="o">=</span> <span class="n">save_network</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># end of loop over variable sets</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">._worker</span> <span class="kn">import</span> <span class="n">run_worker</span>
@@ -550,7 +579,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 07, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>
