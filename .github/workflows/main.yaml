@@ -65,16 +65,20 @@ jobs:
         run: |
           pip install --upgrade setuptools wheel
           python setup.py bdist_wheel
-        if: contains(github.ref, 'refs/tags/') && github.event_name == 'push'
+        if: github.event_name == 'push' && (matrix.config.os == 'windows-latest' || matrix.config.os == 'macos-latest')
+      - name: Make manylinux package
+        run: |
+          python actions/build_manylinux.py
+        if: github.event_name == 'push' && matrix.python-version == 3.8 && matrix.config.os == 'ubuntu-latest'
       - name: Make sdist package
         run: python setup.py sdist
-        if: matrix.python-version == 3.8 && matrix.config.os == 'ubuntu-latest' && contains(github.ref, 'refs/tags/') && github.event_name == 'push'
+        if: github.event_name == 'push' && matrix.python-version == 3.8 && matrix.config.os == 'ubuntu-latest'
       - name: Upload sdist/bdist package(s)
         uses: actions/upload-artifact@v1
         with:
           name: dist
           path: ./dist
-        if: contains(github.ref, 'refs/tags/') && github.event_name == 'push'
+        if: github.event_name == 'push'
       - name: Build Docs
         run: |
           make install

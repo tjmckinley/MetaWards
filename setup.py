@@ -109,6 +109,8 @@ def setup_package():
                     nthreads = omp_get_num_threads();
                     printf("I am thread %d of %d\n", thread_id, nthreads);
                 }
+
+                return 0;
             }
             """
 
