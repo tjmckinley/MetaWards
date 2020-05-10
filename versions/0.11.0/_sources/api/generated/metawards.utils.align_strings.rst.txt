@@ -1,0 +1,6 @@
+metawards.utils.align\_strings
+==============================
+
+.. currentmodule:: metawards.utils
+
+.. autofunction:: align_strings
