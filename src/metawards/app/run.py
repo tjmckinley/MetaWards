@@ -399,7 +399,7 @@ def scoop_supervisor(hostfile, args):
 
     # Now write a new hostfile that round-robins the MPI tasks over
     # the nodes for 'tasks_per_node' runs
-    hostfile = "_metawards_hostfile"
+    hostfile = f"_metawards_hostfile_{os.getpid()}"
     print(f"Writing hostfile to {hostfile}")
 
     with open(hostfile, "w") as FILE:
@@ -437,6 +437,10 @@ def scoop_supervisor(hostfile, args):
         print("ERROR: Something went wrong!")
         print(f"{e.__class__}: {e}")
         sys.exit(-1)
+
+    # clean up the hostfile afterwards... (we leave it if something
+    # went wrong as it may help debugging)
+    os.unlink(hostfile)
 
     print("Scoop processes completed successfully")
 
@@ -501,7 +505,7 @@ def mpi_supervisor(hostfile, args):
 
     # Now write a new hostfile that round-robins the MPI tasks over
     # the nodes for 'tasks_per_node' runs
-    hostfile = "_metawards_hostfile"
+    hostfile = f"_metawards_hostfile_{os.getpid()}"
     print(f"Writing hostfile to {hostfile}")
 
     with open(hostfile, "w") as FILE:
@@ -556,6 +560,10 @@ def mpi_supervisor(hostfile, args):
         print("ERROR: Something went wrong!")
         print(f"{e.__class__}: {e}")
         sys.exit(-1)
+
+    # clean up the hostfile afterwards... (we leave it if something
+    # went wrong as it may help debugging)
+    os.unlink(hostfile)
 
     print("MPI processes completed successfully")
 
