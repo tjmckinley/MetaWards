@@ -98,6 +98,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -105,6 +111,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -171,11 +180,16 @@
             
   <h1>Source code for metawards.extractors._extract_custom</h1><div class="highlight"><pre>
 <span></span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span> <span class="k">as</span> <span class="n">_Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span>
+<span class="kn">from</span> <span class="nn">..utils._get_functions</span> <span class="kn">import</span> <span class="n">MetaFunction</span><span class="p">,</span> <span class="n">accepts_stage</span>
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;extract_custom&quot;</span><span class="p">,</span>
            <span class="s2">&quot;build_custom_extractor&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">build_custom_extractor</span><span class="p">(</span><span class="n">custom_function</span><span class="p">,</span> <span class="n">parent_name</span><span class="o">=</span><span class="s2">&quot;__main__&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">build_custom_extractor</span><span class="p">(</span><span class="n">custom_function</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MetaFunction</span><span class="p">],</span>
+                           <span class="n">parent_name</span><span class="o">=</span><span class="s2">&quot;__main__&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MetaFunction</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Build and return a custom extractor from the passed</span>
 <span class="sd">       function. This will wrap &#39;extract_custom&#39; around</span>
 <span class="sd">       the function to double-check that the custom</span>
@@ -183,7 +197,7 @@
 
 <span class="sd">       Parameters</span>
 <span class="sd">       ----------</span>
-<span class="sd">       custom_function</span>
+<span class="sd">       custom_function: MetaFunction or str</span>
 <span class="sd">         This can either be a function, which will be wrapped and</span>
 <span class="sd">         returned, or it can be a string. If it is a string then</span>
 <span class="sd">         we will attempt to locate or import the function associated</span>
@@ -202,7 +216,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        extractor</span>
+<span class="sd">        extractor: MetaFunction</span>
 <span class="sd">          The wrapped extractor that is suitable for using in the extract</span>
 <span class="sd">          function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -254,44 +268,9 @@
             <span class="n">func_name</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">func_module</span> <span class="o">=</span> <span class="n">custom_function</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">importlib</span>
-            <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">func_module</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">SyntaxError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Syntax error when importing </span><span class="si">{</span><span class="n">func_module</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Line </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">lineno</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="s1">&#39; &#39;</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Line </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">lineno</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="s1">&#39; &#39;</span><span class="si">}</span><span class="se">\\</span><span class="s2">|/&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Line </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">lineno</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">module</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">module</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="kn">from</span> <span class="nn">..utils._import_module</span> <span class="kn">import</span> <span class="n">import_module</span>
 
-        <span class="k">if</span> <span class="n">module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">importlib.util</span>
-                <span class="kn">import</span> <span class="nn">os</span>
-
-                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">func_module</span><span class="p">):</span>
-                    <span class="n">pyfile</span> <span class="o">=</span> <span class="n">func_module</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">pyfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func_module</span><span class="si">}</span><span class="s2">.py&quot;</span>
-
-                <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span>
-                                                <span class="n">func_module</span><span class="p">,</span>
-                                                <span class="n">pyfile</span><span class="p">)</span>
-
-                <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
-                <span class="n">spec</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">exec_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded iterator from </span><span class="si">{</span><span class="n">pyfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">SyntaxError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Syntax error when reading </span><span class="si">{</span><span class="n">pyfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Line </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">lineno</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="s1">&#39; &#39;</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Line </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">lineno</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="s1">&#39; &#39;</span><span class="si">}</span><span class="se">\\</span><span class="s2">|/&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Line </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">lineno</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="k">pass</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">func_module</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># we cannot find the extractor</span>
@@ -343,74 +322,46 @@
                                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="extract_custom"><a class="viewcode-back" href="../../../api/generated/metawards.extractors.extract_custom.html#metawards.extractors.extract_custom">[docs]</a><span class="k">def</span> <span class="nf">extract_custom</span><span class="p">(</span><span class="n">custom_function</span><span class="p">,</span>
-                   <span class="n">setup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="extract_custom"><a class="viewcode-back" href="../../../api/generated/metawards.extractors.extract_custom.html#metawards.extractors.extract_custom">[docs]</a><span class="k">def</span> <span class="nf">extract_custom</span><span class="p">(</span><span class="n">custom_function</span><span class="p">:</span> <span class="n">MetaFunction</span><span class="p">,</span>
+                   <span class="n">stage</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_List</span><span class="p">[</span><span class="n">MetaFunction</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;This returns the default list of &#39;output_XXX&#39; functions that</span>
-<span class="sd">       are called in sequence to extract data after each iteration</span>
-<span class="sd">       of the model run.</span>
-
-<span class="sd">       This extractor provides a custom extractor that uses</span>
-<span class="sd">       &#39;custom_function&#39; passed from the user. This extractor makes</span>
-<span class="sd">       sure that &#39;setup&#39; is called correctly and that the functions</span>
-<span class="sd">       needed by &#39;extract_core&#39; are called first.</span>
+<span class="sd">       are called in sequence for each iteration of the model run.</span>
+<span class="sd">       This provides a custom extractor that uses</span>
+<span class="sd">       &#39;custom_function&#39; passed from the user. This makes</span>
+<span class="sd">       sure that if &#39;stage&#39; is not handled by the custom function,</span>
+<span class="sd">       then the &quot;extract_default&quot; functions for that stage</span>
+<span class="sd">       are correctly called for all stages except &quot;analyse&quot;</span>
 
 <span class="sd">       Parameters</span>
 <span class="sd">       ----------</span>
-<span class="sd">       custom_function</span>
+<span class="sd">       custom_function: MetaFunction</span>
 <span class="sd">         A custom user-supplied function that returns the</span>
 <span class="sd">         functions that the user would like to be called for</span>
 <span class="sd">         each step.</span>
-<span class="sd">       setup: bool</span>
-<span class="sd">         Whether or not to return the functions used to setup the</span>
-<span class="sd">         space and input for the output_XXX functions returned by</span>
-<span class="sd">         this extractor. This is called once at the start of a run</span>
-<span class="sd">         to return the functions that must be called to setup the</span>
-<span class="sd">         output. Note that most extractors don&#39;t need any setup.</span>
+<span class="sd">       stage: str</span>
+<span class="sd">         The stage of the day/model</span>
 
 <span class="sd">       Returns</span>
 <span class="sd">       -------</span>
-<span class="sd">       funcs: List[function]</span>
-<span class="sd">         The list of functions that ```extract``` will call in sequence</span>
+<span class="sd">       funcs: List[MetaFunction]</span>
+<span class="sd">         The list of functions that will be called in sequence</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;setup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">setup</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;stage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stage</span>
 
-    <span class="kn">from</span> <span class="nn">._extract_core</span> <span class="kn">import</span> <span class="n">extract_core</span>
-    <span class="kn">from</span> <span class="nn">._extract_default</span> <span class="kn">import</span> <span class="n">extractor_needs_setup</span>
+    <span class="k">if</span> <span class="n">custom_function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">._extract_default</span> <span class="kn">import</span> <span class="n">extract_default</span>
+        <span class="k">return</span> <span class="n">extract_default</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">setup</span><span class="p">:</span>
-        <span class="c1"># Return the functions needed to initialise this extractor</span>
-        <span class="n">core_funcs</span> <span class="o">=</span> <span class="n">extract_core</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">extractor_needs_setup</span><span class="p">(</span><span class="n">custom_function</span><span class="p">):</span>
-            <span class="n">custom_funcs</span> <span class="o">=</span> <span class="n">custom_function</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">custom_funcs</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;analyse&quot;</span> <span class="ow">or</span> <span class="n">accepts_stage</span><span class="p">(</span><span class="n">custom_function</span><span class="p">):</span>
+        <span class="c1"># most custom functions operate at the &#39;analyse&#39; stage,</span>
+        <span class="c1"># so extractors that don&#39;t specify a stage are assumed to</span>
+        <span class="c1"># only operate here (every other stage is &#39;extract_default&#39;)</span>
+        <span class="k">return</span> <span class="n">custom_function</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">core_funcs</span> <span class="o">=</span> <span class="n">extract_core</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">custom_funcs</span> <span class="o">=</span> <span class="n">custom_function</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="c1"># make sure that the core functions are called, and that</span>
-    <span class="c1"># their call is before the custom function (unless the user</span>
-    <span class="c1"># has moved them, which we hope was for a good reason!)</span>
-    <span class="k">if</span> <span class="n">core_funcs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">core_funcs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">custom_funcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">custom_funcs</span>
-
-    <span class="k">elif</span> <span class="n">custom_funcs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">custom_funcs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">core_funcs</span>
-
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">core_funcs</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="c1"># move backwards so that the first custom function</span>
-            <span class="c1"># is prepended last</span>
-            <span class="k">if</span> <span class="n">core_funcs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">custom_funcs</span><span class="p">:</span>
-                <span class="n">custom_funcs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">core_funcs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
-        <span class="k">return</span> <span class="n">custom_funcs</span></div>
+        <span class="kn">from</span> <span class="nn">._extract_default</span> <span class="kn">import</span> <span class="n">extract_default</span>
+        <span class="k">return</span> <span class="n">extract_default</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -424,7 +375,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 27, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

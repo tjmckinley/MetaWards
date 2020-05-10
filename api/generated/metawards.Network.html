@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="metawards.Node" href="metawards.Node.html" />
+    <link rel="next" title="metawards.Networks" href="metawards.Networks.html" />
     <link rel="prev" title="metawards.Links" href="metawards.Links.html" /> 
 </head>
 
@@ -99,6 +99,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_app.html">MetaWards.app</a></li>
@@ -112,6 +118,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_iterators.html">MetaWards.iterators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_extractors.html">MetaWards.extractors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_mixers.html">MetaWards.mixers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_movers.html">MetaWards.movers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_analysis.html">MetaWards.analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_utils.html">MetaWards.utils</a></li>
 </ul>
@@ -122,6 +130,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -187,7 +198,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="metawards.Node.html" class="btn btn-neutral float-right" title="metawards.Node" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards.Networks.html" class="btn btn-neutral float-right" title="metawards.Networks" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="metawards.Links.html" class="btn btn-neutral float-left" title="metawards.Links" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -203,14 +214,13 @@
 <h1>metawards.Network<a class="headerlink" href="#metawards-network" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="metawards.Network">
-<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Network</code><span class="sig-paren">(</span><em>nodes: metawards._nodes.Nodes = None</em>, <em>to_links: metawards._links.Links = None</em>, <em>play: metawards._links.Links = None</em>, <em>weekend: metawards._links.Links = None</em>, <em>nnodes: int = 0</em>, <em>nlinks: int = 0</em>, <em>plinks: int = 0</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>info: metawards._wardinfo.WardInfos = WardInfos(wards=[])</em>, <em>to_seed: List[int] = None</em>, <em>params: metawards._parameters.Parameters = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Network</code><span class="sig-paren">(</span><em>name: str = None</em>, <em>nodes: metawards._nodes.Nodes = None</em>, <em>links: metawards._links.Links = None</em>, <em>play: metawards._links.Links = None</em>, <em>nnodes: int = 0</em>, <em>nlinks: int = 0</em>, <em>nplay: int = 0</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>info: metawards._wardinfo.WardInfos = WardInfos(wards=[])</em>, <em>to_seed: List[int] = None</em>, <em>params: metawards._parameters.Parameters = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class represents a network of wards. The network comprises
 nodes (representing wards), connected with links which represent
-work (predictable) links. There are also additional links for
-play (unpredictable/random) and weekend</p>
+work (predictable movements) and play (unpredictable movements)</p>
 <dl class="method">
 <dt id="metawards.Network.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>nodes: metawards._nodes.Nodes = None</em>, <em>to_links: metawards._links.Links = None</em>, <em>play: metawards._links.Links = None</em>, <em>weekend: metawards._links.Links = None</em>, <em>nnodes: int = 0</em>, <em>nlinks: int = 0</em>, <em>plinks: int = 0</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>info: metawards._wardinfo.WardInfos = WardInfos(wards=[])</em>, <em>to_seed: List[int] = None</em>, <em>params: metawards._parameters.Parameters = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Network.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>name: str = None</em>, <em>nodes: metawards._nodes.Nodes = None</em>, <em>links: metawards._links.Links = None</em>, <em>play: metawards._links.Links = None</em>, <em>nnodes: int = 0</em>, <em>nlinks: int = 0</em>, <em>nplay: int = 0</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>info: metawards._wardinfo.WardInfos = WardInfos(wards=[])</em>, <em>to_seed: List[int] = None</em>, <em>params: metawards._parameters.Parameters = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Network.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
@@ -220,7 +230,7 @@ play (unpredictable/random) and weekend</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.__init__" title="metawards.Network.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(nodes,&nbsp;to_links,&nbsp;play,&nbsp;weekend,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.__init__" title="metawards.Network.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(name,&nbsp;nodes,&nbsp;links,&nbsp;play,&nbsp;nnodes,&nbsp;…)</td>
 <td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Network.add_distances" title="metawards.Network.add_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_distances</span></code></a>([distance_function])</td>
@@ -232,26 +242,41 @@ play (unpredictable/random) and weekend</p>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Network.build" title="metawards.Network.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(params,&nbsp;calculate_distances[,&nbsp;…])</td>
 <td>Builds and returns a new Network that is described by the passed parameters.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.get_min_max_distances" title="metawards.Network.get_min_max_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_min_max_distances</span></code></a>(nthreads[,&nbsp;profiler])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.copy" title="metawards.Network.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</td>
+<td>Return a copy of this Network.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.get_min_max_distances" title="metawards.Network.get_min_max_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_min_max_distances</span></code></a>(nthreads[,&nbsp;profiler])</td>
 <td>Calculate and return the minimum and maximum distances between nodes in the network</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.initialise_infections" title="metawards.Network.initialise_infections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialise_infections</span></code></a>(nthreads)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.get_work_index" title="metawards.Network.get_work_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_work_index</span></code></a>()</td>
+<td>Return the mapping from the index in this sub-networks work matrix to the mapping in the overall network’s work matrix</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.has_different_work_matrix" title="metawards.Network.has_different_work_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_different_work_matrix</span></code></a>()</td>
+<td>Return whether or not the sub-network work matrix is different to that of the overall network</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.initialise_infections" title="metawards.Network.initialise_infections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialise_infections</span></code></a>(nthreads)</td>
 <td>Initialise and return the space that will be used to track infections</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.move_from_play_to_work" title="metawards.Network.move_from_play_to_work"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_from_play_to_work</span></code></a>(nthreads[,&nbsp;profiler])</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.move_from_play_to_work" title="metawards.Network.move_from_play_to_work"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_from_play_to_work</span></code></a>(nthreads[,&nbsp;profiler])</td>
 <td>Move the population from play to work</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.rescale_play_matrix" title="metawards.Network.rescale_play_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_play_matrix</span></code></a>(nthreads[,&nbsp;profiler])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.rescale_play_matrix" title="metawards.Network.rescale_play_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_play_matrix</span></code></a>(nthreads[,&nbsp;profiler])</td>
 <td>Rescale the play matrix</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.reset_everything" title="metawards.Network.reset_everything"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_everything</span></code></a>(nthreads[,&nbsp;profiler])</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.reset_everything" title="metawards.Network.reset_everything"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_everything</span></code></a>(nthreads[,&nbsp;profiler])</td>
 <td>Resets the network ready for a new run of the model</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.run" title="metawards.Network.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(population,&nbsp;output_dir,&nbsp;seed,&nbsp;nsteps,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.run" title="metawards.Network.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(population,&nbsp;output_dir,&nbsp;seed,&nbsp;nsteps,&nbsp;…)</td>
 <td>Run the model simulation for the passed population.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.update" title="metawards.Network.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(params,&nbsp;nthreads,&nbsp;profile)</td>
-<td>Update this network with a new set of parameters.</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.scale_susceptibles" title="metawards.Network.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio,&nbsp;work_ratio,&nbsp;play_ratio)</td>
+<td>Scale the number of susceptibles in this Network by the passed scale ratios.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.specialise" title="metawards.Network.specialise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specialise</span></code></a>(demographic[,&nbsp;profiler])</td>
+<td>Return a copy of this network that has been specialised for the passed demographic.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.update" title="metawards.Network.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(params[,&nbsp;demographics,&nbsp;profiler])</td>
+<td>Update this network with a new set of parameters (and optionally demographics).</td>
 </tr>
 </tbody>
 </table>
@@ -265,11 +290,17 @@ play (unpredictable/random) and weekend</p>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.info" title="metawards.Network.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a></td>
 <td>The metadata for all of the wards</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.max_links" title="metawards.Network.max_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_links</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.links" title="metawards.Network.links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">links</span></code></a></td>
+<td>The links between nodes (work)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.max_links" title="metawards.Network.max_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_links</span></code></a></td>
 <td>The maximum allowable number of links in the network</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.max_nodes" title="metawards.Network.max_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_nodes</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.max_nodes" title="metawards.Network.max_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_nodes</span></code></a></td>
 <td>The maximum allowable number of nodes in the network</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.name" title="metawards.Network.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></td>
+<td>The name of the Network.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Network.nlinks" title="metawards.Network.nlinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlinks</span></code></a></td>
 <td>The number of links in the network</td>
@@ -280,23 +311,20 @@ play (unpredictable/random) and weekend</p>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Network.nodes" title="metawards.Network.nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes</span></code></a></td>
 <td>The list of nodes (wards) in the network</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.params" title="metawards.Network.params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">params</span></code></a></td>
-<td>The parameters used to generate this network</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.play" title="metawards.Network.play"><code class="xref py py-obj docutils literal notranslate"><span class="pre">play</span></code></a></td>
-<td>The links between nodes (play)</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.plinks" title="metawards.Network.plinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plinks</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.nplay" title="metawards.Network.nplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nplay</span></code></a></td>
 <td>The number of play links in the network</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.to_links" title="metawards.Network.to_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_links</span></code></a></td>
-<td>The links between nodes (work)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.params" title="metawards.Network.params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">params</span></code></a></td>
+<td>The parameters used to generate this network</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.play" title="metawards.Network.play"><code class="xref py py-obj docutils literal notranslate"><span class="pre">play</span></code></a></td>
+<td>The links between nodes (play)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.population" title="metawards.Network.population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">population</span></code></a></td>
+<td>Return the total population in the network</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.to_seed" title="metawards.Network.to_seed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_seed</span></code></a></td>
 <td>To seed provides additional seeding information</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.weekend" title="metawards.Network.weekend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weekend</span></code></a></td>
-<td>The links between nodes (weekend)</td>
 </tr>
 </tbody>
 </table>
@@ -321,7 +349,7 @@ to check every time the network is accessed</p>
 
 <dl class="staticmethod">
 <dt id="metawards.Network.build">
-<em class="property">static </em><code class="descname">build</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>calculate_distances: bool = True</em>, <em>build_function=None</em>, <em>distance_function=None</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>nthreads: int = 1</em>, <em>profile: bool = True</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.build" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">build</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>calculate_distances: bool = True</em>, <em>build_function=None</em>, <em>distance_function=None</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds and returns a new Network that is described by the
 passed parameters. If ‘calculate_distances’ is True, then
 this will also read in the ward positions and add
@@ -338,10 +366,31 @@ will be shrunk back after building.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="metawards.Network.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of this Network. Use this to hold a copy of
+the network that you can use to reset between runs</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.Network.get_min_max_distances">
 <code class="descname">get_min_max_distances</code><span class="sig-paren">(</span><em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.get_min_max_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.get_min_max_distances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and return the minimum and maximum distances
 between nodes in the network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Network.get_work_index">
+<code class="descname">get_work_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.get_work_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.get_work_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mapping from the index in this sub-networks work
+matrix to the mapping in the overall network’s work matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Network.has_different_work_matrix">
+<code class="descname">has_different_work_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.has_different_work_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.has_different_work_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not the sub-network work matrix
+is different to that of the overall network</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -355,6 +404,12 @@ between nodes in the network</p>
 <code class="descname">initialise_infections</code><span class="sig-paren">(</span><em>nthreads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.initialise_infections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.initialise_infections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialise and return the space that will be used
 to track infections</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Network.links">
+<code class="descname">links</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Network.links" title="Permalink to this definition">¶</a></dt>
+<dd><p>The links between nodes (work)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -376,6 +431,13 @@ to track infections</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="metawards.Network.name">
+<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Network.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the Network. This equals the name of the demographic
+if this is a multi-demographic sub-network</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="metawards.Network.nlinks">
 <code class="descname">nlinks</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Network.nlinks" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of links in the network</p>
@@ -394,6 +456,12 @@ to track infections</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="metawards.Network.nplay">
+<code class="descname">nplay</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Network.nplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of play links in the network</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="metawards.Network.params">
 <code class="descname">params</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Network.params" title="Permalink to this definition">¶</a></dt>
 <dd><p>The parameters used to generate this network</p>
@@ -406,9 +474,9 @@ to track infections</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="metawards.Network.plinks">
-<code class="descname">plinks</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Network.plinks" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of play links in the network</p>
+<dt id="metawards.Network.population">
+<code class="descname">population</code><a class="headerlink" href="#metawards.Network.population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the total population in the network</p>
 </dd></dl>
 
 <dl class="method">
@@ -425,7 +493,7 @@ to track infections</p>
 
 <dl class="method">
 <dt id="metawards.Network.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>population: metawards._population.Population</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>seed: int = None</em>, <em>nsteps: int = None</em>, <em>profile: bool = True</em>, <em>s: int = None</em>, <em>nthreads: int = None</em>, <em>iterator=None</em>, <em>extractor=None</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>population: metawards._population.Population</em>, <em>output_dir: metawards._outputfiles.OutputFiles</em>, <em>seed: int = None</em>, <em>nsteps: int = None</em>, <em>nthreads: int = None</em>, <em>iterator=None</em>, <em>extractor=None</em>, <em>mixer=None</em>, <em>mover=None</em>, <em>profiler=None</em><span class="sig-paren">)</span> &#x2192; metawards._population.Population<a class="reference internal" href="../../_modules/metawards/_network.html#Network.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the model simulation for the passed population.
 The random number seed is given in ‘seed’. If this
 is None, then a random seed is used.</p>
@@ -433,8 +501,6 @@ is None, then a random seed is used.</p>
 <p>The simulation will continue until the infection has
 died out or until ‘nsteps’ has passed (keep as ‘None’
 to prevent exiting early).</p>
-<p>s is used to select the ‘to_seed’ entry to seed
-the nodes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -448,15 +514,16 @@ outbreak</li>
 None then a very random random number seed will be used</li>
 <li><strong>nsteps</strong> (<em>int</em>) – The maximum number of steps to run in the outbreak. If None
 then run until the outbreak has finished</li>
-<li><strong>profile</strong> (<em>bool</em>) – Whether or not to profile the model run and print out the
-results</li>
 <li><strong>profiler</strong> (<a class="reference internal" href="metawards.utils.Profiler.html#metawards.utils.Profiler" title="metawards.utils.Profiler"><em>Profiler</em></a>) – The profiler to use - a new one is created if one isn’t passed</li>
-<li><strong>s</strong> (<em>int</em>) – Index of the seeding parameter to use</li>
 <li><strong>nthreads</strong> (<em>int</em>) – Number of threads over which to parallelise this model run</li>
 <li><strong>iterator</strong> (<em>function</em>) – Function that is called at each iteration to get the functions
 that are used to advance the model</li>
 <li><strong>extractor</strong> (<em>function</em>) – Function that is called at each iteration to get the functions
 that are used to extract data for analysis or writing to files</li>
+<li><strong>mixer</strong> (<em>function</em>) – Function that is used to mix demographic data. Not used
+by a single Network (used by Networks)</li>
+<li><strong>mover</strong> (<em>function</em>) – Function that is used to move the population between different
+demographics. Not used by a single Network (used by Networks)</li>
 </ul>
 </td>
 </tr>
@@ -464,10 +531,57 @@ that are used to extract data for analysis or writing to files</li>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="metawards.Network.to_links">
-<code class="descname">to_links</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Network.to_links" title="Permalink to this definition">¶</a></dt>
-<dd><p>The links between nodes (work)</p>
+<dl class="method">
+<dt id="metawards.Network.scale_susceptibles">
+<code class="descname">scale_susceptibles</code><span class="sig-paren">(</span><em>ratio: any = None</em>, <em>work_ratio: any = None</em>, <em>play_ratio: any = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.scale_susceptibles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.scale_susceptibles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale the number of susceptibles in this Network
+by the passed scale ratios. These can be values, e.g.
+ratio = 2.0 will scale the total number of susceptibles
+in each ward by 2.0. They can also be lists of values,
+where ward[i] will be scaled by ratio[i]. They can also
+be dictionaries, e.g. ward[i] scaled by ratio[i]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ratio</strong> (<em>None</em><em>, </em><em>float</em><em>, </em><em>list</em><em> or </em><em>dict</em>) – The amount by which to scale the total population of
+susceptibles - evenly scales the work and play populations</li>
+<li><strong>work_ratio</strong> (<em>None</em><em>, </em><em>float</em><em>, </em><em>list</em><em> or </em><em>dict</em>) – Scale only the work population of susceptibles</li>
+<li><strong>play_ratio</strong> (<em>None</em><em>, </em><em>float</em><em>, </em><em>list</em><em> or </em><em>dict</em>) – Scale only the play population of susceptibles</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Network.specialise">
+<code class="descname">specialise</code><span class="sig-paren">(</span><em>demographic</em>, <em>profiler=None</em>, <em>nthreads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.specialise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.specialise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of this network that has been specialised
+for the passed demographic. The returned network will
+contain only members of that demographic, with the
+parameters of the network adjusted according to the rules
+of that demographic</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>demographic</strong> (<a class="reference internal" href="metawards.Demographic.html#metawards.Demographic" title="metawards.Demographic"><em>Demographic</em></a>) – The demographic with which to specialise</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>network</strong> – The specialised network</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#metawards.Network" title="metawards.Network">Network</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -478,17 +592,36 @@ that are used to extract data for analysis or writing to files</li>
 
 <dl class="method">
 <dt id="metawards.Network.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>nthreads: int = 1</em>, <em>profile: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update this network with a new set of parameters.
-This is used to update the parameters for the network
+<code class="descname">update</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>demographics=None</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update this network with a new set of parameters
+(and optionally demographics).</p>
+<p>This is used to update the parameters for the network
 for a new run. The network will be reset
 and ready for a new run.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="metawards.Network.weekend">
-<code class="descname">weekend</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Network.weekend" title="Permalink to this definition">¶</a></dt>
-<dd><p>The links between nodes (weekend)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>params</strong> (<a class="reference internal" href="metawards.Parameters.html#metawards.Parameters" title="metawards.Parameters"><em>Parameters</em></a>) – The new parameters with which to update this Network</li>
+<li><strong>demographics</strong> (<a class="reference internal" href="metawards.Demographics.html#metawards.Demographics" title="metawards.Demographics"><em>Demographics</em></a>) – The new demographics with which to update this Network.
+Note that this will return a Network object that contains
+the specilisation of this Network</li>
+<li><strong>nthreads</strong> (<em>int</em>) – Number of threads over which to parallelise this update</li>
+<li><strong>profiler</strong> (<a class="reference internal" href="metawards.utils.Profiler.html#metawards.utils.Profiler" title="metawards.utils.Profiler"><em>Profiler</em></a>) – The profiler used to profile this update</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>network</strong> – Either this Network after it has been updated, or the
+resulting Networks from specialising this Network using
+Demographics</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#metawards.Network" title="metawards.Network">Network</a> or <a class="reference internal" href="metawards.Networks.html#metawards.Networks" title="metawards.Networks">Networks</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -503,7 +636,7 @@ and ready for a new run.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="metawards.Node.html" class="btn btn-neutral float-right" title="metawards.Node" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards.Networks.html" class="btn btn-neutral float-right" title="metawards.Networks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="metawards.Links.html" class="btn btn-neutral float-left" title="metawards.Links" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -516,7 +649,7 @@ and ready for a new run.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 27, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

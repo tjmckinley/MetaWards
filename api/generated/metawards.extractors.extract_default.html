@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="metawards.extractors.extract_none" href="metawards.extractors.extract_none.html" />
+    <link rel="next" title="metawards.extractors.extract_large" href="metawards.extractors.extract_large.html" />
     <link rel="prev" title="metawards.extractors.extract_custom" href="metawards.extractors.extract_custom.html" /> 
 </head>
 
@@ -99,6 +99,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_app.html">MetaWards.app</a></li>
@@ -111,6 +117,8 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_mixers.html">MetaWards.mixers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_movers.html">MetaWards.movers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_analysis.html">MetaWards.analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_utils.html">MetaWards.utils</a></li>
 </ul>
@@ -121,6 +129,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -186,7 +197,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="metawards.extractors.extract_none.html" class="btn btn-neutral float-right" title="metawards.extractors.extract_none" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards.extractors.extract_large.html" class="btn btn-neutral float-right" title="metawards.extractors.extract_large" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="metawards.extractors.extract_custom.html" class="btn btn-neutral float-left" title="metawards.extractors.extract_custom" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -202,7 +213,7 @@
 <h1>metawards.extractors.extract_default<a class="headerlink" href="#metawards-extractors-extract-default" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="metawards.extractors.extract_default">
-<code class="descclassname">metawards.extractors.</code><code class="descname">extract_default</code><span class="sig-paren">(</span><em>setup=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/extractors/_extract_default.html#extract_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.extractors.extract_default" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">metawards.extractors.</code><code class="descname">extract_default</code><span class="sig-paren">(</span><em>stage: str</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; List[Callable[[...], None]]<a class="reference internal" href="../../_modules/metawards/extractors/_extract_default.html#extract_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.extractors.extract_default" title="Permalink to this definition">¶</a></dt>
 <dd><p>This returns the default list of ‘output_XXX’ functions that
 are called in sequence for each iteration of the model run.
 These functions are used to output data to files for
@@ -211,24 +222,11 @@ future processing</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>nthreads</strong> (<em>int</em>) – The number of threads that will be used for each function.
-If this is 1, then the serial versions of the functions will
-be returned, else the parallel (OpenMP) versions will be
-returned</li>
-<li><strong>setup</strong> (<em>bool</em>) – Whether or not to return the functions used to setup the
-space and output files for the output_XXX functions returned by
-this iterator. This is called once at the start of a run
-to return the functions that must be called to setup the
-model</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>stage</strong> (<em>str</em>) – Which stage of the day is to be modelled</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>funcs</strong> – The list of functions that <code class="docutils literal notranslate"><span class="pre">`extract`</span></code> will call in sequence</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>funcs</strong> – The list of functions that will be called in sequence</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">List[function]</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">List[MetaFunction]</td>
 </tr>
 </tbody>
 </table>
@@ -244,7 +242,7 @@ model</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="metawards.extractors.extract_none.html" class="btn btn-neutral float-right" title="metawards.extractors.extract_none" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards.extractors.extract_large.html" class="btn btn-neutral float-right" title="metawards.extractors.extract_large" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="metawards.extractors.extract_custom.html" class="btn btn-neutral float-left" title="metawards.extractors.extract_custom" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -257,7 +255,7 @@ model</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 27, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

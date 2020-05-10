@@ -105,15 +105,21 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="03_regional.html">Extracting by location</a></li>
-<li class="toctree-l3"><a class="reference internal" href="04_iterators.html">Combining extractors with iterators</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part05.html">Part 5 - Modelling multiple demographics</a></li>
 </ul>
 </li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cluster_usage.html">Running on a cluster</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
@@ -123,6 +129,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -201,8 +210,8 @@
   <div class="section" id="accumulating-into-a-workspace">
 <h1>Accumulating into a Workspace<a class="headerlink" href="#accumulating-into-a-workspace" title="Permalink to this headline">¶</a></h1>
 <p>The default function that is always called by
-<a class="reference internal" href="../../api/generated/metawards.utils.extract.html#metawards.utils.extract" title="metawards.utils.extract"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code></a> is
-<a class="reference internal" href="../../api/generated/metawards.extractors.extract_core.html#metawards.extractors.extract_core" title="metawards.extractors.extract_core"><code class="xref py py-meth docutils literal notranslate"><span class="pre">metawards.extractors.extract_core()</span></code></a>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code> is
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">metawards.extractors.extract_core()</span></code>.</p>
 <p>This core extractor performs the bulk of the work of accumulating all of
 the infection data into a single <a class="reference internal" href="../../api/generated/metawards.Workspace.html#metawards.Workspace" title="metawards.Workspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">metawards.Workspace</span></code></a> object.</p>
 <p>This <a class="reference internal" href="../../api/generated/metawards.Workspace.html#metawards.Workspace" title="metawards.Workspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">metawards.Workspace</span></code></a> object contains;</p>
@@ -290,7 +299,9 @@ via the <code class="docutils literal notranslate"><span class="pre">--extractor
 </div>
 <p>As well as <a class="reference internal" href="../../api/generated/metawards.extractors.extract_default.html#metawards.extractors.extract_default" title="metawards.extractors.extract_default"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract_default()</span></code></a>, there is also
 <a class="reference internal" href="../../api/generated/metawards.extractors.extract_small.html#metawards.extractors.extract_small" title="metawards.extractors.extract_small"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract_small()</span></code></a> (only extracting the
-“small” files), and
+“small” files),
+“meth:<a class="reference internal" href="../../api/generated/metawards.extractors.extract_large.html#metawards.extractors.extract_large" title="metawards.extractors.extract_large"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_large</span></code></a> (extract everything, including
+producing large trajectory files) and
 <a class="reference internal" href="../../api/generated/metawards.extractors.extract_none.html#metawards.extractors.extract_none" title="metawards.extractors.extract_none"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract_none()</span></code></a> (extract nothing - useful if
 you want to restrict output only to <code class="docutils literal notranslate"><span class="pre">results.csv.bz2</span></code>).</p>
 </div>
@@ -317,7 +328,7 @@ you want to restrict output only to <code class="docutils literal notranslate"><
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 27, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

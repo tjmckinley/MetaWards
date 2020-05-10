@@ -14,6 +14,9 @@ metawards.Population
    .. autosummary::
    
       ~Population.__init__
+      ~Population.assert_sane
+      ~Population.specialise
+      ~Population.summary
    
    
 
@@ -32,6 +35,7 @@ metawards.Population
       ~Population.population
       ~Population.recovereds
       ~Population.scale_uv
+      ~Population.subpops
       ~Population.susceptibles
       ~Population.total
    

@@ -17,12 +17,17 @@ metawards.Network
       ~Network.add_distances
       ~Network.assert_sane
       ~Network.build
+      ~Network.copy
       ~Network.get_min_max_distances
+      ~Network.get_work_index
+      ~Network.has_different_work_matrix
       ~Network.initialise_infections
       ~Network.move_from_play_to_work
       ~Network.rescale_play_matrix
       ~Network.reset_everything
       ~Network.run
+      ~Network.scale_susceptibles
+      ~Network.specialise
       ~Network.update
    
    
@@ -34,16 +39,17 @@ metawards.Network
    .. autosummary::
    
       ~Network.info
+      ~Network.links
       ~Network.max_links
       ~Network.max_nodes
+      ~Network.name
       ~Network.nlinks
       ~Network.nnodes
       ~Network.nodes
+      ~Network.nplay
       ~Network.params
       ~Network.play
-      ~Network.plinks
-      ~Network.to_links
+      ~Network.population
       ~Network.to_seed
-      ~Network.weekend
    
    

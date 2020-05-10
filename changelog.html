@@ -39,6 +39,7 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Acknowledgements and funding" href="acknowledgements.html" />
     <link rel="prev" title="Developer’s guide" href="development.html" /> 
 </head>
 
@@ -99,6 +100,12 @@
 <li class="toctree-l1"><a class="reference internal" href="cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -106,6 +113,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#may-10th-2020">0.11.0 - May 10th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#april-27th-2020">0.10.0 - April 27th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#april-24th-2020">0.9.0 - April 24th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#april-22nd-2020">0.8.5 - April 22nd 2020</a></li>
@@ -123,6 +131,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#start-of-the-python-port-march-25th-2020">Start of the Python port - March 25th 2020</a></li>
 </ul>
 </li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -182,6 +193,8 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
+        <a href="acknowledgements.html" class="btn btn-neutral float-right" title="Acknowledgements and funding" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
       
         <a href="development.html" class="btn btn-neutral float-left" title="Developer’s guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
@@ -194,6 +207,32 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="may-10th-2020">
+<h2><a class="reference external" href="https://github.com/metawards/MetaWards/compare/0.10.0...0.11.0">0.11.0</a> - May 10th 2020<a class="headerlink" href="#may-10th-2020" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Code now fully works and has been tested on Windows :-)</li>
+<li>Major update of the API to support a Networks of multiple Network objects</li>
+<li>This has been used to support modelling multiple demographics</li>
+<li>Added in movers and mixers to enable a user to customise how individuals
+are moved between demographics and how the FOIs of demographics are
+merged together (e.g. via an interaction matrix). This is demonstrated
+in part 5 of the tutorial which shows how this can be used to model
+shielding</li>
+<li>Allow compilation using compilers that don’t support OpenMP - now compiles
+even on stock OS X.</li>
+<li>Added more extractors and can now output files that are needed for graphics</li>
+<li>Added a special random number seed to support debugging</li>
+<li>Moved random number files to a separate library which is now properly
+compiled and linked.</li>
+<li>Updated CI to CI/CD and now build the OS X, Windows and ManyLinux wheels</li>
+<li>Updated URLs to metawards.org</li>
+<li>Allow multiple multi-node jobs to run from a single directory (they now
+have their own hostfiles)</li>
+<li>Updated metawards-plot to render multi-demographic trajectories and
+to make better animations.</li>
+<li>General bug fixes and speed-ups :-)</li>
+</ul>
+</div>
 <div class="section" id="april-27th-2020">
 <h2><a class="reference external" href="https://github.com/metawards/MetaWards/compare/0.9.0...0.10.0">0.10.0</a> - April 27th 2020<a class="headerlink" href="#april-27th-2020" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -345,6 +384,8 @@ understand it.</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="acknowledgements.html" class="btn btn-neutral float-right" title="Acknowledgements and funding" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
       
         <a href="development.html" class="btn btn-neutral float-left" title="Developer’s guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
@@ -356,7 +397,7 @@ understand it.</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 27, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

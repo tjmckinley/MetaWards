@@ -98,6 +98,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../cluster_usage.html">Running on a cluster</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
 </ul>
 <ul>
@@ -105,6 +111,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -173,8 +182,10 @@
 <span></span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span> <span class="k">as</span> <span class="n">_dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span> <span class="k">as</span> <span class="n">_Union</span>
 
 <span class="kn">from</span> <span class="nn">._network</span> <span class="kn">import</span> <span class="n">Network</span>
+<span class="kn">from</span> <span class="nn">._networks</span> <span class="kn">import</span> <span class="n">Networks</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Workspace&quot;</span><span class="p">]</span>
 
@@ -209,8 +220,24 @@
     <span class="c1">#: disease_class == 2)</span>
     <span class="n">incidence</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="c1">#: The size of the S population in each ward</span>
+    <span class="n">S_in_wards</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The size of the E population in each ward</span>
+    <span class="n">E_in_wards</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The size of the I population in each ward</span>
+    <span class="n">I_in_wards</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The size of the R population in each ward</span>
+    <span class="n">R_in_wards</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The sub-workspaces used for the subnets of a</span>
+    <span class="c1">#: multi-demographic Networks (list[Workspace])</span>
+    <span class="n">subspaces</span> <span class="o">=</span> <span class="kc">None</span>
+
 <div class="viewcode-block" id="Workspace.build"><a class="viewcode-back" href="../../api/generated/metawards.Workspace.html#metawards.Workspace.build">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">Network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Create the workspace needed to run the model for the</span>
 <span class="sd">           passed network</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -218,27 +245,46 @@
 
         <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="p">()</span>
 
-        <span class="n">n_inf_classes</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">N_INF_CLASSES</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">Network</span><span class="p">):</span>
+            <span class="n">n_inf_classes</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">N_INF_CLASSES</span><span class="p">()</span>
 
-        <span class="n">workspace</span><span class="o">.</span><span class="n">n_inf_classes</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">N_INF_CLASSES</span><span class="p">()</span>
-        <span class="n">workspace</span><span class="o">.</span><span class="n">nnodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">nnodes</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">n_inf_classes</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">N_INF_CLASSES</span><span class="p">()</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">nnodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">nnodes</span>
 
-        <span class="n">size</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">nnodes</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 1-indexed</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">nnodes</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># 1-indexed</span>
 
-        <span class="kn">from</span> <span class="nn">.utils._array</span> <span class="kn">import</span> <span class="n">create_int_array</span>
+            <span class="kn">from</span> <span class="nn">.utils._array</span> <span class="kn">import</span> <span class="n">create_int_array</span>
 
-        <span class="n">workspace</span><span class="o">.</span><span class="n">inf_tot</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">n_inf_classes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">workspace</span><span class="o">.</span><span class="n">pinf_tot</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">n_inf_classes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">workspace</span><span class="o">.</span><span class="n">n_inf_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">n_inf_classes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">inf_tot</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">n_inf_classes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">pinf_tot</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">n_inf_classes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">n_inf_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">n_inf_classes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-        <span class="n">workspace</span><span class="o">.</span><span class="n">total_inf_ward</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">workspace</span><span class="o">.</span><span class="n">total_new_inf_ward</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">workspace</span><span class="o">.</span><span class="n">incidence</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">total_inf_ward</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">total_new_inf_ward</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">incidence</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">workspace</span><span class="o">.</span><span class="n">S_in_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">E_in_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">I_in_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">workspace</span><span class="o">.</span><span class="n">R_in_wards</span> <span class="o">=</span> <span class="n">create_int_array</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">):</span>
+            <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">overall</span><span class="p">)</span>
+
+            <span class="n">subspaces</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">subnet</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">subnets</span><span class="p">:</span>
+                <span class="n">subspaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Workspace</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">subnet</span><span class="p">))</span>
+
+            <span class="n">workspace</span><span class="o">.</span><span class="n">subspaces</span> <span class="o">=</span> <span class="n">subspaces</span>
 
         <span class="k">return</span> <span class="n">workspace</span></div>
 
-<div class="viewcode-block" id="Workspace.zero_all"><a class="viewcode-back" href="../../api/generated/metawards.Workspace.html#metawards.Workspace.zero_all">[docs]</a>    <span class="k">def</span> <span class="nf">zero_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reset the values of all of the arrays to zero&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Workspace.zero_all"><a class="viewcode-back" href="../../api/generated/metawards.Workspace.html#metawards.Workspace.zero_all">[docs]</a>    <span class="k">def</span> <span class="nf">zero_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zero_subspaces</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset the values of all of the arrays to zero.</span>
+<span class="sd">           By default we zero the subspace networks</span>
+<span class="sd">           (change this by setting zero_subspaces to False)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_inf_classes</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inf_tot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pinf_tot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -247,7 +293,15 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnodes</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">total_inf_ward</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">total_new_inf_ward</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">incidence</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">incidence</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">S_in_wards</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">E_in_wards</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">I_in_wards</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R_in_wards</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">zero_subspaces</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">subspaces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">subspace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subspaces</span><span class="p">:</span>
+                <span class="n">subspace</span><span class="o">.</span><span class="n">zero_all</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>
@@ -261,7 +315,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 27, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>

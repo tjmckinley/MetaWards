@@ -106,15 +106,21 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="02_default.html">Accumulating into a Workspace</a></li>
 <li class="toctree-l3"><a class="reference internal" href="03_regional.html">Extracting by location</a></li>
-<li class="toctree-l3"><a class="reference internal" href="04_iterators.html">Combining extractors with iterators</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part05.html">Part 5 - Modelling multiple demographics</a></li>
 </ul>
 </li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cluster_usage.html">Running on a cluster</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Help and support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
@@ -124,6 +130,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements and funding</a></li>
 </ul>
 
             
@@ -256,10 +265,10 @@ Run <code class="docutils literal notranslate"><span class="pre">metawards</span
 <div class="section" id="extract-xxx-and-output-xxx">
 <h2>extract_XXX and output_XXX<a class="headerlink" href="#extract-xxx-and-output-xxx" title="Permalink to this headline">¶</a></h2>
 <p>At the end of each model day, <code class="docutils literal notranslate"><span class="pre">metawards</span></code> calls the
-<a class="reference internal" href="../../api/generated/metawards.utils.extract.html#metawards.utils.extract" title="metawards.utils.extract"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code></a> function. This calls your <code class="docutils literal notranslate"><span class="pre">extract_XXX</span></code>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code> function. This calls your <code class="docutils literal notranslate"><span class="pre">extract_XXX</span></code>
 function. The signature is very similar to the custom iterator functions,
 namely it should take <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>, and then return a list of functions
-that <a class="reference internal" href="../../api/generated/metawards.utils.extract.html#metawards.utils.extract" title="metawards.utils.extract"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code></a> will then call to output data
+that <code class="xref py py-meth docutils literal notranslate"><span class="pre">extract()</span></code> will then call to output data
 (what we term <code class="docutils literal notranslate"><span class="pre">output_XXX</span></code> functions).</p>
 <p>At the moment, nothing is being written to the output directory. We
 can change this by adding an <code class="docutils literal notranslate"><span class="pre">output_XXX</span></code> function. For example,
@@ -427,7 +436,7 @@ infected population grows above a certain size.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Apr 27, 2020.
+        Last updated on May 10, 2020.
       </span>
 
     </p>
