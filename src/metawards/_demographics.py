@@ -112,6 +112,19 @@ class Demographics:
             # Lookup by index
             return self.demographics[item]
 
+    def copy(self):
+        """Return a copy of this demographics object that should
+           allow a safe reset between runs. This deepcopies things
+           that may change, while shallow copying things that won't
+        """
+        from copy import copy, deepcopy
+        demographics = copy(self)
+
+        demographics.interaction_matrix = deepcopy(self.interaction_matrix)
+        demographics.demographics = copy(self.demographics)
+
+        return demographics
+
     def add(self, demographic: Demographic):
         """Add a demographic to the set to be modelled"""
         if demographic.name is None:

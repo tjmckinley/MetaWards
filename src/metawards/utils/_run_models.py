@@ -233,6 +233,8 @@ def run_models(network: _Union[Network, Networks],
     if nprocs == 1:
         # no need to use a pool, as we will repeat this calculation
         # several times
+        save_network = network.copy()
+
         for i, variable in enumerate(variables):
             seed = seeds[i]
             outdir = outdirs[i]
@@ -269,6 +271,11 @@ def run_models(network: _Union[Network, Networks],
                 print(variable)
                 print(output[-1])
             # end of OutputDirs context manager
+
+            if i != len(variables) - 1:
+                # still another run to perform, restore the network
+                # to the original state
+                network = save_network.copy()
         # end of loop over variable sets
     else:
         from ._worker import run_worker

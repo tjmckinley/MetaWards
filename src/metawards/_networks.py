@@ -152,6 +152,21 @@ class Networks:
 
         return result
 
+    def copy(self):
+        """Return a copy of this Networks. Use this to hold a copy of
+           the networks that you can use to reset between runs
+        """
+        from copy import copy
+        networks = copy(self)
+        networks.overall = self.overall.copy()
+
+        for i, subnet in enumerate(self.subnets):
+            networks.subnets[i] = subnet.copy()
+
+        networks.demographics = self.demographics.copy()
+
+        return networks
+
     def aggregate(self, profiler=None, nthreads: int = 1):
         """Aggregate all of the sub-network population infection data
            so that this is available in the overall network

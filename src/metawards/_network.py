@@ -163,6 +163,22 @@ class Network:
 
         return network
 
+    def copy(self):
+        """Return a copy of this Network. Use this to hold a copy of
+           the network that you can use to reset between runs
+        """
+        from copy import copy, deepcopy
+        network = copy(self)
+
+        network.nodes = self.nodes.copy()
+        network.links = self.links.copy()
+        network.play = self.play.copy()
+
+        network.to_seed = deepcopy(self.to_seed)
+        network.params = deepcopy(self.params)
+
+        return network
+
     def assert_sane(self, profiler: None):
         """Assert that this network is sane. This checks that the network
            is laid out correctly in memory and that it doesn't have

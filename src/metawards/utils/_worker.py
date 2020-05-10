@@ -81,13 +81,12 @@ def prepare_worker(params: Parameters, demographics: Demographics,
 
             global_network = network
 
-        else:
-            global_network.update(params=params,
-                                  demographics=demographics,
-                                  nthreads=nthreads,
-                                  profiler=profiler)
+        # always work in a copy
+        network = global_network.copy()
+        network.update(params=params, demographics=demographics,
+                       nthreads=nthreads, profiler=profiler)
 
-        return global_network
+        return network
 
 
 def run_worker(arguments):
