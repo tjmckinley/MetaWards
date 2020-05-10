@@ -86,14 +86,15 @@ def animate_plots(plots: _List[str], output: str,
                 continue
 
             if repeat_idx:
+                legends[plot] = f"{values} x {repeat_idx}"
                 values.append(repeat_idx)
             else:
+                legends[plot] = str(values)
                 values.append(0)
 
             # now create a sortable string from these values
             key = " ".join([("%.5f" % x) for x in values])
             fingerprints[key] = plot
-            legends[plot] = values
 
         keys = list(fingerprints.keys())
         keys.sort()
@@ -150,11 +151,13 @@ def animate_plots(plots: _List[str], output: str,
                 font_manager = import_font_modules()
 
                 if font_manager:
-                    print(f"writing {legends[plot]}")
+                    if verbose:
+                        print(f"writing {legends[plot]}")
+
                     fontfile = font_manager.findfont("Arial")
                     font = ImageFont.truetype(fontfile, size=28)
                     draw = ImageDraw.Draw(image)
-                    draw.text((0, 0), str(legends[plot]), (0, 0, 0), font=font)
+                    draw.text((0, 0), legends[plot], (0, 0, 0), font=font)
             except Exception:
                 # couldn't tag it - don't break the animation
                 pass

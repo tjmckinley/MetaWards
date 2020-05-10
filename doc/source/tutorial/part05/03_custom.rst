@@ -259,7 +259,7 @@ of the overview graphs using;
 
 Your animation should look something like this;
 
-.. image:: ../../images/tutorial_5_3_1.gif
+.. image:: ../../images/tutorial_5_3_2.gif
    :alt: Overview image of shielding with custom parameters
 
 You can also generate the individual demographic trajectory overview plots
@@ -277,5 +277,12 @@ and animate those using;
 
 Your animation should look something like this;
 
-.. image:: ../../images/tutorial_5_3_2.gif
+.. image:: ../../images/tutorial_5_3_3.gif
    :alt: Demographic trajectories when shielding with custom parameters
+
+From this scan it is clear that the ``red-blue`` scale has a much bigger
+impact on the success of shielding than ``red-red``.
+This suggests, at least in this model,
+that it is more important for the ``blue`` demographic to take care when
+interacting with the ``red`` demographic than it is to control the level
+of lockdown of the ``red`` demographic.
