@@ -140,6 +140,6 @@ def test_reset(prompt=None):
     assert trajectory1 == results[0][1]
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" or __name__ == "test_reset":
     import multiprocessing
     multiprocessing.freeze_support()  # needed to stop fork bombs
