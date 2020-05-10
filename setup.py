@@ -178,9 +178,11 @@ def setup_package():
         include_dirs.append("src/metawards/disable_openmp")
 
     cflags = "-O3"
+    lflags = []
 
     if openmp_flag:
         cflags = f"{cflags} {openmp_flag}"
+        lflags.append(openmp_flag)
 
     nbuilders = int(os.getenv("CYTHON_NBUILDERS", 2))
 
@@ -251,6 +253,7 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
+                                    extra_compile_args=lflags,
                                     include_dirs=include_dirs))
 
     for pyx in iterator_pyx_files:
@@ -260,6 +263,7 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
+                                    extra_compile_args=lflags,
                                     include_dirs=include_dirs))
 
     for pyx in extractor_pyx_files:
@@ -269,6 +273,7 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
+                                    extra_compile_args=lflags,
                                     include_dirs=include_dirs))
 
     for pyx in mixer_pyx_files:
@@ -278,6 +283,7 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
+                                    extra_compile_args=lflags,
                                     include_dirs=include_dirs))
 
     for pyx in mover_pyx_files:
@@ -287,6 +293,7 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
+                                    extra_compile_args=lflags,
                                     include_dirs=include_dirs))
 
     CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
