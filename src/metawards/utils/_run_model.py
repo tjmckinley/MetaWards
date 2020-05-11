@@ -11,7 +11,8 @@ from ._profiler import Profiler
 from ._get_functions import get_initialise_functions, \
     get_model_loop_functions, \
     get_finalise_functions, \
-    MetaFunction
+    MetaFunction, \
+    accepts_stage
 
 __all__ = ["run_model"]
 
@@ -78,33 +79,33 @@ def run_model(network: _Union[Network, Networks],
         trajectory: Populations
             The trajectory of the population for every day of the model run
     """
-    if isinstance(iterator, str):
-        from ..iterators._iterate_custom import build_custom_iterator
-        iterator = build_custom_iterator(iterator, __name__)
-    elif iterator is None:
+    if iterator is None:
         from ..iterators._iterate_default import iterate_default
         iterator = iterate_default
+    elif isinstance(iterator, str) or not accepts_stage(iterator):
+        from ..iterators._iterate_custom import build_custom_iterator
+        iterator = build_custom_iterator(iterator, __name__)
 
-    if isinstance(extractor, str):
-        from ..extractors._extract_custom import build_custom_extractor
-        extractor = build_custom_extractor(extractor, __name__)
-    elif extractor is None:
+    if extractor is None:
         from ..extractors._extract_default import extract_default
         extractor = extract_default
+    elif isinstance(extractor, str) or not accepts_stage(extractor):
+        from ..extractors._extract_custom import build_custom_extractor
+        extractor = build_custom_extractor(extractor, __name__)
 
-    if isinstance(mixer, str):
-        from ..mixers._mix_custom import build_custom_mixer
-        mixer = build_custom_mixer(mixer, __name__)
-    elif mixer is None:
+    if mixer is None:
         from ..mixers._mix_default import mix_default
         mixer = mix_default
+    elif isinstance(mixer, str) or not accepts_stage(mixer):
+        from ..mixers._mix_custom import build_custom_mixer
+        mixer = build_custom_mixer(mixer, __name__)
 
-    if isinstance(mover, str):
-        from ..movers._move_custom import build_custom_mover
-        mover = build_custom_mover(mover, __name__)
-    elif mover is None:
+    if mover is None:
         from ..movers._move_default import move_default
         mover = move_default
+    elif isinstance(mover, str) or not accepts_stage(mover):
+        from ..movers._move_custom import build_custom_mover
+        mover = build_custom_mover(mover, __name__)
 
     if profiler is None:
         from ._profiler import NullProfiler

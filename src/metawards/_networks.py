@@ -160,8 +160,12 @@ class Networks:
         networks = copy(self)
         networks.overall = self.overall.copy()
 
-        for i, subnet in enumerate(self.subnets):
-            networks.subnets[i] = subnet.copy()
+        subnets = []
+
+        for subnet in self.subnets:
+            subnets.append(subnet.copy())
+
+        networks.subnets = subnets
 
         networks.demographics = self.demographics.copy()
 
