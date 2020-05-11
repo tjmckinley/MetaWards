@@ -144,6 +144,17 @@ def build_wards_network(params: Parameters,
          BE CAREFUL!! Weights may not be symmetric, network is built with
          asymmetric links
     """
+    global _data_cache
+
+    # the network is solely determined by the work and play files
+    work_and_play = f"{params.input_files.work}:{params.input_files.play}"
+
+    if work_and_play in _data_cache:
+        print("Using pre-loaded cached network...")
+        network = _data_cache[work_and_play].copy()
+        network.params = params
+        return network
+
     if profiler is None:
         profiler = NullProfiler()
 
@@ -153,8 +164,8 @@ def build_wards_network(params: Parameters,
 
 
     p = p.start("read_work_file")
-    global _data_cache
     if workfile in _data_cache:
+        print("Using pre-loaded cached work matrix...")
         (nodes, links, nnodes, nlinks) = _data_cache[workfile]
         nodes = nodes.copy()
         links = links.copy()
@@ -165,7 +176,10 @@ def build_wards_network(params: Parameters,
              nnodes, nlinks) = _read_network(filename=workfile,
                                              max_nodes=max_nodes,
                                              max_links=max_links)
-        except MemoryError:
+        except MemoryError as e:
+            print(e)
+            print(f"Increasing max_nodes to {max_nodes*2} and "
+                  f"max_links to {max_links*2}")
             return build_wards_network(params=params,
                                        profiler=profiler,
                                        nthreads=nthreads,
@@ -229,6 +243,9 @@ def build_wards_network(params: Parameters,
     network.links.resize(network.nlinks + 1)  # remember 1-indexed
     network.play.resize(network.nplay + 1)      # remember 1-indexed
     p = p.stop()
+
+    # cache this network for future use
+    _data_cache[work_and_play] = network.copy()
 
     p.stop()
 
