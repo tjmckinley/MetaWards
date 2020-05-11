@@ -1,4 +1,3 @@
-
 import os
 import pytest
 
@@ -10,19 +9,17 @@ ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
 
 
 @pytest.mark.slow
-def test_iterator():
+def test_too_small(prompt=None):
     """This test repeats main_RepeatsNcov.c and validates that the
        various stages report the same results as the original C code
-       for ncov, when using a custom integrator that just calls
-       iterate_weekday
+       for ncov
     """
-    prompt = None
 
     # user input parameters
     seed = 15324
     inputfile = ncovparams_csv
     line_num = 0
-    UV = 1.0
+    UV = 0.0
 
     # load all of the parameters
     try:
@@ -36,7 +33,7 @@ def test_iterator():
         raise e
 
     # load the disease and starting-point input files
-    params.set_disease("ncov")
+    params.set_disease(os.path.join(script_dir, "data", "ncov.json"))
     params.set_input_files("2011Data")
     params.add_seeds("ExtraSeedsBrighton.dat")
 
@@ -55,53 +52,46 @@ def test_iterator():
     population = Population(initial=57104043)
 
     profiler = Profiler()
+    profiler2 = Profiler()
 
     print("Building the network...")
     network = Network.build(params=params,
-                            profiler=profiler)
+                            profiler=profiler,
+                            max_nodes=100, max_links=100)
+
+    print("Building it again... (should be cached)")
+    network = Network.build(params=params,
+                            profiler=profiler2,
+                            max_nodes=100, max_links=100)
 
     params = params.set_variables(variables[0])
-    network.update(params, profiler=profiler)
-
-    # Here is a custom integrator function that just calls
-    # iterate_weekday after 'print_hello'
-    def print_hello(**kwargs):
-        print(f"Hello")
-
-    def my_iterator(**kwargs):
-        from metawards.iterators import iterate_weekday
-        return [print_hello] + iterate_weekday(**kwargs)
-
-    from metawards.iterators import build_custom_iterator
-
-    iterator = build_custom_iterator(my_iterator, __name__)
+    network.update(params, profiler=None)
 
     print("Run the model...")
-    outdir = os.path.join(script_dir, "test_integrator_output")
+    outdir = os.path.join(script_dir, "test_integration_output")
 
     with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
         trajectory = network.run(population=population, seed=seed,
                                  output_dir=output_dir,
-                                 nsteps=29, profiler=profiler,
-                                 iterator=iterator,
+                                 nsteps=30, profiler=None,
                                  nthreads=1)
 
     OutputFiles.remove(outdir, prompt=None)
 
     print("End of the run")
 
-    print(f"Model output: {trajectory}")
-
     print(profiler)
+
+    print(f"Model output: {trajectory}")
 
     # The original C code has this expected population after 47 steps
     expected = Population(initial=57104043,
-                          susceptibles=56081764,
-                          latent=122,
-                          total=43,
-                          recovereds=148,
-                          n_inf_wards=34,
-                          day=29)
+                          susceptibles=56081540,
+                          latent=220,
+                          total=70,
+                          recovereds=247,
+                          n_inf_wards=56,
+                          day=30)
 
     print(f"Expect output: {expected}")
 
@@ -109,4 +99,4 @@ def test_iterator():
 
 
 if __name__ == "__main__":
-    test_iterator()
+    test_too_small()

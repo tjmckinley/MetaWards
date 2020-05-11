@@ -74,7 +74,7 @@ def test_reset(prompt=None, nthreads=1, force_multi=False):
     nsteps = 20
 
     print("Building the network...")
-    network = Network.build(params=params, calculate_distances=True,
+    network = Network.build(params=params,
                             profiler=profiler)
 
     outdir = os.path.join(script_dir, "test_integration_output")

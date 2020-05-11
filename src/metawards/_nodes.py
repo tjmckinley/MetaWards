@@ -69,25 +69,25 @@ class Nodes:
            and self_p. If you are changing the links then you will
            need to recreate these arrays.
         """
-        from copy import copy
+        from copy import copy, deepcopy
 
         nodes = copy(self)  # shallow copy
 
         # now deep copy the required elements
-        nodes.day_foi = copy(self.day_foi)
-        nodes.night_foi = copy(self.night_foi)
+        nodes.day_foi = deepcopy(self.day_foi)
+        nodes.night_foi = deepcopy(self.night_foi)
 
-        nodes.play_suscept = copy(self.play_suscept)
-        nodes.save_play_suscept = copy(self.save_play_suscept)
+        nodes.play_suscept = deepcopy(self.play_suscept)
+        nodes.save_play_suscept = deepcopy(self.save_play_suscept)
 
-        nodes.denominator_n = copy(self.denominator_n)
-        nodes.denominator_d = copy(self.denominator_d)
+        nodes.denominator_n = deepcopy(self.denominator_n)
+        nodes.denominator_d = deepcopy(self.denominator_d)
 
-        nodes.denominator_p = copy(self.denominator_p)
-        nodes.denominator_pd = copy(self.denominator_pd)
+        nodes.denominator_p = deepcopy(self.denominator_p)
+        nodes.denominator_pd = deepcopy(self.denominator_pd)
 
-        nodes.day_inf_prob = copy(self.day_inf_prob)
-        nodes.night_inf_prob = copy(self.night_inf_prob)
+        nodes.day_inf_prob = deepcopy(self.day_inf_prob)
+        nodes.night_inf_prob = deepcopy(self.night_inf_prob)
 
         return nodes
 

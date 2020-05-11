@@ -52,11 +52,11 @@ class Links:
            and a deep copy for things that are variable
            (e.g. weight and suscept)
         """
-        from copy import copy
+        from copy import copy, deepcopy
         links = copy(self)
 
-        links.weight = copy(self.weight)
-        links.suscept = copy(self.suscept)
+        links.weight = deepcopy(self.weight)
+        links.suscept = deepcopy(self.suscept)
 
         return links
 

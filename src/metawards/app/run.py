@@ -901,7 +901,7 @@ def cli():
                             day=start_day)
 
     print("\nBuilding the network...")
-    network = Network.build(params=params, calculate_distances=True,
+    network = Network.build(params=params,
                             max_nodes=args.max_nodes,
                             max_links=args.max_links,
                             profiler=profiler)

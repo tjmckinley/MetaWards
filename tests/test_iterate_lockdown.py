@@ -10,7 +10,7 @@ ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
 
 
 @pytest.mark.slow
-def test_integrate_lockdown(prompt=None):
+def test_iterate_lockdown(prompt=None):
     """This test repeats main_RepeatsNcov.c and validates that the
        various stages report the same results as the original C code
        for ncov with a lockdown
@@ -57,7 +57,7 @@ def test_integrate_lockdown(prompt=None):
     profiler = Profiler()
 
     print("Building the network...")
-    network = Network.build(params=params, calculate_distances=True,
+    network = Network.build(params=params,
                             profiler=profiler)
 
     params = params.set_variables(variables[0])
@@ -97,4 +97,4 @@ def test_integrate_lockdown(prompt=None):
 
 
 if __name__ == "__main__":
-    test_integrate_lockdown()
+    test_iterate_lockdown()
