@@ -250,25 +250,25 @@
 <span class="sd">           and self_p. If you are changing the links then you will</span>
 <span class="sd">           need to recreate these arrays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+        <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span><span class="p">,</span> <span class="n">deepcopy</span>
 
         <span class="n">nodes</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># shallow copy</span>
 
         <span class="c1"># now deep copy the required elements</span>
-        <span class="n">nodes</span><span class="o">.</span><span class="n">day_foi</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">day_foi</span><span class="p">)</span>
-        <span class="n">nodes</span><span class="o">.</span><span class="n">night_foi</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">night_foi</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">day_foi</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">day_foi</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">night_foi</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">night_foi</span><span class="p">)</span>
 
-        <span class="n">nodes</span><span class="o">.</span><span class="n">play_suscept</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">play_suscept</span><span class="p">)</span>
-        <span class="n">nodes</span><span class="o">.</span><span class="n">save_play_suscept</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_play_suscept</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">play_suscept</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">play_suscept</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">save_play_suscept</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_play_suscept</span><span class="p">)</span>
 
-        <span class="n">nodes</span><span class="o">.</span><span class="n">denominator_n</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator_n</span><span class="p">)</span>
-        <span class="n">nodes</span><span class="o">.</span><span class="n">denominator_d</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator_d</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">denominator_n</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator_n</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">denominator_d</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator_d</span><span class="p">)</span>
 
-        <span class="n">nodes</span><span class="o">.</span><span class="n">denominator_p</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator_p</span><span class="p">)</span>
-        <span class="n">nodes</span><span class="o">.</span><span class="n">denominator_pd</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator_pd</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">denominator_p</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator_p</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">denominator_pd</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator_pd</span><span class="p">)</span>
 
-        <span class="n">nodes</span><span class="o">.</span><span class="n">day_inf_prob</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">day_inf_prob</span><span class="p">)</span>
-        <span class="n">nodes</span><span class="o">.</span><span class="n">night_inf_prob</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">night_inf_prob</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">day_inf_prob</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">day_inf_prob</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">night_inf_prob</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">night_inf_prob</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">nodes</span></div>
 

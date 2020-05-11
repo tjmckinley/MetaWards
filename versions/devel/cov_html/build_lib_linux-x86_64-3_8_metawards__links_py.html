@@ -106,11 +106,11 @@
     <p id="t52" class="pln"><span class="n"><a href="#t52">52</a></span><span class="t"><span class="str">           and a deep copy for things that are variable</span>&nbsp;</span><span class="r"></span></p>
     <p id="t53" class="pln"><span class="n"><a href="#t53">53</a></span><span class="t"><span class="str">           (e.g. weight and suscept)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t54" class="pln"><span class="n"><a href="#t54">54</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t55" class="run"><span class="n"><a href="#t55">55</a></span><span class="t">        <span class="key">from</span> <span class="nam">copy</span> <span class="key">import</span> <span class="nam">copy</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t55" class="run"><span class="n"><a href="#t55">55</a></span><span class="t">        <span class="key">from</span> <span class="nam">copy</span> <span class="key">import</span> <span class="nam">copy</span><span class="op">,</span> <span class="nam">deepcopy</span>&nbsp;</span><span class="r"></span></p>
     <p id="t56" class="run"><span class="n"><a href="#t56">56</a></span><span class="t">        <span class="nam">links</span> <span class="op">=</span> <span class="nam">copy</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t57" class="pln"><span class="n"><a href="#t57">57</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t58" class="run"><span class="n"><a href="#t58">58</a></span><span class="t">        <span class="nam">links</span><span class="op">.</span><span class="nam">weight</span> <span class="op">=</span> <span class="nam">copy</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">weight</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t59" class="run"><span class="n"><a href="#t59">59</a></span><span class="t">        <span class="nam">links</span><span class="op">.</span><span class="nam">suscept</span> <span class="op">=</span> <span class="nam">copy</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">suscept</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t58" class="run"><span class="n"><a href="#t58">58</a></span><span class="t">        <span class="nam">links</span><span class="op">.</span><span class="nam">weight</span> <span class="op">=</span> <span class="nam">deepcopy</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">weight</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t59" class="run"><span class="n"><a href="#t59">59</a></span><span class="t">        <span class="nam">links</span><span class="op">.</span><span class="nam">suscept</span> <span class="op">=</span> <span class="nam">deepcopy</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">suscept</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t60" class="pln"><span class="n"><a href="#t60">60</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t61" class="run"><span class="n"><a href="#t61">61</a></span><span class="t">        <span class="key">return</span> <span class="nam">links</span>&nbsp;</span><span class="r"></span></p>
     <p id="t62" class="pln"><span class="n"><a href="#t62">62</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -213,7 +213,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.1</a>,
-            created at 2020-05-11 10:21
+            created at 2020-05-11 15:30
         </p>
     </div>
 </div>

@@ -233,49 +233,46 @@ work (predictable movements) and play (unpredictable movements)</p>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.__init__" title="metawards.Network.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(name,&nbsp;nodes,&nbsp;links,&nbsp;play,&nbsp;nnodes,&nbsp;…)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.add_distances" title="metawards.Network.add_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_distances</span></code></a>([distance_function])</td>
-<td>Read in the positions of all of the nodes (wards) and calculate the distances of the links.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.assert_sane" title="metawards.Network.assert_sane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_sane</span></code></a>(profiler)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.assert_sane" title="metawards.Network.assert_sane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_sane</span></code></a>(profiler)</td>
 <td>Assert that this network is sane.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.build" title="metawards.Network.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(params,&nbsp;calculate_distances[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.build" title="metawards.Network.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(params,&nbsp;max_nodes,&nbsp;max_links,&nbsp;nthreads)</td>
 <td>Builds and returns a new Network that is described by the passed parameters.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.copy" title="metawards.Network.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.copy" title="metawards.Network.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</td>
 <td>Return a copy of this Network.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.get_min_max_distances" title="metawards.Network.get_min_max_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_min_max_distances</span></code></a>(nthreads[,&nbsp;profiler])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.get_min_max_distances" title="metawards.Network.get_min_max_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_min_max_distances</span></code></a>(nthreads[,&nbsp;profiler])</td>
 <td>Calculate and return the minimum and maximum distances between nodes in the network</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.get_work_index" title="metawards.Network.get_work_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_work_index</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.get_work_index" title="metawards.Network.get_work_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_work_index</span></code></a>()</td>
 <td>Return the mapping from the index in this sub-networks work matrix to the mapping in the overall network’s work matrix</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.has_different_work_matrix" title="metawards.Network.has_different_work_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_different_work_matrix</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.has_different_work_matrix" title="metawards.Network.has_different_work_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_different_work_matrix</span></code></a>()</td>
 <td>Return whether or not the sub-network work matrix is different to that of the overall network</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.initialise_infections" title="metawards.Network.initialise_infections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialise_infections</span></code></a>(nthreads)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.initialise_infections" title="metawards.Network.initialise_infections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialise_infections</span></code></a>(nthreads)</td>
 <td>Initialise and return the space that will be used to track infections</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.move_from_play_to_work" title="metawards.Network.move_from_play_to_work"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_from_play_to_work</span></code></a>(nthreads[,&nbsp;profiler])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.move_from_play_to_work" title="metawards.Network.move_from_play_to_work"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_from_play_to_work</span></code></a>(nthreads[,&nbsp;profiler])</td>
 <td>Move the population from play to work</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.rescale_play_matrix" title="metawards.Network.rescale_play_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_play_matrix</span></code></a>(nthreads[,&nbsp;profiler])</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.rescale_play_matrix" title="metawards.Network.rescale_play_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_play_matrix</span></code></a>(nthreads[,&nbsp;profiler])</td>
 <td>Rescale the play matrix</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.reset_everything" title="metawards.Network.reset_everything"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_everything</span></code></a>(nthreads[,&nbsp;profiler])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.reset_everything" title="metawards.Network.reset_everything"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_everything</span></code></a>(nthreads[,&nbsp;profiler])</td>
 <td>Resets the network ready for a new run of the model</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.run" title="metawards.Network.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(population,&nbsp;output_dir,&nbsp;seed,&nbsp;nsteps,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.run" title="metawards.Network.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(population,&nbsp;output_dir,&nbsp;seed,&nbsp;nsteps,&nbsp;…)</td>
 <td>Run the model simulation for the passed population.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.scale_susceptibles" title="metawards.Network.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio,&nbsp;work_ratio,&nbsp;play_ratio)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.scale_susceptibles" title="metawards.Network.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio,&nbsp;work_ratio,&nbsp;play_ratio)</td>
 <td>Scale the number of susceptibles in this Network by the passed scale ratios.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.specialise" title="metawards.Network.specialise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specialise</span></code></a>(demographic[,&nbsp;profiler])</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.specialise" title="metawards.Network.specialise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specialise</span></code></a>(demographic[,&nbsp;profiler])</td>
 <td>Return a copy of this network that has been specialised for the passed demographic.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.update" title="metawards.Network.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(params[,&nbsp;demographics,&nbsp;profiler])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.update" title="metawards.Network.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(params[,&nbsp;demographics,&nbsp;profiler])</td>
 <td>Update this network with a new set of parameters (and optionally demographics).</td>
 </tr>
 </tbody>
@@ -329,16 +326,6 @@ work (predictable movements) and play (unpredictable movements)</p>
 </tbody>
 </table>
 <dl class="method">
-<dt id="metawards.Network.add_distances">
-<code class="descname">add_distances</code><span class="sig-paren">(</span><em>distance_function=None</em>, <em>nthreads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.add_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.add_distances" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read in the positions of all of the nodes (wards) and calculate
-the distances of the links.</p>
-<p>Optionally you can specify the function to use to
-read the positions and calculate the distances.
-By default this is mw.utils.add_wards_network_distance</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="metawards.Network.assert_sane">
 <code class="descname">assert_sane</code><span class="sig-paren">(</span><em>profiler: None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.assert_sane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.assert_sane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assert that this network is sane. This checks that the network
@@ -349,17 +336,9 @@ to check every time the network is accessed</p>
 
 <dl class="staticmethod">
 <dt id="metawards.Network.build">
-<em class="property">static </em><code class="descname">build</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>calculate_distances: bool = True</em>, <em>build_function=None</em>, <em>distance_function=None</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.build" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">build</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds and returns a new Network that is described by the
-passed parameters. If ‘calculate_distances’ is True, then
-this will also read in the ward positions and add
-the distances between the links.</p>
-<p>Optionally you can supply your own function to build the network,
-by supplying ‘build_function’. By default, this is
-metawards.utils.build_wards_network.</p>
-<p>Optionally you can supply your own function to read and
-calculate the distances by supplying ‘build_function’.
-By default this is metawards.add_wards_network_distance</p>
+passed parameters.</p>
 <p>The network is built in allocated memory, so you need to specify
 the maximum possible number of nodes and links. The memory buffers
 will be shrunk back after building.</p>

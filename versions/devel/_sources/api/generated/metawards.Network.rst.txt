@@ -14,7 +14,6 @@ metawards.Network
    .. autosummary::
    
       ~Network.__init__
-      ~Network.add_distances
       ~Network.assert_sane
       ~Network.build
       ~Network.copy

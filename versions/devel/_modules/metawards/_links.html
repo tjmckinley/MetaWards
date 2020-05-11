@@ -233,11 +233,11 @@
 <span class="sd">           and a deep copy for things that are variable</span>
 <span class="sd">           (e.g. weight and suscept)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+        <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span><span class="p">,</span> <span class="n">deepcopy</span>
         <span class="n">links</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="n">links</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
-        <span class="n">links</span><span class="o">.</span><span class="n">suscept</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suscept</span><span class="p">)</span>
+        <span class="n">links</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+        <span class="n">links</span><span class="o">.</span><span class="n">suscept</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suscept</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">links</span></div>
 
