@@ -52,6 +52,12 @@ class Demographics:
     #: demographic being modelled
     demographics: _List[Demographic] = _field(default_factory=list)
 
+    #: The random seed to used when using any random number generator
+    #: to resolve decisions needed when allocating individuals to
+    #: demographics. This is set here so that the Demographics
+    #: are uniquely determined and reproducible across runs
+    random_seed: int = None
+
     #: The interaction matrix between demographics. This should
     #: be a list of lists that shows how demographic 'i' affects
     #: demographic 'j'
@@ -256,6 +262,7 @@ class Demographics:
         demographics = data.get("demographics", [])
         work_ratios = data.get("work_ratios", [])
         play_ratios = data.get("play_ratios", [])
+        random_seed = data.get("random_seed", None)
 
         if (len(demographics) != len(work_ratios) or
                 len(demographics) != len(play_ratios)):
@@ -265,7 +272,8 @@ class Demographics:
                 f"({len(play_ratios)}) which must equal the number "
                 f"of demographics ({len(demographics)})")
 
-        demos = Demographics(_name=name,
+        demos = Demographics(random_seed=random_seed,
+                             _name=name,
                              _authors=data.get("author(s)", "unknown"),
                              _contacts=data.get("contact(s)", "unknown"),
                              _references=data.get("reference(s)", "none"),
