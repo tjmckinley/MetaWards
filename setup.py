@@ -26,7 +26,8 @@ _system_input = input
 is_build = False
 
 for arg in sys.argv[1:]:
-    if arg.lower().find("build") != -1:
+    lower = arg.lower()
+    if arg in ["build", "bdist_wheel", "build_py"]:
         is_build = True
         break
 

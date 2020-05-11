@@ -8,4 +8,5 @@ include src/metawards/iterators/*.pyx
 include src/metawards/extractors/*.pyx
 include src/metawards/movers/*.pyx
 include src/metawards/mixers/*.pyx
+include src/metawards/disable_openmp/omp.h
 
