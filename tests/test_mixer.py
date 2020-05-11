@@ -32,22 +32,15 @@ def mix_matrix_none(network, **kwargs):
     return [merge_using_matrix]
 
 
-def mix_matrix_beta(network, **kwargs):
-    matrix = [[2.0, 0.0, 0.0],
-              [0.0, 2.0, 0.0],
-              [0.0, 0.0, 2.0]]
-
-    network.demographics.interaction_matrix = matrix
-
-    return [merge_using_matrix]
+_network = None
 
 
-@pytest.mark.slow
-def test_mixer(prompt=None, nthreads=1):
+def _get_network(nthreads):
+    global _network
 
-    # user input parameters
-    import random
-    seed = random.randint(100000, 1000000)
+    if _network is not None:
+        return _network.copy()
+
     inputfile = ncovparams_csv
     line_num = 0
     UV = 0.0
@@ -79,11 +72,6 @@ def test_mixer(prompt=None, nthreads=1):
     params.work_to_play = 0
     params.daily_imports = 0.0
 
-    # the size of the starting population
-    population = Population(initial=57104043)
-
-    nsteps = 20
-
     demographics = Demographics.load(redgreenblue_json)
 
     print("Building the network...")
@@ -91,7 +79,24 @@ def test_mixer(prompt=None, nthreads=1):
 
     network = network.specialise(demographics, nthreads=nthreads)
 
+    _network = network
+
+    return network
+
+
+@pytest.mark.slow
+def test_mixer_none(prompt=None, nthreads=1):
+    # user input parameters
+    import random
+    seed = random.randint(100000, 1000000)
     outdir = os.path.join(script_dir, "test_integration_output")
+
+    network = _get_network(nthreads)
+
+    # the size of the starting population
+    population = Population(initial=57104043)
+
+    nsteps = 20
 
     print("Running mix_none...")
     with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
@@ -114,6 +119,25 @@ def test_mixer(prompt=None, nthreads=1):
                                           nthreads=nthreads)
 
     OutputFiles.remove(outdir, prompt=None)
+
+    print(t_mix_none)
+    print(t_mix_m_none)
+    assert t_mix_none == t_mix_m_none
+
+
+@pytest.mark.slow
+def test_mixer_evenly(prompt=None, nthreads=1):
+    # user input parameters
+    import random
+    seed = random.randint(100000, 1000000)
+    outdir = os.path.join(script_dir, "test_integration_output")
+
+    network = _get_network(nthreads)
+
+    # the size of the starting population
+    population = Population(initial=57104043)
+
+    nsteps = 20
 
     print("Running mix_evenly...")
     with OutputFiles(outdir, force_empty=True, prompt=prompt) as output_dir:
@@ -143,4 +167,5 @@ def test_mixer(prompt=None, nthreads=1):
 
 
 if __name__ == "__main__":
-    test_mixer(nthreads=2)
+    test_mixer_none(nthreads=2)
+    test_mixer_evenly(nthreads=2)
