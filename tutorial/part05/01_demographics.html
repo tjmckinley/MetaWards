@@ -132,7 +132,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements and funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements</a></li>
 </ul>
 
             
@@ -213,36 +213,44 @@
 <p>So far every member of the population during a <code class="docutils literal notranslate"><span class="pre">metawards</span></code> <em>model run</em> has
 been treated equally. There was no concept of different groups of individuals,
 e.g. school children, hospital patients, holiday-makers etc. being
-modelled any differently. The only distinction was between “workers”,
+modelled any differently. The only distinction was between <em>workers</em>,
 who made fixed movements (potentially between wards)
 during the day, and random interactions within their home ward in
-the evening, and “players”, who just made random interactions within
+the evening, and <em>players</em>, who just made random interactions within
 their home ward.</p>
 <div class="section" id="understanding-network">
 <h2>Understanding Network<a class="headerlink" href="#understanding-network" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> class models this network of “workers” and
-“players”. It holds a set of <a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">Nodes</span></code></a> that represent each
+<p>The <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> class models this network of <em>workers</em> and
+<em>players</em>. It holds a set of <a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">Nodes</span></code></a> that represent each
 electoral ward, and a set of <a class="reference internal" href="../../api/generated/metawards.Links.html#metawards.Links" title="metawards.Links"><code class="xref py py-class docutils literal notranslate"><span class="pre">Links</span></code></a> that represent the
 fixed motions between wards made by the “workers”.</p>
-<p>The <a class="reference internal" href="../../api/generated/metawards.Node.html#metawards.Node" title="metawards.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a> class holds the number of “players” who
-are susceptible to infection (S) in <a class="reference internal" href="../../api/generated/metawards.Node.html#metawards.Node.play_suscept" title="metawards.Node.play_suscept"><code class="xref py py-data docutils literal notranslate"><span class="pre">play_suscept</span></code></a>.</p>
-<p>The <a class="reference internal" href="../../api/generated/metawards.Link.html#metawards.Link" title="metawards.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> contains the number of “workers” who are
-susceptible to infection (S) who travel regularlay between their
-“home” ward and their “work” ward in <a class="reference internal" href="../../api/generated/metawards.Link.html#metawards.Link.suscept" title="metawards.Link.suscept"><code class="xref py py-data docutils literal notranslate"><span class="pre">suscept</span></code></a>.</p>
+<p>The <a class="reference internal" href="../../api/generated/metawards.Node.html#metawards.Node" title="metawards.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a> class holds the number of <em>players</em> who
+are susceptible to infection (S). This is held in the variable
+<a class="reference internal" href="../../api/generated/metawards.Node.html#metawards.Node.play_suscept" title="metawards.Node.play_suscept"><code class="xref py py-data docutils literal notranslate"><span class="pre">metawards.Node.play_suscept</span></code></a>.</p>
+<p>The <a class="reference internal" href="../../api/generated/metawards.Link.html#metawards.Link" title="metawards.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a> class contains the number of <em>workers</em> who are
+susceptible to infection (S) who travel regularly between their
+“home” ward and their “work” ward. This is held in the
+variable <a class="reference internal" href="../../api/generated/metawards.Link.html#metawards.Link.suscept" title="metawards.Link.suscept"><code class="xref py py-data docutils literal notranslate"><span class="pre">metawards.Link.suscept</span></code></a>.</p>
 <p>During a <em>model run</em> these values will be reduced as individuals are
-infected and then progressed through the disease stages.</p>
+infected and then progressed through the different disease stages.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These variables are stored as double precision floating point numbers,
+despite representing integer values. This is because it
+is more efficient to use double precision numbers when they are used
+for calculations during a <em>model run</em>.</p>
+</div>
 </div>
 <div class="section" id="understanding-networks">
 <h2>Understanding Networks<a class="headerlink" href="#understanding-networks" title="Permalink to this headline">¶</a></h2>
 <p>To model multiple demographics, we need to create space for multiple different
-sets of “workers” and “players”. This is achieved in <code class="docutils literal notranslate"><span class="pre">metawards</span></code> by
+sets of <em>workers</em> and <em>players</em>. This is achieved in <code class="docutils literal notranslate"><span class="pre">metawards</span></code> by
 giving each demographic its own <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>. All of these
-demographic sub-networks are merged into a single overall
-<a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>, and all of this is managed via the
+demographic sub-networks are merged and managed via the
 <a class="reference internal" href="../../api/generated/metawards.Networks.html#metawards.Networks" title="metawards.Networks"><code class="xref py py-class docutils literal notranslate"><span class="pre">Networks</span></code></a> class.</p>
-<p>We create the <a class="reference internal" href="../../api/generated/metawards.Networks.html#metawards.Networks" title="metawards.Networks"><code class="xref py py-class docutils literal notranslate"><span class="pre">Networks</span></code></a> by first specifying the way
+<p>We create a <a class="reference internal" href="../../api/generated/metawards.Networks.html#metawards.Networks" title="metawards.Networks"><code class="xref py py-class docutils literal notranslate"><span class="pre">Networks</span></code></a> object by first specifying the way
 we would like to distribute the population between different demographics.
-We do this by writing a “demographics” file, which is a simple
+We do this by writing a <em>demographics</em> file, which is a simple
 <a class="reference external" href="https://guide.couchdb.org/draft/json.html">JSON-format</a>
 file. First, create a file called <code class="docutils literal notranslate"><span class="pre">demographics.json</span></code> and copy in the below;</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -253,17 +261,17 @@ file. First, create a file called <code class="docutils literal notranslate"><sp
 </pre></div>
 </div>
 <p>This file specifies that the population will be distributed between
-two demographics, “red” and “blue”, named in the <code class="docutils literal notranslate"><span class="pre">demographics</span></code>
+two demographics, <em>red</em> and <em>blue</em>, named in the <code class="docutils literal notranslate"><span class="pre">demographics</span></code>
 field. You can have as many or as few demographics as you wish, and
 can name them in any way you want.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">work_ratios</span></code> lists the ratio (or percentage) of the “worker” population
+<p>The <code class="docutils literal notranslate"><span class="pre">work_ratios</span></code> lists the ratio (or percentage) of the <em>worker</em> population
 that should belong to each demographic. For example, here all of the
-“workers” are in the “blue” demographic, and none of the workers are
-in the “red” demographic.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">play_ratios</span></code> lists the ratio (or percentage) of the “player” population
+<em>workers</em> are in the <em>blue</em> demographic, and none of the workers are
+in the <em>red</em> demographic.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">play_ratios</span></code> lists the ratio (or percentage) of the <em>player</em> population
 that should belong to each demographic. For example, here 50% of the
-“players” are in the “red” demographic, and 50% of the “players” are in the
-“blue” demographic.</p>
+<em>players</em> are in the <em>red</em> demographic, and 50% of the <em>players</em> are in the
+<em>blue</em> demographic.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">You can specify the work and play ratios using either numbers between
@@ -274,7 +282,7 @@ equal 1.0 (or 100%), as every individual must be assigned to one
 of the demographics.</p>
 </div>
 <p>Now that you have created the <code class="docutils literal notranslate"><span class="pre">demographics.json</span></code> file, you can tell
-<code class="docutils literal notranslate"><span class="pre">metawards</span></code> to use it via the <code class="docutils literal notranslate"><span class="pre">--demographics</span></code> (or <code class="docutils literal notranslate"><span class="pre">-D</span></code>)
+<code class="docutils literal notranslate"><span class="pre">metawards</span></code> to use it via the <code class="docutils literal notranslate"><span class="pre">--demographics</span></code>, or <code class="docutils literal notranslate"><span class="pre">-D</span></code>,
 command line argument. Run <code class="docutils literal notranslate"><span class="pre">metawards</span></code> using;</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy2 -D demographics.json
 </pre></div>
@@ -295,20 +303,20 @@ command line argument. Run <code class="docutils literal notranslate"><span clas
 <p>These show that your demographics file was read correctly. In this case,
 this has specialised the <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> which modelled a
 population of 56082077 individuals into a <a class="reference internal" href="../../api/generated/metawards.Networks.html#metawards.Networks" title="metawards.Networks"><code class="xref py py-class docutils literal notranslate"><span class="pre">Networks</span></code></a>
-which has a red population of 16806528 and a blue population of
+which has a <em>red</em> population of 16806528 and a <em>blue</em> population of
 39275549.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">The exact numbers of individuals within the red and blue populations may
-be different for you as the random number generator is used to assign
-left-over individuals. For example, 10 individuals cannot be divided
+<p class="last">A fixed random number seed is used to assign left-over individuals
+to a random demographic. For example, 10 individuals cannot be divided
 equally between 3 demographics, so one randomly chosen demographic
 will have 4 individuals, while the other two will have 3. This
 division is performed by <code class="docutils literal notranslate"><span class="pre">metawards</span></code> in every single
 <a class="reference internal" href="../../api/generated/metawards.Node.html#metawards.Node" title="metawards.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a> and every single <a class="reference internal" href="../../api/generated/metawards.Link.html#metawards.Link" title="metawards.Link"><code class="xref py py-class docutils literal notranslate"><span class="pre">Link</span></code></a>,
-to ensure that every individual is allocated. You can get reproducable
-distributions by setting the random number seed using the <code class="docutils literal notranslate"><span class="pre">--seed</span></code>
-command line argument</p>
+to ensure that every individual is allocated. This random seed is
+hard-coded to <code class="docutils literal notranslate"><span class="pre">4751828</span></code>. Or, you can set it for a demographic
+by adding <code class="docutils literal notranslate"><span class="pre">&quot;random_seed&quot;</span> <span class="pre">=</span> <span class="pre">number</span></code> to the <em>demographics</em> file,
+e.g. <code class="docutils literal notranslate"><span class="pre">&quot;random_seed&quot;</span> <span class="pre">=</span> <span class="pre">10859403</span></code>.</p>
 </div>
 <p>Once the <a class="reference internal" href="../../api/generated/metawards.Networks.html#metawards.Networks" title="metawards.Networks"><code class="xref py py-class docutils literal notranslate"><span class="pre">Networks</span></code></a> had been specialised, the <em>model run</em>
 was performed as before. Now, the output shows the S, E, I, R values
@@ -479,7 +487,7 @@ sub-network populations, e.g.</p>
 </pre></div>
 </div>
 <p>By default, infections are seeded into the first demographic (in this case
-“red”). This demographic are “players”, so only interact in their home
+<em>red</em>). This demographic are <em>players</em>, so only interact in their home
 ward via random interactions. As such, the infection did not spread
 beyond that home ward and so it died out quite quickly.</p>
 </div>
@@ -501,10 +509,14 @@ this case 5.</li>
 the index of the ward you want using the <a class="reference internal" href="../../api/generated/metawards.WardInfos.html#metawards.WardInfos" title="metawards.WardInfos"><code class="xref py py-class docutils literal notranslate"><span class="pre">WardInfos</span></code></a>
 object, e.g. via <code class="docutils literal notranslate"><span class="pre">network.info.find(&quot;...&quot;)</span></code>.</li>
 <li>The fourth value (<code class="docutils literal notranslate"><span class="pre">blue</span></code>) is the name or index of the demographic
-you want to seed. In this case the “blue” demographic (which is also
-at index <code class="docutils literal notranslate"><span class="pre">1</span></code>, so <code class="docutils literal notranslate"><span class="pre">1</span></code> could have been used instead).</li>
+you want to seed.</li>
 </ul>
-<p>The “blue” demographic contains all of the “workers”, so we would expect
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you want, you could have specified the demographic in this file by
+its index (<code class="docutils literal notranslate"><span class="pre">1</span></code>) rather than by its name (<code class="docutils literal notranslate"><span class="pre">blue</span></code>). It is up to you.</p>
+</div>
+<p>The <em>blue</em> demographic contains all of the <em>workers</em>, so we would expect
 to see a different outbreak. Perform a <em>model run</em> using;</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondonBlue.dat
 </pre></div>
@@ -539,9 +551,9 @@ to see a different outbreak. Perform a <em>model run</em> using;</p>
 <span class="n">Infection</span> <span class="n">died</span> <span class="o">...</span> <span class="n">Ending</span> <span class="n">on</span> <span class="n">day</span> <span class="mi">141</span>
 </pre></div>
 </div>
-<p>Because the “blue” workers could move between wards, they were able to carry
-the infection across the country, meaning that most “blue” workers were
-infected.</p>
+<p>Because the <em>blue workers</em> could move between wards, they were able to carry
+the infection across the country, meaning that most members of the <em>blue</em>
+demographic were infected.</p>
 </div>
 </div>
 
@@ -566,7 +578,7 @@ infected.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 10, 2020.
+        Last updated on May 11, 2020.
       </span>
 
     </p>

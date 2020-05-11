@@ -131,7 +131,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements and funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements</a></li>
 </ul>
 
             
@@ -210,12 +210,12 @@
   <div class="section" id="mixers-and-merge-functions">
 <h1>Mixers and Merge-functions<a class="headerlink" href="#mixers-and-merge-functions" title="Permalink to this headline">¶</a></h1>
 <p>In the last page you modelled outbreaks that were seeded either in
-the “red” population, who were all “players”, and the “blue” population,
-which contained all of the “workers”.</p>
+the <em>red</em> population, who were all <em>players</em>, and the <em>blue</em> population,
+which contained both <em>players</em> and all of the <em>workers</em>.</p>
 <p>This resulted in two different outbreaks, which was understandable given
-that only “workers” move between wards. One issue was that the demographics
-were completely separate - infected individuals in the “red” population
-couldn’t infect individuals in the “blue” population and vice-versa.</p>
+that only <em>workers</em> move between wards. One issue was that the demographics
+were completely separate - infected individuals in the <em>red</em> population
+couldn’t infect individuals in the <em>blue</em> population and vice-versa.</p>
 <p>This is because the <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> for each demographic was
 advanced independently, and no mixing took place.</p>
 <div class="section" id="force-of-infection-foi">
@@ -223,13 +223,13 @@ advanced independently, and no mixing took place.</p>
 <p>Infected individuals in a ward contribute to the <em>force of infection</em> (FOI)
 of that ward. The higher the FOI, the more likely it is that other
 individuals in a ward will become infected.</p>
-<p>The FOIs for each demographic sub-network is calculated independently,
+<p>The FOIs for each demographic sub-network are calculated independently,
 based only on the infected individuals from that demographic. We can thus
 use the FOI calculation as a way of enabling different demographics to
 mix. We do this in <code class="docutils literal notranslate"><span class="pre">metawards</span></code> using custom functions, called
-<a class="reference internal" href="../../api/index_api_MetaWards_mixers.html#module-metawards.mixers" title="metawards.mixers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mixers</span></code></a>, that choose different “merge functions” that are
-used to mix and merge calculations of FOIs across different demographics
-together.</p>
+<span class="xref std std-doc">../api/index_MetaWards_mixers</span>. These choose different
+<code class="docutils literal notranslate"><span class="pre">merge</span> <span class="pre">functions</span></code> that are
+used to mix and merge calculations of FOIs across different demographics.</p>
 <p>The default mixer is <a class="reference internal" href="../../api/generated/metawards.mixers.mix_none.html#metawards.mixers.mix_none" title="metawards.mixers.mix_none"><code class="xref py py-func docutils literal notranslate"><span class="pre">mix_none()</span></code></a>, which, as the
 name suggests, performs no mixing between demographics.</p>
 </div>
@@ -244,8 +244,8 @@ using;</p>
 </pre></div>
 </div>
 <p>You should now see that the outbreak spreads from the initial infection in
-the “red” demographic to the “blue workers”, who then spread it around
-the country to both the “red” and “blue” groups.</p>
+the <em>red</em> demographic to the <em>blue workers</em>, who then spread it around
+the country to both the <em>red</em> and <em>blue</em> groups.</p>
 <p>The trajectories for each of the demographics are written into a single
 csv file called <code class="docutils literal notranslate"><span class="pre">output/trajectory.csv.bz2</span></code>. This can be loaded
 into tools such as Excel, R or Pandas for detailed analysis. For example,
@@ -279,10 +279,10 @@ with the overall total network called <code class="docutils literal notranslate"
 <p>This will produce a graph called <code class="docutils literal notranslate"><span class="pre">output/demographics.jpg</span></code>.
 This should look similar to this;</p>
 <img alt="Disease trajectory across the red and blue demographics" src="../../_images/tutorial_5_2_demographics.jpg" />
-<p>Notice how infections in the red demographic lag behind those of the
-blue demographic. This makes sense, as it is only the workers from the
-blue demographic that can be infected outside their home ward. The
-blue workers are thus the source of the infection for the red demographic.</p>
+<p>Notice how infections in the <em>red</em> demographic lag behind those of the
+<em>blue</em> demographic. This makes sense, as it is only the workers from the
+<em>blue</em> demographic that can be infected outside their home ward. The
+<em>blue workers</em> are thus the source of the infection for the <em>red</em> demographic.</p>
 </div>
 </div>
 
@@ -307,7 +307,7 @@ blue workers are thus the source of the infection for the red demographic.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 10, 2020.
+        Last updated on May 11, 2020.
       </span>
 
     </p>

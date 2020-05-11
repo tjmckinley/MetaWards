@@ -113,7 +113,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Acknowledgements and funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Acknowledgements</a></li>
 </ul>
 
             
@@ -192,7 +192,8 @@
 <span class="kn">from</span> <span class="nn">._get_functions</span> <span class="kn">import</span> <span class="n">get_initialise_functions</span><span class="p">,</span> \
     <span class="n">get_model_loop_functions</span><span class="p">,</span> \
     <span class="n">get_finalise_functions</span><span class="p">,</span> \
-    <span class="n">MetaFunction</span>
+    <span class="n">MetaFunction</span><span class="p">,</span> \
+    <span class="n">accepts_stage</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;run_model&quot;</span><span class="p">]</span>
 
@@ -259,33 +260,33 @@
 <span class="sd">        trajectory: Populations</span>
 <span class="sd">            The trajectory of the population for every day of the model run</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..iterators._iterate_custom</span> <span class="kn">import</span> <span class="n">build_custom_iterator</span>
-        <span class="n">iterator</span> <span class="o">=</span> <span class="n">build_custom_iterator</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">iterator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">iterator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">..iterators._iterate_default</span> <span class="kn">import</span> <span class="n">iterate_default</span>
         <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterate_default</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">accepts_stage</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..iterators._iterate_custom</span> <span class="kn">import</span> <span class="n">build_custom_iterator</span>
+        <span class="n">iterator</span> <span class="o">=</span> <span class="n">build_custom_iterator</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..extractors._extract_custom</span> <span class="kn">import</span> <span class="n">build_custom_extractor</span>
-        <span class="n">extractor</span> <span class="o">=</span> <span class="n">build_custom_extractor</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">extractor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">extractor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">..extractors._extract_default</span> <span class="kn">import</span> <span class="n">extract_default</span>
         <span class="n">extractor</span> <span class="o">=</span> <span class="n">extract_default</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">accepts_stage</span><span class="p">(</span><span class="n">extractor</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..extractors._extract_custom</span> <span class="kn">import</span> <span class="n">build_custom_extractor</span>
+        <span class="n">extractor</span> <span class="o">=</span> <span class="n">build_custom_extractor</span><span class="p">(</span><span class="n">extractor</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mixer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..mixers._mix_custom</span> <span class="kn">import</span> <span class="n">build_custom_mixer</span>
-        <span class="n">mixer</span> <span class="o">=</span> <span class="n">build_custom_mixer</span><span class="p">(</span><span class="n">mixer</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">mixer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">mixer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">..mixers._mix_default</span> <span class="kn">import</span> <span class="n">mix_default</span>
         <span class="n">mixer</span> <span class="o">=</span> <span class="n">mix_default</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mixer</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">accepts_stage</span><span class="p">(</span><span class="n">mixer</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..mixers._mix_custom</span> <span class="kn">import</span> <span class="n">build_custom_mixer</span>
+        <span class="n">mixer</span> <span class="o">=</span> <span class="n">build_custom_mixer</span><span class="p">(</span><span class="n">mixer</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mover</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">..movers._move_custom</span> <span class="kn">import</span> <span class="n">build_custom_mover</span>
-        <span class="n">mover</span> <span class="o">=</span> <span class="n">build_custom_mover</span><span class="p">(</span><span class="n">mover</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">mover</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">mover</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">..movers._move_default</span> <span class="kn">import</span> <span class="n">move_default</span>
         <span class="n">mover</span> <span class="o">=</span> <span class="n">move_default</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mover</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">accepts_stage</span><span class="p">(</span><span class="n">mover</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..movers._move_custom</span> <span class="kn">import</span> <span class="n">build_custom_mover</span>
+        <span class="n">mover</span> <span class="o">=</span> <span class="n">build_custom_mover</span><span class="p">(</span><span class="n">mover</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">profiler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">._profiler</span> <span class="kn">import</span> <span class="n">NullProfiler</span>
@@ -452,7 +453,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 10, 2020.
+        Last updated on May 11, 2020.
       </span>
 
     </p>

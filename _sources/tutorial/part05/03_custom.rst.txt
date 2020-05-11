@@ -16,7 +16,7 @@ Interaction matrix
 
 An interaction matrix specifies how much the *force of infection* (FOI)
 calculated from one demographic influences another. It is an asymmetric
-matrix, e.g. for our "red" and "blue" demographics it could be;
+matrix, e.g. for our *red* and *blue* demographics it could be;
 
 .. list-table::
    :widths: 30 35 35
@@ -35,30 +35,41 @@ matrix, e.g. for our "red" and "blue" demographics it could be;
 
 The diagonals of this matrix show how much infections in each demographic
 affect that demographic, i.e. how easily the infection spreads within the
-demographic. It is effectively equivalent to ``scale_uv``.
-The top-left value (0.2) says that "red" demographic is adopting lockdown
-measures that scale down the FOI between "red" individuals by 0.2.
+demographic. It has a similar affect to ``scale_uv``, though is not
+equivalent.
+
+.. note::
+
+  ``scale_uv`` scales the precursor to the calculation of each ward's day
+  and night FOIs, while the *interaction matrix* mixes the day and night
+  FOIs for each ward together.
+
+The top-left value (0.2) says that *red* demographic is adopting lockdown
+measures that scale down the FOI between *red* individuals by 0.2.
 
 In contrast, the bottom-right value (1.0) says that no measures are being
-taken within the "blue" demographic, and the FOI calculated from infections
+taken within the *blue* demographic, and the FOI calculated from infections
 within that demographic are not scaled.
 
-The top-left value (0.1) gives the amount by which the "red" demographic
-affected by the "blue" demographic, i.e. how easily infections from the "blue"
-demographic can be transmitted to the "red" demographic. This low value of
-0.1 indicates that care is taken by members of the "blue" demographic to
-not infect members of the "red" demographic.
+The top-right value (0.1) gives the amount by which the *red* demographic is
+affected by infections within the *blue* demographic.
+This describes how easily infections from the *blue*
+demographic can be transmitted to the *red* demographic. This low value of
+0.1 indicates that care is taken by members of the *blue* demographic to
+not infect members of the *red* demographic.
 
-The bottom-left value (0.8) is the reverse, namely how much the "blue"
-demographic is affected by the "red" demographic, i.e. how easily infections
-from the "red" demographic can be transmitted to the "blue" demographic.
-The larger value of 0.8 indicates that the "blue" demographic are still
-being infected by "red", e.g. perhaps because they are treating or caring
-for members of that demographic.
+The bottom-left value (0.8) is the reverse, namely how much the *blue*
+demographic is affected by infections within the *red* demographic,
+i.e. how easily infections
+from the *red* demographic can be transmitted to the *blue* demographic.
+The larger value of 0.8 indicates that the *blue* demographic are still
+being infected by members of the *red* demographic,
+e.g. perhaps because they are treating or caring for them and are thus
+exposed to large numbers of members.
 
 The values in this matrix correspond to a potential shielding scenario,
-whereby measures are taken by the "blue" demographic to shield the
-"red" demographic from infection.
+whereby measures are taken by the *blue* demographic to shield the
+*red* demographic from infection.
 
 Custom mixers
 -------------
@@ -82,27 +93,27 @@ Here we have created a new mixer called ``mix_shield``. This function
 has two purposes:
 
 1. It sets :data:`~metawards.Demographics.interaction_matrix` equal to
-   the desired interaction matrix in the :class:`~metawards.Demographics`
-   object in the network (which is of type :class:`~metawards.Networks`.
+   the desired interaction matrix in the networks'
+   :class:`~metawards.Demographics` object.
    The matrix is as described above, and represents shielding of
-   the "red" demographic by the "blue" demographic.
+   the *red* demographic by the *blue* demographic.
 
 2. It returns the :meth:`~metawards.mixers.merge_using_matrix` merge
-   function as the function to use to merge the FOIs between multiple
-   demographics together. :meth:`~metawards.mixers.merge_using_matrix`
+   function as the function to use to merge the FOIs.
+   :meth:`~metawards.mixers.merge_using_matrix`
    reads the interaction matrix from
    ``network.demographics.interaction_matrix``, meaning that the
    value set in step 1 will be used for the merge.
 
-You set the mixer to use using the `--mixer` flag, e.g. run ``metawards``
+You set the mixer to use using the ``--mixer`` flag, e.g. run ``metawards``
 using;
 
 .. code-block:: bash
 
    metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondon.dat --mixer shield
 
-You should see that, while the infection moves through most of the "blue"
-demographic, it is relatively contained within the "red" demographic.
+You should see that, while the infection moves through most of the *blue*
+demographic, it is relatively contained within the *red* demographic.
 
 You can plot the trajectory using;
 
@@ -118,13 +129,13 @@ You should see a plot similar to this;
 Adjusting shielding parameters
 ------------------------------
 
-This has worked well, in that the shielded "red" demographic has been
+This has worked well, in that the shielded *red* demographic has been
 protected from the disease. However, using scaling factors of 0.2 and
 0.1 is quite extreme, especially over the four months of the model
 outbreak.
 
 We can use adjustable parameters to investigate how much shielding is
-needed to protect the "red" demographic. To do this, update your
+needed to protect the *red* demographic. To do this, update your
 ``shield.py`` file to contain;
 
 .. code-block:: python
@@ -150,7 +161,7 @@ Here we have adapted our ``mix_shield`` function to get the values for
 the interaction matrix from adjustable user parameters that have been
 set using :doc:`same mechanism as before <../part03/05_scanning>`.
 In this case we have called the parameters ``red_red``, for the impact
-of "red" on "red", ``red_blue`` for the impact of "blue" or "red" etc.
+of *red* on *red*, ``red_blue`` for the impact of *blue* on *red* etc.
 
 We then need to create an input file to set the initial values of these
 parameters. Create such a file called "shield.inp" and copy in;
@@ -163,7 +174,7 @@ parameters. Create such a file called "shield.inp" and copy in;
     .blue_blue = 1.0
 
 Finally, we would like to scan through the different value of
-``red_red`` and ``red_blue`` to see how much the "red" demographic
+``red_red`` and ``red_blue`` to see how much the *red* demographic
 needs to be shielded. Create a scan file called ``scan.dat`` and copy in;
 
 ::
@@ -283,6 +294,6 @@ Your animation should look something like this;
 From this scan it is clear that the ``red-blue`` scale has a much bigger
 impact on the success of shielding than ``red-red``.
 This suggests, at least in this model,
-that it is more important for the ``blue`` demographic to take care when
-interacting with the ``red`` demographic than it is to control the level
-of lockdown of the ``red`` demographic.
+that it is more important for the *blue* demographic to take care when
+interacting with the *red* demographic than it is to control the level
+of lockdown of the *red* demographic.

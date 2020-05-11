@@ -83,9 +83,9 @@ written using `Cython <https://cython.org>`__ and parallelised using
 in comformant C, meaning that the package should compile and work on
 any system on which Python >= 3.7 runs. We ourselves are running production
 MetaWards models on ARM64 on Linux, and develop on X86-64 on Linux and
-Mac laptops. We haven't yet tested on Windows, but have been very careful
-to not use any platform-specific code, so believe it should work. We
-welcome anyone who wants to check on Windows - pull requests welcome :-).
+Mac laptops. The program is tested with CI/CD on Windows 10, and
+we thank the windows users who've helped us make the tutorial
+cross-platform.
 
 The aim of the Python port is to provide a simple and robust API that
 is a strong foundation for robust growth and scale-up of MetaWards, and
@@ -477,11 +477,11 @@ request until all tests pass. We only accept pull requests to devel.
 We only allow pull requests from devel to master. In addition to CI,
 we also perform a build of the website on pushes to devel and tags
 to master. The website is versioned, so that old the docs for old
-versions of the code are always available. Finally, we are setting up
-continuous delivery (CD) on tags to master, which will build the
+versions of the code are always available. Finally, we have set up
+continuous delivery (CD) on pushes to master and devel, which build the
 pypi source and binary wheels for Windows, Linux (manylinux2010)
-and OS X. These are manually uploaded to pypi, but we expect
-to automate this process soon.
+and OS X. These are manually uploaded to pypi when we tag
+releases, but we expect to automate this process soon.
 
 Documentation
 =============
