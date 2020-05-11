@@ -113,7 +113,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements and funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements</a></li>
 </ul>
 
             
@@ -232,6 +232,12 @@
     <span class="c1">#: The list of individual Demographic objects, one for each</span>
     <span class="c1">#: demographic being modelled</span>
     <span class="n">demographics</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="n">Demographic</span><span class="p">]</span> <span class="o">=</span> <span class="n">_field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="c1">#: The random seed to used when using any random number generator</span>
+    <span class="c1">#: to resolve decisions needed when allocating individuals to</span>
+    <span class="c1">#: demographics. This is set here so that the Demographics</span>
+    <span class="c1">#: are uniquely determined and reproducible across runs</span>
+    <span class="n">random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1">#: The interaction matrix between demographics. This should</span>
     <span class="c1">#: be a list of lists that shows how demographic &#39;i&#39; affects</span>
@@ -437,6 +443,7 @@
         <span class="n">demographics</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;demographics&quot;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="n">work_ratios</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;work_ratios&quot;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="n">play_ratios</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;play_ratios&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">random_seed</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;random_seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">demographics</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">work_ratios</span><span class="p">)</span> <span class="ow">or</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">demographics</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">play_ratios</span><span class="p">)):</span>
@@ -446,7 +453,8 @@
                 <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">play_ratios</span><span class="p">)</span><span class="si">}</span><span class="s2">) which must equal the number &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;of demographics (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">demographics</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
-        <span class="n">demos</span> <span class="o">=</span> <span class="n">Demographics</span><span class="p">(</span><span class="n">_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">demos</span> <span class="o">=</span> <span class="n">Demographics</span><span class="p">(</span><span class="n">random_seed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">,</span>
+                             <span class="n">_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                              <span class="n">_authors</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;author(s)&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
                              <span class="n">_contacts</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contact(s)&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
                              <span class="n">_references</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reference(s)&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">),</span>

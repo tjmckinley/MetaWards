@@ -30,5 +30,6 @@ metawards.Demographics
    .. autosummary::
    
       ~Demographics.interaction_matrix
+      ~Demographics.random_seed
    
    
