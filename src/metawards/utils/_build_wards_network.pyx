@@ -15,52 +15,29 @@ from ._profiler import Profiler, NullProfiler
 
 __all__ = ["build_wards_network"]
 
-def build_wards_network(params: Parameters,
-                        profiler: Profiler = None,
-                        nthreads: int = 1,
-                        max_nodes:int = 16384,
-                        max_links:int = 4194304):
-    """Creates a network of wards using the information provided in
-       the file specified in parameters.input_files.work.
 
-       The format of this should be:
-
-        * Node_1 Node_2 weight 1-2
-        * Node_3 Node_4 weight 3-4
-        * Node_4 Node_1 weight 4-1
-        * Node_2 Node_1 weight 2-1
-        * ...
-
-         BE CAREFUL!! Weights may not be symmetric, network is built with
-         asymmetric links
+def _read_network(filename: str, max_nodes: int, max_links: int):
+    """This function reads in the network of nodes and links
+       from the passed file, returning a tuple of (Nodes, Links)
     """
-    if profiler is None:
-        profiler = NullProfiler()
-
-    p = profiler.start("build_wards_network")
-
-    p = p.start("allocate memory")
     nodes = Nodes(max_nodes + 1)     # need to pre-allocate nodes and links
     links = Links(max_links + 1)   # both of these use 1-indexing
-    p = p.stop()
+
+    cdef int MAX_LINKS = max_links
+    cdef int MAX_NODES = max_nodes
 
     cdef int nlinks = 0
     cdef int nnodes = 0
-
-    line = None
 
     cdef int from_id = 0
     cdef int to_id = 0
     cdef double weight = 0.0
     cdef int iweight = 0
 
-    cdef int MAX_LINKS = max_links
-    cdef int MAX_NODES = max_nodes
-
-    cdef int * nodes_label = get_int_array_ptr(nodes.label)
     cdef int * nodes_begin_to = get_int_array_ptr(nodes.begin_to)
     cdef int * nodes_end_to = get_int_array_ptr(nodes.end_to)
     cdef int * nodes_self_w = get_int_array_ptr(nodes.self_w)
+    cdef int * nodes_label = get_int_array_ptr(nodes.label)
 
     cdef int * links_ito = get_int_array_ptr(links.ito)
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
@@ -72,11 +49,9 @@ def build_wards_network(params: Parameters,
     cdef double * nodes_denominator_n = get_double_array_ptr(
                                                     nodes.denominator_n)
 
-    p = p.start("read_work_file")
-
     # need to use C file reading as too slow in python
-    filename = params.input_files.work.encode("UTF-8")
-    cdef char* fname = filename
+    f = filename.encode("UTF-8")
+    cdef char* fname = f
 
     cdef FILE* cfile
     cfile = fopen(fname, "r")
@@ -140,9 +115,64 @@ def build_wards_network(params: Parameters,
             f"Increase these values and try to run again.")
 
     if error_from != -1 or error_to != -1:
-        raise ValueError(f"{params.input_files.work} is corrupted! "
+        raise ValueError(f"{filename} is corrupted! "
                          f"Zero in link list: ${error_from}-${error_to}! "
                          f"Renumber files and start again")
+
+    return (nodes, links, nnodes, nlinks)
+
+
+_data_cache = {}
+
+
+def build_wards_network(params: Parameters,
+                        profiler: Profiler = None,
+                        nthreads: int = 1,
+                        max_nodes:int = 16384,
+                        max_links:int = 4194304):
+    """Creates a network of wards using the information provided in
+       the file specified in parameters.input_files.work.
+
+       The format of this should be:
+
+        * Node_1 Node_2 weight 1-2
+        * Node_3 Node_4 weight 3-4
+        * Node_4 Node_1 weight 4-1
+        * Node_2 Node_1 weight 2-1
+        * ...
+
+         BE CAREFUL!! Weights may not be symmetric, network is built with
+         asymmetric links
+    """
+    if profiler is None:
+        profiler = NullProfiler()
+
+    p = profiler.start("build_wards_network")
+
+    workfile = params.input_files.work
+
+
+    p = p.start("read_work_file")
+    global _data_cache
+    if workfile in _data_cache:
+        (nodes, links, nnodes, nlinks) = _data_cache[workfile]
+        nodes = nodes.copy()
+        links = links.copy()
+
+    else:
+        try:
+            (nodes, links,
+             nnodes, nlinks) = _read_network(filename=workfile,
+                                             max_nodes=max_nodes,
+                                             max_links=max_links)
+        except MemoryError:
+            return build_wards_network(params=params,
+                                       profiler=profiler,
+                                       nthreads=nthreads,
+                                       max_nodes=max_nodes*2,
+                                       max_links=max_links*2)
+
+        _data_cache[workfile] = (nodes.copy(), links.copy(), nnodes, nlinks)
     p = p.stop()
 
     network = Network(nnodes=nnodes, nlinks=nlinks)
@@ -177,6 +207,8 @@ def build_wards_network(params: Parameters,
     # label is not -1
     cdef int nnull = 0
     cdef int nnodes_plus_one = network.nnodes + 1
+    cdef int * nodes_label = get_int_array_ptr(nodes.label)
+    cdef int i
 
     with nogil:
         for i in range(1, nnodes_plus_one):

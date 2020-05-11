@@ -57,7 +57,7 @@ def test_iterator():
     profiler = Profiler()
 
     print("Building the network...")
-    network = Network.build(params=params, calculate_distances=True,
+    network = Network.build(params=params,
                             profiler=profiler)
 
     params = params.set_variables(variables[0])

@@ -69,25 +69,12 @@ class Network:
 
     @staticmethod
     def build(params: Parameters,
-              calculate_distances: bool = True,
-              build_function=None,
-              distance_function=None,
               max_nodes: int = 16384,
               max_links: int = 4194304,
               nthreads: int = 1,
               profiler=None):
         """Builds and returns a new Network that is described by the
-           passed parameters. If 'calculate_distances' is True, then
-           this will also read in the ward positions and add
-           the distances between the links.
-
-           Optionally you can supply your own function to build the network,
-           by supplying 'build_function'. By default, this is
-           metawards.utils.build_wards_network.
-
-           Optionally you can supply your own function to read and
-           calculate the distances by supplying 'build_function'.
-           By default this is metawards.add_wards_network_distance
+           passed parameters.
 
            The network is built in allocated memory, so you need to specify
            the maximum possible number of nodes and links. The memory buffers
@@ -99,27 +86,29 @@ class Network:
 
         p = profiler.start("Network.build")
 
-        if build_function is None:
-            from .utils import build_wards_network
-            build_function = build_wards_network
-
         p = p.start("build_function")
-        network = build_function(params=params,
-                                 profiler=p,
-                                 max_nodes=max_nodes,
-                                 max_links=max_links,
-                                 nthreads=nthreads)
+        from .utils import build_wards_network
+        network = build_wards_network(params=params,
+                                      profiler=p,
+                                      max_nodes=max_nodes,
+                                      max_links=max_links,
+                                      nthreads=nthreads)
         p = p.stop()
 
         # sanity-check that the network makes sense - there are specific
         # requirements for the data layout
         network.assert_sane(profiler=p)
 
-        if calculate_distances:
-            p = p.start("add_distances")
-            network.add_distances(distance_function=distance_function,
-                                  nthreads=nthreads)
-            p = p.stop()
+        p = p.start("add_distances")
+        from .utils._add_wards_network_distance \
+            import add_wards_network_distance
+        add_wards_network_distance(network, nthreads=nthreads)
+
+        print("Get min/max distances...")
+        (_mindist, maxdist) = network.get_min_max_distances(nthreads=nthreads)
+
+        network.params.dyn_dist_cutoff = maxdist + 1
+        p = p.stop()
 
         # add metadata about the wards
         p = p.start("add_lookup")
@@ -187,27 +176,6 @@ class Network:
         """
         from .utils import assert_sane_network
         assert_sane_network(network=self, profiler=profiler)
-
-    def add_distances(self, distance_function=None, nthreads: int = 1):
-        """Read in the positions of all of the nodes (wards) and calculate
-           the distances of the links.
-
-           Optionally you can specify the function to use to
-           read the positions and calculate the distances.
-           By default this is mw.utils.add_wards_network_distance
-        """
-        if distance_function is None:
-            from .utils import add_wards_network_distance
-            distance_function = add_wards_network_distance
-
-        distance_function(self, nthreads=nthreads)
-
-        # now need to update the dynamic distance cutoff based on the
-        # maximum distance between nodes
-        print("Get min/max distances...")
-        (_mindist, maxdist) = self.get_min_max_distances(nthreads=nthreads)
-
-        self.params.dyn_dist_cutoff = maxdist + 1
 
     def _add_lookup(self, lookup_function=None, nthreads: int = 1):
         """Read in the ward lookup information that is used to

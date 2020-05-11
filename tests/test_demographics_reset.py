@@ -88,7 +88,7 @@ def test_demographics_reset(prompt=None, nthreads=1, force_multi=False):
     demographics = Demographics.load(redblue_json)
 
     print("Building the network...")
-    network = Network.build(params=params, calculate_distances=True,
+    network = Network.build(params=params,
                             profiler=profiler)
 
     network = network.specialise(demographics, nthreads=2, profiler=profiler)

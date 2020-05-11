@@ -55,7 +55,7 @@ def test_integration_ncov(prompt=None):
     profiler = Profiler()
 
     print("Building the network...")
-    network = Network.build(params=params, calculate_distances=True,
+    network = Network.build(params=params,
                             profiler=profiler)
 
     params = params.set_variables(variables[0])
@@ -138,7 +138,7 @@ def test_integration_pox(prompt=None):
     profiler = Profiler()
 
     print("Building the network...")
-    network = Network.build(params=params, calculate_distances=True,
+    network = Network.build(params=params,
                             profiler=profiler)
 
     params = params.set_variables(variables[0])
