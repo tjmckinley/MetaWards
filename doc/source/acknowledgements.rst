@@ -1,6 +1,6 @@
-============================
-Acknowledgements and funding
-============================
+================
+Acknowledgements
+================
 
 We gratefully acknowledge funding from the EPSRC (EP/N018591/1) who supported
 the research software engineering time needed to create this version

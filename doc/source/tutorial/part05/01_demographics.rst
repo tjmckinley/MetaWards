@@ -5,49 +5,51 @@ Multi-demographic sub-networks
 So far every member of the population during a ``metawards`` *model run* has
 been treated equally. There was no concept of different groups of individuals,
 e.g. school children, hospital patients, holiday-makers etc. being
-modelled any differently. The only distinction was between "workers",
+modelled any differently. The only distinction was between *workers*,
 who made fixed movements (potentially between wards)
 during the day, and random interactions within their home ward in
-the evening, and "players", who just made random interactions within
+the evening, and *players*, who just made random interactions within
 their home ward.
 
 Understanding Network
 ---------------------
 
-The :class:`~metawards.Network` class models this network of "workers" and
-"players". It holds a set of :class:`~metawards.Nodes` that represent each
+The :class:`~metawards.Network` class models this network of *workers* and
+*players*. It holds a set of :class:`~metawards.Nodes` that represent each
 electoral ward, and a set of :class:`~metawards.Links` that represent the
 fixed motions between wards made by the "workers".
 
-The :class:`~metawards.Node` class holds the number of "players" who
-are susceptible to infection (S) in :data:`~metawards.Node.play_suscept`.
+The :class:`~metawards.Node` class holds the number of *players* who
+are susceptible to infection (S). This is held in the variable
+:data:`metawards.Node.play_suscept`.
 
-The :class:`~metawards.Link` contains the number of "workers" who are
-susceptible to infection (S) who travel regularlay between their
-"home" ward and their "work" ward in :data:`~metawards.Link.suscept`.
+The :class:`~metawards.Link` class contains the number of *workers* who are
+susceptible to infection (S) who travel regularly between their
+"home" ward and their "work" ward. This is held in the
+variable :data:`metawards.Link.suscept`.
 
 During a *model run* these values will be reduced as individuals are
-infected and then progressed through the disease stages.
+infected and then progressed through the different disease stages.
 
-.. info::
-  These variables are stored as double precision floating point, as
-  this is more efficient when they are used for calculations during
-  the *model run*. However, they only have integer values as they
-  count the number of susceptible individuals.
+.. note::
+
+  These variables are stored as double precision floating point numbers,
+  despite representing integer values. This is because it
+  is more efficient to use double precision numbers when they are used
+  for calculations during a *model run*.
 
 Understanding Networks
 ----------------------
 
 To model multiple demographics, we need to create space for multiple different
-sets of "workers" and "players". This is achieved in ``metawards`` by
+sets of *workers* and *players*. This is achieved in ``metawards`` by
 giving each demographic its own :class:`~metawards.Network`. All of these
-demographic sub-networks are merged into a single overall
-:class:`~metawards.Network`, and all of this is managed via the
+demographic sub-networks are merged and managed via the
 :class:`~metawards.Networks` class.
 
-We create the :class:`~metawards.Networks` by first specifying the way
+We create a :class:`~metawards.Networks` object by first specifying the way
 we would like to distribute the population between different demographics.
-We do this by writing a "demographics" file, which is a simple
+We do this by writing a *demographics* file, which is a simple
 `JSON-format <https://guide.couchdb.org/draft/json.html>`__
 file. First, create a file called ``demographics.json`` and copy in the below;
 
@@ -60,19 +62,19 @@ file. First, create a file called ``demographics.json`` and copy in the below;
     }
 
 This file specifies that the population will be distributed between
-two demographics, "red" and "blue", named in the ``demographics``
+two demographics, *red* and *blue*, named in the ``demographics``
 field. You can have as many or as few demographics as you wish, and
 can name them in any way you want.
 
-The ``work_ratios`` lists the ratio (or percentage) of the "worker" population
+The ``work_ratios`` lists the ratio (or percentage) of the *worker* population
 that should belong to each demographic. For example, here all of the
-"workers" are in the "blue" demographic, and none of the workers are
-in the "red" demographic.
+*workers* are in the *blue* demographic, and none of the workers are
+in the *red* demographic.
 
-The ``play_ratios`` lists the ratio (or percentage) of the "player" population
+The ``play_ratios`` lists the ratio (or percentage) of the *player* population
 that should belong to each demographic. For example, here 50% of the
-"players" are in the "red" demographic, and 50% of the "players" are in the
-"blue" demographic.
+*players* are in the *red* demographic, and 50% of the *players* are in the
+*blue* demographic.
 
 .. note::
   You can specify the work and play ratios using either numbers between
@@ -83,7 +85,7 @@ that should belong to each demographic. For example, here 50% of the
   of the demographics.
 
 Now that you have created the ``demographics.json`` file, you can tell
-``metawards`` to use it via the ``--demographics`` (or ``-D``)
+``metawards`` to use it via the ``--demographics``, or ``-D``,
 command line argument. Run ``metawards`` using;
 
 .. code-block:: bash
@@ -108,20 +110,20 @@ In the output you should see lines such as;
 These show that your demographics file was read correctly. In this case,
 this has specialised the :class:`~metawards.Network` which modelled a
 population of 56082077 individuals into a :class:`~metawards.Networks`
-which has a red population of 16806528 and a blue population of
+which has a *red* population of 16806528 and a *blue* population of
 39275549.
 
 .. warning::
-  The exact numbers of individuals within the red and blue populations may
-  be different for you as the random number generator is used to assign
-  left-over individuals. For example, 10 individuals cannot be divided
+  A fixed random number seed is used to assign left-over individuals
+  to a random demographic. For example, 10 individuals cannot be divided
   equally between 3 demographics, so one randomly chosen demographic
   will have 4 individuals, while the other two will have 3. This
   division is performed by ``metawards`` in every single
   :class:`~metawards.Node` and every single :class:`~metawards.Link`,
-  to ensure that every individual is allocated. You can get reproducable
-  distributions by setting the random number seed using the ``--seed``
-  command line argument
+  to ensure that every individual is allocated. This random seed is
+  hard-coded to ``4751828``. Or, you can set it for a demographic
+  by adding ``"random_seed" = number`` to the *demographics* file,
+  e.g. ``"random_seed" = 10859403``.
 
 Once the :class:`~metawards.Networks` had been specialised, the *model run*
 was performed as before. Now, the output shows the S, E, I, R values
@@ -299,7 +301,7 @@ You should see output similar (but not identical) to;
     Infection died ... Ending on day 25
 
 By default, infections are seeded into the first demographic (in this case
-"red"). This demographic are "players", so only interact in their home
+*red*). This demographic are *players*, so only interact in their home
 ward via random interactions. As such, the infection did not spread
 beyond that home ward and so it died out quite quickly.
 
@@ -324,10 +326,14 @@ be seeded. In this case, there is just one line containing four values.
   the index of the ward you want using the :class:`~metawards.WardInfos`
   object, e.g. via ``network.info.find("...")``.
 * The fourth value (``blue``) is the name or index of the demographic
-  you want to seed. In this case the "blue" demographic (which is also
-  at index ``1``, so ``1`` could have been used instead).
+  you want to seed.
 
-The "blue" demographic contains all of the "workers", so we would expect
+.. note::
+
+  If you want, you could have specified the demographic in this file by
+  its index (``1``) rather than by its name (``blue``). It is up to you.
+
+The *blue* demographic contains all of the *workers*, so we would expect
 to see a different outbreak. Perform a *model run* using;
 
 .. code-block:: bash
@@ -366,6 +372,6 @@ You should see a more sustained outbreak, ending in a similar way to this;
     140 2
     Infection died ... Ending on day 141
 
-Because the "blue" workers could move between wards, they were able to carry
-the infection across the country, meaning that most "blue" workers were
-infected.
+Because the *blue workers* could move between wards, they were able to carry
+the infection across the country, meaning that most members of the *blue*
+demographic were infected.

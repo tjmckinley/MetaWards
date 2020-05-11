@@ -230,6 +230,7 @@ cdef double redistribute(double target, double *values,
 
 def distribute_remainders(network: Network,
                           subnets: _List[Network],
+                          random_seed: int = None,
                           nthreads: int = 1,
                           profiler: Profiler=None) -> None:
     """Distribute the remainder of the population in each ward and link from
@@ -244,6 +245,9 @@ def distribute_remainders(network: Network,
          The overall network
        subnets: List[Network]
          The demographic sub-networks
+       random_seed: int
+         Random seed to use to seed the random number generator that
+         decides where to allocate rounded individuals
     """
 
     from cython.parallel import parallel, prange
@@ -350,7 +354,12 @@ def distribute_remainders(network: Network,
     # rounded values will be used and this algorithm will not be needed.
 
     from ._ran_binomial import seed_ran_binomial
-    bin_rng = seed_ran_binomial(4751828)  # picked using random.randint
+    if random_seed is None:
+        random_seed = 4751828
+
+    print(f"Seeding generator used for demographics with seed {random_seed}")
+    bin_rng = seed_ran_binomial(random_seed)
+
     cdef binomial_rng* rng = _get_binomial_ptr(bin_rng)
 
     p = p.start("distribute_nodes")
