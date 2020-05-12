@@ -243,3 +243,12 @@ and you could use this via
 .. code-block:: bash
 
    metawards -c config.yaml
+
+.. note::
+  ``metawards`` uses the `ConfigArgParse <https://pypi.org/project/ConfigArgParse/>`__
+  python module for parsing command line arguments. Options can be passed
+  on the command line, in a yaml or ini format config file, or in
+  some identified cases as an environment variable. If an arg is
+  specified in more than one place, then commandline values override
+  environment variables which override config file values which
+  override defaults.

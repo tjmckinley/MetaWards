@@ -42,8 +42,7 @@ def parse_args():
     configargparse.init_argument_parser(
         name="main",
         description=f"MetaWards epidemic modelling - see "
-        f"{metawards_url} "
-        f"for more information",
+        f"{metawards_url} for more information.",
         prog="metawards")
 
     parser = configargparse.get_argument_parser("main")
@@ -144,7 +143,8 @@ def parse_args():
                              "unspecified this defaults to the value "
                              "in the environment variable METAWARDSDATA "
                              "or, if that isn't specified, to "
-                             "$HOME/GitHub/MetaWardsData")
+                             "$HOME/GitHub/MetaWardsData",
+                             env_var="METAWARDSDATA")
 
     parser.add_argument('-P', '--population', type=int, default=57104043,
                         help="Initial population (default 57104043)")
@@ -193,7 +193,8 @@ def parse_args():
                         help="Number of threads over which parallelise an "
                              "individual model run. The total number of "
                              "cores used by metawards will be "
-                             "nprocesses x nthreads")
+                             "nprocesses x nthreads",
+                        env_var="OMP_NUM_THREADS")
 
     parser.add_argument("--nprocs", type=int, default=None,
                         help="The number of processes over which to "
@@ -975,25 +976,37 @@ def cli():
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
                      auto_bzip=auto_bzip, prompt=prompt) as output_dir:
         # write the config file for this job to output/config.yaml
-        CONFIG = output_dir.open("config.yaml", auto_bzip=False)
+        lines = []
+        max_keysize = None
+
+        for key, value in vars(args).items():
+            if max_keysize is None:
+                max_keysize = len(key)
+            elif len(key) > max_keysize:
+                max_keysize = len(key)
 
         for key, value in vars(args).items():
             if value is not None:
                 key = key.replace("_", "-")
-                CONFIG.write(f"{key}: ")
+                spaces = " " * (max_keysize - len(key))
 
                 if isinstance(value, bool):
                     if value:
-                        CONFIG.write(" true\n")
+                        lines.append(f"{key}:{spaces} true")
                     else:
-                        CONFIG.write(" false\n")
+                        lines.append(f"{key}:{spaces} false")
                 elif isinstance(value, list):
-                    CONFIG.write(f"[ {', '.join(value)} ]\n")
+                    lines.append(f"{key}:{spaces} [ {', '.join(value)} ]")
                 else:
-                    CONFIG.write(f"{value}\n")
+                    lines.append(f"{key}:{spaces} {value}")
 
+        CONFIG = output_dir.open("config.yaml", auto_bzip=False)
+        lines.sort(key=str.swapcase)
+        CONFIG.write("\n".join(lines))
+        CONFIG.write("\n")
         CONFIG.flush()
         CONFIG.close()
+        lines = None
 
         result = run_models(network=network, variables=variables,
                             population=population, nprocs=nprocs,
