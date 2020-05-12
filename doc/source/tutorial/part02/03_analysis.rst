@@ -36,7 +36,7 @@ pair of adjustable variables.
 .. note::
    In the fingerprint the ``i`` character represents a decimal point
    and ``v`` separates variables. For example ``0.3  0.0`` becomes
-   ``0i3V0i0``, while ``0.5 0.5`` becomes ``0i5V0i5``.
+   ``0i3v0i0``, while ``0.5 0.5`` becomes ``0i5v0i5``.
 
 Finding peaks
 -------------
