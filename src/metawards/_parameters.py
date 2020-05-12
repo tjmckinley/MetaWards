@@ -1,20 +1,13 @@
 
 from dataclasses import dataclass as _dataclass
 from typing import List as _List, Dict as _Dict
-from copy import deepcopy as _deepcopy
-import pathlib as _pathlib
-import os as _os
-import json as _json
 
 from ._inputfiles import InputFiles
 from ._disease import Disease
 from ._variableset import VariableSets, VariableSet
 
 
-__all__ = ["Parameters", "get_repository_version"]
-
-_default_parameters_path = _os.path.join(_pathlib.Path.home(),
-                                         "GitHub", "MetaWardsData")
+__all__ = ["Parameters", "get_repository_version", "get_repository"]
 
 _default_folder_name = "parameters"
 
@@ -22,14 +15,50 @@ _default_folder_name = "parameters"
 _repositories = {}
 
 
+def get_repository(repository: str = None, error_on_missing=True):
+    """Return the full path to the passed MetaWardsData repository.
+       This will return the default repository if None is passed
+
+       Returns a tuple of the repository path and version information
+    """
+    import os
+    from pathlib import Path
+
+    if repository is None:
+        repository = os.getenv("METAWARDSDATA", None)
+
+        if repository is None:
+            repository = os.path.join(Path.home(),
+                                      "GitHub", "MetaWardsData")
+
+    repository = os.path.expanduser(os.path.expandvars(repository))
+    repository = str(Path(repository).absolute().resolve())
+
+    if not os.path.exists(repository) or not os.path.isdir(repository):
+        if error_on_missing:
+            raise FileNotFoundError(
+                f"Cannot find the MetaWardsData repository "
+                f"at {repository}. Please follow the instructions "
+                f"at https://metawards.org/model_data.html to download "
+                f"and install the model data.")
+        else:
+            return (None, None)
+
+    v = get_repository_version(repository)
+    return (repository, v)
+
+
 def generate_repository_version(repository):
     """Try to run the './version' script within the passed repository,
        to generate the required 'version.txt' file
     """
     import subprocess
-    script = _os.path.join(repository, "version")
-    print(f"Regenerating version information using {script}")
-    subprocess.run(script, cwd=repository)
+    import os
+
+    if repository is not None:
+        script = os.path.join(repository, "version")
+        subprocess.run(script, cwd=repository, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL)
 
 
 def get_repository_version(repository: str):
@@ -38,7 +67,9 @@ def get_repository_version(repository: str):
        Parameters
        ----------
        repository: str
-         The full path to the repository whose version should be obtained
+         The full path to the repository whose version should be obtained.
+         If this is 'None' then the default repository will be used
+         ($METAWARDSDATA or $HOME/GitHub/MetaWardsData)
 
        Returns
        -------
@@ -47,14 +78,20 @@ def get_repository_version(repository: str):
     """
     global _repositories
 
+    if repository is None:
+        return None
+
     if repository in _repositories:
         return _repositories[repository]
 
-    filename = _os.path.join(repository, "version.txt")
+    import os
+
+    filename = os.path.join(repository, "version.txt")
 
     try:
         with open(filename) as FILE:
-            version = _json.load(FILE)
+            import json
+            version = json.load(FILE)
             _repositories[repository] = version
             return version
     except Exception:
@@ -66,16 +103,20 @@ def get_repository_version(repository: str):
         generate_repository_version(repository)
 
         with open(filename) as FILE:
-            version = _json.load(FILE)
+            import json
+            version = json.load(FILE)
+            version["filepath"] = repository
             _repositories[repository] = version
             return version
     except Exception:
-        print(f"Could not find the repository version info in {filename}."
+        print(f"Could not find the repository version info in {filename}. "
               f"Please make sure that you have run './version' in that "
               f"repository to generate the version info.")
-        _repositories[repository] = {"repository": "unknown",
+        _repositories[repository] = {"filepath": repository,
+                                     "repository": "unknown",
                                      "version": "unknown",
-                                     "branch": "unknown"}
+                                     "branch": "unknown",
+                                     "is_dirty": True}
         return _repositories[repository]
 
 
@@ -197,28 +238,7 @@ class Parameters:
              A tuple of the location on disk of the repository,
              plus the version information (git ID etc)
         """
-        if repository is None:
-            repository = _os.getenv("METAWARDSDATA")
-            if repository is None:
-                repository = _default_parameters_path
-
-        from pathlib import Path
-        import os
-        repository = os.path.expanduser(os.path.expandvars(repository))
-        repository = Path(repository).absolute().resolve()
-
-        if not os.path.exists(repository):
-            raise FileNotFoundError(
-                    f"Cannot find the MetaWardsData repository "
-                    f"at {repository}")
-
-        if not os.path.isdir(repository):
-            raise FileNotFoundError(
-                    f"Expected {repository} to be a directory containing "
-                    f"the MetaWardsData repository. It isn't?")
-
-        v = get_repository_version(repository)
-        return (repository, v)
+        return get_repository(repository)
 
     @staticmethod
     def load(parameters: str = "march29",
@@ -260,8 +280,9 @@ class Parameters:
         repository_dir = None
 
         if filename is None:
+            import os
             (repository, v) = Parameters.get_repository(repository)
-            filename = _os.path.join(repository, folder, f"{parameters}.json")
+            filename = os.path.join(repository, folder, f"{parameters}.json")
             repository_dir = repository
             repository = v["repository"]
             repository_branch = v["branch"]
@@ -278,44 +299,43 @@ class Parameters:
             print(f"Could not find the parameters file {json_file}")
             print(f"Either it does not exist of was corrupted.")
             print(f"Error was {e.__class__} {e}")
-            print(f"To download the parameters type the command:")
-            print(f"  git clone https://github.com/metawards/MetaWardsData")
-            print(f"and then re-run this function passing in the full")
-            print(f"path to where you downloaded this directory")
+            print(f"Please see https://metawards.org/model_data for")
+            print(f"instructions on how to download and set the ")
+            print(f"model data.")
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 
         par = Parameters(
-                length_day=data.get("length_day", 0.7),
-                plength_day=data.get("plength_day", 0.5),
-                initial_inf=data.get("initial_inf", 0),
-                static_play_at_home=data.get("static_play_at_home", 0.0),
-                dyn_play_at_home=data.get("dyn_play_at_home", 0.0),
-                data_dist_cutoff=data.get("data_dist_cutoff", 10000000.0),
-                dyn_dist_cutoff=data.get("dyn_dist_cutoff", 10000000.0),
-                play_to_work=data.get("play_to_work", 0.0),
-                work_to_play=data.get("work_to_play", 0.0),
-                local_vaccination_thresh=data.get(
-                                    "local_vaccination_threshold", 4),
-                global_detection_thresh=data.get(
-                                    "global_detection_threshold", 4),
-                daily_ward_vaccination_capacity=data.get(
-                                "daily_ward_vaccination_capacity", 5),
-                neighbour_weight_threshold=data.get(
-                                "neighbour_weight_threshold", 0.0),
-                daily_imports=data.get("daily_imports", 0),
-                UV=data.get("UV", 0.0),
-                _name=data.get("name", parameters),
-                _authors=data.get("author(s)", "unknown"),
-                _version=data.get("version", "unknown"),
-                _contacts=data.get("contact(s)", "unknown"),
-                _references=data.get("reference(s)", "none"),
-                _filename=json_file,
-                _repository=repository,
-                _repository_dir=repository_dir,
-                _repository_branch=repository_branch,
-                _repository_version=repository_version
-                )
+            length_day=data.get("length_day", 0.7),
+            plength_day=data.get("plength_day", 0.5),
+            initial_inf=data.get("initial_inf", 0),
+            static_play_at_home=data.get("static_play_at_home", 0.0),
+            dyn_play_at_home=data.get("dyn_play_at_home", 0.0),
+            data_dist_cutoff=data.get("data_dist_cutoff", 10000000.0),
+            dyn_dist_cutoff=data.get("dyn_dist_cutoff", 10000000.0),
+            play_to_work=data.get("play_to_work", 0.0),
+            work_to_play=data.get("work_to_play", 0.0),
+            local_vaccination_thresh=data.get(
+                "local_vaccination_threshold", 4),
+            global_detection_thresh=data.get(
+                "global_detection_threshold", 4),
+            daily_ward_vaccination_capacity=data.get(
+                "daily_ward_vaccination_capacity", 5),
+            neighbour_weight_threshold=data.get(
+                "neighbour_weight_threshold", 0.0),
+            daily_imports=data.get("daily_imports", 0),
+            UV=data.get("UV", 0.0),
+            _name=data.get("name", parameters),
+            _authors=data.get("author(s)", "unknown"),
+            _version=data.get("version", "unknown"),
+            _contacts=data.get("contact(s)", "unknown"),
+            _references=data.get("reference(s)", "none"),
+            _filename=json_file,
+            _repository=repository,
+            _repository_dir=repository_dir,
+            _repository_branch=repository_branch,
+            _repository_version=repository_version
+        )
 
         print("Using parameters:")
         print(par)
@@ -336,15 +356,17 @@ class Parameters:
         if self.additional_seeds is None:
             self.additional_seeds = []
 
-        if not _os.path.exists(filename):
-            f = _os.path.join(self._repository_dir, "extra_seeds", filename)
+        import os
 
-            if _os.path.exists(f):
+        if not os.path.exists(filename):
+            f = os.path.join(self._repository_dir, "extra_seeds", filename)
+
+            if os.path.exists(f):
                 filename = f
             else:
                 raise FileExistsError(
-                        f"Unable to find extra seeds file {filename} in "
-                        f"the current directory or in {f}")
+                    f"Unable to find extra seeds file {filename} in "
+                    f"the current directory or in {f}")
 
         self.additional_seeds.append(filename)
 
@@ -366,7 +388,8 @@ class Parameters:
         print("Using input files:")
         print(input_files)
 
-        self.input_files = _deepcopy(input_files)
+        from copy import deepcopy
+        self.input_files = deepcopy(input_files)
 
     def set_disease(self, disease: Disease):
         """"Set the disease that will be modelled
@@ -382,7 +405,8 @@ class Parameters:
         print("Using disease")
         print(disease)
 
-        self.disease_params = _deepcopy(disease)
+        from copy import deepcopy
+        self.disease_params = deepcopy(disease)
 
     def set_variables(self, variables: VariableSet):
         """This function sets the adjustable variable values to those
@@ -400,7 +424,8 @@ class Parameters:
            params: Parameters
              A copy of this set of parameters with the variables adjusted
         """
-        params = _deepcopy(self)
+        from copy import deepcopy
+        params = deepcopy(self)
 
         if isinstance(variables, dict):
             variables = VariableSet(variables)
