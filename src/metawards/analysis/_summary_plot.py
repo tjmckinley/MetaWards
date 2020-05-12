@@ -87,6 +87,13 @@ def create_overview_plot(df, output_dir: str = None,
         fingerprints = [None]
         repeat = "demographic"
 
+    try:
+        import PIL
+    except:
+        if format == "jpg":
+            print("WARNING: Missing 'pillow' package, defaulting to PNG format.")
+            format = "png"
+
     figs = {}
 
     min_date = None
@@ -237,6 +244,13 @@ def create_average_plot(df, output_dir: str = None, format: str = "jpg",
          or the filename if output_dir was supplied, or a dictionary
          of multiple filenames indexed by fingerprint
     """
+    try:
+        import PIL
+    except:
+        if format == "jpg":
+            print("WARNING: Missing 'pillow' package, defaulting to PNG format.")
+            format = "png"
+
     fingerprints = df["fingerprint"].unique()
 
     figs = {}
@@ -357,6 +371,13 @@ def create_demographics_plot(df, output_dir: str = None,
          The matplotlib figure containing the demographics plot, or
          the filename if output_dir was supplied
     """
+    try:
+        import PIL
+    except:
+        if format == "jpg":
+            print("WARNING: Missing 'pillow' package, defaulting to PNG format.")
+            format = "png"
+
     _, plt = import_graphics_modules()
 
     columns = ["E", "I", "IW", "R"]
@@ -436,6 +457,13 @@ def save_summary_plots(results: str, output_dir: str = None,
        filenames: List(str)
          Full file paths of all of the files written by this function
     """
+    try:
+        import PIL
+    except:
+        if format == "jpg":
+            print("WARNING: Missing 'pillow' package, defaulting to PNG format.")
+            format = "png"
+
     pd, _ = import_graphics_modules(verbose=verbose)
     import os
 
