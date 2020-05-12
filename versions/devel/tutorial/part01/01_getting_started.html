@@ -99,6 +99,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#introducing-the-lurgy">Introducing the Lurgy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#seeding-an-outbreak">Seeding an outbreak</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#repeating-a-calculation">Repeating a calculation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-config-files-for-inputs">Using config files for inputs</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="02_repeating.html">Multiple model runs</a></li>
@@ -121,6 +122,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
@@ -219,15 +221,15 @@ that you have, type the following into your console;</p>
 printed to your screen.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ metawards --version
 
-      ************************************
-      metawards version 0.11.2+8.gc89c1143
-      ************************************
+     *************************************
+     metawards version 0.11.2+14.g64fa0887
+     *************************************
 
             -- Source information --
      https://github.com/metawards/MetaWards
                  branch: devel
-revision: c89c114313651c3096525b2abfb6467d60ac050a
-    last modified: 2020-05-12T15:35:17+0100
+revision: 64fa088748e31f47d5c14ed22cdbc5e162aa47c1
+    last modified: 2020-05-12T18:24:42+0100
 
 WARNING: MetaWardsData cannot be found!
 WARNING: Please see https://metawards.org/model_data
@@ -421,6 +423,36 @@ the calculation over the same number of threads. We consider it a bug
 if <code class="docutils literal notranslate"><span class="pre">metawards</span></code> is not reproducible, and ask that you
 <a class="reference external" href="https://github.com/metawards/MetaWards/issues">submit an issue</a> if
 you find you cannot repeat a run.</p>
+</div>
+<div class="section" id="using-config-files-for-inputs">
+<h2>Using config files for inputs<a class="headerlink" href="#using-config-files-for-inputs" title="Permalink to this headline">¶</a></h2>
+<p>In addition, to make repeats easier, <code class="docutils literal notranslate"><span class="pre">metawards</span></code> will also write
+a config file called <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> to the output directory. You can
+use this config file directly to run a job using the <code class="docutils literal notranslate"><span class="pre">--config</span></code>
+or <code class="docutils literal notranslate"><span class="pre">-c</span></code> options, e.g.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards --config config.yaml
+</pre></div>
+</div>
+<p>This should repeat the calculation that generated this config. You can
+also edit this file and use it to store commonly used options, e.g.
+if you always want to model the lurgy, then the config file would read;</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">disease</span><span class="p">:</span> <span class="n">lurgy</span>
+</pre></div>
+</div>
+<p>and you could use this via</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -c config.yaml
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">metawards</span></code> uses the <a class="reference external" href="https://pypi.org/project/ConfigArgParse/">ConfigArgParse</a>
+python module for parsing command line arguments. Options can be passed
+on the command line, in a yaml or ini format config file, or in
+some identified cases as an environment variable. If an arg is
+specified in more than one place, then commandline values override
+environment variables which override config file values which
+override defaults.</p>
+</div>
 </div>
 </div>
 

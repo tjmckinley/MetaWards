@@ -107,6 +107,7 @@ Contributing
    :maxdepth: 2
 
    contributing
+   packaging
 
 Documentation
 =============
