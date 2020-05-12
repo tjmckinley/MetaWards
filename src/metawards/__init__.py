@@ -127,7 +127,7 @@ def get_version_string():
     lines.append("")
 
     lines.append(center(f"-- Source information --"))
-    lines.append(center(f"repository: {v['repository']}"))
+    lines.append(center(f"{v['repository']}"))
     lines.append(center(f"branch: {v['branch']}"))
     lines.append(center(f"revision: {v['full-revisionid']}"))
     lines.append(center(f"last modified: {v['date']}"))
@@ -138,6 +138,26 @@ def get_version_string():
         lines.append("WARNING: so you may not be able to recover the original")
         lines.append("WARNING: source code that was used to generate "
                      "this run!")
+
+    from metawards import get_repository
+    repository, v = get_repository(error_on_missing=False)
+
+    if repository is None:
+        lines.append("")
+        lines.append("WARNING: MetaWardsData cannot be found!")
+        lines.append("WARNING: Please see https://metawards.org/model_data")
+        lines.append("WARNING: for instructions on how to download and")
+        lines.append("WARNING: install this necessary data.")
+    else:
+        lines.append("")
+        lines.append(center(f"-- MetaWardsData information --"))
+        lines.append(center(f"version: {v['version']}"))
+        lines.append(center(f"{v['repository']}"))
+        lines.append(center(f"branch: {v['branch']}"))
+
+        if v["is_dirty"]:
+            lines.append("WARNING: This data has not been committed to git.")
+            lines.append("WARNING: You may not be able to reproduce this run.")
 
     lines.append("")
     lines.append(center(f"-- Additional information --"))

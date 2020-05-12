@@ -1,13 +1,8 @@
 
 from dataclasses import dataclass as _dataclass
 from typing import List as _List
-import pathlib as _pathlib
-import os as _os
 
 __all__ = ["Disease"]
-
-_default_disease_path = _os.path.join(_pathlib.Path.home(),
-                                      "GitHub", "MetaWardsData")
 
 _default_folder_name = "diseases"
 
@@ -169,16 +164,12 @@ class Disease:
                 filename = f"{disease}.json"
 
         if filename is None:
-            if repository is None:
-                repository = _os.getenv("METAWARDSDATA")
-                if repository is None:
-                    repository = _default_disease_path
+            from ._parameters import get_repository
+            repository, v = get_repository(repository)
 
-            filename = _os.path.join(repository, folder,
-                                     f"{disease}.json")
+            filename = os.path.join(repository, folder,
+                                    f"{disease}.json")
 
-            from ._parameters import get_repository_version
-            v = get_repository_version(repository)
             repository = v["repository"]
             repository_version = v["version"]
             repository_branch = v["branch"]
@@ -194,10 +185,9 @@ class Disease:
             print(f"Could not find the disease file {json_file}")
             print(f"Either it does not exist of was corrupted.")
             print(f"Error was {e.__class__} {e}")
-            print(f"To download the disease data type the command:")
-            print(f"  git clone https://github.com/metawards/MetaWardsData")
-            print(f"and then re-run this function passing in the full")
-            print(f"path to where you downloaded this directory")
+            print(f"Please see https://metawards.org/model_data for")
+            print(f"instructions on how to download and set the ")
+            print(f"model data.")
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 
