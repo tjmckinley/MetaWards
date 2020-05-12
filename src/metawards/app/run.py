@@ -34,20 +34,27 @@ def get_parallel_scheme():
 
 def parse_args():
     """Parse all of the command line arguments"""
-    import argparse
+    import configargparse
     import sys
 
     metawards_url = "https://metawards.org"
 
-    parser = argparse.ArgumentParser(
+    configargparse.init_argument_parser(
+        name="main",
         description=f"MetaWards epidemic modelling - see "
         f"{metawards_url} "
         f"for more information",
         prog="metawards")
 
+    parser = configargparse.get_argument_parser("main")
+
     parser.add_argument('--version', action="store_true",
                         default=None,
                         help="Print the version information about metawards")
+
+    parser.add_argument('-c', '--config', is_config_file=True,
+                        help="Config file that can be used to set some "
+                             "or all of these command line options.")
 
     parser.add_argument('-i', '--input', type=str,
                         help="Input file for the simulation that specifies "
@@ -257,7 +264,7 @@ def parse_args():
     # this hidden option is used to tell the main process started using
     # mpi that it shouldn't try to become a supervisor
     parser.add_argument('--already-supervised', action="store_true",
-                        default=None, help=argparse.SUPPRESS)
+                        default=None, help=configargparse.SUPPRESS)
 
     args = parser.parse_args()
 
@@ -794,9 +801,6 @@ def cli():
         args.repository)
 
     print(f"\nUsing MetaWardsData at {repository}")
-    print(f"This is cloned from {repository_version['repository']}")
-    print(f"branch {repository_version['branch']}, version "
-          f"{repository_version['version']}")
 
     if repository_version["is_dirty"]:
         print("## WARNING - this repository is dirty, meaning that the data")
@@ -834,12 +838,22 @@ def cli():
                 else:
                     repeat_cmd += f" --{k} {v}"
 
+    # also print the source of all inputs
+    import configargparse
+    print("\nThe source of the inputs were;")
+    p = configargparse.get_argument_parser("main")
+    print(p.format_values())
+
     t = "*** To repeat this job use the command ***"
 
     print("\n" + "*"*len(t))
     print(t)
     print("*"*len(t) + "\n")
     print(repeat_cmd + "\n")
+
+    print("Or alternatively use the config.yaml file that will be ")
+    print("written to the output directory and use the command")
+    print("\nmetawards -c config.yaml\n")
 
     # load all of the parameters
     try:
@@ -960,6 +974,27 @@ def cli():
 
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
                      auto_bzip=auto_bzip, prompt=prompt) as output_dir:
+        # write the config file for this job to output/config.yaml
+        CONFIG = output_dir.open("config.yaml", auto_bzip=False)
+
+        for key, value in vars(args).items():
+            if value is not None:
+                key = key.replace("_", "-")
+                CONFIG.write(f"{key}: ")
+
+                if isinstance(value, bool):
+                    if value:
+                        CONFIG.write(" true\n")
+                    else:
+                        CONFIG.write(" false\n")
+                elif isinstance(value, list):
+                    CONFIG.write(f"[ {', '.join(value)} ]\n")
+                else:
+                    CONFIG.write(f"{value}\n")
+
+        CONFIG.flush()
+        CONFIG.close()
+
         result = run_models(network=network, variables=variables,
                             population=population, nprocs=nprocs,
                             nthreads=nthreads, seed=seed,

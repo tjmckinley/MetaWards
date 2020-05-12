@@ -217,3 +217,29 @@ the calculation over the same number of threads. We consider it a bug
 if ``metawards`` is not reproducible, and ask that you
 `submit an issue <https://github.com/metawards/MetaWards/issues>`__ if
 you find you cannot repeat a run.
+
+Using config files for inputs
+-----------------------------
+
+In addition, to make repeats easier, ``metawards`` will also write
+a config file called ``config.yaml`` to the output directory. You can
+use this config file directly to run a job using the ``--config``
+or ``-c`` options, e.g.
+
+.. code-block:: bash
+
+   metawards --config config.yaml
+
+This should repeat the calculation that generated this config. You can
+also edit this file and use it to store commonly used options, e.g.
+if you always want to model the lurgy, then the config file would read;
+
+::
+
+  disease: lurgy
+
+and you could use this via
+
+.. code-block:: bash
+
+   metawards -c config.yaml
