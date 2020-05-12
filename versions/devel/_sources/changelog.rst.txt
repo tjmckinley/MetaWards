@@ -2,6 +2,20 @@
 Changelog
 =========
 
+`0.11.2 <https://github.com/metawards/MetaWards/compare/0.11.1...0.11.2>`__ - May 11th 2020
+--------------------------------------------------------------------------------------------
+
+* Minor bugfixes
+* Use last matching custom function rather than first, so
+  that the examples in the tutorial work and behaviour is more natural
+* Caching network builds so that they are more thoroughly tested, fixed
+  bug in networks.copy that meant that independent copies weren't made.
+  This bug did not impact any past results or runs.
+* Added more validation tests of the mixers
+* Cleaned up website typos and fixed the version switcher
+* Fixed packaging problems that caused broken builds when pip installing
+  from a .tgz sdist package.
+
 `0.11.1 <https://github.com/metawards/MetaWards/compare/0.11.0...0.11.1>`__ - May 10th 2020
 --------------------------------------------------------------------------------------------
 
