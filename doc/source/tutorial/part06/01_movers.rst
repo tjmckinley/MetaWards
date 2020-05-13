@@ -238,7 +238,7 @@ that they have symptoms. Edit ``move_isolate.py`` and change it to read;
 
 (we have just changed ``self_isolate_stage`` from ``2`` to ``3``).
 
-Now run ``metawards`` again using
+Now run ``metawards`` again using;
 
 .. code-block:: bash
 

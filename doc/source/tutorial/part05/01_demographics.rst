@@ -90,7 +90,7 @@ command line argument. Run ``metawards`` using;
 
 .. code-block:: bash
 
-   metawards -d lurgy2 -D demographics.json
+   metawards -d lurgy3 -D demographics.json
 
 In the output you should see lines such as;
 
@@ -166,7 +166,7 @@ We can seed an infection just as before, by using the ``--additional``
 
 .. code-block:: bash
 
-   metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondon.dat
+   metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondon.dat
 
 You should see output similar (but not identical) to;
 
@@ -338,7 +338,7 @@ to see a different outbreak. Perform a *model run* using;
 
 .. code-block:: bash
 
-  metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondonBlue.dat
+  metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondonBlue.dat
 
 You should see a more sustained outbreak, ending in a similar way to this;
 
