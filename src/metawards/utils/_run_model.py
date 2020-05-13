@@ -203,11 +203,7 @@ def run_model(network: _Union[Network, Networks],
         infecteds = population.infecteds
 
         iteration_count += 1
-        population.day += 1
-
-        if population.date:
-            from datetime import timedelta
-            population.date += timedelta(days=1)
+        population.increment_day()
 
         if nsteps is not None:
             if iteration_count >= nsteps:
