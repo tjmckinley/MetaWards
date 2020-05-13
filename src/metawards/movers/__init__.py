@@ -7,10 +7,14 @@ Functions
 .. autosummary::
     :toctree: generated/
 
+    go_isolate
+
     move_custom
     move_default
 
 """
+
+from ._go_isolate import *
 
 from ._move_custom import *
 from ._move_default import *
