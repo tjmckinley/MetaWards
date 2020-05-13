@@ -172,7 +172,7 @@ def move_custom(custom_function: MetaFunction,
         from ._move_default import move_default
         return move_default(**kwargs)
 
-    elif stage == "analyse" or accepts_stage(custom_function):
+    elif stage == "setup" or accepts_stage(custom_function):
         # most custom functions operate at the 'setup' stage,
         # so movers that don't specify a stage are assumed to
         # only operate here (every other stage is 'move_default')

@@ -2,6 +2,8 @@
 from typing import Union as _Union
 from typing import List as _List
 
+from cython.parallel import parallel, prange
+
 from .._networks import Networks
 from .._infections import Infections
 
@@ -20,6 +22,7 @@ def go_isolate(go_from: _Union[DemographicID, DemographicIDs],
                network: Networks,
                infections: Infections,
                profiler: Profiler,
+               nthreads: int,
                self_isolate_stage: int = 2,
                duration: int = 7,
                release_to: DemographicID = None,
@@ -102,6 +105,8 @@ def go_isolate(go_from: _Union[DemographicID, DemographicIDs],
 
     cdef int nsubnets = len(subnets)
 
+    cdef int num_threads = nthreads
+
     cdef int i = 0
     cdef int j = 0
     cdef int k = 0
@@ -121,17 +126,18 @@ def go_isolate(go_from: _Union[DemographicID, DemographicIDs],
             to_work_infections = get_int_array_ptr(to_subinf.play[j])
             to_play_infections = get_int_array_ptr(to_subinf.work[j])
 
-            for k in range(1, nnodes_plus_one):
-                if play_infections[k] > 0:
-                    to_play_infections[k] = to_play_infections[k] + \
-                                            play_infections[k]
-                    play_infections[k] = 0
+            with nogil, parallel(num_threads=num_threads):
+                for k in prange(1, nnodes_plus_one, schedule="static"):
+                    if play_infections[k] > 0:
+                        to_play_infections[k] = to_play_infections[k] + \
+                                                play_infections[k]
+                        play_infections[k] = 0
 
-            for k in range(1, nlinks_plus_one):
-                if work_infections[k] > 0:
-                    to_work_infections[k] = to_work_infections[k] + \
-                                            work_infections[k]
-                    work_infections[k] = 0
+                for k in prange(1, nlinks_plus_one, schedule="static"):
+                    if work_infections[k] > 0:
+                        to_work_infections[k] = to_work_infections[k] + \
+                                                work_infections[k]
+                        work_infections[k] = 0
 
     p = p.stop()
 
