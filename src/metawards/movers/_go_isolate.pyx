@@ -94,50 +94,50 @@ def go_isolate(go_from: _Union[DemographicID, DemographicIDs],
     cdef int nnodes_plus_one = 0
     cdef int nlinks_plus_one = 0
 
-    cdef int * work_infections
-    cdef int * play_infections
+    cdef int * work_infections_i
+    cdef int * play_infections_i
 
-    cdef int * to_work_infections
-    cdef int * to_play_infections
+    cdef int * to_work_infections_i
+    cdef int * to_play_infections_i
 
-    cdef int * release_work_infections
-    cdef int * release_play_infections
+    cdef int * release_work_infections_i
+    cdef int * release_play_infections_i
 
     cdef int nsubnets = len(subnets)
 
     cdef int num_threads = nthreads
 
+    cdef int ii = 0
     cdef int i = 0
     cdef int j = 0
-    cdef int k = 0
 
     p = profiler.start("search_and_move")
 
-    for i in range(0, nsubnets):
-        subnet = subnets[i]
-        subinf = subinfs[i]
+    for ii in go_from:
+        subnet = subnets[ii]
+        subinf = subinfs[ii]
         nnodes_plus_one = subinf.nnodes + 1
         nlinks_plus_one = subinf.nlinks + 1
 
-        for j in range(start_stage, N_INF_CLASSES):
-            work_infections = get_int_array_ptr(subinf.work[j])
-            play_infections = get_int_array_ptr(subinf.play[j])
+        for i in range(start_stage, N_INF_CLASSES):
+            work_infections_i = get_int_array_ptr(subinf.work[i])
+            play_infections_i = get_int_array_ptr(subinf.play[i])
 
-            to_work_infections = get_int_array_ptr(to_subinf.play[j])
-            to_play_infections = get_int_array_ptr(to_subinf.work[j])
+            to_work_infections_i = get_int_array_ptr(to_subinf.play[i])
+            to_play_infections_i = get_int_array_ptr(to_subinf.work[i])
 
             with nogil, parallel(num_threads=num_threads):
-                for k in prange(1, nnodes_plus_one, schedule="static"):
-                    if play_infections[k] > 0:
-                        to_play_infections[k] = to_play_infections[k] + \
-                                                play_infections[k]
-                        play_infections[k] = 0
+                for j in prange(1, nnodes_plus_one, schedule="static"):
+                    if play_infections_i[j] > 0:
+                        to_play_infections_i[j] = to_play_infections_i[j] + \
+                                                  play_infections_i[j]
+                        play_infections_i[j] = 0
 
-                for k in prange(1, nlinks_plus_one, schedule="static"):
-                    if work_infections[k] > 0:
-                        to_work_infections[k] = to_work_infections[k] + \
-                                                work_infections[k]
-                        work_infections[k] = 0
+                for j in prange(1, nlinks_plus_one, schedule="static"):
+                    if work_infections_i[j] > 0:
+                        to_work_infections_i[j] = to_work_infections_i[j] + \
+                                                  work_infections_i[j]
+                        work_infections_i[j] = 0
 
     p = p.stop()
 
