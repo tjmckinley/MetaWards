@@ -327,10 +327,10 @@ def call_function_on_network(network: _Union[Network, Networks],
                  population=subpop, workspace=subwork,
                  **kwargs)
 
-            if call_on_overall:
-                func(network=network.overall, infections=infections,
-                     population=population, workspace=workspace,
-                     **kwargs)
+        if call_on_overall:
+            func(network=network.overall, infections=infections,
+                 population=population, workspace=workspace,
+                 **kwargs)
     else:
         func(network=network, infections=infections,
              population=population, workspace=workspace,

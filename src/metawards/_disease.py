@@ -117,6 +117,49 @@ class Disease:
                     f"Invalid disease parameter at index {i}: "
                     f"{e.__class__} {e}")
 
+        # for the model to work the different stages have set meanings
+        errors = []
+
+        # - stage 0 is newly infected that day, so progress must be 1
+        #   and beta must be 0 (not infective)
+        if self.progress[0] != 1.0:
+            errors.append(
+                f"The progress[0] value must be 1.0 as individuals are "
+                f"only newly infected for one day, and so must progress "
+                f"immediately to the 'latent' stage.")
+
+        if self.beta[0] != 0.0:
+            errors.append(
+                f"The beta[0] value must be 0.0 as newly infected "
+                f"individuals should not be infective and cannot "
+                f"infect others.")
+
+        # - stage 1 is 'latent', meaning that beta must be 0 (not infective)
+        if self.beta[1] != 0.0:
+            errors.append(
+                f"The beta[1] value must be 0.0 as 'latent' individuals "
+                f"are not infectious and should not be able to infect "
+                f"others.")
+
+        # - stage -1 is 'recovered', meaning that beta must not be 0
+        #   and progress is 0, as once recovered, always recovered
+        if self.beta[-1] != 0.0:
+            errors.append(
+                f"The beta[-1] value must be 0.0 as 'recovered' individuals "
+                f"are not infectious and should not be able to infect "
+                f"others.")
+
+        if self.progress[-1] != 0.0:
+            errors.append(
+                f"The progress[-1] value must be 0.0 as 'recovered' "
+                f"individuals have no further disease stage to progress to. "
+                f"We hope that once recovered, always recovered.")
+
+        if len(errors) > 0:
+            print("\n".join(errors))
+            raise AssertionError("Invalid disease parameters!\n" +
+                                 "\n".join(errors))
+
     @staticmethod
     def load(disease: str = "ncov",
              repository: str = None,

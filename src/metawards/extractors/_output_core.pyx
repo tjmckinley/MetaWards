@@ -712,8 +712,9 @@ def output_core_serial(network: Network, population: Population,
         population.total = total
         population.recovereds = recovereds
         population.latent = latent
-        # save the number of wards that have at least one latent
-        # infection
+
+        # save the number of wards that have at least one new
+        # infection (index 0 is new infections)
         population.n_inf_wards = n_inf_wards[0]
 
     return total + latent

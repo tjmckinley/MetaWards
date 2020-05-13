@@ -129,10 +129,11 @@ to the codes;
   infected, but not yet infectious.
 * **I**: The number of the population who are *infected*, meaning they
   have symptoms and are infectious
-* **R**: The number of the population who are removed from the outbreak,
-  e.g. because they have recovered and are no longer susceptible to infection
-* **IW**: The number electoral wards that contain at least one infected
-  individual.
+* **R**: The number of the population who are removed from being susceptible,
+  either because they have been newly infected that day, or because they
+  have recovered from the infection and are no longer susceptible to infection
+* **IW**: The number of electoral wards that contain at least one
+  individual who was newly infected that day.
 
 For more information about these values, please
 `read <https://doi.org/10.1016/j.epidem.2009.11.002>`__

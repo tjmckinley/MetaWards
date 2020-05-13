@@ -244,7 +244,6 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
         nlinks_plus_one = subinf.nlinks + 1
 
         for i in range(start_stage, N_INF_CLASSES):
-            print(f"STAGE {i}")
             work_infections_i = get_int_array_ptr(subinf.work[i])
             play_infections_i = get_int_array_ptr(subinf.play[i])
 
@@ -253,21 +252,15 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
 
             for j in range(1, nlinks_plus_one):
                 if work_infections_i[j] > 0:
-                    print(f"WORK {ii} {i} {j} {work_infections_i[j]}")
                     to_work_infections_i[j] = to_work_infections_i[j] + \
                                                 work_infections_i[j]
                     work_infections_i[j] = 0
-                    print(f"TOWORK {to_work_infections_i[j]}")
-                    print(f"WORK {ii} {i} {j} {work_infections_i[j]}\n")
 
             for j in range(1, nnodes_plus_one):
                 if play_infections_i[j] > 0:
-                    print(f"PLAY {ii} {i} {j} {play_infections_i[j]}")
                     to_play_infections_i[j] = to_play_infections_i[j] + \
                                                 play_infections_i[j]
                     play_infections_i[j] = 0
-                    print(f"TOPLAY {to_play_infections_i[j]}")
-                    print(f"PLAY {ii} {i} {j} {play_infections_i[j]}\n")
 
     p = p.stop()
 
