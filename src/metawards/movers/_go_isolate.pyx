@@ -123,21 +123,21 @@ def go_isolate(go_from: _Union[DemographicID, DemographicIDs],
             work_infections_i = get_int_array_ptr(subinf.work[i])
             play_infections_i = get_int_array_ptr(subinf.play[i])
 
-            to_work_infections_i = get_int_array_ptr(to_subinf.play[i])
-            to_play_infections_i = get_int_array_ptr(to_subinf.work[i])
+            to_work_infections_i = get_int_array_ptr(to_subinf.work[i])
+            to_play_infections_i = get_int_array_ptr(to_subinf.play[i])
 
             with nogil, parallel(num_threads=num_threads):
-                for j in prange(1, nnodes_plus_one, schedule="static"):
-                    if play_infections_i[j] > 0:
-                        to_play_infections_i[j] = to_play_infections_i[j] + \
-                                                  play_infections_i[j]
-                        play_infections_i[j] = 0
-
                 for j in prange(1, nlinks_plus_one, schedule="static"):
                     if work_infections_i[j] > 0:
                         to_work_infections_i[j] = to_work_infections_i[j] + \
                                                   work_infections_i[j]
                         work_infections_i[j] = 0
+
+                for j in prange(1, nnodes_plus_one, schedule="static"):
+                    if play_infections_i[j] > 0:
+                        to_play_infections_i[j] = to_play_infections_i[j] + \
+                                                  play_infections_i[j]
+                        play_infections_i[j] = 0
 
     p = p.stop()
 
