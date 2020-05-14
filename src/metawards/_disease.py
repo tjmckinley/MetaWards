@@ -121,13 +121,17 @@ class Disease:
         # for the model to work the different stages have set meanings
         errors = []
 
-        # - stage 0 is newly infected that day, so progress must be 1
+        # - stage 0 is newly infected that day, so progress must be 1
         #   and beta must be 0 (not infective)
-        if self.progress[0] != 1.0:
-            errors.append(
-                f"The progress[0] value must be 1.0 as individuals are "
-                f"only newly infected for one day, and so must progress "
-                f"immediately to the 'latent' stage.")
+        # This is not an error - the pox and flu2 diseases have this.
+        # I don't think I understand correctly though if that is right,
+        # as this means that individuals will stay longer in the
+        # post-infect but pre-latent stage and be recorded as "recovered"?
+        # if self.progress[0] != 1.0:
+        #    errors.append(
+        #        f"The progress[0] value must be 1.0 as individuals are "
+        #        f"only newly infected for one day, and so must progress "
+        #        f"immediately to the 'latent' stage.")
 
         if self.beta[0] != 0.0:
             errors.append(
