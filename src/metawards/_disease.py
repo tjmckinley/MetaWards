@@ -1,6 +1,7 @@
 
 from dataclasses import dataclass as _dataclass
 from typing import List as _List
+from ._print import print
 
 __all__ = ["Disease"]
 

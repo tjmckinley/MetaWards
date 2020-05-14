@@ -1,5 +1,6 @@
 
 from pathlib import Path as _Path
+from ._print import print
 
 __all__ = ["OutputFiles"]
 
@@ -153,6 +154,7 @@ class OutputFiles:
        >>>     FILE = output.open("output.txt")
        >>>     FILE.write("something\\n")
     """
+
     def __init__(self, output_dir: str = "output",
                  check_empty: bool = True,
                  force_empty: bool = False,

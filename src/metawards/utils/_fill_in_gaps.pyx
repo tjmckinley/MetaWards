@@ -1,5 +1,6 @@
 
 from .._network import Network
+from .._print import print
 
 __all__ = ["fill_in_gaps"]
 

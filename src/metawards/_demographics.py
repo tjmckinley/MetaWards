@@ -3,18 +3,23 @@ from dataclasses import dataclass as _dataclass
 from dataclasses import field as _field
 from typing import List as _List
 from typing import Dict as _Dict
+from typing import Union as _Union
 import os as _os
 import pathlib as _pathlib
 
 from ._demographic import Demographic
 from ._network import Network
+from ._print import print
 
-__all__ = ["Demographics"]
+__all__ = ["Demographics", "DemographicID", "DemographicIDs"]
 
 _default_demographics_path = _os.path.join(_pathlib.Path.home(),
                                            "GitHub", "MetaWardsData")
 
 _default_folder_name = "demographics"
+
+DemographicID = _Union[str, int]
+DemographicIDs = _List[DemographicID]
 
 
 def _get_value(value):

@@ -1,11 +1,14 @@
 
 import time
 
+from .._print import print
+
 __all__ = ["Profiler", "NullProfiler"]
 
 
 class NullProfiler:
     """This is a null profiler that does nothing"""
+
     def __init__(self, name: str = None, parent=None):
         pass
 
@@ -27,6 +30,7 @@ class Profiler:
        instrumenting of the code. It is used for sub-function
        profiling.
     """
+
     def __init__(self, name: str = None, parent=None):
         self._name = name
         self._parent = parent

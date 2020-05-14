@@ -13,6 +13,7 @@ from .._network import Network
 from .._networks import Networks
 from .._population import Population
 from .._infections import Infections
+from .._print import print
 from ..utils._profiler import Profiler
 
 from .._workspace import Workspace

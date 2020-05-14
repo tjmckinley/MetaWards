@@ -2,6 +2,8 @@
 from dataclasses import dataclass as _dataclass
 from typing import Dict as _Dict
 
+from ._print import print
+
 __all__ = ["InputFiles"]
 
 _inputfiles = {}

@@ -1,6 +1,8 @@
 
 from cpython cimport array
 
+from .._print import print
+
 import array   # timing shows quicker for random access
                # than numpy
 

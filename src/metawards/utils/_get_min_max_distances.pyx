@@ -1,5 +1,6 @@
 
 from .._network import Network
+from .._print import print
 
 from ._profiler import Profiler
 

@@ -3,6 +3,7 @@ from dataclasses import dataclass as _dataclass
 
 from ._variableset import VariableSet
 from ._network import Network
+from ._print import print
 
 __all__ = ["Demographic"]
 

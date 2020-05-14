@@ -9,6 +9,8 @@ from ._population import Population
 from ._outputfiles import OutputFiles
 from ._wardinfo import WardInfos
 
+from ._print import print
+
 __all__ = ["Network"]
 
 

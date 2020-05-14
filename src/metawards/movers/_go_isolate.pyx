@@ -6,15 +6,12 @@ from cython.parallel import parallel, prange
 
 from .._networks import Networks
 from .._infections import Infections
+from .._demographics import DemographicID, DemographicIDs
 
 from ..utils._profiler import Profiler
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
-__all__ = ["go_isolate"]
-
-
-DemographicID = _Union[str, int]
-DemographicIDs = _List[DemographicID]
+__all__ = ["go_isolate", "go_isolate_serial", "go_isolate_parallel"]
 
 
 def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
@@ -197,6 +194,10 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
 
     go_to = demographics.get_index(go_to)
 
+    if go_to in go_from:
+        raise ValueError(
+            f"You cannot move to {go_to} as it is also in {go_from}")
+
     to_subnet = subnets[go_to]
     to_subinf = subinfs[go_to]
 
@@ -298,7 +299,7 @@ def go_isolate(nthreads: int = 1, **kwargs) -> None:
          will return to their original demographic
     """
 
-    if nthreads > 4:
+    if nthreads > 1:
         go_isolate_parallel(nthreads=nthreads, **kwargs)
     else:
         go_isolate_serial(**kwargs)

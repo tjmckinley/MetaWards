@@ -14,6 +14,8 @@ __all__ = ["get_parallel_scheme", "parse_args", "get_hostfile",
            "scoop_supervisor", "mpi_supervisor",
            "cli"]
 
+from .._print import print, sys_print
+
 
 def get_parallel_scheme():
     """This function tries to work out which of the different parallel
@@ -271,7 +273,7 @@ def parse_args():
 
     if args.version:
         from metawards import get_version_string
-        print(get_version_string())
+        sys_print(get_version_string())
         sys.exit(0)
 
     return (args, parser)
@@ -679,7 +681,7 @@ def cli():
 
     # print the version information first, so that there is enough
     # information to enable someone to reproduce this run
-    print(get_version_string())
+    sys_print(get_version_string())
 
     # also print the full command line used for this job
     print(f"Command used to run this job:\n{' '.join(sys.argv)}\n")

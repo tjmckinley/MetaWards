@@ -14,6 +14,8 @@ from ._get_functions import get_initialise_functions, \
     MetaFunction, \
     accepts_stage
 
+from .._print import print
+
 __all__ = ["run_model"]
 
 
@@ -188,8 +190,6 @@ def run_model(network: _Union[Network, Networks],
                  profiler=p2)
             p2 = p2.stop()
 
-        print(f"\n {population.day} {infecteds}\n")
-
         if population.population != start_population:
             # something went wrong as the population should be conserved
             # during the day
@@ -201,6 +201,9 @@ def run_model(network: _Union[Network, Networks],
                 f"Detail is {population}")
 
         infecteds = population.infecteds
+
+        print(f" Day {population.day} complete. "
+              f"Number of infections = {infecteds}\n\n")
 
         iteration_count += 1
         population.increment_day()

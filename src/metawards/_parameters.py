@@ -5,6 +5,7 @@ from typing import List as _List, Dict as _Dict
 from ._inputfiles import InputFiles
 from ._disease import Disease
 from ._variableset import VariableSets, VariableSet
+from ._print import print
 
 
 __all__ = ["Parameters", "get_repository_version", "get_repository"]

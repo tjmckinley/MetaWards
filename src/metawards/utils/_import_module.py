@@ -1,4 +1,6 @@
 
+from .._print import print
+
 __all__ = ["import_module"]
 
 
@@ -42,8 +44,8 @@ def import_module(module):
 
             if pyfile:
                 spec = importlib.util.spec_from_file_location(
-                                                module,
-                                                pyfile)
+                    module,
+                    pyfile)
 
                 m = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(m)
