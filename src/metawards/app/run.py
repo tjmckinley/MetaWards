@@ -272,8 +272,8 @@ def parse_args():
     args = parser.parse_args()
 
     if args.version:
-        from metawards import get_version_string
-        sys_print(get_version_string())
+        from metawards import get_version_string, Panel
+        print(get_version_string())
         sys.exit(0)
 
     return (args, parser)
@@ -681,7 +681,7 @@ def cli():
 
     # print the version information first, so that there is enough
     # information to enable someone to reproduce this run
-    sys_print(get_version_string())
+    print(get_version_string())
 
     # also print the full command line used for this job
     print(f"Command used to run this job:\n{' '.join(sys.argv)}\n")
@@ -978,6 +978,11 @@ def cli():
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
                      auto_bzip=auto_bzip, prompt=prompt) as output_dir:
         # write the config file for this job to output/config.yaml
+        from .._print import save_console_to_file
+
+        CONSOLE = output_dir.open("console.log")
+        save_console_to_file(CONSOLE)
+
         lines = []
         max_keysize = None
 
@@ -1026,7 +1031,9 @@ def cli():
             print("No output - end of run")
             return 0
 
-    print("End of the run")
+        print("End of the run")
+
+        save_console_to_file(CONSOLE)
 
     return 0
 
