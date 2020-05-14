@@ -235,7 +235,7 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
 
 
 def go_to_serial(**kwargs):
-    raise NotImplementedError()
+    go_to_parallel(nthreads=1, **kwargs)
 
 
 def go_to(nthreads: int = 1, **kwargs) -> None:

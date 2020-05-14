@@ -63,6 +63,7 @@ from ._disease import *
 from ._demographics import *
 from ._demographic import *
 from ._parameters import *
+from ._print import *
 import sys as _sys
 
 if _sys.version_info < (3, 7):
