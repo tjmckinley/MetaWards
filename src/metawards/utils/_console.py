@@ -2,11 +2,21 @@
 from typing import Union as _Union
 from typing import IO as _IO
 
+from contextlib import contextmanager as _contextmanager
+
 __all__ = ["Console"]
 
 
 # Global rich.Console()
 _console = None
+
+
+@_contextmanager
+def redirect_output(outdir):
+    """Nice way to redirect stdout and stderr - thanks to
+       Emil Stenström in
+       https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python
+    """
 
 
 class Console:
@@ -27,6 +37,45 @@ class Console:
             _install_rich()
 
         return _console
+
+    @staticmethod
+    @_contextmanager
+    def redirect_output(outdir: str, auto_bzip: bool = True):
+        """Redirect all output and error to the directory 'outdir'"""
+        import os as os
+        import sys as sys
+        import bz2
+        from rich.console import Console as Console
+
+        outfile = os.path.join(outdir, "output.txt")
+        errfile = os.path.join(outdir, "output.err")
+
+        if auto_bzip:
+            outfile += ".bz2"
+            errfile += ".bz2"
+
+            OUTFILE = bz2.open(outfile, "wt")
+            ERRFILE = bz2.open(errfile, "wt")
+        else:
+            OUTFILE = open(outfile, "wt")
+            ERRFILE = open(errfile, "wt")
+
+        global _console
+        new_out = Console(file=OUTFILE, record=False)
+        old_out = _console
+        _console = new_out
+
+        new_err = ERRFILE
+        old_err = sys.stderr
+        sys.stderr = new_err
+
+        try:
+            yield new_out
+        finally:
+            _console = old_out
+            sys.stderr = old_err
+            OUTFILE.close()
+            ERRFILE.close()
 
     @staticmethod
     def print(text: str, markdown: bool = False, *args, **kwargs):

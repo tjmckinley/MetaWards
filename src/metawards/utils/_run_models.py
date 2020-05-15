@@ -12,12 +12,10 @@ from .._outputfiles import OutputFiles
 from ._profiler import Profiler
 from ._get_functions import MetaFunction
 
-from contextlib import contextmanager as _contextmanager
-
 import os as _os
 import sys as _sys
 
-__all__ = ["get_number_of_processes", "run_models", "redirect_output"]
+__all__ = ["get_number_of_processes", "run_models"]
 
 
 def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
@@ -57,29 +55,6 @@ def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
     else:
         raise ValueError(
             f"Unrecognised parallelisation scheme {parallel_scheme}")
-
-
-@_contextmanager
-def redirect_output(outdir):
-    """Nice way to redirect stdout and stderr - thanks to
-       Emil Stenström in
-       https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python
-    """
-    new_out = open(_os.path.join(outdir, "output.txt"), "w")
-    old_out = _sys.stdout
-    _sys.stdout = new_out
-
-    new_err = open(_os.path.join(outdir, "output.err"), "w")
-    old_err = _sys.stderr
-    _sys.stderr = new_err
-
-    try:
-        yield new_out
-    finally:
-        _sys.stdout = old_out
-        _sys.stderr = old_err
-        new_out.close()
-        new_err.close()
 
 
 def run_models(network: _Union[Network, Networks],
@@ -249,7 +224,8 @@ def run_models(network: _Union[Network, Networks],
                     f"using seed {seed}")
                 Console.print(f"All output written to {subdir.get_path()}")
 
-                with redirect_output(subdir.get_path()):
+                with Console.redirect_output(subdir.get_path(),
+                                             auto_bzip=output_dir.auto_bzip()):
                     Console.print(f"Running variable set {i+1}")
                     Console.print(f"Variables: {variable}")
                     Console.print(f"Random seed: {seed}")
@@ -272,9 +248,9 @@ def run_models(network: _Union[Network, Networks],
 
                     outputs.append((variable, output))
 
-                Console.print(f"Completed job {i+1} of {len(variables)}")
-                Console.print(variable)
-                Console.print(output[-1])
+                Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                              f"{variable}\n"
+                              f"{output[-1]}")
             # end of OutputDirs context manager
 
             if i != len(variables) - 1:
