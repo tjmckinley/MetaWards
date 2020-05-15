@@ -209,6 +209,8 @@ def run_models(network: _Union[Network, Networks],
         f"Running **{len(variables)}** jobs using **{nprocs}** process(es)",
         markdown=True)
 
+    from yaspin import yaspin, Spinner
+
     if nprocs == 1:
         # no need to use a pool, as we will repeat this calculation
         # several times
@@ -236,15 +238,20 @@ def run_models(network: _Union[Network, Networks],
 
                     network.update(params, profiler=profiler)
 
-                    output = network.run(population=population, seed=seed,
-                                         nsteps=nsteps,
-                                         output_dir=subdir,
-                                         iterator=iterator,
-                                         extractor=extractor,
-                                         mixer=mixer,
-                                         mover=mover,
-                                         profiler=profiler,
-                                         nthreads=nthreads)
+                    sp = Spinner(["😸", "😹", "😺", "😻", "😼",
+                                  "😽", "😾", "😿", "🙀"], 200)
+
+                    with yaspin(sp, text="Computing model run"):
+                        output = network.run(population=population,
+                                             seed=seed,
+                                             nsteps=nsteps,
+                                             output_dir=subdir,
+                                             iterator=iterator,
+                                             extractor=extractor,
+                                             mixer=mixer,
+                                             mover=mover,
+                                             profiler=profiler,
+                                             nthreads=nthreads)
 
                     outputs.append((variable, output))
 

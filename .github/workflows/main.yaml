@@ -48,7 +48,9 @@ jobs:
       - name: Print branch information
         run: echo ${{github.ref}}
       - name: Install Python dependencies
-        run: pip install -r requirements-dev.txt
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
       - name: Install MetaWards package
         run: make -j 4
       - name: Clone MetaWards data
