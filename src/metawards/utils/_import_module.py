@@ -13,15 +13,18 @@ def import_module(module):
          The name of the module to import
     """
 
+    from ._console import Console
+
     try:
         import importlib
         m = importlib.import_module(module)
     except SyntaxError as e:
-        print(f"\nSyntax error when importing {module}")
-        print(f"{e.__class__.__name__}:{e}")
-        print(f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '} |")
-        print(f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '}\\|/")
-        print(f"Line {e.lineno}.{e.offset}: {e.text}\n")
+        Console.error(
+            f"\nSyntax error when importing {module}\n"
+            f"{e.__class__.__name__}:{e}\n"
+            f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '} |\n"
+            f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '}\\|/\n"
+            f"Line {e.lineno}.{e.offset}: {e.text}")
         m = None
     except Exception:
         m = None
@@ -42,20 +45,21 @@ def import_module(module):
 
             if pyfile:
                 spec = importlib.util.spec_from_file_location(
-                                                module,
-                                                pyfile)
+                    module,
+                    pyfile)
 
                 m = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(m)
 
-                print(f"Loaded {module} from {pyfile}")
+                Console.print(f"Loaded {module} from {pyfile}")
 
         except SyntaxError as e:
-            print(f"\nSyntax error when reading {pyfile}")
-            print(f"{e.__class__.__name__}:{e}")
-            print(f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '} |")
-            print(f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '}\\|/")
-            print(f"Line {e.lineno}.{e.offset}: {e.text}\n")
+            Console.error(
+                f"\nSyntax error when reading {pyfile}\n"
+                f"{e.__class__.__name__}:{e}\n"
+                f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '} |\n"
+                f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '}\\|/\n"
+                f"Line {e.lineno}.{e.offset}: {e.text}")
         except Exception:
             pass
 

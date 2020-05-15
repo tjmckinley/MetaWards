@@ -10,14 +10,12 @@ from .._variableset import VariableSets, VariableSet
 from .._outputfiles import OutputFiles
 
 from ._profiler import Profiler
-from ._get_functions import get_functions, MetaFunction
-
-from contextlib import contextmanager as _contextmanager
+from ._get_functions import MetaFunction
 
 import os as _os
 import sys as _sys
 
-__all__ = ["get_number_of_processes", "run_models", "redirect_output"]
+__all__ = ["get_number_of_processes", "run_models"]
 
 
 def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
@@ -57,29 +55,6 @@ def get_number_of_processes(parallel_scheme: str, nprocs: int = None):
     else:
         raise ValueError(
             f"Unrecognised parallelisation scheme {parallel_scheme}")
-
-
-@_contextmanager
-def redirect_output(outdir):
-    """Nice way to redirect stdout and stderr - thanks to
-       Emil Stenström in
-       https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python
-    """
-    new_out = open(_os.path.join(outdir, "output.txt"), "w")
-    old_out = _sys.stdout
-    _sys.stdout = new_out
-
-    new_err = open(_os.path.join(outdir, "output.err"), "w")
-    old_err = _sys.stderr
-    _sys.stderr = new_err
-
-    try:
-        yield new_out
-    finally:
-        _sys.stdout = old_out
-        _sys.stderr = old_err
-        new_out.close()
-        new_err.close()
 
 
 def run_models(network: _Union[Network, Networks],
@@ -190,21 +165,23 @@ def run_models(network: _Union[Network, Networks],
     #  that they are all working)
     seeds = []
 
+    from ._console import Console
+
     if seed == 0:
         # this is a special mode that a developer can use to force
         # all jobs to use the same random number seed (15324) that
         # is used for comparing outputs. This should NEVER be used
         # for production code
-        print("** WARNING: Using special mode to fix all random number")
-        print("** WARNING: seeds to 15324. DO NOT USE IN PRODUCTION!!!")
+        Console.warning("Using special mode to fix all random number "
+                        "seeds to 15324. DO NOT USE IN PRODUCTION!!!")
 
         for i in range(0, len(variables)):
             seeds.append(15324)
 
     elif debug_seeds:
-        print("** WARNING: Using special model to make all jobs use the")
-        print(f"** WARNING: Same random number seed {seed}.")
-        print(f"** WARNING: DO NOT USE IN PRODUCTION!")
+        Console.warning(f"Using special model to make all jobs use the "
+                        f"Same random number seed {seed}. "
+                        f"DO NOT USE IN PRODUCTION!")
 
         for i in range(0, len(variables)):
             seeds.append(seed)
@@ -228,7 +205,11 @@ def run_models(network: _Union[Network, Networks],
 
     outputs = []
 
-    print(f"\nRunning {len(variables)} jobs using {nprocs} process(es)")
+    Console.print(
+        f"Running **{len(variables)}** jobs using **{nprocs}** process(es)",
+        markdown=True)
+
+    from yaspin import yaspin, Spinner
 
     if nprocs == 1:
         # no need to use a pool, as we will repeat this calculation
@@ -240,36 +221,43 @@ def run_models(network: _Union[Network, Networks],
             outdir = outdirs[i]
 
             with output_dir.open_subdir(outdir) as subdir:
-                print(f"\nRunning parameter set {i+1} of {len(variables)} "
-                      f"using seed {seed}")
-                print(f"All output written to {subdir.get_path()}")
+                Console.print(
+                    f"Running parameter set {i+1} of {len(variables)} "
+                    f"using seed {seed}")
+                Console.print(f"All output written to {subdir.get_path()}")
 
-                with redirect_output(subdir.get_path()):
-                    print(f"Running variable set {i+1}")
-                    print(f"Variables: {variable}")
-                    print(f"Random seed: {seed}")
-                    print(f"nthreads: {nthreads}")
+                with Console.redirect_output(subdir.get_path(),
+                                             auto_bzip=output_dir.auto_bzip()):
+                    Console.print(f"Running variable set {i+1}")
+                    Console.print(f"Variables: {variable}")
+                    Console.print(f"Random seed: {seed}")
+                    Console.print(f"nthreads: {nthreads}")
 
                     # no need to do anything complex - just a single run
                     params = network.params.set_variables(variable)
 
                     network.update(params, profiler=profiler)
 
-                    output = network.run(population=population, seed=seed,
-                                         nsteps=nsteps,
-                                         output_dir=subdir,
-                                         iterator=iterator,
-                                         extractor=extractor,
-                                         mixer=mixer,
-                                         mover=mover,
-                                         profiler=profiler,
-                                         nthreads=nthreads)
+                    sp = Spinner(["😸", "😹", "😺", "😻", "😼",
+                                  "😽", "😾", "😿", "🙀"], 200)
+
+                    with yaspin(sp, text="Computing model run"):
+                        output = network.run(population=population,
+                                             seed=seed,
+                                             nsteps=nsteps,
+                                             output_dir=subdir,
+                                             iterator=iterator,
+                                             extractor=extractor,
+                                             mixer=mixer,
+                                             mover=mover,
+                                             profiler=profiler,
+                                             nthreads=nthreads)
 
                     outputs.append((variable, output))
 
-                print(f"Completed job {i+1} of {len(variables)}")
-                print(variable)
-                print(output[-1])
+                Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                              f"{variable}\n"
+                              f"{output[-1]}")
             # end of OutputDirs context manager
 
             if i != len(variables) - 1:
@@ -325,41 +313,45 @@ def run_models(network: _Union[Network, Networks],
 
         if parallel_scheme == "multiprocessing":
             # run jobs using a multiprocessing pool
-            print("\nRunning jobs in parallel using a multiprocessing pool...")
+            Console.rule("MULTIPROCESSING")
+            Console.print(
+                "Running jobs in parallel using a multiprocessing pool")
             from multiprocessing import Pool
             with Pool(processes=nprocs) as pool:
                 results = pool.map(run_worker, arguments)
 
                 for i, result in enumerate(results):
-                    print(f"\nCompleted job {i+1} of {len(variables)}")
-                    print(variables[i])
-                    print(result[-1])
+                    Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                                  f"{variables[i]}\n"
+                                  f"{result[-1]}")
                     outputs.append((variables[i], result))
 
         elif parallel_scheme == "mpi4py":
             # run jobs using a mpi4py pool
-            print("\nRunning jobs in parallel using a mpi4py pool...")
+            Console.rule("MPI")
+            Console.print("Running jobs in parallel using a mpi4py pool")
             from mpi4py import futures
             with futures.MPIPoolExecutor(max_workers=nprocs) as pool:
                 results = pool.map(run_worker, arguments)
 
                 for i, result in enumerate(results):
-                    print(f"\nCompleted job {i+1} of {len(variables)}")
-                    print(variables[i])
-                    print(result[-1])
+                    Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                                  f"{variables[i]}\n"
+                                  f"{result[-1]}")
                     outputs.append((variables[i], result))
 
         elif parallel_scheme == "scoop":
             # run jobs using a scoop pool
-            print("\nRunning jobs in parallel using a scoop pool...")
+            Console.rule("SCOOP")
+            Console.print("Running jobs in parallel using a scoop pool")
             from scoop import futures
 
             results = futures.map(run_worker, arguments)
 
             for i, result in enumerate(results):
-                print(f"\nCompleted job {i+1} of {len(variables)}")
-                print(variables[i])
-                print(result[-1])
+                Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                              f"{variables[i]}\n"
+                              f"{result[-1]}")
                 outputs.append((variables[i], result))
 
         else:

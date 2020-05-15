@@ -712,8 +712,9 @@ def output_core_serial(network: Network, population: Population,
         population.total = total
         population.recovereds = recovereds
         population.latent = latent
-        # save the number of wards that have at least one latent
-        # infection
+
+        # save the number of wards that have at least one new
+        # infection (index 0 is new infections)
         population.n_inf_wards = n_inf_wards[0]
 
     return total + latent
@@ -760,11 +761,13 @@ def output_core(network: _Union[Network, Networks],
         kwargs["nthreads"] = nthreads
         output_func = output_core_omp
 
+    from ..utils._console import Console
+
     if isinstance(network, Network):
         output_func(network=network, population=population,
                     workspace=workspace, infections=infections,
                     profiler=profiler, **kwargs)
-        print(population.summary())
+        Console.print_population(population)
 
     elif isinstance(network, Networks):
         if profiler is None:
@@ -802,7 +805,8 @@ def output_core(network: _Union[Network, Networks],
                     **kwargs)
         p = p.stop()
 
-        print(population.summary(demographics=network.demographics))
+        Console.print_population(population=population,
+                                 demographics=network.demographics)
 
         # double-check that the sums all add up correctly
         population.assert_sane()

@@ -82,28 +82,26 @@ class InputFiles:
         return self._model_version
 
     def __str__(self):
-        return f"Model {self._model_name} version {self._model_version}\n" \
-               f"loaded from {self._filename}\n" \
-               f"root directory {self._model_path}\n" \
-               f"author(s): {self._authors}\n" \
-               f"contact(s): {self._contacts}\n" \
-               f"references(s): {self._references}\n" \
-               f"repository: {self._repository}\n" \
-               f"repository_branch: {self._repository_branch}\n" \
-               f"repository_version: {self._repository_version}\n\n" \
-               f"work = {self.work}\n" \
-               f"play = {self.play}\n" \
-               f"identifier = {self.identifier}\n" \
-               f"identifier2 = {self.identifier2}\n" \
-               f"weekend = {self.weekend}\n" \
-               f"work_size = {self.work_size}\n" \
-               f"play_size = {self.play_size}\n" \
-               f"position = {self.position}\n" \
-               f"coordinates = {self.coordinates}\n" \
-               f"lookup = {self.lookup}\n" \
-               f"lookup_columns = {self.lookup_columns}\n" \
-               f"seed = {self.seed}\n" \
-               f"nodes_to_track = {self.nodes_to_track}\n\n"
+        return f"""
+* Model: {self._model_name}
+* loaded from: {self._filename}
+* repository: {self._repository}
+* repository_branch: {self._repository_branch}
+* repository_version: {self._repository_version}
+* work: {self.work}
+* play: {self.play}
+* identifier: {self.identifier}
+* identifier2: {self.identifier2}
+* weekend: {self.weekend}
+* work_size: {self.work_size}
+* play_size: {self.play_size}
+* position: {self.position}
+* coordinates: {self.coordinates}
+* lookup: {self.lookup}
+* lookup_columns: {self.lookup_columns}
+* seed: {self.seed}
+* nodes_to_track: {self.nodes_to_track}
+"""
 
     def _localise(self):
         """Localise the filenames in this input files set. This will
@@ -195,12 +193,14 @@ class InputFiles:
                 files = json.load(FILE)
 
         except Exception as e:
-            print(f"Could not find the model file {json_file}")
-            print(f"Either it does not exist of was corrupted.")
-            print(f"Error was {e.__class__} {e}")
-            print(f"Please see https://metawards.org/model_data for")
-            print(f"instructions on how to download and set the ")
-            print(f"model data.")
+            from .utils._console import Console
+            Console.error(f"""
+
+
+Could not find the model file {json_file}. Either it does not exist of was
+corrupted. Error was {e.__class__} {e}. Please see
+https: // metawards.org/model_data for instructions on how to download
+and set the model data.""")
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 

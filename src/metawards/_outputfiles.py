@@ -55,14 +55,16 @@ def _rmdir(directory):
         directory.unlink()
         return
 
+    from .utils._console import Console
+
     for item in directory.iterdir():
         if item.is_dir():
             _rmdir(item)
         else:
-            print(f"removing file {item}")
+            Console.print(f"removing file {item}", style="red")
             item.unlink()
 
-    print(f"removing directory {directory}")
+    Console.print(f"removing directory {directory}", style="red")
     directory.rmdir()
 
 
@@ -73,23 +75,27 @@ def _check_remove(outdir, prompt):
     if prompt is None:
         raise FileExistsError(f"Cannot continue as {outdir} already exists!")
 
-    y = prompt(f"{outdir} already exists.\nDo you want to remove it? (y/n) ")
+    from .utils._console import Console
+    Console.warning(f"{outdir} already exists.")
+    y = prompt("Do you want to remove it? (y/n) ")
 
     y = y.strip().lower()
 
     if len(y) > 0 and y == "y":
-        print(f"Removing all files in {outdir}")
+        Console.print(f"Removing all files in {outdir}", style="red")
         _rmdir(_Path(outdir))
         return
 
-    y = prompt(f"Continuing with this run will mix its output with\n"
-               f"the files already in {outdir}.\n"
-               f"Do you want to continue with this run? (y/n) ")
+    Console.warning(f"Continuing with this run will mix its output with "
+                    f"the files already in {outdir}.")
+
+    y = prompt("Do you want to continue with this run? (y/n) ")
 
     y = y.strip().lower()
 
     if len(y) == 0 or y != "y":
-        print(f"Exiting the program as we cannot run any more.")
+        from .utils._console import Console
+        Console.error(f"Exiting the program as we cannot run any more.")
         import sys
         sys.exit(-1)
 
@@ -103,17 +109,19 @@ def _force_remove(outdir, prompt):
     if not os.path.exists(outdir):
         return
 
-    if prompt:
-        y = prompt(f"{outdir} already exists.\n"
-                   f"Do you want to remove it? (y/n) ")
+    from .utils._console import Console
 
+    if prompt:
+        Console.warning(f"{outdir} already exists")
+
+        y = prompt("Do you want to remove it? (y/n) ")
         y = y.strip().lower()
 
         if len(y) == 0 or y != "y":
             raise FileExistsError(
                 f"Cannot continue as {outdir} already exists")
 
-    print(f"Removing all files in {outdir}")
+    Console.print(f"Removing all files in {outdir}", style="red")
     _rmdir(_Path(outdir))
 
 
@@ -153,6 +161,7 @@ class OutputFiles:
        >>>     FILE = output.open("output.txt")
        >>>     FILE.write("something\\n")
     """
+
     def __init__(self, output_dir: str = "output",
                  check_empty: bool = True,
                  force_empty: bool = False,
@@ -241,7 +250,9 @@ class OutputFiles:
                         pass
 
             if not os.path.isdir(outdir):
-                print(f"Cannot open {outdir} as it is not a directory!")
+                from .utils._console import Console
+                Console.error(
+                    f"Cannot open {outdir} as it is not a directory!")
                 raise FileExistsError(f"{outdir} is an existing file!")
 
         try:
