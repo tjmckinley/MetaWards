@@ -95,6 +95,32 @@ def get_version_string():
     """Return a version string for metawards which can be printed
        into a file or written out to the screen
     """
+    from metawards import get_repository
+    repository, v = get_repository(error_on_missing=False)
+
+    if repository is None:
+        repo_info = """
+***WARNING: MetaWardsData cannot be found!
+Please see [https://metawards.org/model_data](https://metawards.org/model_data)
+for instructions on how to download and install this necessary data.***
+"""
+    else:
+        if v["is_dirty"]:
+            dirty = """
+***WARNING: This data has not been committed to git.
+You may not be able to reproduce this run.***
+"""
+        else:
+            dirty = ""
+
+        repo_info = f"""
+### MetaWardsData information
+* version: {v['version']}
+* repository: [{v['repository']}]({v['repository']})
+* branch: {v['branch']}
+{dirty}
+"""
+
     from ._version import get_versions
     v = get_versions()
 
@@ -104,57 +130,37 @@ def get_version_string():
         # We need to drop back to '__manual_version__'
         v['version'] = __manual_version__
 
-    lines = []
-
-    lines.append(
-        f"# metawards version {v['version']}")
-
-    lines.append(f"## Source information")
-    lines.append(f"* repository: {v['repository']}")
-    lines.append(f"* branch: {v['branch']}")
-    lines.append(f"* revision: {v['full-revisionid']}")
-    lines.append(f"* last modified: {v['date']}")
-
     if v["dirty"]:
-        lines.append(
-            "\nWARNING: This version has not been committed to git, "
-            "so you may not be able to recover the original "
-            "source code that was used to generate this run!\n"
-            "-------------")
-
-    from metawards import get_repository
-    repository, v = get_repository(error_on_missing=False)
-
-    if repository is None:
-        lines.append(
-            "\nWARNING: MetaWardsData cannot be found! "
-            "Please see https://metawards.org/model_data "
-            "for instructions on how to download and "
-            "install this necessary data.\n"
-            "-------------")
+        dirty = """
+**WARNING: This version has not been committed to git,
+so you may not be able to recover the original
+source code that was used to generate this run!**
+"""
     else:
-        lines.append(f"## MetaWardsData information")
-        lines.append(f"* version: {v['version']}")
-        lines.append(f"* repository: {v['repository']}")
-        lines.append(f"* branch: {v['branch']}")
+        dirty = ""
 
-        if v["is_dirty"]:
-            lines.append(
-                "\nWARNING: This data has not been committed to git. "
-                "You may not be able to reproduce this run.\n"
-                "----------------")
+    return f"""
+## metawards version {v['version']}
+## [https://metawards.org](https://metawards.org)
 
-    lines.append("")
-    lines.append(f"## Additional information")
-    lines.append(f"Visit https://metawards.org for more information")
-    lines.append(f"about metawards, its authors and its license")
+### Source information
 
-    return "\n".join(lines)
+* repository: [{v['repository']}]({v['repository']})
+* branch: {v['branch']}
+* revision: {v['full-revisionid']}
+* last modified: {v['date']}
+{dirty}
+{repo_info}
+
+### Additional information
+Visit [https://metawards.org](https://metawards.org) for more information
+about metawards, its authors and its license
+"""
 
 
 def print_version_string():
     from metawards.utils import Console
-    Console.print(get_version_string(), markdown=True)
+    Console.panel(get_version_string(), markdown=True, width=72, expand=False)
 
 
 _system_input = input

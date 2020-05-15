@@ -38,14 +38,16 @@ class Console:
         Console._get_console().print(text, *args, **kwargs)
 
     @staticmethod
-    def rule(title: str = None):
+    def rule(title: str = None, **kwargs):
         """Write a rule across the screen with optional title"""
         from rich.rule import Rule as _Rule
         Console.print("")
-        Console.print(_Rule(title))
+        Console.print(_Rule(title, **kwargs))
 
     @staticmethod
-    def panel(text: str, markdown: bool = False, *args, **kwargs):
+    def panel(text: str, markdown: bool = False, width=None,
+              padding: bool = True,
+              expand=True, *args, **kwargs):
         """Print within a panel to the console"""
         from rich.panel import Panel as _Panel
         from rich import box as _box
@@ -54,28 +56,37 @@ class Console:
             from rich.markdown import Markdown as _Markdown
             text = _Markdown(text)
 
-        Console.print(_Panel(text, box=_box.SQUARE), *args, **kwargs)
+        if padding:
+            from rich.padding import Padding as _Padding
+            text = _Padding(text, (1, 2), style="on black")
+
+        Console.print(_Panel(text, box=_box.SQUARE, width=width,
+                             expand=expand), *args, **kwargs)
 
     @staticmethod
     def error(text: str, *args, **kwargs):
         """Print an error to the console"""
-        Console.rule("ERROR")
-        kwargs["style"] = "error"
+        Console.rule("ERROR", style="red")
+        kwargs["style"] = "bold red"
         Console.print(text, *args, **kwargs)
-        Console.rule()
+        Console.rule(style="red")
 
     @staticmethod
     def warning(text: str, *args, **kwargs):
         """Print a warning to the console"""
-        Console.rule("WARNING")
-        kwargs["style"] = "warning"
+        Console.rule("WARNING", style="magenta")
+        kwargs["style"] = "bold magenta"
         Console.print(text, *args, **kwargs)
-        Console.rule()
+        Console.rule(style="magenta")
 
     @staticmethod
     def center(text: str, *args, **kwargs):
         from rich.text import Text as _Text
         Console.print(_Text(str, justify="center"), *args, **kwargs)
+
+    @staticmethod
+    def command(text: str, *args, **kwargs):
+        Console.print("    " + text, markdown=True)
 
     @staticmethod
     def save(file: _Union[str, _IO]):

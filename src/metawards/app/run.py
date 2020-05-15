@@ -439,7 +439,8 @@ def scoop_supervisor(hostfile, args):
     cmd = f"{pyexe} -m scoop --hostfile {hostfile} -n {nprocs} " \
           f"{script} --already-supervised {args} --nprocs {nprocs}"
 
-    Console.print(f"Executing scoop job using '{cmd}'")
+    Console.print("Executing scoop job using")
+    Console.command(cmd)
 
     try:
         args = shlex.split(cmd)
@@ -566,7 +567,8 @@ def mpi_supervisor(hostfile, args):
     cmd = f"{mpiexec} -np {nprocs} -hostfile {hostfile} " \
           f"{pyexe} -m mpi4py {script} --already-supervised {args}"
 
-    Console.print(f"Executing MPI job using '{cmd}'")
+    Console.print("Executing MPI job using")
+    Console.command(cmd)
 
     try:
         args = shlex.split(cmd)
@@ -689,11 +691,14 @@ def cli():
     # information to enable someone to reproduce this run
     print_version_string()
 
+    Console.rule("Initialise")
+
     if args.input:
         # get the line numbers of the input file to read
         if args.line is None or len(args.line) == 0:
             linenums = None
-            Console.print(f"Using parameters from all lines of {args.input}")
+            Console.print(f"* Using parameters from all lines of {args.input}",
+                          markdown=True)
         else:
             from metawards.utils import string_to_ints
             linenums = string_to_ints(args.line)
@@ -702,11 +707,11 @@ def cli():
                 Console.error(f"You cannot read no lines from {args.input}?")
                 sys.exit(-1)
             elif len(linenums) == 1:
-                Console.print(f"Using parameters from line {linenums[0]} of "
-                              f"{args.input}")
+                Console.print(f"* Using parameters from line {linenums[0]} of "
+                              f"{args.input}", markdown=True)
             else:
-                Console.print(f"Using parameters from lines {linenums} of "
-                              f"{args.input}")
+                Console.print(f"* Using parameters from lines {linenums} of "
+                              f"{args.input}", markdown=True)
 
         from metawards import VariableSets, VariableSet
         variables = VariableSets.read(filename=args.input,
@@ -723,9 +728,12 @@ def cli():
         nrepeats = 1
 
     if nrepeats == 1:
-        Console.print("Performing a single run of each set of parameters")
+        Console.print("* Performing a single run of each set of parameters",
+                      markdown=True)
     else:
-        Console.print(f"Performing {nrepeats} runs of each set of parameters")
+        Console.print(
+            f"* Performing {nrepeats} runs of each set of parameters",
+            markdown=True)
 
     variables = variables.repeat(nrepeats)
 
@@ -738,13 +746,15 @@ def cli():
         parallel_scheme=parallel_scheme)
 
     Console.print(
-        f"\nNumber of threads to use for each model run is {nthreads}")
+        f"\n* Number of threads to use for each model run is {nthreads}",
+        markdown=True)
 
     if nprocs > 1:
-        Console.print(f"Number of processes used to parallelise model "
-                      f"runs is {nprocs}")
+        Console.print(f"* Number of processes used to parallelise model "
+                      f"runs is {nprocs}", markdown=True)
         Console.print(
-            f"Parallelisation will be achieved using {parallel_scheme}")
+            f"* Parallelisation will be achieved using {parallel_scheme}",
+            markdown=True)
 
     # sort out the random number seed
     seed = args.seed
@@ -761,7 +771,7 @@ def cli():
         Console.warning("Using special mode to fix all random number"
                         "seeds to 15324. DO NOT USE IN PRODUCTION!!!")
     else:
-        Console.print(f"\nUsing random number seed {seed}")
+        Console.print(f"* Using random number seed {seed}", markdown=True)
 
     # get the starting day and date
     start_day = args.start_day
@@ -793,7 +803,8 @@ def cli():
         from datetime import date
         start_date = date.today()
 
-    Console.print(f"\nDay zero is {start_date.strftime('%A %B %d %Y')}")
+    Console.print(f"* Day zero is {start_date.strftime('%A %B %d %Y')}",
+                  markdown=True)
 
     if start_day != 0:
         from datetime import timedelta
@@ -808,7 +819,7 @@ def cli():
     (repository, repository_version) = Parameters.get_repository(
         args.repository)
 
-    Console.print(f"\nUsing MetaWardsData at {repository}")
+    Console.print(f"* Using MetaWardsData at {repository}", markdown=True)
 
     if repository_version["is_dirty"]:
         Console.warning("This repository is dirty, meaning that the data"
@@ -822,6 +833,13 @@ def cli():
     args.start_date = start_date.isoformat()
     args.repository = repository
 
+    # also print the source of all inputs
+    import configargparse
+    Console.rule("Souce of inputs")
+    p = configargparse.get_argument_parser("main")
+    Console.print(p.format_values())
+
+    # print out the command used to repeat this job
     repeat_cmd = "metawards"
 
     for key, value in vars(args).items():
@@ -846,17 +864,14 @@ def cli():
                 else:
                     repeat_cmd += f" --{k} {v}"
 
-    # also print the source of all inputs
-    import configargparse
-    Console.rule("Souce of inputs")
-    p = configargparse.get_argument_parser("main")
-    Console.print(p.format_values())
+    Console.rule("Repeating this run")
+    Console.print("To repeat this job use the command;")
+    Console.command(repeat_cmd)
+    Console.print("Or alternatively use the config.yaml file that will be "
+                  "written to the output directory and use the command;")
+    Console.command("metawards -c config.yaml")
 
-    Console.rule("Repeating this job")
-    Console.print(f"To repeat this job use the command\n\n{repeat_cmd}\n\n"
-                  "Or alternatively use the config.yaml file that will be "
-                  "written to the output directory and use the command\n\n"
-                  "metawards -c config.yaml")
+    Console.rule("Parameters")
 
     # load all of the parameters
     try:
@@ -880,21 +895,26 @@ def cli():
         profiler = Profiler()
 
     # load the disease and starting-point input files
+    Console.rule("Disease")
     if args.disease:
         params.set_disease(args.disease)
     else:
         params.set_disease("ncov")
 
+    Console.rule("Model data")
     if args.model:
         params.set_input_files(args.model)
     else:
         params.set_input_files("2011Data")
 
     # load the user-defined custom parameters
+    Console.rule("Custom parameters and seeds")
     if args.user_variables:
         custom = VariableSet.read(args.user_variables)
         Console.print(f"Adjusting variables to {custom}")
         custom.adjust(params)
+    else:
+        Console.print("Not adjusting any parameters...")
 
     # read the additional seeds
     if args.additional is None or len(args.additional) == 0:
@@ -926,8 +946,7 @@ def cli():
 
     if args.demographics:
         from metawards import Demographics
-        Console.print(
-            "\nSpecialising the network into different demographics:")
+        Console.rule("Specialising into demographics")
         demographics = Demographics.load(args.demographics)
         Console.print(demographics)
 
@@ -935,7 +954,7 @@ def cli():
                                      profiler=profiler,
                                      nthreads=nthreads)
 
-    Console.rule("Run the model")
+    Console.rule("Preparing to run")
     from metawards import OutputFiles
     from metawards.utils import run_models
 
@@ -980,6 +999,7 @@ def cli():
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
                      auto_bzip=auto_bzip, prompt=prompt) as output_dir:
         # write the config file for this job to output/config.yaml
+        Console.rule("Running the model")
         CONSOLE = output_dir.open("console.log")
         Console.save(CONSOLE)
 
@@ -1031,7 +1051,7 @@ def cli():
             Console.print("No output - end of run")
             return 0
 
-        Console.print("End of the run")
+        Console.rule("End of the run", style="magenta")
 
         Console.save(CONSOLE)
 
