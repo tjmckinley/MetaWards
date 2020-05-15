@@ -6,7 +6,6 @@ from libc.stdio cimport FILE, fopen, fscanf, fclose, feof
 
 from .._parameters import Parameters
 from .._network import Network
-from .._print import print
 from .._nodes import Nodes
 from .._links import Links
 

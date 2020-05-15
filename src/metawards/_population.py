@@ -3,7 +3,6 @@ from dataclasses import dataclass as _dataclass
 from typing import List as _List
 from copy import deepcopy as _deepcopy
 from datetime import date as _date
-from ._print import print
 
 __all__ = ["Population", "Populations"]
 

@@ -18,6 +18,7 @@ Functions
     build_wards_network
     call_function_on_network
     clear_all_infections
+    Console
     create_int_array
     create_double_array
     create_string_array
@@ -82,6 +83,7 @@ from ._import_module import *
 from ._get_functions import *
 from ._align_strings import *
 from ._safe_eval_float import *
+from ._console import *
 
 from ._add_lookup import *
 from ._aggregate import *

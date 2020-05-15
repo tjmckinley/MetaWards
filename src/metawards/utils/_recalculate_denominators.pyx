@@ -9,7 +9,6 @@ cimport openmp
 from libc.math cimport floor
 
 from .._network import Network
-from .._print import print
 
 from ._profiler import Profiler
 from ._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr

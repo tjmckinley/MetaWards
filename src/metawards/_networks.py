@@ -9,8 +9,6 @@ from ._demographics import Demographics
 from ._population import Population
 from ._outputfiles import OutputFiles
 
-from ._print import print
-
 __all__ = ["Networks"]
 
 

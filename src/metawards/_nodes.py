@@ -1,6 +1,5 @@
 
 from ._node import Node
-from ._print import print
 
 __all__ = ["Nodes"]
 

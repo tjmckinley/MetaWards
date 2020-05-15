@@ -12,8 +12,6 @@ from .._outputfiles import OutputFiles
 from ._profiler import Profiler
 from ._get_functions import MetaFunction
 
-from .._print import print
-
 from contextlib import contextmanager as _contextmanager
 
 import os as _os

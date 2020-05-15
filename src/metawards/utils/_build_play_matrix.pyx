@@ -5,7 +5,6 @@
 from libc.stdio cimport FILE, fopen, fscanf, fclose, feof
 
 from .._network import Network
-from .._print import print
 from .._links import Links
 from ._profiler import Profiler, NullProfiler
 

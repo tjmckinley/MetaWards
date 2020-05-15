@@ -14,8 +14,6 @@ __all__ = ["get_parallel_scheme", "parse_args", "get_hostfile",
            "scoop_supervisor", "mpi_supervisor",
            "cli"]
 
-from .._print import print, sys_print
-
 
 def get_parallel_scheme():
     """This function tries to work out which of the different parallel
@@ -272,8 +270,8 @@ def parse_args():
     args = parser.parse_args()
 
     if args.version:
-        from metawards import get_version_string, Panel
-        print(get_version_string())
+        from metawards import print_version_string
+        print_version_string()
         sys.exit(0)
 
     return (args, parser)
@@ -355,7 +353,8 @@ def scoop_supervisor(hostfile, args):
     """
     import os
     import sys
-    print("RUNNING A SCOOP PROGRAM")
+    from metawards.utils import Console
+    Console.print("RUNNING A SCOOP PROGRAM")
 
     outdir = args.output
 
@@ -364,19 +363,20 @@ def scoop_supervisor(hostfile, args):
 
     cores_per_node = get_cores_per_node(args)
 
-    print(f"Will run jobs assuming {cores_per_node} cores per compute node")
+    Console.print(
+        f"Will run jobs assuming {cores_per_node} cores per compute node")
 
     # based on the number of threads requested and the number of cores
     # per node, we can work out the number of scoop processes to start,
     # and can write a hostfile that will create the right layout
     nthreads = get_threads_per_task(args)
 
-    print(f"Will use {nthreads} OpenMP threads per model run...")
+    Console.print(f"Will use {nthreads} OpenMP threads per model run...")
 
     tasks_per_node = int(cores_per_node / nthreads)
 
-    print(f"...meaning that the number of model runs per node will be "
-          f"{tasks_per_node}")
+    Console.print(f"...meaning that the number of model runs per node will be "
+                  f"{tasks_per_node}")
 
     # Next, read the hostfile to get a unique list of hostnames
     hostnames = {}
@@ -391,8 +391,8 @@ def scoop_supervisor(hostfile, args):
     hostnames = list(hostnames.keys())
     hostnames.sort()
 
-    print(f"Number of compute nodes equals {len(hostnames)}")
-    print(", ".join(hostnames))
+    Console.print(f"Number of compute nodes equals {len(hostnames)}")
+    Console.print(", ".join(hostnames))
 
     # how many tasks can we perform in parallel?
     nprocs = tasks_per_node * len(hostnames)
@@ -404,13 +404,14 @@ def scoop_supervisor(hostfile, args):
 
         nprocs = args.nprocs
 
-    print(f"Total number of parallel processes to run will be {nprocs}")
-    print(f"Total number of cores in use will be {nprocs*nthreads}")
+    Console.print(
+        f"Total number of parallel processes to run will be {nprocs}")
+    Console.print(f"Total number of cores in use will be {nprocs*nthreads}")
 
     # Now write a new hostfile that round-robins the MPI tasks over
     # the nodes for 'tasks_per_node' runs
     hostfile = f"_metawards_hostfile_{os.getpid()}"
-    print(f"Writing hostfile to {hostfile}")
+    Console.print(f"Writing hostfile to {hostfile}")
 
     with open(hostfile, "w") as FILE:
         i = 0
@@ -438,21 +439,21 @@ def scoop_supervisor(hostfile, args):
     cmd = f"{pyexe} -m scoop --hostfile {hostfile} -n {nprocs} " \
           f"{script} --already-supervised {args} --nprocs {nprocs}"
 
-    print(f"Executing scoop job using '{cmd}'")
+    Console.print(f"Executing scoop job using '{cmd}'")
 
     try:
         args = shlex.split(cmd)
         subprocess.run(args).check_returncode()
     except Exception as e:
-        print("ERROR: Something went wrong!")
-        print(f"{e.__class__}: {e}")
+        Console.error("ERROR: Something went wrong!")
+        Console.error(f"{e.__class__}: {e}")
         sys.exit(-1)
 
     # clean up the hostfile afterwards... (we leave it if something
     # went wrong as it may help debugging)
     os.unlink(hostfile)
 
-    print("Scoop processes completed successfully")
+    Console.print("Scoop processes completed successfully")
 
 
 def mpi_supervisor(hostfile, args):
@@ -461,7 +462,9 @@ def mpi_supervisor(hostfile, args):
     """
     import os
     import sys
-    print("RUNNING AN MPI PROGRAM")
+    from metawards.utils import Console
+
+    Console.print("RUNNING AN MPI PROGRAM")
 
     outdir = args.output
 
@@ -470,19 +473,20 @@ def mpi_supervisor(hostfile, args):
 
     cores_per_node = get_cores_per_node(args)
 
-    print(f"Will run jobs assuming {cores_per_node} cores per compute node")
+    Console.print(
+        f"Will run jobs assuming {cores_per_node} cores per compute node")
 
     # based on the number of threads requested and the number of cores
     # per node, we can work out the number of mpi processes to start,
     # and can write a hostfile that will create the right layout
     nthreads = get_threads_per_task(args)
 
-    print(f"Will use {nthreads} OpenMP threads per model run...")
+    Console.print(f"Will use {nthreads} OpenMP threads per model run...")
 
     tasks_per_node = int(cores_per_node / nthreads)
 
-    print(f"...meaning that the number of model runs per node will be "
-          f"{tasks_per_node}")
+    Console.print(f"...meaning that the number of model runs per node will be "
+                  f"{tasks_per_node}")
 
     # Next, read the hostfile to get a unique list of hostnames
     hostnames = {}
@@ -497,26 +501,27 @@ def mpi_supervisor(hostfile, args):
     hostnames = list(hostnames.keys())
     hostnames.sort()
 
-    print(f"Number of compute nodes equals {len(hostnames)}")
-    print(", ".join(hostnames))
+    Console.print(f"Number of compute nodes equals {len(hostnames)}")
+    Console.print(", ".join(hostnames))
 
     # how many tasks can we perform in parallel?
     nprocs = tasks_per_node * len(hostnames)
 
     if args.nprocs:
         if nprocs != args.nprocs:
-            print(f"WARNING: You are using an unrecommended number of "
-                  f"processes {args.nprocs} for the cluster {nprocs}.")
+            Console.print(f"WARNING: You are using an unrecommended number of "
+                          f"processes {args.nprocs} for the cluster {nprocs}.")
 
         nprocs = args.nprocs
 
-    print(f"Total number of parallel processes to run will be {nprocs}")
-    print(f"Total number of cores in use will be {nprocs*nthreads}")
+    Console.print(
+        f"Total number of parallel processes to run will be {nprocs}")
+    Console.print(f"Total number of cores in use will be {nprocs*nthreads}")
 
     # Now write a new hostfile that round-robins the MPI tasks over
     # the nodes for 'tasks_per_node' runs
     hostfile = f"_metawards_hostfile_{os.getpid()}"
-    print(f"Writing hostfile to {hostfile}")
+    Console.print(f"Writing hostfile to {hostfile}")
 
     with open(hostfile, "w") as FILE:
         i = 0
@@ -545,14 +550,14 @@ def mpi_supervisor(hostfile, args):
         p = subprocess.run(args, stdout=subprocess.PIPE,
                            stderr=subprocess.STDOUT)
         v = p.stdout.decode("utf-8").strip()
-        print(f"{mpiexec} -v => {v}")
+        Console.print(f"{mpiexec} -v => {v}")
 
         if v.find("HPE HMPT") != -1:
             raise ValueError(
                 "metawards needs a more modern MPI library than HPE's, "
                 "so please compile to another MPI and use that.")
     except Exception as e:
-        print(f"[ERROR] {e.__class__} {e}")
+        Console.error(f"[ERROR] {e.__class__} {e}")
 
     pyexe = sys.executable
     script = os.path.abspath(sys.argv[0])
@@ -561,21 +566,21 @@ def mpi_supervisor(hostfile, args):
     cmd = f"{mpiexec} -np {nprocs} -hostfile {hostfile} " \
           f"{pyexe} -m mpi4py {script} --already-supervised {args}"
 
-    print(f"Executing MPI job using '{cmd}'")
+    Console.print(f"Executing MPI job using '{cmd}'")
 
     try:
         args = shlex.split(cmd)
         subprocess.run(args).check_returncode()
     except Exception as e:
-        print("ERROR: Something went wrong!")
-        print(f"{e.__class__}: {e}")
+        Console.error("ERROR: Something went wrong!")
+        Console.error(f"{e.__class__}: {e}")
         sys.exit(-1)
 
     # clean up the hostfile afterwards... (we leave it if something
     # went wrong as it may help debugging)
     os.unlink(hostfile)
 
-    print("MPI processes completed successfully")
+    Console.print("MPI processes completed successfully")
 
 
 def cli():
@@ -592,6 +597,7 @@ def cli():
           set up and run a manager (main) process that will use those
           nodes to run the jobs
     """
+    from metawards.utils import Console
 
     # get the parallel scheme now before we import any other modules
     # so that it is clear if mpi4py or scoop (or another parallel module)
@@ -607,13 +613,13 @@ def cli():
         if rank != 0:
             # this is a worker process, so should not do anything
             # more until it is given work in the pool
-            print(f"Starting worker process {rank+1} of {nprocs-1}...")
+            Console.print(f"Starting worker process {rank+1} of {nprocs-1}...")
             return
         else:
-            print("Starting main process...")
+            Console.print("Starting main process...")
 
     elif parallel_scheme == "scoop":
-        print("STARTING SCOOP PROCESS")
+        Console.print("STARTING SCOOP PROCESS")
 
     import sys
 
@@ -677,33 +683,30 @@ def cli():
         args.repeats = 1
 
     # import the parameters here to speed up the display of help
-    from metawards import Parameters, Network, Population, get_version_string
+    from metawards import Parameters, Network, Population, print_version_string
 
     # print the version information first, so that there is enough
     # information to enable someone to reproduce this run
-    print(get_version_string())
-
-    # also print the full command line used for this job
-    print(f"Command used to run this job:\n{' '.join(sys.argv)}\n")
+    print_version_string()
 
     if args.input:
         # get the line numbers of the input file to read
         if args.line is None or len(args.line) == 0:
             linenums = None
-            print(f"Using parameters from all lines of {args.input}")
+            Console.print(f"Using parameters from all lines of {args.input}")
         else:
             from metawards.utils import string_to_ints
             linenums = string_to_ints(args.line)
 
             if len(linenums) == 0:
-                print(f"You cannot read no lines from {args.input}?")
+                Console.error(f"You cannot read no lines from {args.input}?")
                 sys.exit(-1)
             elif len(linenums) == 1:
-                print(f"Using parameters from line {linenums[0]} of "
-                      f"{args.input}")
+                Console.print(f"Using parameters from line {linenums[0]} of "
+                              f"{args.input}")
             else:
-                print(f"Using parameters from lines {linenums} of "
-                      f"{args.input}")
+                Console.print(f"Using parameters from lines {linenums} of "
+                              f"{args.input}")
 
         from metawards import VariableSets, VariableSet
         variables = VariableSets.read(filename=args.input,
@@ -720,9 +723,9 @@ def cli():
         nrepeats = 1
 
     if nrepeats == 1:
-        print("Performing a single run of each set of parameters")
+        Console.print("Performing a single run of each set of parameters")
     else:
-        print(f"Performing {nrepeats} runs of each set of parameters")
+        Console.print(f"Performing {nrepeats} runs of each set of parameters")
 
     variables = variables.repeat(nrepeats)
 
@@ -734,12 +737,14 @@ def cli():
         nprocs=args.nprocs,
         parallel_scheme=parallel_scheme)
 
-    print(f"\nNumber of threads to use for each model run is {nthreads}")
+    Console.print(
+        f"\nNumber of threads to use for each model run is {nthreads}")
 
     if nprocs > 1:
-        print(f"Number of processes used to parallelise model "
-              f"runs is {nprocs}")
-        print(f"Parallelisation will be achieved using {parallel_scheme}")
+        Console.print(f"Number of processes used to parallelise model "
+                      f"runs is {nprocs}")
+        Console.print(
+            f"Parallelisation will be achieved using {parallel_scheme}")
 
     # sort out the random number seed
     seed = args.seed
@@ -753,10 +758,10 @@ def cli():
         # all jobs to use the same random number seed (15324) that
         # is used for comparing outputs. This should NEVER be used
         # for production code
-        print("** WARNING: Using special mode to fix all random number")
-        print("** WARNING: seeds to 15324. DO NOT USE IN PRODUCTION!!!")
+        Console.warning("Using special mode to fix all random number"
+                        "seeds to 15324. DO NOT USE IN PRODUCTION!!!")
     else:
-        print(f"\nUsing random number seed {seed}")
+        Console.print(f"\nUsing random number seed {seed}")
 
     # get the starting day and date
     start_day = args.start_day
@@ -788,13 +793,13 @@ def cli():
         from datetime import date
         start_date = date.today()
 
-    print(f"\nDay zero is {start_date.strftime('%A %B %d %Y')}")
+    Console.print(f"\nDay zero is {start_date.strftime('%A %B %d %Y')}")
 
     if start_day != 0:
         from datetime import timedelta
         start_day_date = start_date + timedelta(days=start_day)
-        print(f"Starting on day {start_day}, which is "
-              f"{start_day_date.strftime('%A %B %d %Y')}")
+        Console.print(f"Starting on day {start_day}, which is "
+                      f"{start_day_date.strftime('%A %B %d %Y')}")
     else:
         start_day_date = start_date
 
@@ -803,12 +808,12 @@ def cli():
     (repository, repository_version) = Parameters.get_repository(
         args.repository)
 
-    print(f"\nUsing MetaWardsData at {repository}")
+    Console.print(f"\nUsing MetaWardsData at {repository}")
 
     if repository_version["is_dirty"]:
-        print("## WARNING - this repository is dirty, meaning that the data")
-        print("## WARNING - has not been committed to git. This may make ")
-        print("## WARNING - this calculation very difficult to reproduce")
+        Console.warning("This repository is dirty, meaning that the data"
+                        "has not been committed to git. This may make "
+                        "this calculation very difficult to reproduce")
 
     # now work out the minimum command line needed to repeat this job
     args.seed = seed
@@ -843,30 +848,26 @@ def cli():
 
     # also print the source of all inputs
     import configargparse
-    print("\nThe source of the inputs were;")
+    Console.rule("Souce of inputs")
     p = configargparse.get_argument_parser("main")
-    print(p.format_values())
+    Console.print(p.format_values())
 
-    t = "*** To repeat this job use the command ***"
-
-    print("\n" + "*"*len(t))
-    print(t)
-    print("*"*len(t) + "\n")
-    print(repeat_cmd + "\n")
-
-    print("Or alternatively use the config.yaml file that will be ")
-    print("written to the output directory and use the command")
-    print("\nmetawards -c config.yaml\n")
+    Console.rule("Repeating this job")
+    Console.print(f"To repeat this job use the command\n\n{repeat_cmd}\n\n"
+                  "Or alternatively use the config.yaml file that will be "
+                  "written to the output directory and use the command\n\n"
+                  "metawards -c config.yaml")
 
     # load all of the parameters
     try:
         params = Parameters.load(parameters=args.parameters)
     except Exception as e:
-        print(f"Unable to load parameter files. Make sure that you have "
-              f"cloned the MetaWardsData repository and have set the "
-              f"environment variable METAWARDSDATA to point to the "
-              f"local directory containing the repository, e.g. the "
-              f"default is $HOME/GitHub/MetaWardsData")
+        Console.warning(
+            f"Unable to load parameter files. Make sure that you have "
+            f"cloned the MetaWardsData repository and have set the "
+            f"environment variable METAWARDSDATA to point to the "
+            f"local directory containing the repository, e.g. the "
+            f"default is $HOME/GitHub/MetaWardsData")
         raise e
 
     # should we profile the code? (default no as it prints a lot)
@@ -892,15 +893,15 @@ def cli():
     # load the user-defined custom parameters
     if args.user_variables:
         custom = VariableSet.read(args.user_variables)
-        print(f"Adjusting variables to {custom}")
+        Console.print(f"Adjusting variables to {custom}")
         custom.adjust(params)
 
     # read the additional seeds
     if args.additional is None or len(args.additional) == 0:
-        print("Not using any additional seeds...")
+        Console.print("Not using any additional seeds...")
     else:
         for additional in args.additional:
-            print(f"Loading additional seeds from {additional}")
+            Console.print(f"Loading additional seeds from {additional}")
             params.add_seeds(additional)
 
     # extra parameters that are set
@@ -917,7 +918,7 @@ def cli():
                             date=start_day_date,
                             day=start_day)
 
-    print("\nBuilding the network...")
+    Console.rule("Building the network")
     network = Network.build(params=params,
                             max_nodes=args.max_nodes,
                             max_links=args.max_links,
@@ -925,15 +926,16 @@ def cli():
 
     if args.demographics:
         from metawards import Demographics
-        print("\nSpecialising the network into different demographics:")
+        Console.print(
+            "\nSpecialising the network into different demographics:")
         demographics = Demographics.load(args.demographics)
-        print(demographics)
+        Console.print(demographics)
 
         network = network.specialise(demographics,
                                      profiler=profiler,
                                      nthreads=nthreads)
 
-    print("\nRun the model...")
+    Console.rule("Run the model")
     from metawards import OutputFiles
     from metawards.utils import run_models
 
@@ -978,10 +980,8 @@ def cli():
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
                      auto_bzip=auto_bzip, prompt=prompt) as output_dir:
         # write the config file for this job to output/config.yaml
-        from .._print import save_console_to_file
-
         CONSOLE = output_dir.open("console.log")
-        save_console_to_file(CONSOLE)
+        Console.save(CONSOLE)
 
         lines = []
         max_keysize = None
@@ -1028,12 +1028,12 @@ def cli():
                             parallel_scheme=parallel_scheme)
 
         if result is None or len(result) == 0:
-            print("No output - end of run")
+            Console.print("No output - end of run")
             return 0
 
-        print("End of the run")
+        Console.print("End of the run")
 
-        save_console_to_file(CONSOLE)
+        Console.save(CONSOLE)
 
     return 0
 

@@ -1,6 +1,4 @@
 
-from .._print import print
-
 __all__ = ["import_module"]
 
 

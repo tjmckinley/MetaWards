@@ -14,8 +14,6 @@ from ._get_functions import get_initialise_functions, \
     MetaFunction, \
     accepts_stage
 
-from .._print import print
-
 __all__ = ["run_model"]
 
 

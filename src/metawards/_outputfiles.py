@@ -1,6 +1,5 @@
 
 from pathlib import Path as _Path
-from ._print import print
 
 __all__ = ["OutputFiles"]
 

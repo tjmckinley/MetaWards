@@ -2,8 +2,6 @@
 from typing import List as _List
 from typing import Dict as _Dict
 
-from ._print import print
-
 __all__ = ["VariableSets", "VariableSet"]
 
 

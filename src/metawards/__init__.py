@@ -63,7 +63,6 @@ from ._disease import *
 from ._demographics import *
 from ._demographic import *
 from ._parameters import *
-from ._print import *
 import sys as _sys
 
 if _sys.version_info < (3, 7):
@@ -105,68 +104,57 @@ def get_version_string():
         # We need to drop back to '__manual_version__'
         v['version'] = __manual_version__
 
-    header = f"metawards version {v['version']}"
-    stars = "*" * len(header)
-
-    def center(line, length=48):
-        diff = length - len(line)
-        if diff <= 0:
-            return line
-        else:
-            left = int(diff/2) * " "
-            return left + line
-
-    newline = "\n"
-
-    stars = center(stars)
-
     lines = []
-    lines.append("")
-    lines.append(stars)
-    lines.append(center(header))
-    lines.append(stars)
-    lines.append("")
 
-    lines.append(center(f"-- Source information --"))
-    lines.append(center(f"{v['repository']}"))
-    lines.append(center(f"branch: {v['branch']}"))
-    lines.append(center(f"revision: {v['full-revisionid']}"))
-    lines.append(center(f"last modified: {v['date']}"))
+    lines.append(
+        f"# metawards version {v['version']}")
+
+    lines.append(f"## Source information")
+    lines.append(f"* repository: {v['repository']}")
+    lines.append(f"* branch: {v['branch']}")
+    lines.append(f"* revision: {v['full-revisionid']}")
+    lines.append(f"* last modified: {v['date']}")
 
     if v["dirty"]:
-        lines.append("")
-        lines.append("WARNING: This version has not been committed to git,")
-        lines.append("WARNING: so you may not be able to recover the original")
-        lines.append("WARNING: source code that was used to generate "
-                     "this run!")
+        lines.append(
+            "\nWARNING: This version has not been committed to git, "
+            "so you may not be able to recover the original "
+            "source code that was used to generate this run!\n"
+            "-------------")
 
     from metawards import get_repository
     repository, v = get_repository(error_on_missing=False)
 
     if repository is None:
-        lines.append("")
-        lines.append("WARNING: MetaWardsData cannot be found!")
-        lines.append("WARNING: Please see https://metawards.org/model_data")
-        lines.append("WARNING: for instructions on how to download and")
-        lines.append("WARNING: install this necessary data.")
+        lines.append(
+            "\nWARNING: MetaWardsData cannot be found! "
+            "Please see https://metawards.org/model_data "
+            "for instructions on how to download and "
+            "install this necessary data.\n"
+            "-------------")
     else:
-        lines.append("")
-        lines.append(center(f"-- MetaWardsData information --"))
-        lines.append(center(f"version: {v['version']}"))
-        lines.append(center(f"{v['repository']}"))
-        lines.append(center(f"branch: {v['branch']}"))
+        lines.append(f"## MetaWardsData information")
+        lines.append(f"* version: {v['version']}")
+        lines.append(f"* repository: {v['repository']}")
+        lines.append(f"* branch: {v['branch']}")
 
         if v["is_dirty"]:
-            lines.append("WARNING: This data has not been committed to git.")
-            lines.append("WARNING: You may not be able to reproduce this run.")
+            lines.append(
+                "\nWARNING: This data has not been committed to git. "
+                "You may not be able to reproduce this run.\n"
+                "----------------")
 
     lines.append("")
-    lines.append(center(f"-- Additional information --"))
-    lines.append(center(f"Visit https://metawards.org for more information"))
-    lines.append(center(f"about metawards, its authors and its license"))
-    lines.append("")
+    lines.append(f"## Additional information")
+    lines.append(f"Visit https://metawards.org for more information")
+    lines.append(f"about metawards, its authors and its license")
 
-    return newline.join(lines)
+    return "\n".join(lines)
+
+
+def print_version_string():
+    from metawards.utils import Console
+    Console.print(get_version_string(), markdown=True)
 
 
 _system_input = input

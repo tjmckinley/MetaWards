@@ -1,8 +1,6 @@
 
 import time
 
-from .._print import print
-
 __all__ = ["Profiler", "NullProfiler"]
 
 

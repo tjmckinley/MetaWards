@@ -2,8 +2,6 @@
 from array import array
 from sys import platform
 
-from .._print import print
-
 __all__ = ["guess_num_threads_and_procs",
            "get_available_num_threads",
            "create_thread_generators"]

@@ -9,7 +9,6 @@ import pathlib as _pathlib
 
 from ._demographic import Demographic
 from ._network import Network
-from ._print import print
 
 __all__ = ["Demographics", "DemographicID", "DemographicIDs"]
 

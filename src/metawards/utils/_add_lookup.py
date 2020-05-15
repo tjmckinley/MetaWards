@@ -1,6 +1,5 @@
 
 from .._network import Network
-from .._print import print
 
 __all__ = ["add_lookup"]
 
