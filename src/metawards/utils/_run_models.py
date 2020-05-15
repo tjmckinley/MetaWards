@@ -306,42 +306,45 @@ def run_models(network: _Union[Network, Networks],
 
         if parallel_scheme == "multiprocessing":
             # run jobs using a multiprocessing pool
-            Console.info(
+            Console.rule("MULTIPROCESSING")
+            Console.print(
                 "Running jobs in parallel using a multiprocessing pool")
             from multiprocessing import Pool
             with Pool(processes=nprocs) as pool:
                 results = pool.map(run_worker, arguments)
 
                 for i, result in enumerate(results):
-                    Console.print(f"Completed job {i+1} of {len(variables)}")
-                    Console.print(variables[i])
-                    Console.print(result[-1])
+                    Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                                  f"{variables[i]}\n"
+                                  f"{result[-1]}")
                     outputs.append((variables[i], result))
 
         elif parallel_scheme == "mpi4py":
             # run jobs using a mpi4py pool
-            Console.info("Running jobs in parallel using a mpi4py pool")
+            Console.rule("MPI")
+            Console.print("Running jobs in parallel using a mpi4py pool")
             from mpi4py import futures
             with futures.MPIPoolExecutor(max_workers=nprocs) as pool:
                 results = pool.map(run_worker, arguments)
 
                 for i, result in enumerate(results):
-                    Console.print(f"\nCompleted job {i+1} of {len(variables)}")
-                    Console.print(variables[i])
-                    Console.print(result[-1])
+                    Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                                  f"{variables[i]}\n"
+                                  f"{result[-1]}")
                     outputs.append((variables[i], result))
 
         elif parallel_scheme == "scoop":
             # run jobs using a scoop pool
-            Console.info("Running jobs in parallel using a scoop pool")
+            Console.rule("SCOOP")
+            Console.print("Running jobs in parallel using a scoop pool")
             from scoop import futures
 
             results = futures.map(run_worker, arguments)
 
             for i, result in enumerate(results):
-                Console.print(f"\nCompleted job {i+1} of {len(variables)}")
-                Console.print(variables[i])
-                Console.print(result[-1])
+                Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                              f"{variables[i]}\n"
+                              f"{result[-1]}")
                 outputs.append((variables[i], result))
 
         else:
