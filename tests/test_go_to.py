@@ -3,7 +3,7 @@ import os
 import pytest
 
 from metawards import Parameters, Network, Population, \
-    OutputFiles, VariableSets, Demographics, print
+    OutputFiles, VariableSets, Demographics
 from metawards.mixers import mix_evenly
 from metawards.movers import go_to
 

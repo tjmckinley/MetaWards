@@ -105,6 +105,10 @@ class Console:
         Console.print(population.summary(demographics=demographics))
 
     @staticmethod
+    def print_profiler(profiler, *args, **kwargs):
+        Console.print(str(profiler))
+
+    @staticmethod
     def save(file: _Union[str, _IO]):
         """Save the accumulated printing to the console to 'file'.
            This can be a file or a filehandle. The buffer is
