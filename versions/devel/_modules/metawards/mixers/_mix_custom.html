@@ -220,8 +220,10 @@
 <span class="sd">          The wrapped mixer that is suitable for using in the move</span>
 <span class="sd">          function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">..utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">custom_function</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Importing a custom mixer from </span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Importing a custom mixer from </span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># we need to find the function</span>
         <span class="kn">import</span> <span class="nn">metawards.mixers</span>
@@ -272,10 +274,11 @@
 
         <span class="k">if</span> <span class="n">module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># we cannot find the extractor</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot find the mixer &#39;</span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;Please make sure this is spelled correctly and &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;any python modules/files needed are in the &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;PYTHONPATH or current directory&quot;</span><span class="p">)</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot find the mixer &#39;</span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Please make sure this is spelled correctly and &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;any python modules/files needed are in the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;PYTHONPATH or current directory&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not import the mover &quot;</span>
                               <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
@@ -291,10 +294,11 @@
             <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">build_custom_mixer</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
 
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find any function in the module &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2"> that has a name that starts &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;with &#39;mix&#39;. Please manually specify the &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;name using the &#39;</span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">::your_function syntax&quot;</span><span class="p">)</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Could not find any function in the module &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2"> that has a name that starts &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;with &#39;mix&#39;. Please manually specify the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;name using the &#39;</span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">::your_function syntax&quot;</span><span class="p">)</span>
 
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not import the mixer &quot;</span>
                               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -303,21 +307,24 @@
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">func_name</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">build_custom_mixer</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">func_name</span><span class="p">))</span>
 
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find the function </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> in the &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;module </span><span class="si">{</span><span class="n">func_module</span><span class="si">}</span><span class="s2">. Check that the spelling &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;is correct and that the right version of the module &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;is being loaded.&quot;</span><span class="p">)</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Could not find the function </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> in the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;module </span><span class="si">{</span><span class="n">func_module</span><span class="si">}</span><span class="s2">. Check that the spelling &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;is correct and that the right version of the module &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;is being loaded.&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not import the mixer &quot;</span>
                               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">custom_function</span><span class="p">,</span> <span class="s2">&quot;__call__&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot build a mixer for </span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2"> &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;as it is missing a __call__ function, i.e. it is &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;not a function.&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Cannot build a mixer for </span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;as it is missing a __call__ function, i.e. it is &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;not a function.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You can only build custom mixers for &quot;</span>
                          <span class="sa">f</span><span class="s2">&quot;actual functions... </span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building a custom mixer for </span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building a custom mixer for </span><span class="si">{</span><span class="n">custom_function</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                  <span class="n">style</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">mix_custom</span><span class="p">(</span><span class="n">custom_function</span><span class="o">=</span><span class="n">custom_function</span><span class="p">,</span>
                                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -376,7 +383,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 12, 2020.
+        Last updated on May 15, 2020.
       </span>
 
     </p>

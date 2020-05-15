@@ -44,7 +44,7 @@ using;
 
 .. code-block:: bash
 
-  metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondon.dat --mixer mix_evenly
+  metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondon.dat --mixer mix_evenly
 
 You should now see that the outbreak spreads from the initial infection in
 the *red* demographic to the *blue workers*, who then spread it around

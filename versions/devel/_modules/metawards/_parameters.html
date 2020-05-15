@@ -291,9 +291,11 @@
             <span class="n">_repositories</span><span class="p">[</span><span class="n">repository</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
             <span class="k">return</span> <span class="n">version</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find the repository version info in </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">. &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;Please make sure that you have run &#39;./version&#39; in that &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;repository to generate the version info.&quot;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Could not find the repository version info in </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">. Please make sure</span>
+<span class="s2">that you have run &#39;./version&#39; in that repository to generate the version</span>
+<span class="s2">info.&quot;&quot;&quot;</span><span class="p">)</span>
         <span class="n">_repositories</span><span class="p">[</span><span class="n">repository</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;filepath&quot;</span><span class="p">:</span> <span class="n">repository</span><span class="p">,</span>
                                      <span class="s2">&quot;repository&quot;</span><span class="p">:</span> <span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
                                      <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
@@ -372,34 +374,28 @@
     <span class="n">_repository_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Parameters </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;loaded from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;version: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;author(s): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_authors</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;contact(s): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_contacts</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;references(s): </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_references</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;repository: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;repository_branch: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository_branch</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;repository_version: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository_version</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;length_day = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">length_day</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;plength_day = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plength_day</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;initial_inf = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_inf</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;static_play_at_home = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">static_play_at_home</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;dyn_play_at_home = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dyn_play_at_home</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;data_dist_cutoff = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dist_cutoff</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;dyn_dist_cutoff = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dyn_dist_cutoff</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;play_to_work = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">play_to_work</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;work_to_play = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">work_to_play</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;local_vaccination_thresh = &quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">local_vaccination_thresh</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;global_detection_thresh = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">global_detection_thresh</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;daily_ward_vaccination_capacity = &quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">daily_ward_vaccination_capacity</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;neighbour_weight_threshold = &quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbour_weight_threshold</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;daily_imports = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">daily_imports</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;UV = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">UV</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;additional_seeds = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_seeds</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">* Parameters: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* loaded from: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* repository: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* repository_branch: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository_branch</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* repository_version: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository_version</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* length_day: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">length_day</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* plength_day: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plength_day</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* initial_inf: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_inf</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* static_play_at_home: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">static_play_at_home</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* dyn_play_at_home: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dyn_play_at_home</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* data_dist_cutoff: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dist_cutoff</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* dyn_dist_cutoff: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dyn_dist_cutoff</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* play_to_work: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">play_to_work</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* work_to_play: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">work_to_play</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* local_vaccination_thresh: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">local_vaccination_thresh</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* global_detection_thresh: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">global_detection_thresh</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* daily_ward_vaccination_capacity: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">daily_ward_vaccination_capacity</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* neighbour_weight_threshold: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbour_weight_threshold</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* daily_imports: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">daily_imports</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* UV: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">UV</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">* additional_seeds: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_seeds</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Parameters.get_repository"><a class="viewcode-back" href="../../api/generated/metawards.Parameters.html#metawards.Parameters.get_repository">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_repository</span><span class="p">(</span><span class="n">repository</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -478,12 +474,12 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">FILE</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find the parameters file </span><span class="si">{</span><span class="n">json_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Either it does not exist of was corrupted.&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error was </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Please see https://metawards.org/model_data for&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;instructions on how to download and set the &quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;model data.&quot;</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Could not find the parameters file </span><span class="si">{</span><span class="n">json_file</span><span class="si">}</span><span class="s2">. Either it does not exist or</span>
+<span class="s2">was corrupted. Error was </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. &quot;Please see</span>
+<span class="s2">https://metawards.org/model_data for instructions on how to download and</span>
+<span class="s2">set the model data.&quot;&quot;&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find or read </span><span class="si">{</span><span class="n">json_file</span><span class="si">}</span><span class="s2">: &quot;</span>
                                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -519,8 +515,8 @@
             <span class="n">_repository_version</span><span class="o">=</span><span class="n">repository_version</span>
         <span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using parameters:&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">par</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">par</span></div>
 
@@ -567,8 +563,8 @@
             <span class="n">input_files</span> <span class="o">=</span> <span class="n">InputFiles</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">input_files</span><span class="p">,</span>
                                           <span class="n">repository</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository_dir</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using input files:&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">input_files</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">input_files</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_files</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">input_files</span><span class="p">)</span></div>
@@ -584,8 +580,8 @@
             <span class="n">disease</span> <span class="o">=</span> <span class="n">Disease</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">disease</span><span class="p">,</span>
                                    <span class="n">repository</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository_dir</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using disease&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">disease</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">disease</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disease_params</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">disease</span><span class="p">)</span></div>
@@ -651,7 +647,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 12, 2020.
+        Last updated on May 15, 2020.
       </span>
 
     </p>

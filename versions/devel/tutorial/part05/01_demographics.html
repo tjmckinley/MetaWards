@@ -109,6 +109,7 @@
 <li class="toctree-l3"><a class="reference internal" href="03_custom.html">Using custom merge functions to model shielding</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part06.html">Part 6 - Moving between demographics</a></li>
 </ul>
 </li>
 </ul>
@@ -285,7 +286,7 @@ of the demographics.</p>
 <p>Now that you have created the <code class="docutils literal notranslate"><span class="pre">demographics.json</span></code> file, you can tell
 <code class="docutils literal notranslate"><span class="pre">metawards</span></code> to use it via the <code class="docutils literal notranslate"><span class="pre">--demographics</span></code>, or <code class="docutils literal notranslate"><span class="pre">-D</span></code>,
 command line argument. Run <code class="docutils literal notranslate"><span class="pre">metawards</span></code> using;</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy2 -D demographics.json
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy3 -D demographics.json
 </pre></div>
 </div>
 <p>In the output you should see lines such as;</p>
@@ -354,7 +355,7 @@ sub-network populations, e.g.</p>
 <p>In this case no infection was seeded, so nothing appears to happen.</p>
 <p>We can seed an infection just as before, by using the <code class="docutils literal notranslate"><span class="pre">--additional</span></code>
 (or <code class="docutils literal notranslate"><span class="pre">-a</span></code>) option, e.g. now run;</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondon.dat
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondon.dat
 </pre></div>
 </div>
 <p>You should see output similar (but not identical) to;</p>
@@ -519,7 +520,7 @@ its index (<code class="docutils literal notranslate"><span class="pre">1</span>
 </div>
 <p>The <em>blue</em> demographic contains all of the <em>workers</em>, so we would expect
 to see a different outbreak. Perform a <em>model run</em> using;</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondonBlue.dat
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondonBlue.dat
 </pre></div>
 </div>
 <p>You should see a more sustained outbreak, ending in a similar way to this;</p>
@@ -579,7 +580,7 @@ demographic were infected.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 12, 2020.
+        Last updated on May 15, 2020.
       </span>
 
     </p>

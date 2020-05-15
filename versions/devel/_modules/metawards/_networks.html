@@ -313,12 +313,14 @@
         <span class="n">total_pop</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">population</span>
         <span class="n">sum_pop</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specialising network - population = </span><span class="si">{</span><span class="n">total_pop</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specialising network - population: </span><span class="si">{</span><span class="n">total_pop</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">subnet</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subnets</span><span class="p">):</span>
             <span class="n">pop</span> <span class="o">=</span> <span class="n">subnet</span><span class="o">.</span><span class="n">population</span>
             <span class="n">sum_pop</span> <span class="o">+=</span> <span class="n">pop</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">demographics</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - population = </span><span class="si">{</span><span class="n">pop</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">demographics</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - population: </span><span class="si">{</span><span class="n">pop</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">total_pop</span> <span class="o">!=</span> <span class="n">sum_pop</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
@@ -426,8 +428,9 @@
             <span class="c1"># all jobs to use the same random number seed (15324) that</span>
             <span class="c1"># is used for comparing outputs. This should NEVER be used</span>
             <span class="c1"># for production code</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** WARNING: Using special mode to fix all random number&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** WARNING: seeds to 15324. DO NOT USE IN PRODUCTION!!!&quot;</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using special mode to fix all random number &quot;</span>
+                            <span class="s2">&quot;seeds to 15324. DO NOT USE IN PRODUCTION!!!&quot;</span><span class="p">)</span>
             <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">15324</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
@@ -439,20 +442,21 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
             <span class="n">randnums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ran_binomial</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)))</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First five random numbers equal </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">randnums</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First five random numbers equal </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">randnums</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">randnums</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.utils._parallel</span> <span class="kn">import</span> <span class="n">get_available_num_threads</span>
             <span class="n">nthreads</span> <span class="o">=</span> <span class="n">get_available_num_threads</span><span class="p">()</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of threads used equals </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of threads used equals </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="kn">from</span> <span class="nn">.utils._parallel</span> <span class="kn">import</span> <span class="n">create_thread_generators</span>
         <span class="n">rngs</span> <span class="o">=</span> <span class="n">create_thread_generators</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">)</span>
 
         <span class="c1"># Create space to hold the results of the simulation</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initialise infections...&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Initialise infections...&quot;</span><span class="p">)</span>
         <span class="n">infections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialise_infections</span><span class="p">()</span>
 
         <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">run_model</span>
@@ -574,7 +578,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 12, 2020.
+        Last updated on May 15, 2020.
       </span>
 
     </p>

@@ -237,14 +237,16 @@
         <span class="n">directory</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
         <span class="k">return</span>
 
+    <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">directory</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
             <span class="n">_rmdir</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;removing file </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;removing file </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
             <span class="n">item</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;removing directory </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;removing directory </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
     <span class="n">directory</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span>
 
 
@@ -255,23 +257,27 @@
     <span class="k">if</span> <span class="n">prompt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot continue as </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists!&quot;</span><span class="p">)</span>
 
-    <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists.</span><span class="se">\n</span><span class="s2">Do you want to remove it? (y/n) &quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+    <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists.&quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;Do you want to remove it? (y/n) &quot;</span><span class="p">)</span>
 
     <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing all files in </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing all files in </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
         <span class="n">_rmdir</span><span class="p">(</span><span class="n">_Path</span><span class="p">(</span><span class="n">outdir</span><span class="p">))</span>
         <span class="k">return</span>
 
-    <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Continuing with this run will mix its output with</span><span class="se">\n</span><span class="s2">&quot;</span>
-               <span class="sa">f</span><span class="s2">&quot;the files already in </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-               <span class="sa">f</span><span class="s2">&quot;Do you want to continue with this run? (y/n) &quot;</span><span class="p">)</span>
+    <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Continuing with this run will mix its output with &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;the files already in </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;Do you want to continue with this run? (y/n) &quot;</span><span class="p">)</span>
 
     <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y</span> <span class="o">!=</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exiting the program as we cannot run any more.&quot;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exiting the program as we cannot run any more.&quot;</span><span class="p">)</span>
         <span class="kn">import</span> <span class="nn">sys</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
@@ -285,17 +291,19 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
         <span class="k">return</span>
 
-    <span class="k">if</span> <span class="n">prompt</span><span class="p">:</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                   <span class="sa">f</span><span class="s2">&quot;Do you want to remove it? (y/n) &quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
 
+    <span class="k">if</span> <span class="n">prompt</span><span class="p">:</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;Do you want to remove it? (y/n) &quot;</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y</span> <span class="o">!=</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Cannot continue as </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing all files in </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing all files in </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
     <span class="n">_rmdir</span><span class="p">(</span><span class="n">_Path</span><span class="p">(</span><span class="n">outdir</span><span class="p">))</span>
 
 
@@ -335,6 +343,7 @@
 <span class="sd">       &gt;&gt;&gt;     FILE = output.open(&quot;output.txt&quot;)</span>
 <span class="sd">       &gt;&gt;&gt;     FILE.write(&quot;something\\n&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="OutputFiles.__init__"><a class="viewcode-back" href="../../api/generated/metawards.OutputFiles.html#metawards.OutputFiles.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;output&quot;</span><span class="p">,</span>
                  <span class="n">check_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">force_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -423,7 +432,9 @@
                         <span class="k">pass</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot open </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> as it is not a directory!&quot;</span><span class="p">)</span>
+                <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+                <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Cannot open </span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> as it is not a directory!&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> is an existing file!&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -667,7 +678,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 12, 2020.
+        Last updated on May 15, 2020.
       </span>
 
     </p>

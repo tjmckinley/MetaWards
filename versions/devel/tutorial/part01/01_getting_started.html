@@ -110,6 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../index_part03.html">Part 3 - Customising the outbreak</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_part04.html">Part 4 - Customising the output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_part05.html">Part 5 - Modelling multiple demographics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part06.html">Part 6 - Moving between demographics</a></li>
 </ul>
 </li>
 </ul>
@@ -220,25 +221,31 @@ that you have, type the following into your console;</p>
 <p>and then press return. You should see something similar to the below
 printed to your screen.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ metawards --version
-
-     *************************************
-     metawards version 0.11.2+14.g64fa0887
-     *************************************
-
-            -- Source information --
-     https://github.com/metawards/MetaWards
-                 branch: devel
-revision: 64fa088748e31f47d5c14ed22cdbc5e162aa47c1
-    last modified: 2020-05-12T18:24:42+0100
-
-WARNING: MetaWardsData cannot be found!
-WARNING: Please see https://metawards.org/model_data
-WARNING: for instructions on how to download and
-WARNING: install this necessary data.
-
-          -- Additional information --
-Visit https://metawards.org for more information
-  about metawards, its authors and its license
+┌──────────────────────────────────────────────────────────────────────┐
+│                                                                      │
+│                                                                      │
+│                metawards version 0.11.2+37.g01d89daf                 │
+│                                                                      │
+│                                                                      │
+│                        https://metawards.org                         │
+│                                                                      │
+│                          Source information                          │
+│                                                                      │
+│   • repository: https://github.com/metawards/MetaWards               │
+│   • branch: devel                                                    │
+│   • revision: 01d89dafdb881b5f4aeb7afcee4f8d16000a7c98               │
+│   • last modified: 2020-05-15T19:22:06+0100                          │
+│                                                                      │
+│  WARNING: MetaWardsData cannot be found! Please see                  │
+│  https://metawards.org/model_data for instructions on how to         │
+│  download and install this necessary data.                           │
+│                                                                      │
+│                        Additional information                        │
+│                                                                      │
+│  Visit https://metawards.org for more information about metawards,   │
+│  its authors and its license                                         │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 </pre></div>
 </div>
 <p>If you don’t see this, or the output includes a warning about not being
@@ -344,10 +351,11 @@ to the codes;</p>
 infected, but not yet infectious.</li>
 <li><strong>I</strong>: The number of the population who are <em>infected</em>, meaning they
 have symptoms and are infectious</li>
-<li><strong>R</strong>: The number of the population who are removed from the outbreak,
-e.g. because they have recovered and are no longer susceptible to infection</li>
-<li><strong>IW</strong>: The number electoral wards that contain at least one infected
-individual.</li>
+<li><strong>R</strong>: The number of the population who are removed from being susceptible,
+either because they have been newly infected that day, or because they
+have recovered from the infection and are no longer susceptible to infection</li>
+<li><strong>IW</strong>: The number of electoral wards that contain at least one
+individual who was newly infected that day.</li>
 </ul>
 <p>For more information about these values, please
 <a class="reference external" href="https://doi.org/10.1016/j.epidem.2009.11.002">read</a>
@@ -477,7 +485,7 @@ override defaults.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 12, 2020.
+        Last updated on May 15, 2020.
       </span>
 
     </p>

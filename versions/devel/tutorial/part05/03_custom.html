@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Usage" href="../../usage.html" />
+    <link rel="next" title="Part 6 - Moving between demographics" href="../index_part06.html" />
     <link rel="prev" title="Mixers and Merge-functions" href="02_mixers.html" /> 
 </head>
 
@@ -109,6 +109,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part06.html">Part 6 - Moving between demographics</a></li>
 </ul>
 </li>
 </ul>
@@ -197,7 +198,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../../usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../index_part06.html" class="btn btn-neutral float-right" title="Part 6 - Moving between demographics" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="02_mixers.html" class="btn btn-neutral float-left" title="Mixers and Merge-functions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -311,7 +312,7 @@ value set in step 1 will be used for the merge.</li>
 </ol>
 <p>You set the mixer to use using the <code class="docutils literal notranslate"><span class="pre">--mixer</span></code> flag, e.g. run <code class="docutils literal notranslate"><span class="pre">metawards</span></code>
 using;</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondon.dat --mixer shield
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondon.dat --mixer shield
 </pre></div>
 </div>
 <p>You should see that, while the infection moves through most of the <em>blue</em>
@@ -395,7 +396,7 @@ needs to be shielded. Create a scan file called <code class="docutils literal no
 <p>This scans <code class="docutils literal notranslate"><span class="pre">red_red</span></code> between 0.2 and 0.5 while scanning <code class="docutils literal notranslate"><span class="pre">red_blue</span></code>
 from 0.1 to 0.5</p>
 <p>You can run these jobs using this command;</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondonBlue.dat --mixer shield --user-variables shield.inp -i scan.dat
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondonBlue.dat --mixer shield --user-variables shield.inp -i scan.dat
 </pre></div>
 </div>
 <p>or, alternatively if you have a cluster you could use a job script such
@@ -412,7 +413,7 @@ simulation).</p>
 <span class="c1"># change into the directory from which this job was submitted</span>
 <span class="nb">cd</span> <span class="nv">$PBS_O_WORKDIR</span>
 
-metawards -u shield.inp -i scan.dat -d lurgy2 <span class="se">\</span>
+metawards -u shield.inp -i scan.dat -d lurgy3 <span class="se">\</span>
           -D demographics.json -a ExtraSeedsLondonBlue.dat <span class="se">\</span>
           --mixer shield <span class="se">\</span>
           --repeats <span class="m">8</span> --nthreads <span class="m">16</span> --force-overwrite-output
@@ -428,7 +429,7 @@ metawards -u shield.inp -i scan.dat -d lurgy2 <span class="se">\</span>
 # Assume you have metawards in $HOME/envs/metawards
 source $HOME/metawards/bin/activate
 
-metawards -u shield.inp -i scan.dat -d lurgy2 \
+metawards -u shield.inp -i scan.dat -d lurgy3 \
           -D demographics.json -a ExtraSeedsLondonBlue.dat \
           --mixer shield \
           --repeats 8 --nthreads 16 --force-overwrite-output
@@ -478,7 +479,7 @@ of lockdown of the <em>red</em> demographic.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../index_part06.html" class="btn btn-neutral float-right" title="Part 6 - Moving between demographics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="02_mixers.html" class="btn btn-neutral float-left" title="Mixers and Merge-functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -491,7 +492,7 @@ of lockdown of the <em>red</em> demographic.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 12, 2020.
+        Last updated on May 15, 2020.
       </span>
 
     </p>

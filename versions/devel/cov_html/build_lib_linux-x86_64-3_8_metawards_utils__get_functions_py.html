@@ -123,8 +123,8 @@
     <p id="t69" class="pln"><span class="n"><a href="#t69">69</a></span><span class="t"><span class="str">                in each ward in each demographic</span>&nbsp;</span><span class="r"></span></p>
     <p id="t70" class="pln"><span class="n"><a href="#t70">70</a></span><span class="t"><span class="str">       * "infect": Called to advance the outbreak by calculating</span>&nbsp;</span><span class="r"></span></p>
     <p id="t71" class="pln"><span class="n"><a href="#t71">71</a></span><span class="t"><span class="str">                   the number of new infections</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t72" class="pln"><span class="n"><a href="#t72">72</a></span><span class="t"><span class="str">       * "analyse": Called at the end of the day to merge and analyse</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t73" class="pln"><span class="n"><a href="#t73">73</a></span><span class="t"><span class="str">                    the data and extrac the results</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t72" class="pln"><span class="n"><a href="#t72">72</a></span><span class="t"><span class="str">       * "analyse": Called at the end of the day to analyse</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t73" class="pln"><span class="n"><a href="#t73">73</a></span><span class="t"><span class="str">                    the data and extract the results</span>&nbsp;</span><span class="r"></span></p>
     <p id="t74" class="pln"><span class="n"><a href="#t74">74</a></span><span class="t"><span class="str">       * "finalise": Called at the end of the model run to finalise</span>&nbsp;</span><span class="r"></span></p>
     <p id="t75" class="pln"><span class="n"><a href="#t75">75</a></span><span class="t"><span class="str">                     any outputs or produce overall summary files</span>&nbsp;</span><span class="r"></span></p>
     <p id="t76" class="pln"><span class="n"><a href="#t76">76</a></span><span class="t"><span class="str">       * "summary": Called at the end of lots of model runs, to write</span>&nbsp;</span><span class="r"></span></p>
@@ -381,10 +381,10 @@
     <p id="t327" class="pln"><span class="n"><a href="#t327">327</a></span><span class="t">                 <span class="nam">population</span><span class="op">=</span><span class="nam">subpop</span><span class="op">,</span> <span class="nam">workspace</span><span class="op">=</span><span class="nam">subwork</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t328" class="pln"><span class="n"><a href="#t328">328</a></span><span class="t">                 <span class="op">**</span><span class="nam">kwargs</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t329" class="pln"><span class="n"><a href="#t329">329</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t330" class="run"><span class="n"><a href="#t330">330</a></span><span class="t">            <span class="key">if</span> <span class="nam">call_on_overall</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t331" class="run"><span class="n"><a href="#t331">331</a></span><span class="t">                <span class="nam">func</span><span class="op">(</span><span class="nam">network</span><span class="op">=</span><span class="nam">network</span><span class="op">.</span><span class="nam">overall</span><span class="op">,</span> <span class="nam">infections</span><span class="op">=</span><span class="nam">infections</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t332" class="pln"><span class="n"><a href="#t332">332</a></span><span class="t">                     <span class="nam">population</span><span class="op">=</span><span class="nam">population</span><span class="op">,</span> <span class="nam">workspace</span><span class="op">=</span><span class="nam">workspace</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t333" class="pln"><span class="n"><a href="#t333">333</a></span><span class="t">                     <span class="op">**</span><span class="nam">kwargs</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t330" class="run"><span class="n"><a href="#t330">330</a></span><span class="t">        <span class="key">if</span> <span class="nam">call_on_overall</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t331" class="run"><span class="n"><a href="#t331">331</a></span><span class="t">            <span class="nam">func</span><span class="op">(</span><span class="nam">network</span><span class="op">=</span><span class="nam">network</span><span class="op">.</span><span class="nam">overall</span><span class="op">,</span> <span class="nam">infections</span><span class="op">=</span><span class="nam">infections</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t332" class="pln"><span class="n"><a href="#t332">332</a></span><span class="t">                 <span class="nam">population</span><span class="op">=</span><span class="nam">population</span><span class="op">,</span> <span class="nam">workspace</span><span class="op">=</span><span class="nam">workspace</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t333" class="pln"><span class="n"><a href="#t333">333</a></span><span class="t">                 <span class="op">**</span><span class="nam">kwargs</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t334" class="pln"><span class="n"><a href="#t334">334</a></span><span class="t">    <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t335" class="run"><span class="n"><a href="#t335">335</a></span><span class="t">        <span class="nam">func</span><span class="op">(</span><span class="nam">network</span><span class="op">=</span><span class="nam">network</span><span class="op">,</span> <span class="nam">infections</span><span class="op">=</span><span class="nam">infections</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t336" class="pln"><span class="n"><a href="#t336">336</a></span><span class="t">             <span class="nam">population</span><span class="op">=</span><span class="nam">population</span><span class="op">,</span> <span class="nam">workspace</span><span class="op">=</span><span class="nam">workspace</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -394,7 +394,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.1</a>,
-            created at 2020-05-12 17:30
+            created at 2020-05-15 18:29
         </p>
     </div>
 </div>

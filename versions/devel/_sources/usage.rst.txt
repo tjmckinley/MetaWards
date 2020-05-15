@@ -215,11 +215,16 @@ A model run moves individuals between different states according to
 whether they become infected, and then progress through the outbreak.
 The codes mean;
 
-* `S` : number who are susceptible to infection (and not infected)
-* `E` : number who are infected but not yet infectious (latent)
-* `I` : number who are infected, infectious and symptomatic
-* `IW` : number of wards that have at least one infected individual
-* `R` : number who are recovered from the infection and thus immune
+* **S**: The number of the population who are *susceptible* to infection
+* **E**: The number of the population who are *latent*, meaning they are
+  infected, but not yet infectious.
+* **I**: The number of the population who are *infected*, meaning they
+  have symptoms and are infectious
+* **R**: The number of the population who are removed from being susceptible,
+  either because they have been newly infected that day, or because they
+  have recovered from the infection and are no longer susceptible to infection
+* **IW**: The number of electoral wards that contain at least one
+  individual who was newly infected that day.
 
 As well as being printed to the screen, this data is also written
 to the CSV file ``output/results.csv.bz2`` for easy reading and analysis
