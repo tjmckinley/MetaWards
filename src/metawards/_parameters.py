@@ -109,9 +109,11 @@ def get_repository_version(repository: str):
             _repositories[repository] = version
             return version
     except Exception:
-        print(f"Could not find the repository version info in {filename}. "
-              f"Please make sure that you have run './version' in that "
-              f"repository to generate the version info.")
+        from .utils._console import Console
+        Console.error(f"""
+Could not find the repository version info in {filename}. Please make sure
+that you have run './version' in that repository to generate the version
+info.""")
         _repositories[repository] = {"filepath": repository,
                                      "repository": "unknown",
                                      "version": "unknown",
@@ -190,34 +192,28 @@ class Parameters:
     _repository_dir: str = None
 
     def __str__(self):
-        return f"Parameters {self._name}\n" \
-               f"loaded from {self._filename}\n" \
-               f"version: {self._version}\n" \
-               f"author(s): {self._authors}\n" \
-               f"contact(s): {self._contacts}\n" \
-               f"references(s): {self._references}\n" \
-               f"repository: {self._repository}\n" \
-               f"repository_branch: {self._repository_branch}\n" \
-               f"repository_version: {self._repository_version}\n\n" \
-               f"length_day = {self.length_day}\n" \
-               f"plength_day = {self.plength_day}\n" \
-               f"initial_inf = {self.initial_inf}\n" \
-               f"static_play_at_home = {self.static_play_at_home}\n" \
-               f"dyn_play_at_home = {self.dyn_play_at_home}\n" \
-               f"data_dist_cutoff = {self.data_dist_cutoff}\n" \
-               f"dyn_dist_cutoff = {self.dyn_dist_cutoff}\n" \
-               f"play_to_work = {self.play_to_work}\n" \
-               f"work_to_play = {self.work_to_play}\n" \
-               f"local_vaccination_thresh = " \
-               f"{self.local_vaccination_thresh}\n" \
-               f"global_detection_thresh = {self.global_detection_thresh}\n" \
-               f"daily_ward_vaccination_capacity = " \
-               f"{self.daily_ward_vaccination_capacity}\n" \
-               f"neighbour_weight_threshold = " \
-               f"{self.neighbour_weight_threshold}\n" \
-               f"daily_imports = {self.daily_imports}\n" \
-               f"UV = {self.UV}\n" \
-               f"additional_seeds = {self.additional_seeds}\n\n"
+        return f"""
+* Parameters: {self._name}
+* loaded from: {self._filename}
+* repository: {self._repository}
+* repository_branch: {self._repository_branch}
+* repository_version: {self._repository_version}
+* length_day: {self.length_day}
+* plength_day: {self.plength_day}
+* initial_inf: {self.initial_inf}
+* static_play_at_home: {self.static_play_at_home}
+* dyn_play_at_home: {self.dyn_play_at_home}
+* data_dist_cutoff: {self.data_dist_cutoff}
+* dyn_dist_cutoff: {self.dyn_dist_cutoff}
+* play_to_work: {self.play_to_work}
+* work_to_play: {self.work_to_play}
+* local_vaccination_thresh: {self.local_vaccination_thresh}
+* global_detection_thresh: {self.global_detection_thresh}
+* daily_ward_vaccination_capacity: {self.daily_ward_vaccination_capacity}
+* neighbour_weight_threshold: {self.neighbour_weight_threshold}
+* daily_imports: {self.daily_imports}
+* UV: {self.UV}
+* additional_seeds: {self.additional_seeds}"""
 
     @staticmethod
     def get_repository(repository: str = None):
@@ -296,12 +292,12 @@ class Parameters:
                 data = json.load(FILE)
 
         except Exception as e:
-            print(f"Could not find the parameters file {json_file}")
-            print(f"Either it does not exist of was corrupted.")
-            print(f"Error was {e.__class__} {e}")
-            print(f"Please see https://metawards.org/model_data for")
-            print(f"instructions on how to download and set the ")
-            print(f"model data.")
+            from .utils._console import Console
+            Console.error(f"""
+Could not find the parameters file {json_file}. Either it does not exist or
+was corrupted. Error was {e.__class__} {e}. "Please see
+https://metawards.org/model_data for instructions on how to download and
+set the model data.""")
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 
@@ -337,8 +333,8 @@ class Parameters:
             _repository_version=repository_version
         )
 
-        print("Using parameters:")
-        print(par)
+        from .utils._console import Console
+        Console.print(par, markdown=True)
 
         return par
 
@@ -385,8 +381,8 @@ class Parameters:
             input_files = InputFiles.load(input_files,
                                           repository=self._repository_dir)
 
-        print("Using input files:")
-        print(input_files)
+        from .utils._console import Console
+        Console.print(input_files, markdown=True)
 
         from copy import deepcopy
         self.input_files = deepcopy(input_files)
@@ -402,8 +398,8 @@ class Parameters:
             disease = Disease.load(disease,
                                    repository=self._repository_dir)
 
-        print("Using disease")
-        print(disease)
+        from .utils._console import Console
+        Console.print(disease, markdown=True)
 
         from copy import deepcopy
         self.disease_params = deepcopy(disease)

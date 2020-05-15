@@ -140,7 +140,8 @@ class Population:
 
         if len(errors) > 0:
             errors = "\nERROR: ".join(errors)
-            print(f"ERROR: {errors}")
+            from .utils._console import Console
+            Console.error(errors)
             raise AssertionError(f"Disagreement in population sums!")
 
     def summary(self, demographics=None):

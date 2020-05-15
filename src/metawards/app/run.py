@@ -399,8 +399,9 @@ def scoop_supervisor(hostfile, args):
 
     if args.nprocs:
         if nprocs != args.nprocs:
-            print(f"WARNING: You are using a not-recommended number of "
-                  f"processes {args.nprocs} for the cluster {nprocs}.")
+            Console.warning(
+                f"You are using a not-recommended number of "
+                f"processes {args.nprocs} for the cluster {nprocs}.")
 
         nprocs = args.nprocs
 

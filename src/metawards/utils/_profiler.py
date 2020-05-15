@@ -138,11 +138,14 @@ class Profiler:
         end = time.time_ns()
 
         if self._start is None:
-            print(f"WARNING: You cannot stop profiler {self._name} as "
-                  f"it has not been started!")
+            from ._console import Console
+            Console.warning(f"You cannot stop profiler {self._name} as "
+                            f"it has not been started!")
         elif self._end is not None:
-            print(f"WARNING: You cannot stop profiler {self._name} as "
-                  f"it has already been stopped!")
+            from ._console import Console
+            Console.warning(
+                f"WARNING: You cannot stop profiler {self._name} as "
+                f"it has already been stopped!")
         else:
             self._end = end
 

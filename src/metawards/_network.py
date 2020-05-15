@@ -104,7 +104,8 @@ class Network:
             import add_wards_network_distance
         add_wards_network_distance(network, nthreads=nthreads)
 
-        print("Get min/max distances...")
+        from .utils._console import Console
+        Console.print("Get min/max distances...")
         (_mindist, maxdist) = network.get_min_max_distances(nthreads=nthreads)
 
         network.params.dyn_dist_cutoff = maxdist + 1
@@ -121,25 +122,25 @@ class Network:
             to_seed = read_done_file(params.input_files.seed)
             nseeds = len(to_seed)
 
-            print(to_seed)
-            print(f"Number of seeds equals {nseeds}")
+            Console.print(to_seed)
+            Console.print(f"Number of seeds equals {nseeds}")
             network.to_seed = to_seed
             p = p.stop()
 
         # By default, we initialise the network ready for a run,
         # namely make sure everything is reset and the population
         # is at work
-        print("Reset everything...")
+        Console.print("Reset everything...")
         p = p.start("reset_everything")
         network.reset_everything(nthreads=nthreads, profiler=p)
         p = p.stop()
 
-        print("Rescale play matrix...")
+        Console.print("Rescale play matrix...")
         p = p.start("rescale_play_matrix")
         network.rescale_play_matrix(nthreads=nthreads, profiler=p)
         p = p.stop()
 
-        print("Move population from play to work...")
+        Console.print("Move population from play to work...")
         p = p.start("move_from_play_to_work")
         network.move_from_play_to_work(nthreads=nthreads, profiler=p)
         p = p.stop()
@@ -148,7 +149,8 @@ class Network:
             p = p.stop()
             print(p)
 
-        print(f"\nNetwork loaded: Population = {network.population}\n")
+        Console.print(f"**Network loaded. Population: {network.population}**",
+                      markdown=True)
 
         return network
 
@@ -425,8 +427,8 @@ class Network:
             # all jobs to use the same random number seed (15324) that
             # is used for comparing outputs. This should NEVER be used
             # for production code
-            print("** WARNING: Using special mode to fix all random number")
-            print("** WARNING: seeds to 15324. DO NOT USE IN PRODUCTION!!!")
+            Console.warning("Using special mode to fix all random number "
+                            "seeds to 15324. DO NOT USE IN PRODUCTION!!!")
             rng = seed_ran_binomial(seed=15324)
         else:
             rng = seed_ran_binomial(seed=seed)
@@ -438,20 +440,22 @@ class Network:
         for i in range(0, 5):
             randnums.append(str(ran_binomial(rng, 0.5, 100)))
 
-        print(f"First five random numbers equal {', '.join(randnums)}")
+        from .utils._console import Console
+
+        Console.print(f"First five random numbers equal {', '.join(randnums)}")
         randnums = None
 
         if nthreads is None:
             from .utils._parallel import get_available_num_threads
             nthreads = get_available_num_threads()
 
-        print(f"Number of threads used equals {nthreads}")
+        Console.print(f"Number of threads used equals {nthreads}")
 
         from .utils._parallel import create_thread_generators
         rngs = create_thread_generators(rng, nthreads)
 
         # Create space to hold the results of the simulation
-        print("Initialise infections...")
+        Console.print("Initialise infections...")
         infections = self.initialise_infections()
 
         from .utils import run_model

@@ -52,20 +52,18 @@ class Disease:
     _repository_branch: str = None
 
     def __str__(self):
-        return f"Disease {self._name}\n" \
-               f"loaded from {self._filename}\n" \
-               f"version: {self._version}\n" \
-               f"author(s): {self._authors}\n" \
-               f"contact(s): {self._contacts}\n" \
-               f"references(s): {self._references}\n" \
-               f"repository: {self._repository}\n" \
-               f"repository_branch: {self._repository_branch}\n" \
-               f"repository_version: {self._repository_version}\n\n" \
-               f"beta = {self.beta}\n" \
-               f"progress = {self.progress}\n" \
-               f"too_ill_to_move = {self.too_ill_to_move}\n" \
-               f"contrib_foi = {self.contrib_foi}\n" \
-               f"start_symptom = {self.start_symptom}\n\n"
+        return f"""
+* Disease: {self._name}
+* loaded from: {self._filename}
+* repository: {self._repository}
+* repository_branch: {self._repository_branch}
+* repository_version: {self._repository_version}
+* beta: {self.beta}
+* progress: {self.progress}
+* too_ill_to_move: {self.too_ill_to_move}
+* contrib_foi: {self.contrib_foi}
+* start_symptom: {self.start_symptom}
+"""
 
     def __eq__(self, other):
         return self.beta == other.beta and \
@@ -160,7 +158,8 @@ class Disease:
                 f"We hope that once recovered, always recovered.")
 
         if len(errors) > 0:
-            print("\n".join(errors))
+            from .utils._console import Console
+            Console.error("\n".join(errors))
             raise AssertionError("Invalid disease parameters!\n" +
                                  "\n".join(errors))
 
@@ -229,12 +228,12 @@ class Disease:
                 data = json.load(FILE)
 
         except Exception as e:
-            print(f"Could not find the disease file {json_file}")
-            print(f"Either it does not exist of was corrupted.")
-            print(f"Error was {e.__class__} {e}")
-            print(f"Please see https://metawards.org/model_data for")
-            print(f"instructions on how to download and set the ")
-            print(f"model data.")
+            from .utils._console import Console
+            Console.error(f"""
+Could not find the disease file {json_file}. Either it does not exist of was
+corrupted. Error was {e.__class__} {e}. Please see
+https://metawards.org/model_data for instructions on how to download and
+set the model data.""")
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 

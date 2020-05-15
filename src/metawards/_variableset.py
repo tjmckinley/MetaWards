@@ -816,8 +816,7 @@ class VariableSet:
                     try:
                         for i in range(0, len(titles)):
                             values.append(float(words[i]))
-                    except Exception as e:
-                        print(e)
+                    except Exception:
                         pass
 
                     if len(values) != len(titles):

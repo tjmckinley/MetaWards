@@ -253,13 +253,13 @@ class Demographics:
                 data = json.load(FILE)
 
         except Exception as e:
-            print(f"Could not find the demographics file {json_file}")
-            print(f"Either it does not exist of was corrupted.")
-            print(f"Error was {e.__class__} {e}")
-            print(f"To download the disease data type the command:")
-            print(f"  git clone https://github.com/metawards/MetaWardsData")
-            print(f"and then re-run this function passing in the full")
-            print(f"path to where you downloaded this directory")
+            from .utils._console import Console
+            Console.error(f"""
+Could not find the demographics file {json_file}. "Either it does not exist
+or was corrupted. Error was {e.__class__} {e}. To download the disease data
+follow the instructions at
+[https://metawards.org/model_data](https://metawards.org/model_data).""")
+
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 

@@ -33,7 +33,10 @@ class Console:
         """Print to the console"""
         if markdown:
             from rich.markdown import Markdown as _Markdown
-            text = _Markdown(text)
+            try:
+                text = _Markdown(text)
+            except Exception:
+                text = _Markdown(str(text))
 
         Console._get_console().print(text, *args, **kwargs)
 
@@ -80,6 +83,14 @@ class Console:
         Console.rule(style="magenta")
 
     @staticmethod
+    def info(text: str, *args, **kwargs):
+        """Print an info section to the console"""
+        Console.rule("INFO", style="blue")
+        kwargs["style"] = "bold blue"
+        Console.print(text, *args, **kwargs)
+        Console.rule(style="blue")
+
+    @staticmethod
     def center(text: str, *args, **kwargs):
         from rich.text import Text as _Text
         Console.print(_Text(str, justify="center"), *args, **kwargs)
@@ -87,6 +98,11 @@ class Console:
     @staticmethod
     def command(text: str, *args, **kwargs):
         Console.print("    " + text, markdown=True)
+
+    @staticmethod
+    def print_population(population, demographics=None,
+                         *args, **kwargs):
+        Console.print(population.summary(demographics=demographics))
 
     @staticmethod
     def save(file: _Union[str, _IO]):

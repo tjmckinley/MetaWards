@@ -161,6 +161,8 @@ def run_model(network: _Union[Network, Networks],
     p = p.start("run_model_loop")
     iteration_count = 0
 
+    from ._console import Console
+
     # keep looping until the outbreak is over or until we have completed
     # at least 5 loop iterations
     while (infecteds != 0) or (iteration_count < 5):
@@ -168,6 +170,8 @@ def run_model(network: _Union[Network, Networks],
         p2 = profiler.__class__()
 
         p2 = p2.start(f"timing for day {population.day}")
+
+        Console.rule(f"Day {population.day}", style="cyan")
 
         start_population = population.population
 
@@ -200,25 +204,24 @@ def run_model(network: _Union[Network, Networks],
 
         infecteds = population.infecteds
 
-        print(f" Day {population.day} complete. "
-              f"Number of infections = {infecteds}\n\n")
+        Console.print(f"Number of infections: {infecteds}")
 
         iteration_count += 1
         population.increment_day()
 
-        if nsteps is not None:
-            if iteration_count >= nsteps:
-                trajectory.append(population)
-                print(f"Exiting model run early at nsteps = {nsteps}")
-                break
-
         p2 = p2.stop()
 
         if not p2.is_null():
-            print(f"\n{p2}\n")
+            Console.print_profiler(p2)
 
         # save the population trajectory
         trajectory.append(population)
+
+        if nsteps is not None:
+            if iteration_count >= nsteps:
+                trajectory.append(population)
+                Console.print(f"Exiting model run early")
+                break
 
     # end of while loop
     p = p.stop()
@@ -250,9 +253,10 @@ def run_model(network: _Union[Network, Networks],
     p.stop()
 
     if not p.is_null():
-        print(f"\nOVERALL MODEL TIMING\n{p}")
+        Console.rule("Overall model timing")
+        Console.print_profiler(p)
 
-    print(f"Infection died ... Ending on day {population.day}")
+    Console.print(f"Infection died ... Ending on day {population.day}")
 
     # only send back the overall statistics
     return trajectory.strip_demographics()
