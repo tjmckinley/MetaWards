@@ -204,7 +204,7 @@
 <h1>Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h1>
 <p>The full set of command line options for metawards is below;</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: metawards [-h] [--version] [-c CONFIG] [-i INPUT]
-                 [-l [LINE [LINE ...]]] [-r REPEATS] [-s SEED]
+                 [-l [LINE [LINE ...]]] [-r [REPEATS [REPEATS ...]]] [-s SEED]
                  [-a [ADDITIONAL [ADDITIONAL ...]]] [-o OUTPUT] [-d DISEASE]
                  [-m MODEL] [-D DEMOGRAPHICS] [--start-date START_DATE]
                  [--start-day START_DAY] [-p PARAMETERS] [-R REPOSITORY]
@@ -247,11 +247,15 @@ optional arguments:
                         0-indexed, e.g. the first line of the file is line 0.
                         Ranges are inclusive, so 3-5 is the same as 3 4 5
                         (default: None)
-  -r REPEATS, --repeats REPEATS
+  -r [REPEATS [REPEATS ...]], --repeats [REPEATS [REPEATS ...]]
                         The number of repeat runs of the model to perform for
                         each value of the adjustable parameters. By default
                         only a single run will be performed for each set of
-                        adjustable parameters (default: None)
+                        adjustable parameters. This complements the &#39;repeat&#39;
+                        column in the input file (in which case the repeats
+                        are multipled). Also, multiple repeat values can be
+                        given, in which case each value corresponds to a
+                        different line in the input file (default: None)
   -s SEED, --seed SEED  Random number seed for this run (default is to use a
                         random seed) (default: None)
   -a [ADDITIONAL [ADDITIONAL ...]], --additional [ADDITIONAL [ADDITIONAL ...]]
@@ -401,7 +405,7 @@ optional arguments:
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 15, 2020.
+        Last updated on May 17, 2020.
       </span>
 
     </p>

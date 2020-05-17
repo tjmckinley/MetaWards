@@ -283,15 +283,15 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_symptom</span><span class="p">)</span>
 
-        <span class="kn">from</span> <span class="nn">.utils._safe_eval_float</span> <span class="kn">import</span> <span class="n">safe_eval_float</span>
+        <span class="kn">from</span> <span class="nn">.utils._safe_eval</span> <span class="kn">import</span> <span class="n">safe_eval_number</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">too_ill_to_move</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_float</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">too_ill_to_move</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_number</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">too_ill_to_move</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contrib_foi</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Invalid disease parameter at index </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: &quot;</span>
@@ -449,7 +449,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 15, 2020.
+        Last updated on May 17, 2020.
       </span>
 
     </p>
