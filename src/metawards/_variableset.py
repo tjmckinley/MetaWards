@@ -249,19 +249,17 @@ def _interpret(value):
         # this is an integer
         return int(value[2:-1])
 
+    elif canonical.startswith("s'"):
+        # this is a string
+        return value[2:-1]
+
     # now we have to guess...
     try:
         v = float(value)
         if v.is_integer():
-            return int(value)
+            return int(v)
         else:
             return v
-    except Exception:
-        pass
-
-    try:
-        from dateparser import parse
-        return parse(value).date()
     except Exception:
         pass
 
@@ -274,6 +272,13 @@ def _interpret(value):
     try:
         from .utils._safe_eval import safe_eval_number
         return safe_eval_number(value)
+    except Exception:
+        pass
+
+    # do this last as it is quite slow...
+    try:
+        from dateparser import parse
+        return parse(value).date()
     except Exception:
         pass
 

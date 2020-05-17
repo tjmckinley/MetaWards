@@ -227,13 +227,14 @@ def test_read_edgecase():
     assert v[".animal"] == "cat"
     assert v[".long"] == "This is a really long line"
     assert v[".comma"] == "This is a long line with, a comma!"
+    assert v[".string"] == "2020-12-31"
     assert v[".date"] == d
     assert v[".date2"] == d
     assert v[".date3"] == d
     assert v[".int"] == 42
     assert v[".float"] == 3.141
-    assert v[".bool"] == True
-    assert v[".bool2"] == False
+    assert v[".bool"]
+    assert not v[".bool2"]
 
     v = VariableSet.read(testparams3_csv)
     print(v)
