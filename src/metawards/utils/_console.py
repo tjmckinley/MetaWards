@@ -4,19 +4,34 @@ from typing import IO as _IO
 
 from contextlib import contextmanager as _contextmanager
 
+
 __all__ = ["Console"]
 
 
 # Global rich.Console()
 _console = None
 
+# Global console theme
+_theme = None
 
-@_contextmanager
-def redirect_output(outdir):
-    """Nice way to redirect stdout and stderr - thanks to
-       Emil Stenström in
-       https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python
-    """
+
+class _NullSpinner:
+    """Null spinner to use if yaspin isn't available"""
+
+    def __init__(self):
+        pass
+
+    def __enter__(self, *args, **kwargs):
+        pass
+
+    def __exit__(self, *args, **kwargs):
+        pass
+
+    def ok(self):
+        pass
+
+    def fail(self):
+        pass
 
 
 class Console:
@@ -24,6 +39,33 @@ class Console:
        and logging functions to the console. This uses 'rich'
        for rich console printing
     """
+    @staticmethod
+    def set_theme(theme):
+        """Set the theme used for the console - this should be
+           one of the themes in metawards.themes
+        """
+        global _theme
+
+        if isinstance(theme, str):
+            if theme.lower().strip() == "simple":
+                from metawards.themes import Simple
+                _theme = Simple()
+            elif theme.lower().strip() == "default":
+                from metawards.themes import SpringFlowers
+                _theme = SpringFlowers()
+        else:
+            _theme = theme
+
+    @staticmethod
+    def _get_theme():
+        global _theme
+
+        if _theme is None:
+            from metawards.themes import SpringFlowers
+            _theme = SpringFlowers()
+
+        return _theme
+
     @staticmethod
     def _get_console():
         global _console
@@ -98,7 +140,7 @@ class Console:
 
     @staticmethod
     def panel(text: str, markdown: bool = False, width=None,
-              padding: bool = True,
+              padding: bool = True, style: str = None,
               expand=True, *args, **kwargs):
         """Print within a panel to the console"""
         from rich.panel import Panel as _Panel
@@ -108,36 +150,43 @@ class Console:
             from rich.markdown import Markdown as _Markdown
             text = _Markdown(text)
 
+        theme = Console._get_theme()
+        style = theme.panel(style)
+
         if padding:
             from rich.padding import Padding as _Padding
-            text = _Padding(text, (1, 2), style="on black")
+            text = _Padding(text, (1, 2), style=style)
 
         Console.print(_Panel(text, box=_box.SQUARE, width=width,
-                             expand=expand), *args, **kwargs)
+                             expand=expand,
+                             style=style, *args, **kwargs))
 
     @staticmethod
     def error(text: str, *args, **kwargs):
         """Print an error to the console"""
-        Console.rule("ERROR", style="red")
-        kwargs["style"] = "bold red"
+        theme = Console._get_theme()
+        Console.rule("ERROR", style=theme.error_style())
+        kwargs["style"] = theme.error_text()
         Console.print(text, *args, **kwargs)
-        Console.rule(style="red")
+        Console.rule(style=theme.error_style())
 
     @staticmethod
     def warning(text: str, *args, **kwargs):
         """Print a warning to the console"""
-        Console.rule("WARNING", style="magenta")
-        kwargs["style"] = "bold magenta"
+        theme = Console._get_theme()
+        Console.rule("WARNING", style=theme.warning_style())
+        kwargs["style"] = theme.warning_text()
         Console.print(text, *args, **kwargs)
-        Console.rule(style="magenta")
+        Console.rule(style=theme.warning_style())
 
     @staticmethod
     def info(text: str, *args, **kwargs):
         """Print an info section to the console"""
-        Console.rule("INFO", style="blue")
-        kwargs["style"] = "bold blue"
+        theme = Console._get_theme()
+        Console.rule("INFO", style=theme.info_style())
+        kwargs["style"] = theme.info_text()
         Console.print(text, *args, **kwargs)
-        Console.rule(style="blue")
+        Console.rule(style=theme.info_style())
 
     @staticmethod
     def center(text: str, *args, **kwargs):
@@ -156,6 +205,29 @@ class Console:
     @staticmethod
     def print_profiler(profiler, *args, **kwargs):
         Console.print(str(profiler))
+
+    @staticmethod
+    def spinner(text: str = None):
+        try:
+            from yaspin import yaspin, Spinner
+            have_yaspin = True
+        except ImportError:
+            have_yaspin = False
+
+        if not have_yaspin:
+            return _NullSpinner()
+
+        console = Console._get_console()
+        theme = Console._get_theme()
+        frames, delay = theme.get_frames(width=console.width - len(text) - 10)
+        sp = Spinner(frames, delay)
+
+        y = yaspin(sp, text=text, side="right")
+
+        y.success = lambda: theme.spinner_success(y)
+        y.failure = lambda: theme.spinner_failure(y)
+
+        return y
 
     @staticmethod
     def save(file: _Union[str, _IO]):

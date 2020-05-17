@@ -194,6 +194,11 @@ def parse_args():
                         help="Value for the UV parameter for the model "
                              "(default is 0.0)")
 
+    parser.add_argument('--theme', type=str, default=None,
+                        help=f"The theme to use to color the output. "
+                             f"Use --theme=simple if you prefer a "
+                             f"simple and colorless output.")
+
     parser.add_argument('--nthreads', type=int, default=None,
                         help="Number of threads over which parallelise an "
                              "individual model run. The total number of "
@@ -273,6 +278,10 @@ def parse_args():
                         default=None, help=configargparse.SUPPRESS)
 
     args = parser.parse_args()
+
+    if args.theme:
+        from ..utils._console import Console
+        Console.set_theme(args.theme)
 
     if args.version:
         from metawards import print_version_string
