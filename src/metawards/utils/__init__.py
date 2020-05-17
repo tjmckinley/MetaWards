@@ -82,7 +82,7 @@ from ._worker import *
 from ._import_module import *
 from ._get_functions import *
 from ._align_strings import *
-from ._safe_eval_float import *
+from ._safe_eval import *
 from ._console import *
 
 from ._add_lookup import *

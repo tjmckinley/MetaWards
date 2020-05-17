@@ -199,3 +199,32 @@ def test_set_custom():
     assert v["user.another[2]"] == 100.0
     assert v[".flag"] == 1.0
     assert v["beta[3]"] == 0.5
+
+
+def test_set_edgecase():
+    vertical2 = os.path.join(script_dir, "data", "vertical2.dat")
+    v = VariableSet.read(vertical2)
+
+    from datetime import date
+    d = date(year=2020, month=12, day=31)
+
+    print(v)
+    assert v[".animal"] == "cat"
+    assert v[".long"] == "This is a really long line"
+    assert v[".comma"] == "This is a long line with, a comma!"
+    assert v[".date"] == d
+    assert v[".date2"] == d
+    assert v[".date3"] == d
+    assert v[".int"] == 42
+    assert v[".float"] == 3.141
+    assert v[".bool"] == True
+    assert v[".bool2"] == False
+
+
+if __name__ == "__main__":
+    test_variableset()
+    test_parameterset()
+    test_make_compatible()
+    test_set_variables()
+    test_set_custom()
+    test_set_edgecase()

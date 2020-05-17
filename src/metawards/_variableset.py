@@ -8,22 +8,22 @@ __all__ = ["VariableSets", "VariableSet"]
 
 def _set_beta(params, name: str, index: int, value: float):
     """Adjust the Disease.beta parameter"""
-    params.disease_params.beta[index] = value
+    params.disease_params.beta[index] = float(value)
 
 
 def _set_progress(params, name: str, index: int, value: float):
     """Adjust the Disease.progress parameter"""
-    params.disease_params.progress[index] = value
+    params.disease_params.progress[index] = float(value)
 
 
 def _set_too_ill_to_move(params, name: str, index: int, value: float):
     """Adjust the Disease.too_ill_to_move parameter"""
-    params.disease_params.too_ill_to_move[index] = value
+    params.disease_params.too_ill_to_move[index] = float(value)
 
 
 def _set_contrib_foi(params, name: str, index: int, value: float):
     """Adjust the Disease.contrib_foi parameter"""
-    params.disease_params.contrib_foi[index] = value
+    params.disease_params.contrib_foi[index] = float(value)
 
 
 def _set_lengthday(params, name: str, index: int, value: float):
@@ -31,7 +31,7 @@ def _set_lengthday(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the lengthday")
 
-    params.length_day = value
+    params.length_day = float(value)
 
 
 def _set_plengthday(params, name: str, index: int, value: float):
@@ -39,7 +39,7 @@ def _set_plengthday(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the lengthday")
 
-    params.plength_day = value
+    params.plength_day = float(value)
 
 
 def _set_uv(params, name: str, index: int, value: float):
@@ -47,7 +47,7 @@ def _set_uv(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the UV parameter")
 
-    params.UV = value
+    params.UV = float(value)
 
 
 def _set_initial_inf(params, name: str, index: int, value: float):
@@ -55,7 +55,7 @@ def _set_initial_inf(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the initial_inf parameter")
 
-    params.initial_inf = value
+    params.initial_inf = float(value)
 
 
 def _set_static_play_at_home(params, name: str, index: int, value: float):
@@ -63,7 +63,7 @@ def _set_static_play_at_home(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the static_play_at_home parameter")
 
-    params.static_play_at_home = value
+    params.static_play_at_home = float(value)
 
 
 def _set_dyn_play_at_home(params, name: str, index: int, value: float):
@@ -71,7 +71,7 @@ def _set_dyn_play_at_home(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the dyn_play_at_home parameter")
 
-    params.dyn_play_at_home = value
+    params.dyn_play_at_home = float(value)
 
 
 def _set_data_dist_cutoff(params, name: str, index: int, value: float):
@@ -79,7 +79,7 @@ def _set_data_dist_cutoff(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the data_dist_cutoff parameter")
 
-    params.data_dist_cutoff = value
+    params.data_dist_cutoff = float(value)
 
 
 def _set_dyn_dist_cutoff(params, name: str, index: int, value: float):
@@ -87,7 +87,7 @@ def _set_dyn_dist_cutoff(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the dyn_dist_cutoff parameter")
 
-    params.dyn_dist_cutoff = value
+    params.dyn_dist_cutoff = float(value)
 
 
 def _set_play_to_work(params, name: str, index: int, value: float):
@@ -95,7 +95,7 @@ def _set_play_to_work(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the play_to_work parameter")
 
-    params.play_to_work = value
+    params.play_to_work = float(value)
 
 
 def _set_work_to_play(params, name: str, index: int, value: float):
@@ -103,7 +103,7 @@ def _set_work_to_play(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the work_to_play parameter")
 
-    params.work_to_play = value
+    params.work_to_play = float(value)
 
 
 def _set_local_vaccination_thresh(params, name: str, index: int, value: float):
@@ -112,7 +112,7 @@ def _set_local_vaccination_thresh(params, name: str, index: int, value: float):
         raise IndexError("You cannot index the local_vaccination_thresh "
                          "parameter")
 
-    params.local_vaccination_thresh = value
+    params.local_vaccination_thresh = float(value)
 
 
 def _set_global_detection_thresh(params, name: str, index: int, value: float):
@@ -121,7 +121,7 @@ def _set_global_detection_thresh(params, name: str, index: int, value: float):
         raise IndexError("You cannot index the global_detection_thresh "
                          "parameter")
 
-    params.global_detection_thresh = value
+    params.global_detection_thresh = float(value)
 
 
 def _set_daily_ward_vaccination_capacity(params, name: str,
@@ -133,7 +133,7 @@ def _set_daily_ward_vaccination_capacity(params, name: str,
         raise IndexError("You cannot index the daily_ward_vaccination "
                          "parameter")
 
-    params.daily_ward_vaccination_capacity = value
+    params.daily_ward_vaccination_capacity = float(value)
 
 
 def _set_neighbour_weight_threshold(params, name: str,
@@ -143,7 +143,7 @@ def _set_neighbour_weight_threshold(params, name: str,
         raise IndexError("You cannot index the neighbour_weight_threshold "
                          "parameter")
 
-    params.neighbour_weight_threshold = value
+    params.neighbour_weight_threshold = float(value)
 
 
 def _set_daily_imports(params, name: str, index: int, value: float):
@@ -151,7 +151,7 @@ def _set_daily_imports(params, name: str, index: int, value: float):
     if index is not None:
         raise IndexError("You cannot index the daily_imports parameter")
 
-    params.daily_imports = value
+    params.daily_imports = float(value)
 
 
 def _set_user_params(params, name: str, index: int, value: float):
@@ -211,13 +211,62 @@ def _clean(x):
     x = x.strip()
 
     if x.lower() == "true":
-        return 1.0
+        return True
     elif x.lower() == "false":
-        return 0.0
+        return False
     elif x == "=" or x == ":":
         return "=="
+    elif x.endswith("=="):
+        return x[0:-2], "=="
+    elif x.endswith(":") or x.endswith("="):
+        return x[0:-1], "=="
     else:
         return x
+
+
+def _interpret(value):
+    if not isinstance(value, str):
+        return value
+
+    canonical = value.lower().replace('"', "'")
+
+    if canonical.startswith("d'"):
+        # this is a date
+        from datetime import date
+        return date.fromisoformat(value[2: -1])
+
+    elif canonical.startswith("f'"):
+        # this is a floating point number
+        return float(value[2: -1])
+
+    elif canonical.startswith("i'"):
+        # this is an integer
+        return int(value[2:-1])
+
+    # now we have to guess...
+    try:
+        v = float(value)
+        if v.is_integer():
+            return int(value)
+        else:
+            return v
+    except Exception:
+        pass
+
+    try:
+        from datetime import date
+        return date.fromisoformat(value)
+    except Exception:
+        pass
+
+    try:
+        from .utils.safe_eval import safe_eval_number
+        return safe_eval_number(value)
+    except Exception:
+        pass
+
+    # this can only be a string...
+    return value
 
 
 def _wrap(text, width=70):
@@ -398,11 +447,11 @@ class VariableSet:
         if m:
             varname = m.group(1)
             index = int(m.group(2))
-            value = float(value)
+            value = value
         else:
             varname = name
             index = None
-            value = float(value)
+            value = value
 
         if not (varname.startswith("user.") or varname.startswith(".") or
                 varname in _adjustable):
@@ -724,114 +773,15 @@ class VariableSet:
            variables: VariableSet
              The VariableSet that has been read
         """
-        variables = VariableSet()
+        variables = VariableSets.read(filename)
 
-        with open(filename, "r") as FILE:
-            # use the first line of the file to work out the mode
-            line = FILE.readline()
-
-            # find the first line of the file. Use this to work out
-            # the separator to use and also to see if the user has
-            # named the adjustable variables
-            first_line = None
-            separator = ","
-
-            # default adjustable variables
-            titles = ["beta[2]", "beta[3]", "progress[1]",
-                      "progress[2]", "progress[3]"]
-
-            is_title_line = False
-            is_vertical = False
-
-            while line:
-                line = line.strip()
-
-                if line.startswith("#") or len(line) == 0:
-                    line = FILE.readline()
-                    continue
-
-                if first_line is None:
-                    # this is a valid first line - what separator
-                    # should we use?
-                    if line.find(",") != -1:
-                        separator = ","
-                    else:
-                        separator = None  # spaces
-
-                    first_line = line
-
-                    words = [_clean(x) for x in line.split(separator)]
-
-                    try:
-                        float(words[0])
-                        is_title_line = False
-                        is_vertical = False
-                    except Exception:
-                        is_title_line = True
-
-                    if is_title_line:
-                        is_vertical = False
-                        is_title_line = True
-
-                        for i in range(1, len(words)):
-                            try:
-                                float(words[i])
-                                is_vertical = True
-                                is_title_line = False
-                                titles = None
-                                break
-                            except Exception:
-                                pass
-
-                    if is_title_line:
-                        titles = words
-                        line = FILE.readline()
-                        continue
-
-                words = [_clean(x) for x in line.split(separator)]
-
-                if is_vertical:
-                    value = None
-
-                    try:
-                        value = float(words[1])
-                    except Exception:
-                        if words[1] == "==":
-                            try:
-                                value = float(words[2])
-                            except Exception:
-                                pass
-
-                    if value is None:
-                        raise ValueError(
-                            f"Corrupted file {filename}. Expected at least "
-                            f"two words for the 'variable value', but "
-                            f"got {line}")
-
-                    variables._add(words[0], value)
-                    line = FILE.readline()
-                    continue
-                else:
-                    values = []
-
-                    try:
-                        for i in range(0, len(titles)):
-                            values.append(float(words[i]))
-                    except Exception:
-                        pass
-
-                    if len(values) != len(titles):
-                        raise ValueError(
-                            f"Corrupted file {filename}. Expected at least "
-                            f"{len(titles)} words for {titles}, but got "
-                            f"{line}")
-
-                    for name, value in zip(titles, values):
-                        variables._add(name, value)
-
-                    return variables
-
-        return variables
+        if len(variables) == 0:
+            return VariableSet()
+        elif len(variables) != 1:
+            raise ValueError(
+                "More than one set of variables was read from {filename}")
+        else:
+            return variables[0]
 
     def adjust(self, params):  # should be 'Parameters' but circular include
         """Use the variables in this set to adjust the passed parameters.
@@ -1076,77 +1026,88 @@ class VariableSets:
         variables = VariableSets()
 
         i = -1
-        with open(filename, "r") as FILE:
-            line = FILE.readline()
+        # parse all lines using the csv module
+        import csv
+        lines = open(filename, "r").readlines()
 
-            # find the first line of the file. Use this to work out
-            # the separator to use and also to see if the user has
-            # named the adjustable variables
-            first_line = None
-            separator = ","
+        csvlines = []
+        for line in lines:
+            line = line.strip()
 
+            if not line.startswith("#"):
+                csvlines.append(line)
+
+        lines = []
+
+        # first try to guess the dialect of the file (space or comma
+        # separated, newline character etc.)
+        dialect = csv.Sniffer().sniff(csvlines[0])
+
+        for line in csv.reader(csvlines, dialect=dialect,
+                               quoting=csv.QUOTE_ALL,
+                               skipinitialspace=True):
+            cleaned = [_clean(x) for x in line]
+
+            line = []
+
+            if len(cleaned) > 0:
+                for clean in cleaned:
+                    if isinstance(clean, list) or isinstance(clean, tuple):
+                        for c in clean:
+                            line.append(c)
+                    else:
+                        line.append(clean)
+
+                lines.append(line)
+
+        print(f"lines = {lines}")
+
+        if len(lines) == 0:
+            # there is nothing to read?
+            return VariableSets()
+
+        if len(lines[0]) > 1 and lines[0][1] == "==":
+            # this is a vertical file
+            return VariableSets._read_vertical(lines)
+        else:
+            return VariableSets._read_horizontal(lines)
+
+    @staticmethod
+    def _read_vertical(lines):
+        """Read the data from the vertical lines"""
+        variables = VariableSets()
+        variable = VariableSet()
+
+        for line in lines:
+            if len(line) > 1:
+                key = line[0]
+
+                if line[1] == "==":
+                    if len(line) > 3:
+                        value = " ".join(line[2:])
+                    else:
+                        value = line[2]
+                else:
+                    if len(line) > 2:
+                        value = " ".join(line[1:])
+                    else:
+                        value = line[1]
+
+                variable[key] = _interpret(value)
+
+        variables.append(variable)
+
+        return variables
+
+    @staticmethod
+    def _read_horizontal(lines):
+        """Read the data from the horizontal lines"""
+
+        # see if this is a vertical file
+        if titles is None:
             # default adjustable variables
             titles = ["beta[2]", "beta[3]", "progress[1]",
                       "progress[2]", "progress[3]"]
-
-            while line:
-                i += 1
-
-                line = line.strip()
-
-                if line.startswith("#") or len(line) == 0:
-                    line = FILE.readline()
-                    continue
-
-                if first_line is None:
-                    # this is a valid first line - what separator
-                    # should we use?
-                    if line.find(",") != -1:
-                        separator = ","
-                    else:
-                        separator = None  # spaces
-
-                    first_line = line
-
-                    words = line.split(separator)
-
-                    try:
-                        float(words[0])
-                        is_title_line = False
-                    except Exception:
-                        is_title_line = True
-
-                    if is_title_line:
-                        titles = words
-                        line = FILE.readline()
-                        continue
-
-                if line_numbers is None or i in line_numbers:
-                    words = [_clean(x) for x in line.split(separator)]
-
-                    if len(words) != len(titles):
-                        raise ValueError(
-                            f"Corrupted input file. Expecting {len(titles)} "
-                            f"values. Received {line}")
-
-                    vals = []
-
-                    try:
-                        for word in words:
-                            vals.append(float(word))
-                    except Exception:
-                        raise ValueError(
-                            f"Corrupted input file. Expected {len(titles)} "
-                            f"numbers. Received {line}")
-
-                    variables.append(VariableSet(names=titles,
-                                                 values=vals))
-
-                    if line_numbers is not None:
-                        if len(variables) == len(line_numbers):
-                            return variables
-
-                line = FILE.readline()
 
         # get here if we can't find this line in the file (or if we
         # are supposed to read all lines)
