@@ -101,15 +101,15 @@ class Disease:
 
         self.start_symptom = int(self.start_symptom)
 
-        from .utils._safe_eval_float import safe_eval_float
+        from .utils._safe_eval import safe_eval_number
 
         for i in range(0, n):
             try:
-                self.progress[i] = safe_eval_float(self.progress[i])
-                self.too_ill_to_move[i] = safe_eval_float(
+                self.progress[i] = safe_eval_number(self.progress[i])
+                self.too_ill_to_move[i] = safe_eval_number(
                     self.too_ill_to_move[i])
-                self.beta[i] = safe_eval_float(self.beta[i])
-                self.contrib_foi[i] = safe_eval_float(self.contrib_foi[i])
+                self.beta[i] = safe_eval_number(self.beta[i])
+                self.contrib_foi[i] = safe_eval_number(self.contrib_foi[i])
             except Exception as e:
                 raise AssertionError(
                     f"Invalid disease parameter at index {i}: "

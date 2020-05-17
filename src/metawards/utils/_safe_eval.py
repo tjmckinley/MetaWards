@@ -18,6 +18,12 @@ def safe_eval_number(s: _Union[float, int, str]) -> float:
        safe_eval_number("1/4")       -> 0.25
        safe_eval_number("(30+100)%)  -> 1.3
     """
+    if isinstance(s, float) or isinstance(s, int):
+        return s
+
+    if not isinstance(s, str):
+        s = str(s)
+
     try:
         # this is about as save as eval gets in python
         x = eval(s, {"__builtins__": None}, {})

@@ -1047,7 +1047,8 @@ def cli():
                     else:
                         lines.append(f"{key}:{spaces} false")
                 elif isinstance(value, list):
-                    lines.append(f"{key}:{spaces} [ {', '.join(value)} ]")
+                    s_value = [str(x) for x in value]
+                    lines.append(f"{key}:{spaces} [ {', '.join(s_value)} ]")
                 else:
                     lines.append(f"{key}:{spaces} {value}")
 

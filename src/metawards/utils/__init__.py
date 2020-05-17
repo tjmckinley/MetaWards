@@ -54,7 +54,7 @@ Functions
     run_model
     run_models
     run_worker
-    safe_eval_float
+    safe_eval_number
     scale_link_susceptibles
     scale_node_susceptibles
     seed_ran_binomial

@@ -232,6 +232,12 @@ def _interpret(value):
 
     if canonical.startswith("d'"):
         # this is a date
+        try:
+            from dateparser import parse
+            return parse(value[2: -1]).date()
+        except Exception:
+            pass
+
         from datetime import date
         return date.fromisoformat(value[2: -1])
 
@@ -254,13 +260,19 @@ def _interpret(value):
         pass
 
     try:
+        from dateparser import parse
+        return parse(value).date()
+    except Exception:
+        pass
+
+    try:
         from datetime import date
         return date.fromisoformat(value)
     except Exception:
         pass
 
     try:
-        from .utils.safe_eval import safe_eval_number
+        from .utils._safe_eval import safe_eval_number
         return safe_eval_number(value)
     except Exception:
         pass
@@ -878,7 +890,7 @@ class VariableSets:
         if len(s) == 1:
             return s[0]
         elif len(s) > 0:
-            return "{" + ", ".join(s) + "}"
+            return "{" + ",\n ".join(s) + "\n}"
         else:
             return "VariableSets:empty"
 
@@ -1023,9 +1035,6 @@ class VariableSets:
             if line_numbers is not None:
                 line_numbers = [line_numbers]
 
-        variables = VariableSets()
-
-        i = -1
         # parse all lines using the csv module
         import csv
         lines = open(filename, "r").readlines()
@@ -1034,14 +1043,22 @@ class VariableSets:
         for line in lines:
             line = line.strip()
 
-            if not line.startswith("#"):
+            if len(line) > 0 and (not line.startswith("#")):
                 csvlines.append(line)
 
         lines = []
 
         # first try to guess the dialect of the file (space or comma
         # separated, newline character etc.)
-        dialect = csv.Sniffer().sniff(csvlines[0])
+        try:
+            dialect = csv.Sniffer().sniff(csvlines[0])
+        except Exception:
+            from .utils.console import Console
+            Console.error(
+                f"Could not identify what sort of separator to use to "
+                f"read {filename}. Could you add commas to separate the "
+                f"fields?")
+            raise SyntaxError(f"Invalid syntax in {filename}")
 
         for line in csv.reader(csvlines, dialect=dialect,
                                quoting=csv.QUOTE_ALL,
@@ -1054,13 +1071,12 @@ class VariableSets:
                 for clean in cleaned:
                     if isinstance(clean, list) or isinstance(clean, tuple):
                         for c in clean:
-                            line.append(c)
+                            if len(c) > 0:
+                                line.append(c)
                     else:
                         line.append(clean)
 
                 lines.append(line)
-
-        print(f"lines = {lines}")
 
         if len(lines) == 0:
             # there is nothing to read?
@@ -1068,9 +1084,13 @@ class VariableSets:
 
         if len(lines[0]) > 1 and lines[0][1] == "==":
             # this is a vertical file
+            if line_numbers is not None:
+                raise ValueError(
+                    "You cannot specify line numbers for a vertical file!")
             return VariableSets._read_vertical(lines)
         else:
-            return VariableSets._read_horizontal(lines)
+            return VariableSets._read_horizontal(lines=lines,
+                                                 line_numbers=line_numbers)
 
     @staticmethod
     def _read_vertical(lines):
@@ -1100,18 +1120,62 @@ class VariableSets:
         return variables
 
     @staticmethod
-    def _read_horizontal(lines):
+    def _read_horizontal(lines, line_numbers):
         """Read the data from the horizontal lines"""
+        variables = VariableSets()
 
-        # see if this is a vertical file
-        if titles is None:
+        # are there any strings on the first line? If so, then these
+        # are the titles
+        has_titles = False
+        for v in lines[0]:
+            try:
+                float(v)
+            except Exception:
+                has_titles = True
+                break
+
+        if has_titles:
+            titles = lines[0]
+            lines = lines[1:]
+        else:
             # default adjustable variables
             titles = ["beta[2]", "beta[3]", "progress[1]",
                       "progress[2]", "progress[3]"]
 
+        if "repeats" in titles:
+            repeats_index = titles.index("repeats")
+            titles.pop(repeats_index)
+        else:
+            repeats_index = None
+
+        repeats = []
+
+        for i, line in enumerate(lines):
+            if line_numbers is None or i in line_numbers:
+                values = [_interpret(x) for x in line]
+
+                if repeats_index is not None:
+                    repeats.append(int(values.pop(repeats_index)))
+
+                variable = VariableSet()
+
+                for j, key in enumerate(titles):
+                    variable[key] = values[j]
+
+                variables.append(variable)
+
+                if line_numbers is not None:
+                    if len(line_numbers) == len(variables):
+                        if repeats_index is not None:
+                            variables = variables.repeat(repeats)
+
+                        return variables
+
         # get here if we can't find this line in the file (or if we
         # are supposed to read all lines)
         if line_numbers is None:
+            if repeats_index is not None:
+                variables = variables.repeat(repeats)
             return variables
         else:
             raise ValueError(
