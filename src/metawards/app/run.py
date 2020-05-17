@@ -74,12 +74,17 @@ def parse_args():
                              "the file is line 0. Ranges are inclusive, "
                              "so 3-5 is the same as 3 4 5")
 
-    parser.add_argument("-r", '--repeats', type=int, default=None,
+    parser.add_argument("-r", '--repeats', type=int, default=None, nargs="*",
                         help="The number of repeat runs of the model to "
                              "perform for each value of the adjustable "
                              "parameters. By default only a single "
                              "run will be performed for each set of "
-                             "adjustable parameters")
+                             "adjustable parameters. This complements the "
+                             "'repeat' column in the input file (in which "
+                             "case the repeats are multipled). Also, "
+                             "multiple repeat values can be given, in which "
+                             "case each value corresponds to a different "
+                             "line in the input file")
 
     parser.add_argument('-s', '--seed', type=int, default=None,
                         help="Random number seed for this run "
@@ -683,7 +688,7 @@ def cli():
         sys.exit(0)
 
     if args.repeats is None:
-        args.repeats = 1
+        args.repeats = [1]
 
     # import the parameters here to speed up the display of help
     from metawards import Parameters, Network, Population, print_version_string
@@ -725,15 +730,33 @@ def cli():
 
     nrepeats = args.repeats
 
-    if nrepeats is None or nrepeats < 1:
-        nrepeats = 1
+    if nrepeats is None or len(nrepeats) < 1:
+        nrepeats = [1]
 
-    if nrepeats == 1:
+    if len(nrepeats) > 1 and len(variables) != len(nrepeats):
+        Console.error(f"The number of repeats {len(nrepeats)} must equal the "
+                      f"number of adjustable variable lines {len(variables)}")
+        raise ValueError("Disagreement in the number of repeats and "
+                         "adjustable variables")
+
+    # ensure that all repeats are >= 0
+    nrepeats = [0 if int(x) < 0 else int(x) for x in nrepeats]
+
+    if sum(nrepeats) == 0:
+        Console.error(f"The number of the number of repeats is 0. Are you "
+                      f"sure that you don't want to run anything?")
+        raise ValueError("Cannot run nothing")
+
+    if len(nrepeats) == 1 and nrepeats[0] == 1:
         Console.print("* Performing a single run of each set of parameters",
                       markdown=True)
+    elif len(nrepeats) == 1:
+        Console.print(
+            f"* Performing {nrepeats[0]} runs of each set of parameters",
+            markdown=True)
     else:
         Console.print(
-            f"* Performing {nrepeats} runs of each set of parameters",
+            f"* Performing {nrepeats} runs applied to the parameters",
             markdown=True)
 
     variables = variables.repeat(nrepeats)

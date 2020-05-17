@@ -1,6 +1,7 @@
 
 from typing import List as _List
 from typing import Dict as _Dict
+from typing import Union as _Union
 
 __all__ = ["VariableSets", "VariableSet"]
 
@@ -991,16 +992,17 @@ class VariableSets:
 
         self._vars.append(variables)
 
-    def repeat(self, nrepeats: int):
+    def repeat(self, nrepeats: _Union[_List[int], int]):
         """Return a copy of this VariableSet in which all of the
            unique VaribleSet objects have been repeated 'nrepeats'
            times
 
            Parameters
            ----------
-           nrepeats: int
+           nrepeats: int or list[int]
              The number of repeats of the VariableSet objects to
-             perform
+             perform. If this is a list, then nrepeats[i] will be
+             the number of times to repeat variables[i]
 
            Returns
            -------
@@ -1008,18 +1010,42 @@ class VariableSets:
              A new VariableSets object containing 'nrepeats' copies
              of the VariableSet objects from this set
         """
-        if nrepeats <= 1:
+        if not isinstance(nrepeats, list):
+            nrepeats = [nrepeats]
+
+        if len(nrepeats) == 1 and nrepeats[0] <= 1:
             return self
 
         from copy import deepcopy
 
         repeats = VariableSets()
 
-        for i in range(1, nrepeats+1):
-            for v in self._vars:
-                v2 = deepcopy(v)
-                v2._idx = i
-                repeats.append(v2)
+        if len(nrepeats) == 1:
+            nrepeats = nrepeats[0]
+            for i in range(1, nrepeats+1):
+                for v in self._vars:
+                    v2 = deepcopy(v)
+                    v2._idx = i
+                    repeats.append(v2)
+        else:
+            if len(nrepeats) != len(self._vars):
+                raise ValueError(
+                    f"Disagreement of the number of repeats {len(nrepeats)} "
+                    f"and the number of variables {len(self._vars)}")
+
+            added = True
+            n = 1
+            while added:
+                added = False
+
+                for i, v in enumerate(self._vars):
+                    if n <= nrepeats[i]:
+                        v2 = deepcopy(v)
+                        v2._idx = n
+                        repeats.append(v2)
+                        added = True
+
+                n += 1
 
         return repeats
 
