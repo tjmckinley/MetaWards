@@ -26,7 +26,7 @@ def _get_value(value):
        to allow the demographics.json file to store numbers is
        a variety of formats
     """
-    from metawards.utils import safe_eval_float
+    from metawards.utils import safe_eval_number
 
     if value is None:
         return 0.0
@@ -34,17 +34,17 @@ def _get_value(value):
     elif isinstance(value, list):
         lst = []
         for v in value:
-            lst.append(safe_eval_float(v))
+            lst.append(safe_eval_number(v))
         return lst
 
     elif isinstance(value, dict):
         d = []
         for k, v in value.items():
-            d[k] = safe_eval_float(v)
+            d[k] = safe_eval_number(v)
 
         return d
     else:
-        return safe_eval_float(value)
+        return safe_eval_number(value)
 
 
 @_dataclass(eq=False)
