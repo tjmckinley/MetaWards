@@ -72,7 +72,12 @@ class Console:
 
         if _console is None:
             from rich.console import Console as _Console
-            _console = _Console(record=True)
+            theme = Console._get_theme()
+
+            _console = _Console(record=True,
+                                highlight=theme.should_highlight(),
+                                highlighter=theme.highlighter(),
+                                markup=theme.should_markup())
 
             # also install pretty traceback support
             from rich.traceback import install as _install_rich
@@ -120,7 +125,8 @@ class Console:
             ERRFILE.close()
 
     @staticmethod
-    def print(text: str, markdown: bool = False, *args, **kwargs):
+    def print(text: str, markdown: bool = False, style: str = None,
+              *args, **kwargs):
         """Print to the console"""
         if markdown:
             from rich.markdown import Markdown as _Markdown
@@ -129,14 +135,19 @@ class Console:
             except Exception:
                 text = _Markdown(str(text))
 
-        Console._get_console().print(text, *args, **kwargs)
+        theme = Console._get_theme()
+        style = theme.text(style)
+
+        Console._get_console().print(text, style=style)
 
     @staticmethod
-    def rule(title: str = None, **kwargs):
+    def rule(title: str = None, style=None, **kwargs):
         """Write a rule across the screen with optional title"""
         from rich.rule import Rule as _Rule
         Console.print("")
-        Console.print(_Rule(title, **kwargs))
+        theme = Console._get_theme()
+        style = theme.rule(style)
+        Console.print(_Rule(title, style=style))
 
     @staticmethod
     def panel(text: str, markdown: bool = False, width=None,
@@ -165,28 +176,28 @@ class Console:
     def error(text: str, *args, **kwargs):
         """Print an error to the console"""
         theme = Console._get_theme()
-        Console.rule("ERROR", style=theme.error_style())
+        Console.rule("ERROR", style="error")
         kwargs["style"] = theme.error_text()
         Console.print(text, *args, **kwargs)
-        Console.rule(style=theme.error_style())
+        Console.rule(style="error")
 
     @staticmethod
     def warning(text: str, *args, **kwargs):
         """Print a warning to the console"""
         theme = Console._get_theme()
-        Console.rule("WARNING", style=theme.warning_style())
+        Console.rule("WARNING", style="warning")
         kwargs["style"] = theme.warning_text()
         Console.print(text, *args, **kwargs)
-        Console.rule(style=theme.warning_style())
+        Console.rule(style="warning")
 
     @staticmethod
     def info(text: str, *args, **kwargs):
         """Print an info section to the console"""
         theme = Console._get_theme()
-        Console.rule("INFO", style=theme.info_style())
+        Console.rule("INFO", style="info")
         kwargs["style"] = theme.info_text()
         Console.print(text, *args, **kwargs)
-        Console.rule(style=theme.info_style())
+        Console.rule(style="info")
 
     @staticmethod
     def center(text: str, *args, **kwargs):

@@ -82,7 +82,7 @@ def _check_remove(outdir, prompt):
     y = y.strip().lower()
 
     if len(y) > 0 and y == "y":
-        Console.print(f"Removing all files in {outdir}", style="red")
+        Console.print(f"Removing all files in {outdir}", style="warning")
         _rmdir(_Path(outdir))
         return
 

@@ -17,29 +17,60 @@ class SpringFlowers:
 
     panel_color_count = 0
 
-    def error_style(self):
+    def should_highlight(self):
+        return False
+
+    def highlighter(self):
+        return None
+
+    def should_markup(self):
+        return False
+
+    def text(self, style):
+        if style == "warning":
+            return "red"
+        else:
+            return "white"
+
+    def error(self):
         return "red"
 
-    def warning_style(self):
+    def warning(self):
         return "magenta"
 
-    def info_style(self):
-        return "blue"
+    def info(self):
+        return "cyan"
 
     def error_text(self):
-        return "bold red"
+        return f"bold {self.error()}"
 
     def warning_text(self):
-        return "bold magenta"
+        return f"bold {self.warning()}"
 
     def info_text(self):
-        return "bold blue"
+        return f"bold {self.info()}"
 
     def spinner_success(self, spinner):
         spinner.green.ok("✔")
 
     def spinner_failure(self, spinner):
         spinner.red.fail("✘")
+
+    def rule(self, style):
+        if style is None:
+            return "green"
+        elif style == "finish":
+            return "magenta"
+        elif style == "error":
+            return self.error()
+        elif style == "warning":
+            return self.warning()
+        elif style == "info":
+            return self.info()
+        elif style == "iteration":
+            return "cyan"
+        else:
+            return "cyan"
 
     def panel(self, style):
         if style is None:

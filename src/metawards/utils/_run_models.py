@@ -374,20 +374,17 @@ def run_models(network: _Union[Network, Networks],
             Console.print("Running jobs in parallel using a scoop pool")
             from scoop import futures
 
-            with Console.spinner("Running scoop jobs") as spinner:
-                try:
-                    results = futures.map(run_worker, arguments)
-                    spinner.success()
-                except Exception as e:
-                    spinner.failure()
-                    Console.error(f"Failure: {e.__class__} {e}")
+            results = futures.map(run_worker, arguments)
 
-            for i, result in enumerate(results):
-                Console.panel(f"Completed job {i+1} of {len(variables)}\n"
-                              f"{variables[i]}\n"
-                              f"{result[-1]}")
+            with Console.spinner("Running scoop jobs") as spinner:
+                for i, result in enumerate(results):
+                    Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                                  f"{variables[i]}\n"
+                                  f"{result[-1]}",
+                                  style="alternate")
 
                 outputs.append((variables[i], result))
+                spinner.success()
 
         else:
             raise ValueError(f"Unrecognised parallelisation scheme "

@@ -1085,7 +1085,7 @@ def cli():
             Console.print("No output - end of run")
             return 0
 
-        Console.rule("End of the run", style="magenta")
+        Console.rule("End of the run", style="finish")
 
         Console.save(CONSOLE)
 

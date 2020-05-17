@@ -10,32 +10,46 @@ __all__ = ["Simple"]
 @_dataclass
 class Simple:
     """This is the monochrome 'Simple' theme"""
-
     frames: _Dict[int, _List[str]] = _field(default_factory=dict)
 
-    def error_style(self):
+    def should_highlight(self):
+        return False
+
+    def highlighter(self):
+        return None
+
+    def should_markup(self):
+        return False
+
+    def text(self, style):
         return "white"
 
-    def warning_style(self):
+    def error(self):
         return "white"
 
-    def info_style(self):
+    def warning(self):
+        return "white"
+
+    def info(self):
         return "white"
 
     def error_text(self):
-        return "white"
+        return f"bold {self.error()}"
 
     def warning_text(self):
-        return "white"
+        return f"bold {self.warning()}"
 
     def info_text(self):
-        return "white"
+        return f"bold {self.info()}"
 
     def spinner_success(self, spinner):
         spinner.ok("Success")
 
     def spinner_failure(self, spinner):
-        spinner.fail("Failed")
+        spinner.fail("Failure")
+
+    def rule(self, style):
+        return "white"
 
     def panel(self, style):
         return "white on black"
