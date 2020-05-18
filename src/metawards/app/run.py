@@ -656,7 +656,7 @@ def cli():
 
             # neither is preferred - if scoop is installed then use that
             try:
-                import scoop
+                import scoop        # noqa - disable unused warning
                 have_scoop = True
             except Exception:
                 have_scoop = False
@@ -667,7 +667,7 @@ def cli():
 
             # do we have MPI?
             try:
-                import mpi4py
+                import mpi4py       # noqa - disable unused warning
                 have_mpi4py = True
             except Exception:
                 have_mpi4py = False

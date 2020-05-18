@@ -13,7 +13,6 @@ from ._profiler import Profiler
 from ._get_functions import MetaFunction
 
 import os as _os
-import sys as _sys
 
 __all__ = ["get_number_of_processes", "run_models"]
 
@@ -326,24 +325,39 @@ def run_models(network: _Union[Network, Networks],
             # run jobs using a multiprocessing pool
             Console.rule("MULTIPROCESSING")
             from multiprocessing import Pool
+
+            results = []
+
             with Pool(processes=nprocs) as pool:
-                with Console.spinner(
-                        "Running multiprocessing jobs") as spinner:
-                    try:
-                        results = pool.map(run_worker, arguments)
-                        spinner.success()
-                    except Exception as e:
-                        spinner.failure()
-                        Console.error(f"Failure: {e.__class__} {e}")
+                for argument in arguments:
+                    results.append(pool.apply_async(run_worker, (argument,)))
 
                 for i, result in enumerate(results):
-                    Console.panel(
-                        f"Completed job {i+1} of {len(variables)}\n"
-                        f"{variables[i]}\n"
-                        f"{result[-1]}",
-                        style="alternate")
+                    with Console.spinner(
+                            "Computing model run") as spinner:
+                        try:
+                            result.wait()
+                            output = result.get()
+                            spinner.success()
+                        except Exception as e:
+                            spinner.failure()
+                            error = f"FAILED: {e.__class__} {e}"
+                            Console.error(error)
+                            output = None
 
-                    outputs.append((variables[i], result))
+                        if output is not None:
+                            Console.panel(
+                                f"Completed job {i+1} of {len(variables)}\n"
+                                f"{variables[i]}\n"
+                                f"{output[-1]}",
+                                style="alternate")
+
+                            outputs.append((variables[i], output))
+                        else:
+                            Console.error(f"Job {i+1} of {len(variables)}\n"
+                                          f"{variable}\n"
+                                          f"{error}")
+                            outputs.append((variables[i], []))
 
         elif parallel_scheme == "mpi4py":
             # run jobs using a mpi4py pool
