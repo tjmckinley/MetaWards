@@ -99,6 +99,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#introducing-the-lurgy">Introducing the Lurgy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#seeding-an-outbreak">Seeding an outbreak</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#repeating-a-calculation">Repeating a calculation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-config-files-for-inputs">Using config files for inputs</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="02_repeating.html">Multiple model runs</a></li>
@@ -109,6 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../index_part03.html">Part 3 - Customising the outbreak</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_part04.html">Part 4 - Customising the output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_part05.html">Part 5 - Modelling multiple demographics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part06.html">Part 6 - Moving between demographics</a></li>
 </ul>
 </li>
 </ul>
@@ -121,6 +123,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
@@ -218,20 +221,31 @@ that you have, type the following into your console;</p>
 <p>and then press return. You should see something similar to the below
 printed to your screen.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ metawards --version
-
-            ************************
-            metawards version 0.11.2
-            ************************
-
-            -- Source information --
-repository: https://github.com/metawards/MetaWards
-                branch: 0.11.2)
-revision: bd27ad84819a63ffbe29d81735a653ffd9576062
-    last modified: 2020-05-11T18:20:38+0100
-
-          -- Additional information --
-Visit https://metawards.org for more information
-  about metawards, its authors and its license
+┌──────────────────────────────────────────────────────────────────────┐
+│                                                                      │
+│                                                                      │
+│                MetaWards version 0.11.2+52.ga15883be                 │
+│                                                                      │
+│                                                                      │
+│                        https://metawards.org                         │
+│                                                                      │
+│                          Source information                          │
+│                                                                      │
+│   • repository: https://github.com/metawards/MetaWards               │
+│   • branch: master                                                   │
+│   • revision: a15883bea96dff10754f18fccadbefd0647bb5b3               │
+│   • last modified: 2020-05-18T14:47:32+0100                          │
+│                                                                      │
+│  WARNING: MetaWardsData cannot be found! Please see                  │
+│  https://metawards.org/model_data for instructions on how to         │
+│  download and install this necessary data.                           │
+│                                                                      │
+│                        Additional information                        │
+│                                                                      │
+│  Visit https://metawards.org for more information about metawards,   │
+│  its authors and its license                                         │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 </pre></div>
 </div>
 <p>If you don’t see this, or the output includes a warning about not being
@@ -337,10 +351,11 @@ to the codes;</p>
 infected, but not yet infectious.</li>
 <li><strong>I</strong>: The number of the population who are <em>infected</em>, meaning they
 have symptoms and are infectious</li>
-<li><strong>R</strong>: The number of the population who are removed from the outbreak,
-e.g. because they have recovered and are no longer susceptible to infection</li>
-<li><strong>IW</strong>: The number electoral wards that contain at least one infected
-individual.</li>
+<li><strong>R</strong>: The number of the population who are removed from being susceptible,
+either because they have been newly infected that day, or because they
+have recovered from the infection and are no longer susceptible to infection</li>
+<li><strong>IW</strong>: The number of electoral wards that contain at least one
+individual who was newly infected that day.</li>
 </ul>
 <p>For more information about these values, please
 <a class="reference external" href="https://doi.org/10.1016/j.epidem.2009.11.002">read</a>
@@ -417,6 +432,36 @@ if <code class="docutils literal notranslate"><span class="pre">metawards</span>
 <a class="reference external" href="https://github.com/metawards/MetaWards/issues">submit an issue</a> if
 you find you cannot repeat a run.</p>
 </div>
+<div class="section" id="using-config-files-for-inputs">
+<h2>Using config files for inputs<a class="headerlink" href="#using-config-files-for-inputs" title="Permalink to this headline">¶</a></h2>
+<p>In addition, to make repeats easier, <code class="docutils literal notranslate"><span class="pre">metawards</span></code> will also write
+a config file called <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> to the output directory. You can
+use this config file directly to run a job using the <code class="docutils literal notranslate"><span class="pre">--config</span></code>
+or <code class="docutils literal notranslate"><span class="pre">-c</span></code> options, e.g.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards --config config.yaml
+</pre></div>
+</div>
+<p>This should repeat the calculation that generated this config. You can
+also edit this file and use it to store commonly used options, e.g.
+if you always want to model the lurgy, then the config file would read;</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">disease</span><span class="p">:</span> <span class="n">lurgy</span>
+</pre></div>
+</div>
+<p>and you could use this via</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -c config.yaml
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">metawards</span></code> uses the <a class="reference external" href="https://pypi.org/project/ConfigArgParse/">ConfigArgParse</a>
+python module for parsing command line arguments. Options can be passed
+on the command line, in a yaml or ini format config file, or in
+some identified cases as an environment variable. If an arg is
+specified in more than one place, then commandline values override
+environment variables which override config file values which
+override defaults.</p>
+</div>
+</div>
 </div>
 
 
@@ -440,7 +485,7 @@ you find you cannot repeat a run.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

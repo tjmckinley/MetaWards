@@ -102,6 +102,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">Documentation</a></li>
@@ -196,7 +197,8 @@
     <span class="n">lookup_file</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">input_files</span><span class="o">.</span><span class="n">lookup</span>
 
     <span class="k">if</span> <span class="n">lookup_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No ward lookup information available.&quot;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;No ward lookup information available.&quot;</span><span class="p">)</span>
         <span class="k">return</span>
 
     <span class="n">lines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">lookup_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
@@ -255,10 +257,12 @@
 
         <span class="n">ward_infos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ward_infos</span><span class="p">)</span> <span class="o">!=</span> <span class="n">network</span><span class="o">.</span><span class="n">nnodes</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: Number of wards from </span><span class="si">{</span><span class="n">lookup_file</span><span class="si">}</span><span class="s2"> &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ward_infos</span><span class="p">)</span><span class="si">}</span><span class="s2">) disagrees with the number &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;of wards in the network (</span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">nnodes</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ward_infos</span><span class="p">)</span> <span class="o">!=</span> <span class="n">network</span><span class="o">.</span><span class="n">nnodes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Number of wards from </span><span class="si">{</span><span class="n">lookup_file</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ward_infos</span><span class="p">)</span><span class="si">}</span><span class="s2">) disagrees with the number &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;of wards in the network (</span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">nnodes</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ward_infos</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">nnodes</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
             <span class="n">ward_infos</span> <span class="o">=</span> <span class="n">ward_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">network</span><span class="o">.</span><span class="n">nnodes</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
@@ -280,7 +284,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

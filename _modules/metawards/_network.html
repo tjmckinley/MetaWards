@@ -102,6 +102,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
@@ -285,7 +286,8 @@
             <span class="kn">import</span> <span class="nn">add_wards_network_distance</span>
         <span class="n">add_wards_network_distance</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Get min/max distances...&quot;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Get min/max distances...&quot;</span><span class="p">)</span>
         <span class="p">(</span><span class="n">_mindist</span><span class="p">,</span> <span class="n">maxdist</span><span class="p">)</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_min_max_distances</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
 
         <span class="n">network</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dyn_dist_cutoff</span> <span class="o">=</span> <span class="n">maxdist</span> <span class="o">+</span> <span class="mi">1</span>
@@ -302,25 +304,25 @@
             <span class="n">to_seed</span> <span class="o">=</span> <span class="n">read_done_file</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">input_files</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
             <span class="n">nseeds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_seed</span><span class="p">)</span>
 
-            <span class="nb">print</span><span class="p">(</span><span class="n">to_seed</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of seeds equals </span><span class="si">{</span><span class="n">nseeds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">to_seed</span><span class="p">)</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of seeds equals </span><span class="si">{</span><span class="n">nseeds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">network</span><span class="o">.</span><span class="n">to_seed</span> <span class="o">=</span> <span class="n">to_seed</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
         <span class="c1"># By default, we initialise the network ready for a run,</span>
         <span class="c1"># namely make sure everything is reset and the population</span>
         <span class="c1"># is at work</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reset everything...&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Reset everything...&quot;</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;reset_everything&quot;</span><span class="p">)</span>
         <span class="n">network</span><span class="o">.</span><span class="n">reset_everything</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rescale play matrix...&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Rescale play matrix...&quot;</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;rescale_play_matrix&quot;</span><span class="p">)</span>
         <span class="n">network</span><span class="o">.</span><span class="n">rescale_play_matrix</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Move population from play to work...&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Move population from play to work...&quot;</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;move_from_play_to_work&quot;</span><span class="p">)</span>
         <span class="n">network</span><span class="o">.</span><span class="n">move_from_play_to_work</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
@@ -329,7 +331,8 @@
             <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Network loaded: Population = </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">population</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;**Network loaded. Population: </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">population</span><span class="si">}</span><span class="s2">**&quot;</span><span class="p">,</span>
+                      <span class="n">markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">network</span></div>
 
@@ -606,8 +609,8 @@
             <span class="c1"># all jobs to use the same random number seed (15324) that</span>
             <span class="c1"># is used for comparing outputs. This should NEVER be used</span>
             <span class="c1"># for production code</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** WARNING: Using special mode to fix all random number&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** WARNING: seeds to 15324. DO NOT USE IN PRODUCTION!!!&quot;</span><span class="p">)</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using special mode to fix all random number &quot;</span>
+                            <span class="s2">&quot;seeds to 15324. DO NOT USE IN PRODUCTION!!!&quot;</span><span class="p">)</span>
             <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">15324</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
@@ -619,20 +622,22 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
             <span class="n">randnums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ran_binomial</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)))</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First five random numbers equal </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">randnums</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First five random numbers equal </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">randnums</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">randnums</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.utils._parallel</span> <span class="kn">import</span> <span class="n">get_available_num_threads</span>
             <span class="n">nthreads</span> <span class="o">=</span> <span class="n">get_available_num_threads</span><span class="p">()</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of threads used equals </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of threads used equals </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="kn">from</span> <span class="nn">.utils._parallel</span> <span class="kn">import</span> <span class="n">create_thread_generators</span>
         <span class="n">rngs</span> <span class="o">=</span> <span class="n">create_thread_generators</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">)</span>
 
         <span class="c1"># Create space to hold the results of the simulation</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initialise infections...&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Initialise infections...&quot;</span><span class="p">)</span>
         <span class="n">infections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialise_infections</span><span class="p">()</span>
 
         <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">run_model</span>
@@ -659,7 +664,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

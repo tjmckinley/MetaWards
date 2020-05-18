@@ -102,6 +102,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
@@ -184,18 +185,22 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">field</span> <span class="k">as</span> <span class="n">_field</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span> <span class="k">as</span> <span class="n">_Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span> <span class="k">as</span> <span class="n">_Union</span>
 <span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">_os</span>
 <span class="kn">import</span> <span class="nn">pathlib</span> <span class="k">as</span> <span class="nn">_pathlib</span>
 
 <span class="kn">from</span> <span class="nn">._demographic</span> <span class="kn">import</span> <span class="n">Demographic</span>
 <span class="kn">from</span> <span class="nn">._network</span> <span class="kn">import</span> <span class="n">Network</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Demographics&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Demographics&quot;</span><span class="p">,</span> <span class="s2">&quot;DemographicID&quot;</span><span class="p">,</span> <span class="s2">&quot;DemographicIDs&quot;</span><span class="p">]</span>
 
 <span class="n">_default_demographics_path</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">(),</span>
                                            <span class="s2">&quot;GitHub&quot;</span><span class="p">,</span> <span class="s2">&quot;MetaWardsData&quot;</span><span class="p">)</span>
 
 <span class="n">_default_folder_name</span> <span class="o">=</span> <span class="s2">&quot;demographics&quot;</span>
+
+<span class="n">DemographicID</span> <span class="o">=</span> <span class="n">_Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="n">DemographicIDs</span> <span class="o">=</span> <span class="n">_List</span><span class="p">[</span><span class="n">DemographicID</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_get_value</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
@@ -203,7 +208,7 @@
 <span class="sd">       to allow the demographics.json file to store numbers is</span>
 <span class="sd">       a variety of formats</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">safe_eval_float</span>
+    <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">safe_eval_number</span>
 
     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="mf">0.0</span>
@@ -211,17 +216,17 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">safe_eval_float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+            <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">safe_eval_number</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">lst</span>
 
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">safe_eval_number</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">d</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">safe_eval_float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">safe_eval_number</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Demographics"><a class="viewcode-back" href="../../api/generated/metawards.Demographics.html#metawards.Demographics">[docs]</a><span class="nd">@_dataclass</span><span class="p">(</span><span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -430,13 +435,13 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">FILE</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find the demographics file </span><span class="si">{</span><span class="n">json_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Either it does not exist of was corrupted.&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error was </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;To download the disease data type the command:&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  git clone https://github.com/metawards/MetaWardsData&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;and then re-run this function passing in the full&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;path to where you downloaded this directory&quot;</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Could not find the demographics file </span><span class="si">{</span><span class="n">json_file</span><span class="si">}</span><span class="s2">. &quot;Either it does not exist</span>
+<span class="s2">or was corrupted. Error was </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. To download the disease data</span>
+<span class="s2">follow the instructions at</span>
+<span class="s2">[https://metawards.org/model_data](https://metawards.org/model_data).&quot;&quot;&quot;</span><span class="p">)</span>
+
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find or read </span><span class="si">{</span><span class="n">json_file</span><span class="si">}</span><span class="s2">: &quot;</span>
                                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -512,7 +517,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

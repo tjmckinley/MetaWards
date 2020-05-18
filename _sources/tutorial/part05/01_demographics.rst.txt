@@ -79,7 +79,7 @@ that should belong to each demographic. For example, here 50% of the
 .. note::
   You can specify the work and play ratios using either numbers between
   0.0 and 1.0, or you can pass in strings that are interpreted using
-  :func:`metawards.utils.safe_eval_float`, e.g. "50%", "1/4" or
+  :func:`metawards.utils.safe_eval_number`, e.g. "50%", "1/4" or
   "(10+15)%". The only requirement is that the sum of ratios must
   equal 1.0 (or 100%), as every individual must be assigned to one
   of the demographics.
@@ -90,7 +90,7 @@ command line argument. Run ``metawards`` using;
 
 .. code-block:: bash
 
-   metawards -d lurgy2 -D demographics.json
+   metawards -d lurgy3 -D demographics.json
 
 In the output you should see lines such as;
 
@@ -166,7 +166,7 @@ We can seed an infection just as before, by using the ``--additional``
 
 .. code-block:: bash
 
-   metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondon.dat
+   metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondon.dat
 
 You should see output similar (but not identical) to;
 
@@ -338,7 +338,7 @@ to see a different outbreak. Perform a *model run* using;
 
 .. code-block:: bash
 
-  metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondonBlue.dat
+  metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondonBlue.dat
 
 You should see a more sustained outbreak, ending in a similar way to this;
 

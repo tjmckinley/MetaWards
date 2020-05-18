@@ -102,6 +102,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
@@ -228,6 +229,22 @@
         <span class="sd">&quot;&quot;&quot;The number who are infected across all wards&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">latent</span>
 
+<div class="viewcode-block" id="Population.increment_day"><a class="viewcode-back" href="../../api/generated/metawards.Population.html#metawards.Population.increment_day">[docs]</a>    <span class="k">def</span> <span class="nf">increment_day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndays</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Advance the day count by &#39;ndays&#39; (default 1)&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">day</span> <span class="o">+=</span> <span class="n">ndays</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpops</span><span class="p">:</span>
+                <span class="n">pop</span><span class="o">.</span><span class="n">day</span> <span class="o">+=</span> <span class="n">ndays</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpops</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">pop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpops</span><span class="p">:</span>
+                    <span class="n">pop</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span></div>
+
 <div class="viewcode-block" id="Population.specialise"><a class="viewcode-back" href="../../api/generated/metawards.Population.html#metawards.Population.specialise">[docs]</a>    <span class="k">def</span> <span class="nf">specialise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Specialise this population for the passed Networks&quot;&quot;&quot;</span>
         <span class="n">subpops</span> <span class="o">=</span> <span class="p">[]</span>
@@ -305,7 +322,8 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">errors</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">ERROR: &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">errors</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Disagreement in population sums!&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Population.summary"><a class="viewcode-back" href="../../api/generated/metawards.Population.html#metawards.Population.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demographics</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -402,7 +420,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

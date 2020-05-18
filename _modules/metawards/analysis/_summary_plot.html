@@ -102,6 +102,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">Documentation</a></li>
@@ -268,6 +269,13 @@
         <span class="n">fingerprints</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
         <span class="n">repeat</span> <span class="o">=</span> <span class="s2">&quot;demographic&quot;</span>
 
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">PIL</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;jpg&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Missing &#39;pillow&#39; package, defaulting to PNG format.&quot;</span><span class="p">)</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;png&quot;</span>
+
     <span class="n">figs</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="n">min_date</span> <span class="o">=</span> <span class="kc">None</span>
@@ -418,6 +426,13 @@
 <span class="sd">         or the filename if output_dir was supplied, or a dictionary</span>
 <span class="sd">         of multiple filenames indexed by fingerprint</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">PIL</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;jpg&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Missing &#39;pillow&#39; package, defaulting to PNG format.&quot;</span><span class="p">)</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;png&quot;</span>
+
     <span class="n">fingerprints</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
 
     <span class="n">figs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -538,6 +553,13 @@
 <span class="sd">         The matplotlib figure containing the demographics plot, or</span>
 <span class="sd">         the filename if output_dir was supplied</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">PIL</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;jpg&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Missing &#39;pillow&#39; package, defaulting to PNG format.&quot;</span><span class="p">)</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;png&quot;</span>
+
     <span class="n">_</span><span class="p">,</span> <span class="n">plt</span> <span class="o">=</span> <span class="n">import_graphics_modules</span><span class="p">()</span>
 
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;IW&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">]</span>
@@ -617,6 +639,13 @@
 <span class="sd">       filenames: List(str)</span>
 <span class="sd">         Full file paths of all of the files written by this function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">PIL</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;jpg&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Missing &#39;pillow&#39; package, defaulting to PNG format.&quot;</span><span class="p">)</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;png&quot;</span>
+
     <span class="n">pd</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">import_graphics_modules</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
     <span class="kn">import</span> <span class="nn">os</span>
 
@@ -697,7 +726,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

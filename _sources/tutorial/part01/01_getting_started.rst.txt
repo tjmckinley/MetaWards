@@ -129,10 +129,11 @@ to the codes;
   infected, but not yet infectious.
 * **I**: The number of the population who are *infected*, meaning they
   have symptoms and are infectious
-* **R**: The number of the population who are removed from the outbreak,
-  e.g. because they have recovered and are no longer susceptible to infection
-* **IW**: The number electoral wards that contain at least one infected
-  individual.
+* **R**: The number of the population who are removed from being susceptible,
+  either because they have been newly infected that day, or because they
+  have recovered from the infection and are no longer susceptible to infection
+* **IW**: The number of electoral wards that contain at least one
+  individual who was newly infected that day.
 
 For more information about these values, please
 `read <https://doi.org/10.1016/j.epidem.2009.11.002>`__
@@ -217,3 +218,38 @@ the calculation over the same number of threads. We consider it a bug
 if ``metawards`` is not reproducible, and ask that you
 `submit an issue <https://github.com/metawards/MetaWards/issues>`__ if
 you find you cannot repeat a run.
+
+Using config files for inputs
+-----------------------------
+
+In addition, to make repeats easier, ``metawards`` will also write
+a config file called ``config.yaml`` to the output directory. You can
+use this config file directly to run a job using the ``--config``
+or ``-c`` options, e.g.
+
+.. code-block:: bash
+
+   metawards --config config.yaml
+
+This should repeat the calculation that generated this config. You can
+also edit this file and use it to store commonly used options, e.g.
+if you always want to model the lurgy, then the config file would read;
+
+::
+
+  disease: lurgy
+
+and you could use this via
+
+.. code-block:: bash
+
+   metawards -c config.yaml
+
+.. note::
+  ``metawards`` uses the `ConfigArgParse <https://pypi.org/project/ConfigArgParse/>`__
+  python module for parsing command line arguments. Options can be passed
+  on the command line, in a yaml or ini format config file, or in
+  some identified cases as an environment variable. If an arg is
+  specified in more than one place, then commandline values override
+  environment variables which override config file values which
+  override defaults.

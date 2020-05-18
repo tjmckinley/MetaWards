@@ -102,6 +102,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
@@ -182,28 +183,29 @@
 <span></span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span> <span class="k">as</span> <span class="n">_List</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span> <span class="k">as</span> <span class="n">_Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span> <span class="k">as</span> <span class="n">_Union</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;VariableSets&quot;</span><span class="p">,</span> <span class="s2">&quot;VariableSet&quot;</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_set_beta</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Adjust the Disease.beta parameter&quot;&quot;&quot;</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">beta</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_progress</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Adjust the Disease.progress parameter&quot;&quot;&quot;</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">progress</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">progress</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_too_ill_to_move</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Adjust the Disease.too_ill_to_move parameter&quot;&quot;&quot;</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">too_ill_to_move</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">too_ill_to_move</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_contrib_foi</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Adjust the Disease.contrib_foi parameter&quot;&quot;&quot;</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">contrib_foi</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">disease_params</span><span class="o">.</span><span class="n">contrib_foi</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_lengthday</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -211,7 +213,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the lengthday&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">length_day</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">length_day</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_plengthday</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -219,7 +221,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the lengthday&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">plength_day</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">plength_day</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_uv</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -227,7 +229,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the UV parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">UV</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">UV</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_initial_inf</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -235,7 +237,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the initial_inf parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">initial_inf</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">initial_inf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_static_play_at_home</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -243,7 +245,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the static_play_at_home parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">static_play_at_home</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">static_play_at_home</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_dyn_play_at_home</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -251,7 +253,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the dyn_play_at_home parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">dyn_play_at_home</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">dyn_play_at_home</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_data_dist_cutoff</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -259,7 +261,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the data_dist_cutoff parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">data_dist_cutoff</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">data_dist_cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_dyn_dist_cutoff</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -267,7 +269,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the dyn_dist_cutoff parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">dyn_dist_cutoff</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">dyn_dist_cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_play_to_work</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -275,7 +277,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the play_to_work parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">play_to_work</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">play_to_work</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_work_to_play</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -283,7 +285,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the work_to_play parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">work_to_play</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">work_to_play</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_local_vaccination_thresh</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -292,7 +294,7 @@
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the local_vaccination_thresh &quot;</span>
                          <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">local_vaccination_thresh</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">local_vaccination_thresh</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_global_detection_thresh</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -301,7 +303,7 @@
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the global_detection_thresh &quot;</span>
                          <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">global_detection_thresh</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">global_detection_thresh</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_daily_ward_vaccination_capacity</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -313,7 +315,7 @@
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the daily_ward_vaccination &quot;</span>
                          <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">daily_ward_vaccination_capacity</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">daily_ward_vaccination_capacity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_neighbour_weight_threshold</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -323,7 +325,7 @@
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the neighbour_weight_threshold &quot;</span>
                          <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">neighbour_weight_threshold</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">neighbour_weight_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_daily_imports</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -331,7 +333,7 @@
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the daily_imports parameter&quot;</span><span class="p">)</span>
 
-    <span class="n">params</span><span class="o">.</span><span class="n">daily_imports</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">daily_imports</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_set_user_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -391,13 +393,79 @@
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mf">1.0</span>
+        <span class="k">return</span> <span class="kc">True</span>
     <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;false&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="kc">False</span>
     <span class="k">elif</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;=&quot;</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;:&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;==&quot;</span>
+    <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;==&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;==&quot;</span>
+    <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;==&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span> <span class="nf">_interpret</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="n">canonical</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">canonical</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;d&#39;&quot;</span><span class="p">):</span>
+        <span class="c1"># this is a date</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">dateparser</span> <span class="kn">import</span> <span class="n">parse</span>
+            <span class="k">return</span> <span class="n">parse</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+        <span class="k">return</span> <span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">elif</span> <span class="n">canonical</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;f&#39;&quot;</span><span class="p">):</span>
+        <span class="c1"># this is a floating point number</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">elif</span> <span class="n">canonical</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;i&#39;&quot;</span><span class="p">):</span>
+        <span class="c1"># this is an integer</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">elif</span> <span class="n">canonical</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s&#39;&quot;</span><span class="p">):</span>
+        <span class="c1"># this is a string</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># now we have to guess...</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">v</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+        <span class="k">return</span> <span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">.utils._safe_eval</span> <span class="kn">import</span> <span class="n">safe_eval_number</span>
+        <span class="k">return</span> <span class="n">safe_eval_number</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># do this last as it is quite slow...</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">dateparser</span> <span class="kn">import</span> <span class="n">parse</span>
+        <span class="k">return</span> <span class="n">parse</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># this can only be a string...</span>
+    <span class="k">return</span> <span class="n">value</span>
 
 
 <span class="k">def</span> <span class="nf">_wrap</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">70</span><span class="p">):</span>
@@ -578,11 +646,11 @@
         <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
             <span class="n">varname</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">varname</span> <span class="o">=</span> <span class="n">name</span>
             <span class="n">index</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">varname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;user.&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">varname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="ow">or</span>
                 <span class="n">varname</span> <span class="ow">in</span> <span class="n">_adjustable</span><span class="p">):</span>
@@ -904,115 +972,15 @@
 <span class="sd">           variables: VariableSet</span>
 <span class="sd">             The VariableSet that has been read</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">variables</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="n">VariableSets</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
-            <span class="c1"># use the first line of the file to work out the mode</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-
-            <span class="c1"># find the first line of the file. Use this to work out</span>
-            <span class="c1"># the separator to use and also to see if the user has</span>
-            <span class="c1"># named the adjustable variables</span>
-            <span class="n">first_line</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
-
-            <span class="c1"># default adjustable variables</span>
-            <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;beta[2]&quot;</span><span class="p">,</span> <span class="s2">&quot;beta[3]&quot;</span><span class="p">,</span> <span class="s2">&quot;progress[1]&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;progress[2]&quot;</span><span class="p">,</span> <span class="s2">&quot;progress[3]&quot;</span><span class="p">]</span>
-
-            <span class="n">is_title_line</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">is_vertical</span> <span class="o">=</span> <span class="kc">False</span>
-
-            <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                    <span class="k">continue</span>
-
-                <span class="k">if</span> <span class="n">first_line</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># this is a valid first line - what separator</span>
-                    <span class="c1"># should we use?</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                        <span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">separator</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># spaces</span>
-
-                    <span class="n">first_line</span> <span class="o">=</span> <span class="n">line</span>
-
-                    <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">_clean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">separator</span><span class="p">)]</span>
-
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                        <span class="n">is_title_line</span> <span class="o">=</span> <span class="kc">False</span>
-                        <span class="n">is_vertical</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                        <span class="n">is_title_line</span> <span class="o">=</span> <span class="kc">True</span>
-
-                    <span class="k">if</span> <span class="n">is_title_line</span><span class="p">:</span>
-                        <span class="n">is_vertical</span> <span class="o">=</span> <span class="kc">False</span>
-                        <span class="n">is_title_line</span> <span class="o">=</span> <span class="kc">True</span>
-
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)):</span>
-                            <span class="k">try</span><span class="p">:</span>
-                                <span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                                <span class="n">is_vertical</span> <span class="o">=</span> <span class="kc">True</span>
-                                <span class="n">is_title_line</span> <span class="o">=</span> <span class="kc">False</span>
-                                <span class="n">titles</span> <span class="o">=</span> <span class="kc">None</span>
-                                <span class="k">break</span>
-                            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                                <span class="k">pass</span>
-
-                    <span class="k">if</span> <span class="n">is_title_line</span><span class="p">:</span>
-                        <span class="n">titles</span> <span class="o">=</span> <span class="n">words</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                        <span class="k">continue</span>
-
-                <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">_clean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">separator</span><span class="p">)]</span>
-
-                <span class="k">if</span> <span class="n">is_vertical</span><span class="p">:</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
-
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;==&quot;</span><span class="p">:</span>
-                            <span class="k">try</span><span class="p">:</span>
-                                <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-                            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                                <span class="k">pass</span>
-
-                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Corrupted file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">. Expected at least &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;two words for the &#39;variable value&#39;, but &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-                    <span class="n">variables</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                    <span class="k">continue</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
-
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">titles</span><span class="p">)):</span>
-                            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                        <span class="k">pass</span>
-
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">titles</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Corrupted file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">. Expected at least &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">titles</span><span class="p">)</span><span class="si">}</span><span class="s2"> words for </span><span class="si">{</span><span class="n">titles</span><span class="si">}</span><span class="s2">, but got &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-                    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">titles</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-                        <span class="n">variables</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-                    <span class="k">return</span> <span class="n">variables</span>
-
-        <span class="k">return</span> <span class="n">variables</span></div>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">VariableSet</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;More than one set of variables was read from </span><span class="si">{filename}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">variables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="VariableSet.adjust"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.adjust">[docs]</a>    <span class="k">def</span> <span class="nf">adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>  <span class="c1"># should be &#39;Parameters&#39; but circular include</span>
         <span class="sd">&quot;&quot;&quot;Use the variables in this set to adjust the passed parameters.</span>
@@ -1109,7 +1077,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;{&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span>
+            <span class="k">return</span> <span class="s2">&quot;{&quot;</span> <span class="o">+</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">}&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;VariableSets:empty&quot;</span>
 
@@ -1173,16 +1141,17 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VariableSets.repeat"><a class="viewcode-back" href="../../api/generated/metawards.VariableSets.html#metawards.VariableSets.repeat">[docs]</a>    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nrepeats</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableSets.repeat"><a class="viewcode-back" href="../../api/generated/metawards.VariableSets.html#metawards.VariableSets.repeat">[docs]</a>    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nrepeats</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">_List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Return a copy of this VariableSet in which all of the</span>
 <span class="sd">           unique VaribleSet objects have been repeated &#39;nrepeats&#39;</span>
 <span class="sd">           times</span>
 
 <span class="sd">           Parameters</span>
 <span class="sd">           ----------</span>
-<span class="sd">           nrepeats: int</span>
+<span class="sd">           nrepeats: int or list[int]</span>
 <span class="sd">             The number of repeats of the VariableSet objects to</span>
-<span class="sd">             perform</span>
+<span class="sd">             perform. If this is a list, then nrepeats[i] will be</span>
+<span class="sd">             the number of times to repeat variables[i]</span>
 
 <span class="sd">           Returns</span>
 <span class="sd">           -------</span>
@@ -1190,18 +1159,42 @@
 <span class="sd">             A new VariableSets object containing &#39;nrepeats&#39; copies</span>
 <span class="sd">             of the VariableSet objects from this set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">nrepeats</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nrepeats</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">nrepeats</span> <span class="o">=</span> <span class="p">[</span><span class="n">nrepeats</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nrepeats</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">nrepeats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
 
         <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 
         <span class="n">repeats</span> <span class="o">=</span> <span class="n">VariableSets</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nrepeats</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">:</span>
-                <span class="n">v2</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-                <span class="n">v2</span><span class="o">.</span><span class="n">_idx</span> <span class="o">=</span> <span class="n">i</span>
-                <span class="n">repeats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nrepeats</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">nrepeats</span> <span class="o">=</span> <span class="n">nrepeats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nrepeats</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">:</span>
+                    <span class="n">v2</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="n">v2</span><span class="o">.</span><span class="n">_idx</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">repeats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nrepeats</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Disagreement of the number of repeats </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nrepeats</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;and the number of variables </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">added</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">added</span><span class="p">:</span>
+                <span class="n">added</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="n">nrepeats</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                        <span class="n">v2</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                        <span class="n">v2</span><span class="o">.</span><span class="n">_idx</span> <span class="o">=</span> <span class="n">n</span>
+                        <span class="n">repeats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+                        <span class="n">added</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">repeats</span></div>
 
@@ -1229,89 +1222,152 @@
             <span class="k">if</span> <span class="n">line_numbers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">line_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="n">line_numbers</span><span class="p">]</span>
 
+        <span class="c1"># parse all lines using the csv module</span>
+        <span class="kn">import</span> <span class="nn">csv</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+        <span class="n">csvlines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)):</span>
+                <span class="n">csvlines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># first try to guess the dialect of the file (space or comma</span>
+        <span class="c1"># separated, newline character etc.)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">csvlines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.utils.console</span> <span class="kn">import</span> <span class="n">Console</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Could not identify what sort of separator to use to &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;read </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">. Could you add commas to separate the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;fields?&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid syntax in </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvlines</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span>
+                               <span class="n">quoting</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">QUOTE_ALL</span><span class="p">,</span>
+                               <span class="n">skipinitialspace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">cleaned</span> <span class="o">=</span> <span class="p">[</span><span class="n">_clean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">]</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">clean</span> <span class="ow">in</span> <span class="n">cleaned</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clean</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clean</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">clean</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">line</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clean</span><span class="p">)</span>
+
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># there is nothing to read?</span>
+            <span class="k">return</span> <span class="n">VariableSets</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;==&quot;</span><span class="p">:</span>
+            <span class="c1"># this is a vertical file</span>
+            <span class="k">if</span> <span class="n">line_numbers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;You cannot specify line numbers for a vertical file!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">VariableSets</span><span class="o">.</span><span class="n">_read_vertical</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">VariableSets</span><span class="o">.</span><span class="n">_read_horizontal</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="n">lines</span><span class="p">,</span>
+                                                 <span class="n">line_numbers</span><span class="o">=</span><span class="n">line_numbers</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_read_vertical</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the data from the vertical lines&quot;&quot;&quot;</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="n">VariableSets</span><span class="p">()</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;==&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">variable</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_interpret</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">variables</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_read_horizontal</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line_numbers</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the data from the horizontal lines&quot;&quot;&quot;</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="n">VariableSets</span><span class="p">()</span>
 
-        <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="c1"># are there any strings on the first line? If so, then these</span>
+        <span class="c1"># are the titles</span>
+        <span class="n">has_titles</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">has_titles</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
 
-            <span class="c1"># find the first line of the file. Use this to work out</span>
-            <span class="c1"># the separator to use and also to see if the user has</span>
-            <span class="c1"># named the adjustable variables</span>
-            <span class="n">first_line</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
-
+        <span class="k">if</span> <span class="n">has_titles</span><span class="p">:</span>
+            <span class="n">titles</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="c1"># default adjustable variables</span>
             <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;beta[2]&quot;</span><span class="p">,</span> <span class="s2">&quot;beta[3]&quot;</span><span class="p">,</span> <span class="s2">&quot;progress[1]&quot;</span><span class="p">,</span>
                       <span class="s2">&quot;progress[2]&quot;</span><span class="p">,</span> <span class="s2">&quot;progress[3]&quot;</span><span class="p">]</span>
 
-            <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="s2">&quot;repeats&quot;</span> <span class="ow">in</span> <span class="n">titles</span><span class="p">:</span>
+            <span class="n">repeats_index</span> <span class="o">=</span> <span class="n">titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;repeats&quot;</span><span class="p">)</span>
+            <span class="n">titles</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">repeats_index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">repeats_index</span> <span class="o">=</span> <span class="kc">None</span>
 
-                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">repeats</span> <span class="o">=</span> <span class="p">[]</span>
 
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                    <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line_numbers</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line_numbers</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">_interpret</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">]</span>
 
-                <span class="k">if</span> <span class="n">first_line</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># this is a valid first line - what separator</span>
-                    <span class="c1"># should we use?</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                        <span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">separator</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># spaces</span>
+                <span class="k">if</span> <span class="n">repeats_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">repeats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">repeats_index</span><span class="p">)))</span>
 
-                    <span class="n">first_line</span> <span class="o">=</span> <span class="n">line</span>
+                <span class="n">variable</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
 
-                    <span class="n">words</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">titles</span><span class="p">):</span>
+                    <span class="n">variable</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
 
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                        <span class="n">is_title_line</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                        <span class="n">is_title_line</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
 
-                    <span class="k">if</span> <span class="n">is_title_line</span><span class="p">:</span>
-                        <span class="n">titles</span> <span class="o">=</span> <span class="n">words</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                        <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">line_numbers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_numbers</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">repeats_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">repeats</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">line_numbers</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line_numbers</span><span class="p">:</span>
-                    <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">_clean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">separator</span><span class="p">)]</span>
-
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">titles</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Corrupted input file. Expecting </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">titles</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;values. Received </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-                    <span class="n">vals</span> <span class="o">=</span> <span class="p">[]</span>
-
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
-                            <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
-                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Corrupted input file. Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">titles</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;numbers. Received </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-                    <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VariableSet</span><span class="p">(</span><span class="n">names</span><span class="o">=</span><span class="n">titles</span><span class="p">,</span>
-                                                 <span class="n">values</span><span class="o">=</span><span class="n">vals</span><span class="p">))</span>
-
-                    <span class="k">if</span> <span class="n">line_numbers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_numbers</span><span class="p">):</span>
-                            <span class="k">return</span> <span class="n">variables</span>
-
-                <span class="n">line</span> <span class="o">=</span> <span class="n">FILE</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                        <span class="k">return</span> <span class="n">variables</span>
 
         <span class="c1"># get here if we can&#39;t find this line in the file (or if we</span>
         <span class="c1"># are supposed to read all lines)</span>
         <span class="k">if</span> <span class="n">line_numbers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">repeats_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">repeats</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">variables</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Cannot read parameters from line </span><span class="si">{</span><span class="n">line_numbers</span><span class="si">}</span><span class="s2"> &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;as the number of lines in the file is </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+                <span class="sa">f</span><span class="s2">&quot;as the number of lines in the file is </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -1325,7 +1381,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

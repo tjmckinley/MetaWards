@@ -108,6 +108,7 @@
 <li class="toctree-l3"><a class="reference internal" href="03_custom.html">Using custom merge functions to model shielding</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part06.html">Part 6 - Moving between demographics</a></li>
 </ul>
 </li>
 </ul>
@@ -120,6 +121,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
@@ -240,7 +242,7 @@ mixes all demographics. It sets the FOI in each ward in each demographic
 equal to the sum of the FOIs in that ward across all demographics.</p>
 <p>You can choose this mixer using the <code class="docutils literal notranslate"><span class="pre">--mixer</span></code> argument. Run <code class="docutils literal notranslate"><span class="pre">metawards</span></code>
 using;</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy2 -D demographics.json -a ExtraSeedsLondon.dat --mixer mix_evenly
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy3 -D demographics.json -a ExtraSeedsLondon.dat --mixer mix_evenly
 </pre></div>
 </div>
 <p>You should now see that the outbreak spreads from the initial infection in
@@ -307,7 +309,7 @@ This should look similar to this;</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

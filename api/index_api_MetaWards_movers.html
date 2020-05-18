@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="metawards.movers.move_custom" href="generated/metawards.movers.move_custom.html" />
+    <link rel="next" title="metawards.movers.go_isolate" href="generated/metawards.movers.go_isolate.html" />
     <link rel="prev" title="MetaWards.movers" href="index_MetaWards_movers.html" /> 
 </head>
 
@@ -104,6 +104,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packaging.html">Packaging releases</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Documentation</a><ul class="current">
@@ -195,7 +196,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="generated/metawards.movers.move_custom.html" class="btn btn-neutral float-right" title="metawards.movers.move_custom" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="generated/metawards.movers.go_isolate.html" class="btn btn-neutral float-right" title="metawards.movers.go_isolate" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index_MetaWards_movers.html" class="btn btn-neutral float-left" title="MetaWards.movers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -217,6 +218,12 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.movers.go_isolate.html#metawards.movers.go_isolate" title="metawards.movers.go_isolate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">go_isolate</span></code></a>(nthreads,&nbsp;**kwargs)</td>
+<td>This go function will move individuals from the “from” demographic(s) to the “to” demographic if they show any signs of infection (the disease stage is greater or equal to ‘self_isolate_stage’ - by default this is level ‘2’, which is one level above “latent”).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.movers.go_to.html#metawards.movers.go_to" title="metawards.movers.go_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">go_to</span></code></a>(nthreads,&nbsp;**kwargs)</td>
+<td>This go function will move individuals from the “from” demographic(s) to the “to” demographic.</td>
+</tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/metawards.movers.move_custom.html#metawards.movers.move_custom" title="metawards.movers.move_custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_custom</span></code></a>(custom_function,&nbsp;None],&nbsp;stage,&nbsp;…)</td>
 <td>This returns the default list of ‘go_XXX’ functions that are called in sequence for each iteration of the model run.</td>
 </tr>
@@ -238,7 +245,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="generated/metawards.movers.move_custom.html" class="btn btn-neutral float-right" title="metawards.movers.move_custom" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="generated/metawards.movers.go_isolate.html" class="btn btn-neutral float-right" title="metawards.movers.go_isolate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index_MetaWards_movers.html" class="btn btn-neutral float-left" title="MetaWards.movers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -251,7 +258,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

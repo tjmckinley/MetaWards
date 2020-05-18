@@ -103,6 +103,7 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging releases</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">Documentation</a></li>
@@ -187,7 +188,10 @@
   <div class="section" id="metawards">
 <h1>MetaWards<a class="headerlink" href="#metawards" title="Permalink to this headline">¶</a></h1>
 <a class="reference external image-reference" href="https://github.com/metawards/MetaWards/actions?query=workflow%3ABuild"><img alt="Build Status" src="https://github.com/metawards/MetaWards/workflows/Build/badge.svg" /></a>
-<a class="reference external image-reference" href="https://pypi.python.org/pypi/metawards"><img alt="PyPi Package" src="https://camo.githubusercontent.com/8c2f819cc55ec237a4a942f0515750329d1e1e64/68747470733a2f2f62616467652e667572792e696f2f70792f6d65746177617264732e737667" /></a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/metawards"><img alt="PyPi version" src="https://badge.fury.io/py/metawards.svg" /></a>
+<a class="reference external image-reference" href="https://pypi.org/project/metawards"><img alt="PyPi project" src="https://img.shields.io/pypi/pyversions/metawards.svg" /></a>
+<a class="reference external image-reference" href="https://pepy.tech/project/metawards"><img alt="Number of downloads" src="https://pepy.tech/badge/metawards" /></a>
+<a class="reference external image-reference" href="https://github.com/metawards/MetaWards"><img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/metawards/metawards" /></a>
 <a class="reference external image-reference" href="https://www.gnu.org/licenses/gpl-3.0.html"><img alt="License" src="https://img.shields.io/badge/License-GPLv3-blue.svg" /></a>
 <p>This is a Python port of the
 <a class="reference external" href="https://github.com/ldanon/MetaWards">MetaWards</a> package originally written
@@ -267,6 +271,7 @@ efficiently conducted.</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorial/index_part03.html">Part 3 - Customising the outbreak</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial/index_part04.html">Part 4 - Customising the output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial/index_part05.html">Part 5 - Modelling multiple demographics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index_part06.html">Part 6 - Moving between demographics</a></li>
 </ul>
 </li>
 </ul>
@@ -307,6 +312,15 @@ efficiently conducted.</p>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-new-code">Contributing new code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#snaglist">Snaglist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="packaging.html#defining-a-release">Defining a release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging.html#creating-a-release">Creating a release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging.html#testing-the-packages">Testing the packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging.html#tagging-a-new-release">Tagging a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging.html#uploading-packages-to-pypi">Uploading packages to pypi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging.html#testing-the-final-release">Testing the final release</a></li>
 </ul>
 </li>
 </ul>
@@ -352,6 +366,7 @@ efficiently conducted.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#may-18th-2020">0.12.0 - May 18th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#may-11th-2020">0.11.2 - May 11th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#may-10th-2020">0.11.1 - May 10th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#id1">0.11.0 - May 10th 2020</a></li>
@@ -411,7 +426,7 @@ efficiently conducted.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 11, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>
