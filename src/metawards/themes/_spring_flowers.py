@@ -72,7 +72,21 @@ class SpringFlowers:
         else:
             return "cyan"
 
-    def panel(self, style):
+    def panel_box(self, style):
+        from rich import box as _box
+
+        if style == "header":
+            return _box.HEAVY_EDGE
+        else:
+            return _box.SQUARE
+
+    def padding_style(self, style):
+        if style == "header":
+            return "on #220077"
+        else:
+            return self.panel(style, advance=False)
+
+    def panel(self, style, advance=True):
         if style is None:
             return "on black"
 
@@ -82,11 +96,19 @@ class SpringFlowers:
                 self.panel_color_count = 0
 
             color = self.panel_colors[self.panel_color_count]
-            self.panel_color_count += 1
-            if self.panel_color_count >= len(self.panel_colors):
-                self.panel_color_count = 0
+
+            if advance:
+                self.panel_color_count += 1
+                if self.panel_color_count >= len(self.panel_colors):
+                    self.panel_color_count = 0
 
             return f"on {color}"
+
+        elif style == "header":
+            return f"on #0000FF"
+
+        else:
+            return "on black"
 
     def get_frames(self, width: int = 80):
         """Return the frames used to animate a spinner in a console

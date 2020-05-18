@@ -155,20 +155,21 @@ class Console:
               expand=True, *args, **kwargs):
         """Print within a panel to the console"""
         from rich.panel import Panel as _Panel
-        from rich import box as _box
 
         if markdown:
             from rich.markdown import Markdown as _Markdown
             text = _Markdown(text)
 
         theme = Console._get_theme()
+        padding_style = theme.padding_style(style)
         style = theme.panel(style)
+        box = theme.panel_box(style)
 
         if padding:
             from rich.padding import Padding as _Padding
-            text = _Padding(text, (1, 2), style=style)
+            text = _Padding(text, (1, 2), style=padding_style)
 
-        Console.print(_Panel(text, box=_box.SQUARE, width=width,
+        Console.print(_Panel(text, box=box, width=width,
                              expand=expand,
                              style=style, *args, **kwargs))
 

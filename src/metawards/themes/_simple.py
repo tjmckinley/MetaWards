@@ -21,6 +21,13 @@ class Simple:
     def should_markup(self):
         return False
 
+    def panel_box(self, style):
+        from rich import box as _box
+        return _box.SQUARE
+
+    def padding_style(self, style):
+        return "on black"
+
     def text(self, style):
         return "white"
 
