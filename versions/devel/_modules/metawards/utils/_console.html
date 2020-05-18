@@ -186,19 +186,34 @@
 
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span> <span class="k">as</span> <span class="n">_contextmanager</span>
 
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Console&quot;</span><span class="p">]</span>
 
 
 <span class="c1"># Global rich.Console()</span>
 <span class="n">_console</span> <span class="o">=</span> <span class="kc">None</span>
 
+<span class="c1"># Global console theme</span>
+<span class="n">_theme</span> <span class="o">=</span> <span class="kc">None</span>
 
-<span class="nd">@_contextmanager</span>
-<span class="k">def</span> <span class="nf">redirect_output</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Nice way to redirect stdout and stderr - thanks to</span>
-<span class="sd">       Emil Stenström in</span>
-<span class="sd">       https://stackoverflow.com/questions/6735917/redirecting-stdout-to-nothing-in-python</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="k">class</span> <span class="nc">_NullSpinner</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Null spinner to use if yaspin isn&#39;t available&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">ok</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">fail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="Console"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console">[docs]</a><span class="k">class</span> <span class="nc">Console</span><span class="p">:</span>
@@ -206,13 +221,45 @@
 <span class="sd">       and logging functions to the console. This uses &#39;rich&#39;</span>
 <span class="sd">       for rich console printing</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Console.set_theme"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console.set_theme">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_theme</span><span class="p">(</span><span class="n">theme</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the theme used for the console - this should be</span>
+<span class="sd">           one of the themes in metawards.themes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">_theme</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">theme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;simple&quot;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">metawards.themes</span> <span class="kn">import</span> <span class="n">Simple</span>
+                <span class="n">_theme</span> <span class="o">=</span> <span class="n">Simple</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">theme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">metawards.themes</span> <span class="kn">import</span> <span class="n">SpringFlowers</span>
+                <span class="n">_theme</span> <span class="o">=</span> <span class="n">SpringFlowers</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_theme</span> <span class="o">=</span> <span class="n">theme</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_theme</span><span class="p">():</span>
+        <span class="k">global</span> <span class="n">_theme</span>
+
+        <span class="k">if</span> <span class="n">_theme</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">metawards.themes</span> <span class="kn">import</span> <span class="n">SpringFlowers</span>
+            <span class="n">_theme</span> <span class="o">=</span> <span class="n">SpringFlowers</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">_theme</span>
+
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_console</span><span class="p">():</span>
         <span class="k">global</span> <span class="n">_console</span>
 
         <span class="k">if</span> <span class="n">_console</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span> <span class="k">as</span> <span class="n">_Console</span>
-            <span class="n">_console</span> <span class="o">=</span> <span class="n">_Console</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">theme</span> <span class="o">=</span> <span class="n">Console</span><span class="o">.</span><span class="n">_get_theme</span><span class="p">()</span>
+
+            <span class="n">_console</span> <span class="o">=</span> <span class="n">_Console</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">highlight</span><span class="o">=</span><span class="n">theme</span><span class="o">.</span><span class="n">should_highlight</span><span class="p">(),</span>
+                                <span class="n">highlighter</span><span class="o">=</span><span class="n">theme</span><span class="o">.</span><span class="n">highlighter</span><span class="p">(),</span>
+                                <span class="n">markup</span><span class="o">=</span><span class="n">theme</span><span class="o">.</span><span class="n">should_markup</span><span class="p">())</span>
 
             <span class="c1"># also install pretty traceback support</span>
             <span class="kn">from</span> <span class="nn">rich.traceback</span> <span class="kn">import</span> <span class="n">install</span> <span class="k">as</span> <span class="n">_install_rich</span>
@@ -260,7 +307,8 @@
             <span class="n">ERRFILE</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Console.print"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console.print">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">markdown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">markdown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print to the console&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">markdown</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">rich.markdown</span> <span class="kn">import</span> <span class="n">Markdown</span> <span class="k">as</span> <span class="n">_Markdown</span>
@@ -269,57 +317,64 @@
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">text</span> <span class="o">=</span> <span class="n">_Markdown</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 
-        <span class="n">Console</span><span class="o">.</span><span class="n">_get_console</span><span class="p">()</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">theme</span> <span class="o">=</span> <span class="n">Console</span><span class="o">.</span><span class="n">_get_theme</span><span class="p">()</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+
+        <span class="n">Console</span><span class="o">.</span><span class="n">_get_console</span><span class="p">()</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Console.rule"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console.rule">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">rule</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">rule</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write a rule across the screen with optional title&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">rich.rule</span> <span class="kn">import</span> <span class="n">Rule</span> <span class="k">as</span> <span class="n">_Rule</span>
         <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">_Rule</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+        <span class="n">theme</span> <span class="o">=</span> <span class="n">Console</span><span class="o">.</span><span class="n">_get_theme</span><span class="p">()</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">_Rule</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Console.panel"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console.panel">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">panel</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">markdown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">padding</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+              <span class="n">padding</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print within a panel to the console&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">rich.panel</span> <span class="kn">import</span> <span class="n">Panel</span> <span class="k">as</span> <span class="n">_Panel</span>
-        <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="n">box</span> <span class="k">as</span> <span class="n">_box</span>
 
         <span class="k">if</span> <span class="n">markdown</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">rich.markdown</span> <span class="kn">import</span> <span class="n">Markdown</span> <span class="k">as</span> <span class="n">_Markdown</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">_Markdown</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
+        <span class="n">theme</span> <span class="o">=</span> <span class="n">Console</span><span class="o">.</span><span class="n">_get_theme</span><span class="p">()</span>
+        <span class="n">padding_style</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">padding_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">panel_box</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">padding</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">rich.padding</span> <span class="kn">import</span> <span class="n">Padding</span> <span class="k">as</span> <span class="n">_Padding</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="n">_Padding</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;on black&quot;</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">_Padding</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="n">padding_style</span><span class="p">)</span>
 
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">_Panel</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">_box</span><span class="o">.</span><span class="n">SQUARE</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
-                             <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">_Panel</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+                             <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span>
+                             <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Console.error"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console.error">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print an error to the console&quot;&quot;&quot;</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;style&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bold red&quot;</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span></div>
+        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Console.warning"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console.warning">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">warning</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print a warning to the console&quot;&quot;&quot;</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;style&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bold magenta&quot;</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">)</span></div>
+        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;warning&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;warning&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Console.info"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console.info">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print an info section to the console&quot;&quot;&quot;</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;style&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bold blue&quot;</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span></div>
+        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -338,6 +393,29 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">print_profiler</span><span class="p">(</span><span class="n">profiler</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">profiler</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">spinner</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">yaspin</span> <span class="kn">import</span> <span class="n">yaspin</span><span class="p">,</span> <span class="n">Spinner</span>
+            <span class="n">have_yaspin</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="n">have_yaspin</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">have_yaspin</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_NullSpinner</span><span class="p">()</span>
+
+        <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="o">.</span><span class="n">_get_console</span><span class="p">()</span>
+        <span class="n">theme</span> <span class="o">=</span> <span class="n">Console</span><span class="o">.</span><span class="n">_get_theme</span><span class="p">()</span>
+        <span class="n">frames</span><span class="p">,</span> <span class="n">delay</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">get_frames</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">console</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="n">Spinner</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span>
+
+        <span class="n">y</span> <span class="o">=</span> <span class="n">yaspin</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+        <span class="n">y</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">spinner_success</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">failure</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">spinner_failure</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">y</span>
 
 <div class="viewcode-block" id="Console.save"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console.save">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_IO</span><span class="p">]):</span>
@@ -365,7 +443,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 17, 2020.
+        Last updated on May 18, 2020.
       </span>
 
     </p>

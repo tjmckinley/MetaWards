@@ -24,6 +24,8 @@ metawards.utils.Console
       ~Console.redirect_output
       ~Console.rule
       ~Console.save
+      ~Console.set_theme
+      ~Console.spinner
       ~Console.warning
    
    
