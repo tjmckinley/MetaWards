@@ -116,10 +116,12 @@ class SpringFlowers:
             return self.frames[width]
 
         frames = []
+        frames.append("")
 
-        for i in range(0, width):
-            frame = (i * '-') + '>' + ((width - i - 1) * ' ')
-            frames.append(frame)
+        bar = "👉 👉 👉 😷  😷  😷 👌 👍 👏 👏 👏 👏 👏 "
+
+        for i in range(1, len(bar), 1):
+            frames.append(bar[0:i])
 
         self.frames[width] = (frames, 50)
 
