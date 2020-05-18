@@ -365,22 +365,32 @@ def run_models(network: _Union[Network, Networks],
             Console.print("Running jobs in parallel using a mpi4py pool")
             from mpi4py import futures
             with futures.MPIPoolExecutor(max_workers=nprocs) as pool:
-                with Console.spinner("Running MPI jobs") as spinner:
-                    try:
-                        results = pool.map(run_worker, arguments)
-                        spinner.success()
-                    except Exception as e:
-                        spinner.failure()
-                        Console.error(f"Failure: {e.__class__} {e}")
+                results = pool.map(run_worker, arguments)
 
-                for i, result in enumerate(results):
-                    Console.panel(
-                        f"Completed job {i+1} of {len(variables)}\n"
-                        f"{variables[i]}\n"
-                        f"{result[-1]}",
-                        style="alternate")
+                for i in range(0, len(variables)):
+                    with Console.spinner("Computing model run") as spinner:
+                        try:
+                            output = next(results)
+                            spinner.success()
+                        except Exception as e:
+                            spinner.failure()
+                            error = f"FAILED: {e.__class__} {e}"
+                            Console.error(error)
+                            output = None
 
-                    outputs.append((variables[i], result))
+                        if output is not None:
+                            Console.panel(
+                                f"Completed job {i+1} of {len(variables)}\n"
+                                f"{variables[i]}\n"
+                                f"{output[-1]}",
+                                style="alternate")
+
+                            outputs.append((variables[i], output))
+                        else:
+                            Console.error(f"Job {i+1} of {len(variables)}\n"
+                                          f"{variable}\n"
+                                          f"{error}")
+                            outputs.append((variables[i], []))
 
         elif parallel_scheme == "scoop":
             # run jobs using a scoop pool

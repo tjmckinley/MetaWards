@@ -176,28 +176,22 @@ class Console:
     @staticmethod
     def error(text: str, *args, **kwargs):
         """Print an error to the console"""
-        theme = Console._get_theme()
         Console.rule("ERROR", style="error")
-        kwargs["style"] = theme.error_text()
-        Console.print(text, *args, **kwargs)
+        Console.print(text, style="error", *args, **kwargs)
         Console.rule(style="error")
 
     @staticmethod
     def warning(text: str, *args, **kwargs):
         """Print a warning to the console"""
-        theme = Console._get_theme()
         Console.rule("WARNING", style="warning")
-        kwargs["style"] = theme.warning_text()
-        Console.print(text, *args, **kwargs)
+        Console.print(text, style="warning", *args, **kwargs)
         Console.rule(style="warning")
 
     @staticmethod
     def info(text: str, *args, **kwargs):
         """Print an info section to the console"""
-        theme = Console._get_theme()
         Console.rule("INFO", style="info")
-        kwargs["style"] = theme.info_text()
-        Console.print(text, *args, **kwargs)
+        Console.print(text, style="info", *args, **kwargs)
         Console.rule(style="info")
 
     @staticmethod

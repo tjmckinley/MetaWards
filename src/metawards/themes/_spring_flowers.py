@@ -28,7 +28,11 @@ class SpringFlowers:
 
     def text(self, style):
         if style == "warning":
+            return "magenta"
+        elif style == "error":
             return "red"
+        elif style == "info":
+            return "cyan"
         else:
             return "white"
 
@@ -40,15 +44,6 @@ class SpringFlowers:
 
     def info(self):
         return "cyan"
-
-    def error_text(self):
-        return f"bold {self.error()}"
-
-    def warning_text(self):
-        return f"bold {self.warning()}"
-
-    def info_text(self):
-        return f"bold {self.info()}"
 
     def spinner_success(self, spinner):
         spinner.green.ok("✔")

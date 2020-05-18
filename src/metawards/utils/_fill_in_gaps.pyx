@@ -29,7 +29,8 @@ def fill_in_gaps(network: Network, max_nodes: int):
                               f"again.")
 
         if nodes_label[link_to] != link_to:
-            Console.print(f"ADDING LINK {i} {link_to} {network.nnodes}")
+            Console.print(f"ADDING LINK {i} {link_to} {network.nnodes}",
+                          style="warning")
             nodes_label[link_to] = link_to
 
             if link_to > nnodes:
@@ -37,6 +38,6 @@ def fill_in_gaps(network: Network, max_nodes: int):
                 nnodes = link_to
 
 
-    Console.print(f"Number of added nodes equals {added}")
+    Console.print(f"Number of added nodes equals {added}", style="info")
 
     network.nnodes = nnodes

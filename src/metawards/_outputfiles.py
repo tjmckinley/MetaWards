@@ -61,10 +61,9 @@ def _rmdir(directory):
         if item.is_dir():
             _rmdir(item)
         else:
-            Console.print(f"removing file {item}", style="red")
             item.unlink()
 
-    Console.print(f"removing directory {directory}", style="red")
+    Console.print(f"removing directory {directory}", style="warning")
     directory.rmdir()
 
 
