@@ -171,7 +171,7 @@ def run_model(network: _Union[Network, Networks],
 
         p2 = p2.start(f"timing for day {population.day}")
 
-        Console.rule(f"Day {population.day}", style="cyan")
+        Console.rule(f"Day {population.day}", style="iteration")
 
         start_population = population.population
 

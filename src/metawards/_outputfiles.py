@@ -61,10 +61,9 @@ def _rmdir(directory):
         if item.is_dir():
             _rmdir(item)
         else:
-            Console.print(f"removing file {item}", style="red")
             item.unlink()
 
-    Console.print(f"removing directory {directory}", style="red")
+    Console.print(f"removing directory {directory}", style="warning")
     directory.rmdir()
 
 
@@ -82,7 +81,7 @@ def _check_remove(outdir, prompt):
     y = y.strip().lower()
 
     if len(y) > 0 and y == "y":
-        Console.print(f"Removing all files in {outdir}", style="red")
+        Console.print(f"Removing all files in {outdir}", style="warning")
         _rmdir(_Path(outdir))
         return
 

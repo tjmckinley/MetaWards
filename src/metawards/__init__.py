@@ -140,7 +140,7 @@ source code that was used to generate this run!**
         dirty = ""
 
     return f"""
-## metawards version {v['version']}
+## MetaWards version {v['version']}
 ## [https://metawards.org](https://metawards.org)
 
 ### Source information
@@ -160,7 +160,8 @@ about metawards, its authors and its license
 
 def print_version_string():
     from metawards.utils import Console
-    Console.panel(get_version_string(), markdown=True, width=72, expand=False)
+    Console.panel(get_version_string(), markdown=True,
+                  style="header", width=72, expand=False)
 
 
 _system_input = input

@@ -13,7 +13,6 @@ from ._profiler import Profiler
 from ._get_functions import MetaFunction
 
 import os as _os
-import sys as _sys
 
 __all__ = ["get_number_of_processes", "run_models"]
 
@@ -209,8 +208,6 @@ def run_models(network: _Union[Network, Networks],
         f"Running **{len(variables)}** jobs using **{nprocs}** process(es)",
         markdown=True)
 
-    from yaspin import yaspin, Spinner
-
     if nprocs == 1:
         # no need to use a pool, as we will repeat this calculation
         # several times
@@ -238,26 +235,39 @@ def run_models(network: _Union[Network, Networks],
 
                     network.update(params, profiler=profiler)
 
-                    sp = Spinner(["😸", "😹", "😺", "😻", "😼",
-                                  "😽", "😾", "😿", "🙀"], 200)
+                    with Console.spinner("Computing model run") as spinner:
+                        try:
+                            output = network.run(population=population,
+                                                 seed=seed,
+                                                 nsteps=nsteps,
+                                                 output_dir=subdir,
+                                                 iterator=iterator,
+                                                 extractor=extractor,
+                                                 mixer=mixer,
+                                                 mover=mover,
+                                                 profiler=profiler,
+                                                 nthreads=nthreads)
+                            spinner.success()
+                        except Exception as e:
+                            spinner.failure()
+                            error = f"FAILED: {e.__class__} {e}"
+                            Console.error(error)
+                            output = None
 
-                    with yaspin(sp, text="Computing model run"):
-                        output = network.run(population=population,
-                                             seed=seed,
-                                             nsteps=nsteps,
-                                             output_dir=subdir,
-                                             iterator=iterator,
-                                             extractor=extractor,
-                                             mixer=mixer,
-                                             mover=mover,
-                                             profiler=profiler,
-                                             nthreads=nthreads)
+                    if output is not None:
+                        outputs.append((variable, output))
+                    else:
+                        outputs.append((variable, []))
 
-                    outputs.append((variable, output))
-
-                Console.panel(f"Completed job {i+1} of {len(variables)}\n"
-                              f"{variable}\n"
-                              f"{output[-1]}")
+                if output is not None:
+                    Console.panel(f"Completed job {i+1} of {len(variables)}\n"
+                                  f"{variable}\n"
+                                  f"{output[-1]}",
+                                  style="alternate")
+                else:
+                    Console.error(f"Job {i+1} of {len(variables)}\n"
+                                  f"{variable}\n"
+                                  f"{error}")
             # end of OutputDirs context manager
 
             if i != len(variables) - 1:
@@ -314,17 +324,40 @@ def run_models(network: _Union[Network, Networks],
         if parallel_scheme == "multiprocessing":
             # run jobs using a multiprocessing pool
             Console.rule("MULTIPROCESSING")
-            Console.print(
-                "Running jobs in parallel using a multiprocessing pool")
             from multiprocessing import Pool
+
+            results = []
+
             with Pool(processes=nprocs) as pool:
-                results = pool.map(run_worker, arguments)
+                for argument in arguments:
+                    results.append(pool.apply_async(run_worker, (argument,)))
 
                 for i, result in enumerate(results):
-                    Console.panel(f"Completed job {i+1} of {len(variables)}\n"
-                                  f"{variables[i]}\n"
-                                  f"{result[-1]}")
-                    outputs.append((variables[i], result))
+                    with Console.spinner(
+                            "Computing model run") as spinner:
+                        try:
+                            result.wait()
+                            output = result.get()
+                            spinner.success()
+                        except Exception as e:
+                            spinner.failure()
+                            error = f"FAILED: {e.__class__} {e}"
+                            Console.error(error)
+                            output = None
+
+                        if output is not None:
+                            Console.panel(
+                                f"Completed job {i+1} of {len(variables)}\n"
+                                f"{variables[i]}\n"
+                                f"{output[-1]}",
+                                style="alternate")
+
+                            outputs.append((variables[i], output))
+                        else:
+                            Console.error(f"Job {i+1} of {len(variables)}\n"
+                                          f"{variable}\n"
+                                          f"{error}")
+                            outputs.append((variables[i], []))
 
         elif parallel_scheme == "mpi4py":
             # run jobs using a mpi4py pool
@@ -334,11 +367,30 @@ def run_models(network: _Union[Network, Networks],
             with futures.MPIPoolExecutor(max_workers=nprocs) as pool:
                 results = pool.map(run_worker, arguments)
 
-                for i, result in enumerate(results):
-                    Console.panel(f"Completed job {i+1} of {len(variables)}\n"
-                                  f"{variables[i]}\n"
-                                  f"{result[-1]}")
-                    outputs.append((variables[i], result))
+                for i in range(0, len(variables)):
+                    with Console.spinner("Computing model run") as spinner:
+                        try:
+                            output = next(results)
+                            spinner.success()
+                        except Exception as e:
+                            spinner.failure()
+                            error = f"FAILED: {e.__class__} {e}"
+                            Console.error(error)
+                            output = None
+
+                        if output is not None:
+                            Console.panel(
+                                f"Completed job {i+1} of {len(variables)}\n"
+                                f"{variables[i]}\n"
+                                f"{output[-1]}",
+                                style="alternate")
+
+                            outputs.append((variables[i], output))
+                        else:
+                            Console.error(f"Job {i+1} of {len(variables)}\n"
+                                          f"{variable}\n"
+                                          f"{error}")
+                            outputs.append((variables[i], []))
 
         elif parallel_scheme == "scoop":
             # run jobs using a scoop pool
@@ -346,14 +398,32 @@ def run_models(network: _Union[Network, Networks],
             Console.print("Running jobs in parallel using a scoop pool")
             from scoop import futures
 
-            results = futures.map(run_worker, arguments)
+            results = futures.map_as_completed(run_worker, arguments)
 
-            for i, result in enumerate(results):
-                Console.panel(f"Completed job {i+1} of {len(variables)}\n"
-                              f"{variables[i]}\n"
-                              f"{result[-1]}")
-                outputs.append((variables[i], result))
+            for i in range(0, len(variables)):
+                with Console.spinner("Computing model run") as spinner:
+                    try:
+                        output = next(results)
+                        spinner.success()
+                    except Exception as e:
+                        spinner.failure()
+                        error = f"FAILED: {e.__class__} {e}"
+                        Console.error(error)
+                        output = None
 
+                    if output is not None:
+                        Console.panel(
+                            f"Completed job {i+1} of {len(variables)}\n"
+                            f"{variables[i]}\n"
+                            f"{output[-1]}",
+                            style="alternate")
+
+                        outputs.append((variables[i], output))
+                    else:
+                        Console.error(f"Job {i+1} of {len(variables)}\n"
+                                      f"{variable}\n"
+                                      f"{error}")
+                        outputs.append((variables[i], []))
         else:
             raise ValueError(f"Unrecognised parallelisation scheme "
                              f"{parallel_scheme}.")
@@ -373,7 +443,10 @@ def run_models(network: _Union[Network, Networks],
                                   nthreads=nthreads)
 
     for func in funcs:
-        func(network=network, output_dir=output_dir,
-             results=outputs, nthreads=nthreads)
+        try:
+            func(network=network, output_dir=output_dir,
+                 results=outputs, nthreads=nthreads)
+        except Exception as e:
+            Console.error(f"Error calling {func}: {e.__class__} {e}")
 
     return outputs
