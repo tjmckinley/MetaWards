@@ -93,7 +93,7 @@ could be changed to
 
 ::
 
-  `0.12.0 <https://github.com/metawards/MetaWards/compare/0.11.2...0.12.0>`__ - May 15th 2020
+  `0.12.0 <https://github.com/metawards/MetaWards/compare/0.11.2...0.12.0>`__ - May 18th 2020
 
 when moving from the 0.11.2 to 0.12.0 release.
 
