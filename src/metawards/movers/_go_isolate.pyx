@@ -8,7 +8,6 @@ from .._networks import Networks
 from .._infections import Infections
 from .._demographics import DemographicID, DemographicIDs
 
-from ..utils._profiler import Profiler
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
 __all__ = ["go_isolate", "go_isolate_serial", "go_isolate_parallel"]
@@ -18,20 +17,14 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
                         go_to: DemographicID,
                         network: Networks,
                         infections: Infections,
-                        profiler: Profiler,
                         nthreads: int,
                         self_isolate_stage: int = 2,
-                        duration: int = 7,
-                        release_to: DemographicID = None,
                         **kwargs) -> None:
     """This go function will move individuals from the "from"
        demographic(s) to the "to" demographic if they show any
        signs of infection (the disease stage is greater or equal
        to 'self_isolate_stage' - by default this is level '2',
-       which is one level above "latent"). Individuals are held
-       in the new demographic for "duration" days, before being
-       returned either to their original demographic, or
-       released to the "release_to" demographic
+       which is one level above "latent").
 
        Parameters
        ----------
@@ -47,12 +40,6 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
        self_isolate_stage: int
          The stage of infection an individual must be at before they
          are moved into this demographic
-       duration: int
-         The number of days an individual should isolate for
-       release_to: DemographicID
-         ID (name or index) that the individual should move to after
-         existing isolation. If this is not set, then the individual
-         will return to their original demographic
     """
 
     # make sure that all of the needed demographics exist, and
@@ -70,14 +57,6 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
 
     to_subnet = subnets[go_to]
     to_subinf = subinfs[go_to]
-
-    if release_to is not None:
-        release_to = demographics.get_index(release_to)
-        release_subnet = subnets[release_to]
-        release_subinf = subinfs[release_to]
-    else:
-        release_subnet = None
-        release_subinf = None
 
     cdef int N_INF_CLASSES = infections.N_INF_CLASSES
 
@@ -97,9 +76,6 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
     cdef int * to_work_infections_i
     cdef int * to_play_infections_i
 
-    cdef int * release_work_infections_i
-    cdef int * release_play_infections_i
-
     cdef int nsubnets = len(subnets)
 
     cdef int num_threads = nthreads
@@ -107,8 +83,6 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
     cdef int ii = 0
     cdef int i = 0
     cdef int j = 0
-
-    p = profiler.start("search_and_move")
 
     for ii in go_from:
         subnet = subnets[ii]
@@ -136,28 +110,18 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                   play_infections_i[j]
                         play_infections_i[j] = 0
 
-    p = p.stop()
-
-    # release loop...
-
 
 def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
                       go_to: DemographicID,
                       network: Networks,
                       infections: Infections,
-                      profiler: Profiler,
                       self_isolate_stage: int = 2,
-                      duration: int = 7,
-                      release_to: DemographicID = None,
                       **kwargs) -> None:
     """This go function will move individuals from the "from"
        demographic(s) to the "to" demographic if they show any
        signs of infection (the disease stage is greater or equal
        to 'self_isolate_stage' - by default this is level '2',
-       which is one level above "latent"). Individuals are held
-       in the new demographic for "duration" days, before being
-       returned either to their original demographic, or
-       released to the "release_to" demographic
+       which is one level above "latent").
 
        Parameters
        ----------
@@ -173,12 +137,6 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
        self_isolate_stage: int
          The stage of infection an individual must be at before they
          are moved into this demographic
-       duration: int
-         The number of days an individual should isolate for
-       release_to: DemographicID
-         ID (name or index) that the individual should move to after
-         existing isolation. If this is not set, then the individual
-         will return to their original demographic
     """
 
     # make sure that all of the needed demographics exist, and
@@ -201,14 +159,6 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
     to_subnet = subnets[go_to]
     to_subinf = subinfs[go_to]
 
-    if release_to is not None:
-        release_to = demographics.get_index(release_to)
-        release_subnet = subnets[release_to]
-        release_subinf = subinfs[release_to]
-    else:
-        release_subnet = None
-        release_subinf = None
-
     cdef int N_INF_CLASSES = infections.N_INF_CLASSES
 
     if self_isolate_stage < 0 or self_isolate_stage >= N_INF_CLASSES:
@@ -227,16 +177,11 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
     cdef int * to_work_infections_i
     cdef int * to_play_infections_i
 
-    cdef int * release_work_infections_i
-    cdef int * release_play_infections_i
-
     cdef int nsubnets = len(subnets)
 
     cdef int ii = 0
     cdef int i = 0
     cdef int j = 0
-
-    p = profiler.start("search_and_move")
 
     for ii in go_from:
         subnet = subnets[ii]
@@ -263,9 +208,6 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
                                                 play_infections_i[j]
                     play_infections_i[j] = 0
 
-    p = p.stop()
-
-    # release loop...
 
 def go_isolate(nthreads: int = 1, **kwargs) -> None:
     """This go function will move individuals from the "from"
