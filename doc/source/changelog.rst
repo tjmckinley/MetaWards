@@ -2,6 +2,37 @@
 Changelog
 =========
 
+`0.12.0 <https://github.com/metawards/MetaWards/compare/0.11.2...0.12.0>`__ - May 18th 2020
+--------------------------------------------------------------------------------------------
+
+* Switched to configargparse to have better management of command line options,
+  plus adding the ability to set options using a config file. This is now
+  written to the output directory of each job to support reproducibility.
+* metawards-plot defaults to png output if pillow (and jpeg) are not available
+* Got basic movers working and added half of the sixth part of the tutorial,
+  where self-isolation is modelled.
+* Added rich-console support, which has significantly altered the look and
+  feel of metawards. Output is now more robust, with more info given in
+  real time for parallel jobs, plus all output now also being recorded
+  to output/console.txt.bz2, so that no output is lost.
+* Added theming support and a "simple" theme activated using "--theme simple"
+  for those that don't like colour ;-)
+* Added support for setting the number of repeats for a VariableSet into
+  the output file. Also can specify different number of repeats for different
+  adjustable variable sets on the command line.
+* Cleaned up the design file and user custom variable file parsing to use
+  csv and support a wide range of formats, variable types and inputs.
+  Can now directly work with dates, ints, floats, bools and strings. This
+  is intelligent, and will use the best type it thinks, but it can be
+  forced by the user via a d"3.4" numpy-type syntax
+* Improved the robustness of the parallel runners (multiprocessing, scoop
+  and mpi4py) such that errors in one job don't break all jobs. These are
+  now handled individually and recorded properly. Jobs are run async so
+  that results are processed and feedback is given to the user as soon
+  as it is available.
+* Updated all of the tutorial to use lurgy3 - accidentally had gone back
+  to lurgy2 in part 5.
+
 `0.11.2 <https://github.com/metawards/MetaWards/compare/0.11.1...0.11.2>`__ - May 11th 2020
 --------------------------------------------------------------------------------------------
 
