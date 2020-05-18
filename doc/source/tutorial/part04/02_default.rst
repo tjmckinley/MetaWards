@@ -4,7 +4,7 @@ Accumulating into a Workspace
 
 The default function that is always called by
 :meth:`~metawards.utils.extract` is
-:meth:`metawards.extractors.extract_core`.
+:meth:`metawards.extractors.output_core`.
 
 This core extractor performs the bulk of the work of accumulating all of
 the infection data into a single :class:`metawards.Workspace` object.

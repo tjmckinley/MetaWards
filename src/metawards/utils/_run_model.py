@@ -31,52 +31,52 @@ def run_model(network: _Union[Network, Networks],
               mover: _Union[str, MetaFunction] = None) -> Populations:
     """Actually run the model... Real work happens here. The model
        will run until completion or until 'nsteps' have been
-       completed (whichever happens first)
+       completed, whichever happens first.
 
-        Parameters
-        ----------
-        network: Network or Networks
+       Parameters
+       ----------
+       network: Network or Networks
             The network(s) on which to run the model
-        infections: Infections
+       infections: Infections
             The space used to record the infections
-        rngs: list
+       rngs: list
             The list of random number generators to use, one per thread
-        population: Population
+       population: Population
             The initial population at the start of the model outbreak.
             This is also used to set the date and day of the start of
             the model outbreak
-        seed: int
+       seed: int
             The random number seed used for this model run. If this is
             None then a very random random number seed will be used
-        output_dir: OutputFiles
+       output_dir: OutputFiles
             The directory to write all of the output into
-        nsteps: int
+       nsteps: int
             The maximum number of steps to run in the outbreak. If None
             then run until the outbreak has finished
-        profiler: Profiler
+       profiler: Profiler
             The profiler to use to profile - a new one is created if
             one isn't passed
-        nthreads: int
+       nthreads: int
             Number of threads over which to parallelise this model run
-        iterator: MetaFunction or string
+       iterator: MetaFunction or string
             Function that will be used to dynamically get the functions
             that will be used at each iteration to advance the
             model. Any additional files or parameters needed by these
             functions should be included in the `network.params` object.
-        extractor: MetaFunction or string
+       extractor: MetaFunction or string
             Function that will be used to dynamically get the functions
             that will be used at each iteration to extract data from
             the model run
-        mixer: MetaFunction or string
+       mixer: MetaFunction or string
             Function that will mix data from multiple demographics
             so that this is shared during a model run
-        mover: MetaFunction or string
+       mover: MetaFunction or string
             Function that can move the population between different
             demographics
 
-        Returns
-        -------
-        trajectory: Populations
+       Returns
+       -------
+       trajectory: Populations
             The trajectory of the population for every day of the model run
     """
     if iterator is None:

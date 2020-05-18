@@ -44,7 +44,6 @@ Functions
     read_done_file
     recalculate_work_denominator_day
     recalculate_play_denominator_day
-    redirect_output
     rescale_play_matrix
     resize_array
     reset_everything

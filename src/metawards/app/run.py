@@ -196,7 +196,7 @@ def parse_args():
 
     parser.add_argument('--theme', type=str, default=None,
                         help=f"The theme to use to color the output. "
-                             f"Use --theme=simple if you prefer a "
+                             f"Use '--theme simple' if you prefer a "
                              f"simple and colorless output.")
 
     parser.add_argument('--nthreads', type=int, default=None,
