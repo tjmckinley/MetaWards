@@ -22,15 +22,15 @@ class _NullSpinner:
         pass
 
     def __enter__(self, *args, **kwargs):
-        pass
+        return self
 
     def __exit__(self, *args, **kwargs):
+        return self
+
+    def success(self):
         pass
 
-    def ok(self):
-        pass
-
-    def fail(self):
+    def failure(self):
         pass
 
 
@@ -39,6 +39,15 @@ class Console:
        and logging functions to the console. This uses 'rich'
        for rich console printing
     """
+    @staticmethod
+    def supports_emojis():
+        """Return whether or not you can print emojis to this console"""
+        import sys
+        if sys.platform == "win32":
+            return False
+        else:
+            return True
+
     @staticmethod
     def set_theme(theme):
         """Set the theme used for the console - this should be
@@ -79,6 +88,8 @@ class Console:
                                 highlighter=theme.highlighter(),
                                 markup=theme.should_markup())
 
+            _console._use_spinner = True
+
             # also install pretty traceback support
             from rich.traceback import install as _install_rich
             _install_rich()
@@ -109,6 +120,7 @@ class Console:
 
         global _console
         new_out = Console(file=OUTFILE, record=False)
+        new_out._use_spinner = False
         old_out = _console
         _console = new_out
 
@@ -213,6 +225,11 @@ class Console:
         Console.print(str(profiler))
 
     @staticmethod
+    def set_use_spinner(use_spinner: bool = True):
+        console = Console._get_console()
+        console._use_spinner = use_spinner
+
+    @staticmethod
     def spinner(text: str = None):
         try:
             from yaspin import yaspin, Spinner
@@ -224,16 +241,21 @@ class Console:
             return _NullSpinner()
 
         console = Console._get_console()
-        theme = Console._get_theme()
-        frames, delay = theme.get_frames(width=console.width - len(text) - 10)
-        sp = Spinner(frames, delay)
 
-        y = yaspin(sp, text=text, side="right")
+        if console._use_spinner:
+            theme = Console._get_theme()
+            frames, delay = theme.get_frames(
+                width=console.width - len(text) - 10)
+            sp = Spinner(frames, delay)
 
-        y.success = lambda: theme.spinner_success(y)
-        y.failure = lambda: theme.spinner_failure(y)
+            y = yaspin(sp, text=text, side="right")
 
-        return y
+            y.success = lambda: theme.spinner_success(y)
+            y.failure = lambda: theme.spinner_failure(y)
+
+            return y
+        else:
+            return _NullSpinner()
 
     @staticmethod
     def save(file: _Union[str, _IO]):

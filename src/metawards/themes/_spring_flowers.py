@@ -4,6 +4,8 @@ from dataclasses import field as _field
 from typing import List as _List
 from typing import Dict as _Dict
 
+from metawards.utils import Console
+
 __all__ = ["SpringFlowers"]
 
 
@@ -46,10 +48,16 @@ class SpringFlowers:
         return "cyan"
 
     def spinner_success(self, spinner):
-        spinner.green.ok("✔")
+        if Console.supports_emojis():
+            spinner.green.ok("✔")
+        else:
+            spinner.green.ok("Success")
 
     def spinner_failure(self, spinner):
-        spinner.red.fail("✘")
+        if Console.support_emojis():
+            spinner.red.fail("✘")
+        else:
+            spinner.red.fail("Failed")
 
     def rule(self, style):
         if style is None:
@@ -116,10 +124,15 @@ class SpringFlowers:
             return self.frames[width]
 
         frames = []
+        frames.append("")
 
-        for i in range(0, width):
-            frame = (i * '-') + '>' + ((width - i - 1) * ' ')
-            frames.append(frame)
+        if Console.supports_emojis():
+            bar = "👉 👉 👉 😷  😷  😷 👌 👍 👏 👏 👏 👏 👏 "
+        else:
+            bar = "-> -> -> #WearAMask :-) :-) :-)  "
+
+        for i in range(1, len(bar), 1):
+            frames.append(bar[0:i])
 
         self.frames[width] = (frames, 50)
 

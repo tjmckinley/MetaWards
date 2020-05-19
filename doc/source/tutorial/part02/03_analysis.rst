@@ -105,9 +105,15 @@ use;
   metawards-plot --animate output/overview*.jpg
 
 .. note::
-   You can only animate image files (e.g. jpg, png). You can't animate
+   You can only animate image files (e.g. jpeg, png). You can't animate
    pdfs (yet - although
-   `pull requests welcome <https://github.com/metawards/MetaWards/pulls>`__)
+   `pull requests welcome <https://github.com/metawards/MetaWards/pulls>`__).
+   Also, animation relies on you installing
+   `Pillow <https://pillow.readthedocs.io/en/stable/>`__ to create the gifs
+   and (optional but recommended)
+   `gifsicle <https://www.lcdf.org/gifsicle/>`__ and
+   `pygifsicle <https://pypi.org/project/pygifsicle/>`__ to optimise the gifs
+   (this reduces their size by 5-10 times)
 
 Here is the animation.
 

@@ -29,7 +29,8 @@ def import_graphics_modules(verbose=False):
         print("You must have pandas and matplotlib installed to run "
               "metawards-plot")
         print("Install using either `pip install pandas` if you are using")
-        print("pip, or 'conda install pandas' if you are using conda.")
+        print("pip, or 'conda install pandas' if you are using conda, ")
+        print("or by running 'metawards-install --optional")
         raise ImportError("Cannot produce the plot as pandas and matplotlib "
                           "are not installed.")
 
@@ -88,10 +89,11 @@ def create_overview_plot(df, output_dir: str = None,
         repeat = "demographic"
 
     try:
-        import PIL
-    except:
+        import PIL        # noqa - disable unused warning
+    except ImportError:
         if format == "jpg":
-            print("WARNING: Missing 'pillow' package, defaulting to PNG format.")
+            print(
+                "WARNING: Missing 'pillow' package, defaulting to PNG format.")
             format = "png"
 
     figs = {}
@@ -245,10 +247,11 @@ def create_average_plot(df, output_dir: str = None, format: str = "jpg",
          of multiple filenames indexed by fingerprint
     """
     try:
-        import PIL
-    except:
+        import PIL        # noqa - disable unused warning
+    except ImportError:
         if format == "jpg":
-            print("WARNING: Missing 'pillow' package, defaulting to PNG format.")
+            print(
+                "WARNING: Missing 'pillow' package, defaulting to PNG format.")
             format = "png"
 
     fingerprints = df["fingerprint"].unique()
@@ -372,10 +375,11 @@ def create_demographics_plot(df, output_dir: str = None,
          the filename if output_dir was supplied
     """
     try:
-        import PIL
-    except:
+        import PIL        # noqa - disable unused warning
+    except ImportError:
         if format == "jpg":
-            print("WARNING: Missing 'pillow' package, defaulting to PNG format.")
+            print(
+                "WARNING: Missing 'pillow' package, defaulting to PNG format.")
             format = "png"
 
     _, plt = import_graphics_modules()
@@ -458,10 +462,11 @@ def save_summary_plots(results: str, output_dir: str = None,
          Full file paths of all of the files written by this function
     """
     try:
-        import PIL
-    except:
+        import PIL        # noqa - disable unused warning
+    except ImportError:
         if format == "jpg":
-            print("WARNING: Missing 'pillow' package, defaulting to PNG format.")
+            print(
+                "WARNING: Missing 'pillow' package, defaulting to PNG format.")
             format = "png"
 
     pd, _ = import_graphics_modules(verbose=verbose)

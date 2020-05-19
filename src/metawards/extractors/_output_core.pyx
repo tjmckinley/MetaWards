@@ -214,7 +214,7 @@ def output_core_omp(network: Network, population: Population,
        workspace: Workspace
          A workspace that can be used to extract data
        infections: Infections
-         Space to hold the nfections
+         All of the infections that have been recorded
        nthreads: int
          The number of threads to use to help extract the data
        kwargs
@@ -498,8 +498,8 @@ def output_core_serial(network: Network, population: Population,
          The population experiencing the outbreak
        workspace: Workspace
          A workspace that can be used to extract data
-       infections : Infections
-         Space to hold the 'work' infections
+       infections: Infections
+         All of the infections that have been recorded
        nthreads: int
          The number of threads to use to help extract the data
        kwargs
@@ -735,20 +735,16 @@ def output_core(network: _Union[Network, Networks],
 
        Parameters
        ----------
-       network: Network or Networks
-         The network(s) over which the outbreak is being modelled
+       network: Network
+         The network over which the outbreak is being modelled
        population: Population
          The population experiencing the outbreak
        workspace: Workspace
          A workspace that can be used to extract data
-       infections
-         Space to hold the 'work' infections
-       play_infections
-         Space to hold the 'play' infections
+       infections: Infections
+         All of the infections that have been recorded
        nthreads: int
          The number of threads to use to help extract the data
-       profiler: Profiler
-         Optional profiler to profile this output function
        kwargs
          Extra argumentst that are ignored by this function
     """
