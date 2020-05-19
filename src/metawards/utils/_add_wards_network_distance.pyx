@@ -6,7 +6,7 @@ cimport cython
 from cython.parallel import parallel, prange
 cimport openmp
 
-from libc.math cimport sqrt, sin, cos, atan2, M_PI
+from libc.math cimport sqrt, sin, cos, atan2
 
 import math
 
@@ -20,6 +20,8 @@ __all__ = ["add_wards_network_distance"]
 
 cdef inline double deg_to_rad(double x) nogil:
     """Convert the passed angle in degrees to radians"""
+    # define this here as M_PI is not in every math.h (especially windows)
+    M_PI = 3.14159265358979323846
     return x * M_PI / 180
 
 

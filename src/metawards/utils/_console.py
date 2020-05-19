@@ -241,10 +241,35 @@ class Console:
            This can be a file or a filehandle. The buffer is
            cleared after saving
         """
-        if isinstance(file, str):
-            with open(file, "w") as FILE:
-                FILE.write(Console._get_console().export_text(clear=True,
-                                                              styles=False))
-        else:
-            file.write(Console._get_console().export_text(clear=True,
-                                                          styles=False))
+
+        # get the console contents
+        try:
+            text = Console._get_console().export_text(clear=True,
+                                                      styles=False)
+        except Exception as e:
+            Console.error(f"Cannot get console output: {e.__class__} {e}")
+            return
+
+        try:
+            if isinstance(file, str):
+                with open(file, "w", encoding="UTF-8") as FILE:
+                    FILE.write(text)
+            else:
+                file.write(text)
+
+        except UnicodeEncodeError as e:
+            # something went wrong writing the file - we should encode
+            # this ourselves directly to latin-1 so we at least save something
+            Console.warning(f"UnicodeEncodeError: {e}. Console output will "
+                            f"be saved using latin1 (may lose some info)")
+
+            # take the text through a latin-1 to UTF-8 cycle. This will
+            # replace all non-latin1 characters with "?" so that
+            # the result is valid latin-1 and UTF-8
+            text = text.encode("latin-1", errors="replace").decode("UTF-8")
+
+            if isinstance(file, str):
+                with open(file, "w", encoding="UTF-8") as FILE:
+                    FILE.write(text)
+            else:
+                file.write(text)
