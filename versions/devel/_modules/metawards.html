@@ -271,6 +271,17 @@
 <span class="k">del</span> <span class="n">get_versions</span>
 
 
+<span class="k">def</span> <span class="nf">_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple function to include URLs on OS&#39;s that support them in</span>
+<span class="sd">       console output</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">url</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">](</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+
 <div class="viewcode-block" id="get_version_string"><a class="viewcode-back" href="../api/index_api_MetaWards.html#metawards.get_version_string">[docs]</a><span class="k">def</span> <span class="nf">get_version_string</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Return a version string for metawards which can be printed</span>
 <span class="sd">       into a file or written out to the screen</span>
@@ -279,9 +290,9 @@
     <span class="n">repository</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">get_repository</span><span class="p">(</span><span class="n">error_on_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">repository</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">repo_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+        <span class="n">repo_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">***WARNING: MetaWardsData cannot be found!</span>
-<span class="s2">Please see [https://metawards.org/model_data](https://metawards.org/model_data)</span>
+<span class="s2">Please see </span><span class="si">{</span><span class="n">_url</span><span class="p">(</span><span class="s1">&#39;https://metawards.org/model_data&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">for instructions on how to download and install this necessary data.***</span>
 <span class="s2">&quot;&quot;&quot;</span>
     <span class="k">else</span><span class="p">:</span>
@@ -296,7 +307,7 @@
         <span class="n">repo_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">### MetaWardsData information</span>
 <span class="s2">* version: </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">* repository: [</span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">](</span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)</span>
+<span class="s2">* repository: </span><span class="si">{</span><span class="n">_url</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">* branch: </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;branch&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"></span>
 <span class="si">{</span><span class="n">dirty</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">&quot;&quot;&quot;</span>
@@ -321,11 +332,11 @@
 
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">## MetaWards version </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">## [https://metawards.org](https://metawards.org)</span>
+<span class="s2">## </span><span class="si">{</span><span class="n">_url</span><span class="p">(</span><span class="s1">&#39;https://metawards.org&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
 
 <span class="s2">### Source information</span>
 
-<span class="s2">* repository: [</span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">](</span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)</span>
+<span class="s2">* repository: </span><span class="si">{</span><span class="n">_url</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;repository&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">* branch: </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;branch&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">* revision: </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;full-revisionid&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">* last modified: </span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"></span>
@@ -333,7 +344,7 @@
 <span class="si">{</span><span class="n">repo_info</span><span class="si">}</span><span class="s2"></span>
 
 <span class="s2">### Additional information</span>
-<span class="s2">Visit [https://metawards.org](https://metawards.org) for more information</span>
+<span class="s2">Visit </span><span class="si">{</span><span class="n">_url</span><span class="p">(</span><span class="s1">&#39;https://metawards.org&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> for more information</span>
 <span class="s2">about metawards, its authors and its license</span>
 <span class="s2">&quot;&quot;&quot;</span></div>
 
@@ -378,7 +389,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 19, 2020.
       </span>
 
     </p>

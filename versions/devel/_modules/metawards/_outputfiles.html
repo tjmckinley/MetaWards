@@ -564,6 +564,17 @@
 
         <span class="n">auto_bzip</span> <span class="o">=</span> <span class="n">_get_bool</span><span class="p">(</span><span class="n">auto_bzip</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;w&quot;</span>
+        <span class="k">elif</span> <span class="n">mode</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;w</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># text file = encoding should be &quot;UTF-8&quot;</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;UTF-8&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="k">if</span> <span class="n">auto_bzip</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">bz2</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.bz2&quot;</span><span class="p">):</span>
@@ -571,11 +582,20 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-            <span class="n">FILE</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;w</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">encoding</span><span class="p">:</span>
+                <span class="n">FILE</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+                                <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">FILE</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_open_files</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">FILE</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_filenames</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">FILE</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;w</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">encoding</span><span class="p">:</span>
+                <span class="n">FILE</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">FILE</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_open_files</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">FILE</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_filenames</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span>
 
@@ -677,7 +697,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 19, 2020.
       </span>
 
     </p>
