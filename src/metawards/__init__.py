@@ -91,6 +91,17 @@ del _v
 del get_versions
 
 
+def _url(url):
+    """Simple function to include URLs on OS's that support them in
+       console output
+    """
+    import sys
+    if sys.platform == "win32":
+        return url
+    else:
+        return f"[{url}]({url})"
+
+
 def get_version_string():
     """Return a version string for metawards which can be printed
        into a file or written out to the screen
@@ -99,9 +110,9 @@ def get_version_string():
     repository, v = get_repository(error_on_missing=False)
 
     if repository is None:
-        repo_info = """
+        repo_info = f"""
 ***WARNING: MetaWardsData cannot be found!
-Please see [https://metawards.org/model_data](https://metawards.org/model_data)
+Please see {_url('https://metawards.org/model_data')}
 for instructions on how to download and install this necessary data.***
 """
     else:
@@ -116,7 +127,7 @@ You may not be able to reproduce this run.***
         repo_info = f"""
 ### MetaWardsData information
 * version: {v['version']}
-* repository: [{v['repository']}]({v['repository']})
+* repository: {_url(v['repository'])}
 * branch: {v['branch']}
 {dirty}
 """
@@ -141,11 +152,11 @@ source code that was used to generate this run!**
 
     return f"""
 ## MetaWards version {v['version']}
-## [https://metawards.org](https://metawards.org)
+## {_url('https://metawards.org')}
 
 ### Source information
 
-* repository: [{v['repository']}]({v['repository']})
+* repository: {_url(v['repository'])}
 * branch: {v['branch']}
 * revision: {v['full-revisionid']}
 * last modified: {v['date']}
@@ -153,7 +164,7 @@ source code that was used to generate this run!**
 {repo_info}
 
 ### Additional information
-Visit [https://metawards.org](https://metawards.org) for more information
+Visit {_url('https://metawards.org')} for more information
 about metawards, its authors and its license
 """
 
