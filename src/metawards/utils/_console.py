@@ -22,15 +22,15 @@ class _NullSpinner:
         pass
 
     def __enter__(self, *args, **kwargs):
-        pass
+        return self
 
     def __exit__(self, *args, **kwargs):
+        return self
+
+    def success(self):
         pass
 
-    def ok(self):
-        pass
-
-    def fail(self):
+    def failure(self):
         pass
 
 
@@ -78,6 +78,8 @@ class Console:
                                 highlight=theme.should_highlight(),
                                 highlighter=theme.highlighter(),
                                 markup=theme.should_markup())
+
+            _console._use_spinner = True
 
             # also install pretty traceback support
             from rich.traceback import install as _install_rich
@@ -213,6 +215,11 @@ class Console:
         Console.print(str(profiler))
 
     @staticmethod
+    def set_use_spinner(use_spinner: bool = True):
+        console = Console._get_console()
+        console._use_spinner = use_spinner
+
+    @staticmethod
     def spinner(text: str = None):
         try:
             from yaspin import yaspin, Spinner
@@ -224,16 +231,21 @@ class Console:
             return _NullSpinner()
 
         console = Console._get_console()
-        theme = Console._get_theme()
-        frames, delay = theme.get_frames(width=console.width - len(text) - 10)
-        sp = Spinner(frames, delay)
 
-        y = yaspin(sp, text=text, side="right")
+        if console._use_spinner:
+            theme = Console._get_theme()
+            frames, delay = theme.get_frames(
+                width=console.width - len(text) - 10)
+            sp = Spinner(frames, delay)
 
-        y.success = lambda: theme.spinner_success(y)
-        y.failure = lambda: theme.spinner_failure(y)
+            y = yaspin(sp, text=text, side="right")
 
-        return y
+            y.success = lambda: theme.spinner_success(y)
+            y.failure = lambda: theme.spinner_failure(y)
+
+            return y
+        else:
+            return _NullSpinner()
 
     @staticmethod
     def save(file: _Union[str, _IO]):

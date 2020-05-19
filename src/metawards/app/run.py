@@ -199,6 +199,10 @@ def parse_args():
                              f"Use '--theme simple' if you prefer a "
                              f"simple and colorless output.")
 
+    parser.add_argument('--no-spinner', action="store_true", default="None",
+                        help=f"Disable the spinner that spins when little "
+                             f"output is being printed to the screen.")
+
     parser.add_argument('--nthreads', type=int, default=None,
                         help="Number of threads over which parallelise an "
                              "individual model run. The total number of "
@@ -282,6 +286,10 @@ def parse_args():
     if args.theme:
         from ..utils._console import Console
         Console.set_theme(args.theme)
+
+    if args.no_spinner:
+        from ..utils._console import Console
+        Console.set_use_spinner(False)
 
     if args.version:
         from metawards import print_version_string
