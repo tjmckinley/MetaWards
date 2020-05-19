@@ -109,10 +109,10 @@ use;
    pdfs (yet - although
    `pull requests welcome <https://github.com/metawards/MetaWards/pulls>`__).
    Also, animation relies on you installing
-   (Pillow)[https://pillow.readthedocs.io/en/stable/] to create the gifs
+   `Pillow <https://pillow.readthedocs.io/en/stable/>`__ to create the gifs
    and (optional but recommended)
-   (gifsicle)[https://www.lcdf.org/gifsicle/] and
-   (pygifsicle)[https://pypi.org/project/pygifsicle/] to optimise the gifs
+   `gifsicle <https://www.lcdf.org/gifsicle/>`__ and
+   `pygifsicle <https://pypi.org/project/pygifsicle/>`__ to optimise the gifs
    (this reduces their size by 5-10 times)
 
 Here is the animation.
