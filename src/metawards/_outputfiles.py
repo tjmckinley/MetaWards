@@ -382,6 +382,17 @@ class OutputFiles:
 
         auto_bzip = _get_bool(auto_bzip)
 
+        if mode is None:
+            mode = "w"
+        elif mode.find("w") == -1:
+            mode = f"w{mode}"
+
+        if mode.find("b") == -1:
+            # text file = encoding should be "UTF-8"
+            encoding = "UTF-8"
+        else:
+            encoding = None
+
         if auto_bzip:
             import bz2
             if not filename.endswith(".bz2"):
@@ -389,11 +400,20 @@ class OutputFiles:
             else:
                 suffix = ""
 
-            FILE = bz2.open(f"{filename}{suffix}", f"w{mode}")
+            if encoding:
+                FILE = bz2.open(f"{filename}{suffix}", mode=mode,
+                                encoding=encoding)
+            else:
+                FILE = bz2.open(f"{filename}{suffix}", mode=mode)
+
             self._open_files[filename] = FILE
             self._filenames[filename] = f"{filename}{suffix}"
         else:
-            FILE = open(filename, f"w{mode}")
+            if encoding:
+                FILE = open(filename, mode=mode, encoding=encoding)
+            else:
+                FILE = open(filename, mode=mode)
+
             self._open_files[filename] = FILE
             self._filenames[filename] = filename
 
