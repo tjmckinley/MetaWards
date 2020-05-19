@@ -199,7 +199,7 @@ def parse_args():
                              f"Use '--theme simple' if you prefer a "
                              f"simple and colorless output.")
 
-    parser.add_argument('--no-spinner', action="store_true", default="None",
+    parser.add_argument('--no-spinner', action="store_true", default=None,
                         help=f"Disable the spinner that spins when little "
                              f"output is being printed to the screen.")
 

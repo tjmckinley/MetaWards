@@ -40,6 +40,15 @@ class Console:
        for rich console printing
     """
     @staticmethod
+    def supports_emojis():
+        """Return whether or not you can print emojis to this console"""
+        import sys
+        if sys.platform == "win32":
+            return False
+        else:
+            return True
+
+    @staticmethod
     def set_theme(theme):
         """Set the theme used for the console - this should be
            one of the themes in metawards.themes
@@ -111,6 +120,7 @@ class Console:
 
         global _console
         new_out = Console(file=OUTFILE, record=False)
+        new_out._use_spinner = False
         old_out = _console
         _console = new_out
 
