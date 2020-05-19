@@ -123,6 +123,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_movers.html">MetaWards.movers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_analysis.html">MetaWards.analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_utils.html">MetaWards.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_themes.html">MetaWards.themes</a></li>
 </ul>
 </li>
 </ul>
@@ -329,6 +330,46 @@ the file has explicitly asked otherwise</li>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>output_dir: str = 'output'</em>, <em>check_empty: bool = True</em>, <em>force_empty: bool = False</em>, <em>prompt=&lt;built-in function input&gt;</em>, <em>auto_bzip: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_outputfiles.html#OutputFiles.__init__"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Construct a set of OutputFiles. These will all be written
+to ‘output_dir’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>output_dir</strong> (<em>str</em>) – The directory in which to create all of the output files.
+This directory will be created automatically if it doesn’t
+exist</li>
+<li><strong>check_empty</strong> (<em>bool</em>) – Whether or not to check if the directory is empty before
+continuing. If the directory is not empty, then the user
+will be prompted to make a decision to either keep going,
+choose a different directory, remove existing output
+or exit</li>
+<li><strong>force_empty</strong> (<em>bool</em>) – Force the output directory to be empty. BE CAREFUL as this
+will remove all files in that directory! There are checks
+to stop you doing something silly, but these are not
+fool-proof. The user will be prompted to confirm that
+the files should be removed</li>
+<li><strong>prompt</strong> – This is the function that should be called to prompt the
+user for input, e.g. to confirm whether or not files
+should be deleted. This defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">input</span></code>. Set this
+to None if you <em>really</em> want MetaWards to remove files
+silently (e.g. useful if you are running batch jobs
+on a cluster and you really know what you are doing)</li>
+<li><strong>auto_bzip</strong> (<em>bool</em>) – The default flag for <a class="reference internal" href="#metawards.OutputFiles.auto_bzip" title="metawards.OutputFiles.auto_bzip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_bzip</span></code></a> when opening files. If
+this is true then all files will be automatically bzipped
+(compressed) as they are written, unless the code opening
+the file has explicitly asked otherwise</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="metawards.OutputFiles.auto_bzip">
 <code class="descname">auto_bzip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_outputfiles.html#OutputFiles.auto_bzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.OutputFiles.auto_bzip" title="Permalink to this definition">¶</a></dt>

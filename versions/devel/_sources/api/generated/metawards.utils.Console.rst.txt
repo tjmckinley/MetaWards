@@ -25,7 +25,9 @@ metawards.utils.Console
       ~Console.rule
       ~Console.save
       ~Console.set_theme
+      ~Console.set_use_spinner
       ~Console.spinner
+      ~Console.supports_emojis
       ~Console.warning
    
    

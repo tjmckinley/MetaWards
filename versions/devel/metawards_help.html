@@ -210,7 +210,7 @@
                  [--start-day START_DAY] [-p PARAMETERS] [-R REPOSITORY]
                  [-P POPULATION] [-n NSTEPS] [-u USER_VARIABLES]
                  [--iterator ITERATOR] [--extractor EXTRACTOR] [--mixer MIXER]
-                 [--mover MOVER] [--UV UV] [--theme THEME]
+                 [--mover MOVER] [--UV UV] [--theme THEME] [--no-spinner]
                  [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
                  [--cores-per-node CORES_PER_NODE] [--auto-bzip]
                  [--no-auto-bzip] [--force-overwrite-output]
@@ -334,9 +334,11 @@ optional arguments:
                         (default: None)
   --UV UV               Value for the UV parameter for the model (default is
                         0.0) (default: 0.0)
-  --theme THEME         The theme to use to color the output. Use
-                        --theme=simple if you prefer a simple and colorless
-                        output. (default: None)
+  --theme THEME         The theme to use to color the output. Use &#39;--theme
+                        simple&#39; if you prefer a simple and colorless output.
+                        (default: None)
+  --no-spinner          Disable the spinner that spins when little output is
+                        being printed to the screen. (default: None)
   --nthreads NTHREADS   Number of threads over which parallelise an individual
                         model run. The total number of cores used by metawards
                         will be nprocesses x nthreads [env var:

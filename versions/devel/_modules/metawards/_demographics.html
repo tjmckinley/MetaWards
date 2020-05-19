@@ -262,7 +262,7 @@
     <span class="n">_repository_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_repository_branch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Demographics.__str__"><a class="viewcode-back" href="../../api/generated/metawards.Demographics.html#metawards.Demographics.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">demographics</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Demographics </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
@@ -274,12 +274,12 @@
                <span class="sa">f</span><span class="s2">&quot;repository: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="sa">f</span><span class="s2">&quot;repository_branch: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository_branch</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="sa">f</span><span class="s2">&quot;repository_version: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_repository_version</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;demographics = [</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="se">\n</span><span class="s2">]&quot;</span>
+               <span class="sa">f</span><span class="s2">&quot;demographics = [</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="se">\n</span><span class="s2">]&quot;</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">demographics</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="Demographics.__eq__"><a class="viewcode-back" href="../../api/generated/metawards.Demographics.html#metawards.Demographics.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Demographics</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -294,7 +294,7 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">demographics</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">demographics</span><span class="p">[</span><span class="n">index</span><span class="p">]:</span>
                     <span class="k">return</span> <span class="kc">False</span>
 
-            <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>

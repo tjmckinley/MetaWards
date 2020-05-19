@@ -258,7 +258,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">subpops</span> <span class="o">=</span> <span class="n">subpops</span></div>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Population.__str__"><a class="viewcode-back" href="../../api/generated/metawards.Population.html#metawards.Population.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;DAY: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2"> &quot;</span> \
             <span class="sa">f</span><span class="s2">&quot;S: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">susceptibles</span><span class="si">}</span><span class="s2">    &quot;</span> \
             <span class="sa">f</span><span class="s2">&quot;E: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">latent</span><span class="si">}</span><span class="s2">    &quot;</span> \
@@ -271,7 +271,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">s</span>
+            <span class="k">return</span> <span class="n">s</span></div>
 
 <div class="viewcode-block" id="Population.assert_sane"><a class="viewcode-back" href="../../api/generated/metawards.Population.html#metawards.Population.assert_sane">[docs]</a>    <span class="k">def</span> <span class="nf">assert_sane</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Assert that this population is sane, i.e. the totals within</span>

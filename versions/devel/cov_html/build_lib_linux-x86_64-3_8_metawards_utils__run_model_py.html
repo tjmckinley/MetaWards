@@ -85,52 +85,52 @@
     <p id="t31" class="pln"><span class="n"><a href="#t31">31</a></span><span class="t">              <span class="nam">mover</span><span class="op">:</span> <span class="nam">_Union</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="nam">MetaFunction</span><span class="op">]</span> <span class="op">=</span> <span class="key">None</span><span class="op">)</span> <span class="op">-></span> <span class="nam">Populations</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t32" class="pln"><span class="n"><a href="#t32">32</a></span><span class="t">    <span class="str">"""Actually run the model... Real work happens here. The model</span>&nbsp;</span><span class="r"></span></p>
     <p id="t33" class="pln"><span class="n"><a href="#t33">33</a></span><span class="t"><span class="str">       will run until completion or until 'nsteps' have been</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t34" class="pln"><span class="n"><a href="#t34">34</a></span><span class="t"><span class="str">       completed (whichever happens first)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t34" class="pln"><span class="n"><a href="#t34">34</a></span><span class="t"><span class="str">       completed, whichever happens first.</span>&nbsp;</span><span class="r"></span></p>
     <p id="t35" class="pln"><span class="n"><a href="#t35">35</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t36" class="pln"><span class="n"><a href="#t36">36</a></span><span class="t"><span class="str">        Parameters</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t37" class="pln"><span class="n"><a href="#t37">37</a></span><span class="t"><span class="str">        ----------</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t38" class="pln"><span class="n"><a href="#t38">38</a></span><span class="t"><span class="str">        network: Network or Networks</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t36" class="pln"><span class="n"><a href="#t36">36</a></span><span class="t"><span class="str">       Parameters</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t37" class="pln"><span class="n"><a href="#t37">37</a></span><span class="t"><span class="str">       ----------</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t38" class="pln"><span class="n"><a href="#t38">38</a></span><span class="t"><span class="str">       network: Network or Networks</span>&nbsp;</span><span class="r"></span></p>
     <p id="t39" class="pln"><span class="n"><a href="#t39">39</a></span><span class="t"><span class="str">            The network(s) on which to run the model</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t40" class="pln"><span class="n"><a href="#t40">40</a></span><span class="t"><span class="str">        infections: Infections</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t40" class="pln"><span class="n"><a href="#t40">40</a></span><span class="t"><span class="str">       infections: Infections</span>&nbsp;</span><span class="r"></span></p>
     <p id="t41" class="pln"><span class="n"><a href="#t41">41</a></span><span class="t"><span class="str">            The space used to record the infections</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t42" class="pln"><span class="n"><a href="#t42">42</a></span><span class="t"><span class="str">        rngs: list</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t42" class="pln"><span class="n"><a href="#t42">42</a></span><span class="t"><span class="str">       rngs: list</span>&nbsp;</span><span class="r"></span></p>
     <p id="t43" class="pln"><span class="n"><a href="#t43">43</a></span><span class="t"><span class="str">            The list of random number generators to use, one per thread</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t44" class="pln"><span class="n"><a href="#t44">44</a></span><span class="t"><span class="str">        population: Population</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t44" class="pln"><span class="n"><a href="#t44">44</a></span><span class="t"><span class="str">       population: Population</span>&nbsp;</span><span class="r"></span></p>
     <p id="t45" class="pln"><span class="n"><a href="#t45">45</a></span><span class="t"><span class="str">            The initial population at the start of the model outbreak.</span>&nbsp;</span><span class="r"></span></p>
     <p id="t46" class="pln"><span class="n"><a href="#t46">46</a></span><span class="t"><span class="str">            This is also used to set the date and day of the start of</span>&nbsp;</span><span class="r"></span></p>
     <p id="t47" class="pln"><span class="n"><a href="#t47">47</a></span><span class="t"><span class="str">            the model outbreak</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t48" class="pln"><span class="n"><a href="#t48">48</a></span><span class="t"><span class="str">        seed: int</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t48" class="pln"><span class="n"><a href="#t48">48</a></span><span class="t"><span class="str">       seed: int</span>&nbsp;</span><span class="r"></span></p>
     <p id="t49" class="pln"><span class="n"><a href="#t49">49</a></span><span class="t"><span class="str">            The random number seed used for this model run. If this is</span>&nbsp;</span><span class="r"></span></p>
     <p id="t50" class="pln"><span class="n"><a href="#t50">50</a></span><span class="t"><span class="str">            None then a very random random number seed will be used</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t51" class="pln"><span class="n"><a href="#t51">51</a></span><span class="t"><span class="str">        output_dir: OutputFiles</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t51" class="pln"><span class="n"><a href="#t51">51</a></span><span class="t"><span class="str">       output_dir: OutputFiles</span>&nbsp;</span><span class="r"></span></p>
     <p id="t52" class="pln"><span class="n"><a href="#t52">52</a></span><span class="t"><span class="str">            The directory to write all of the output into</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t53" class="pln"><span class="n"><a href="#t53">53</a></span><span class="t"><span class="str">        nsteps: int</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t53" class="pln"><span class="n"><a href="#t53">53</a></span><span class="t"><span class="str">       nsteps: int</span>&nbsp;</span><span class="r"></span></p>
     <p id="t54" class="pln"><span class="n"><a href="#t54">54</a></span><span class="t"><span class="str">            The maximum number of steps to run in the outbreak. If None</span>&nbsp;</span><span class="r"></span></p>
     <p id="t55" class="pln"><span class="n"><a href="#t55">55</a></span><span class="t"><span class="str">            then run until the outbreak has finished</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t56" class="pln"><span class="n"><a href="#t56">56</a></span><span class="t"><span class="str">        profiler: Profiler</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t56" class="pln"><span class="n"><a href="#t56">56</a></span><span class="t"><span class="str">       profiler: Profiler</span>&nbsp;</span><span class="r"></span></p>
     <p id="t57" class="pln"><span class="n"><a href="#t57">57</a></span><span class="t"><span class="str">            The profiler to use to profile - a new one is created if</span>&nbsp;</span><span class="r"></span></p>
     <p id="t58" class="pln"><span class="n"><a href="#t58">58</a></span><span class="t"><span class="str">            one isn't passed</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t59" class="pln"><span class="n"><a href="#t59">59</a></span><span class="t"><span class="str">        nthreads: int</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t59" class="pln"><span class="n"><a href="#t59">59</a></span><span class="t"><span class="str">       nthreads: int</span>&nbsp;</span><span class="r"></span></p>
     <p id="t60" class="pln"><span class="n"><a href="#t60">60</a></span><span class="t"><span class="str">            Number of threads over which to parallelise this model run</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t61" class="pln"><span class="n"><a href="#t61">61</a></span><span class="t"><span class="str">        iterator: MetaFunction or string</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t61" class="pln"><span class="n"><a href="#t61">61</a></span><span class="t"><span class="str">       iterator: MetaFunction or string</span>&nbsp;</span><span class="r"></span></p>
     <p id="t62" class="pln"><span class="n"><a href="#t62">62</a></span><span class="t"><span class="str">            Function that will be used to dynamically get the functions</span>&nbsp;</span><span class="r"></span></p>
     <p id="t63" class="pln"><span class="n"><a href="#t63">63</a></span><span class="t"><span class="str">            that will be used at each iteration to advance the</span>&nbsp;</span><span class="r"></span></p>
     <p id="t64" class="pln"><span class="n"><a href="#t64">64</a></span><span class="t"><span class="str">            model. Any additional files or parameters needed by these</span>&nbsp;</span><span class="r"></span></p>
     <p id="t65" class="pln"><span class="n"><a href="#t65">65</a></span><span class="t"><span class="str">            functions should be included in the `network.params` object.</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t66" class="pln"><span class="n"><a href="#t66">66</a></span><span class="t"><span class="str">        extractor: MetaFunction or string</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t66" class="pln"><span class="n"><a href="#t66">66</a></span><span class="t"><span class="str">       extractor: MetaFunction or string</span>&nbsp;</span><span class="r"></span></p>
     <p id="t67" class="pln"><span class="n"><a href="#t67">67</a></span><span class="t"><span class="str">            Function that will be used to dynamically get the functions</span>&nbsp;</span><span class="r"></span></p>
     <p id="t68" class="pln"><span class="n"><a href="#t68">68</a></span><span class="t"><span class="str">            that will be used at each iteration to extract data from</span>&nbsp;</span><span class="r"></span></p>
     <p id="t69" class="pln"><span class="n"><a href="#t69">69</a></span><span class="t"><span class="str">            the model run</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t70" class="pln"><span class="n"><a href="#t70">70</a></span><span class="t"><span class="str">        mixer: MetaFunction or string</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t70" class="pln"><span class="n"><a href="#t70">70</a></span><span class="t"><span class="str">       mixer: MetaFunction or string</span>&nbsp;</span><span class="r"></span></p>
     <p id="t71" class="pln"><span class="n"><a href="#t71">71</a></span><span class="t"><span class="str">            Function that will mix data from multiple demographics</span>&nbsp;</span><span class="r"></span></p>
     <p id="t72" class="pln"><span class="n"><a href="#t72">72</a></span><span class="t"><span class="str">            so that this is shared during a model run</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t73" class="pln"><span class="n"><a href="#t73">73</a></span><span class="t"><span class="str">        mover: MetaFunction or string</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t73" class="pln"><span class="n"><a href="#t73">73</a></span><span class="t"><span class="str">       mover: MetaFunction or string</span>&nbsp;</span><span class="r"></span></p>
     <p id="t74" class="pln"><span class="n"><a href="#t74">74</a></span><span class="t"><span class="str">            Function that can move the population between different</span>&nbsp;</span><span class="r"></span></p>
     <p id="t75" class="pln"><span class="n"><a href="#t75">75</a></span><span class="t"><span class="str">            demographics</span>&nbsp;</span><span class="r"></span></p>
     <p id="t76" class="pln"><span class="n"><a href="#t76">76</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t77" class="pln"><span class="n"><a href="#t77">77</a></span><span class="t"><span class="str">        Returns</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t78" class="pln"><span class="n"><a href="#t78">78</a></span><span class="t"><span class="str">        -------</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t79" class="pln"><span class="n"><a href="#t79">79</a></span><span class="t"><span class="str">        trajectory: Populations</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t77" class="pln"><span class="n"><a href="#t77">77</a></span><span class="t"><span class="str">       Returns</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t78" class="pln"><span class="n"><a href="#t78">78</a></span><span class="t"><span class="str">       -------</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t79" class="pln"><span class="n"><a href="#t79">79</a></span><span class="t"><span class="str">       trajectory: Populations</span>&nbsp;</span><span class="r"></span></p>
     <p id="t80" class="pln"><span class="n"><a href="#t80">80</a></span><span class="t"><span class="str">            The trajectory of the population for every day of the model run</span>&nbsp;</span><span class="r"></span></p>
     <p id="t81" class="pln"><span class="n"><a href="#t81">81</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p id="t82" class="run"><span class="n"><a href="#t82">82</a></span><span class="t">    <span class="key">if</span> <span class="nam">iterator</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -319,7 +319,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.1</a>,
-            created at 2020-05-19 10:39
+            created at 2020-05-19 16:03
         </p>
     </div>
 </div>

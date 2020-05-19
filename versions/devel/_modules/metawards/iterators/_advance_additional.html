@@ -238,7 +238,7 @@
 <span class="n">_additional_seeds</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">def</span> <span class="nf">setup_additional_seeds</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">Network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">],</span>
+<div class="viewcode-block" id="setup_additional_seeds"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.setup_additional_seeds.html#metawards.iterators.setup_additional_seeds">[docs]</a><span class="k">def</span> <span class="nf">setup_additional_seeds</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">Network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">],</span>
                            <span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span><span class="p">,</span>
                            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Setup function that reads in the additional seeds held</span>
@@ -265,7 +265,7 @@
     <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">additional_seeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">additional</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">additional_seeds</span><span class="p">:</span>
             <span class="n">_additional_seeds</span> <span class="o">+=</span> <span class="n">_load_additional_seeds</span><span class="p">(</span><span class="n">additional</span><span class="p">)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 
 
 <span class="k">def</span> <span class="nf">advance_additional_serial</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">Network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">],</span>
@@ -335,7 +335,7 @@
     <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="advance_additional_omp"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.advance_additional_omp.html#metawards.iterators.advance_additional_omp">[docs]</a><span class="k">def</span> <span class="nf">advance_additional_omp</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">advance_additional_omp</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Advance the infection by infecting additional wards based</span>
 <span class="sd">       on a pre-determined pattern based on the additional seeds</span>
 <span class="sd">       (parallel version)</span>
@@ -355,10 +355,10 @@
 <span class="sd">         Arguments that aren&#39;t used by this advancer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;nthreads&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">advance_additional</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="n">advance_additional</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="advance_additional"><a class="viewcode-back" href="../../../api/generated/metawards.iterators.advance_additional.html#metawards.iterators.advance_additional">[docs]</a><span class="k">def</span> <span class="nf">advance_additional</span><span class="p">(</span><span class="n">nthreads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">advance_additional</span><span class="p">(</span><span class="n">nthreads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Advance the infection by infecting additional wards based</span>
 <span class="sd">       on a pre-determined pattern based on the additional seeds</span>
 <span class="sd">       (parallel version)</span>
@@ -377,7 +377,7 @@
 <span class="sd">       kwargs</span>
 <span class="sd">         Arguments that aren&#39;t used by this advancer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">advance_additional_serial</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="n">advance_additional_serial</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
            </div>

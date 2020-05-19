@@ -123,6 +123,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_movers.html">MetaWards.movers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_analysis.html">MetaWards.analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_utils.html">MetaWards.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_themes.html">MetaWards.themes</a></li>
 </ul>
 </li>
 </ul>
@@ -307,6 +308,55 @@ VariableSet from one another</li>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="metawards.VariableSet.__eq__">
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self==value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>variables: Dict[str</em>, <em>float] = None</em>, <em>repeat_index: int = 1</em>, <em>names: List[str] = None</em>, <em>values: List[float] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.__init__"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Construct a new VariableSet from the passed adjusted variable
+values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The list of the names of the variables to adjust</li>
+<li><strong>values</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – The values of the variables to adjust (same order as names)</li>
+<li><strong>variables</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – names and values of variables to adjust passed as a dictionary</li>
+<li><strong>repeat_index</strong> (<em>int</em>) – the index used to distinguish different repeats of the same
+VariableSet from one another</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">VariableSet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;beta[1]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.95</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;beta[2]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">())</span>
+<span class="go">(beta[1]=0.95, beta[2]=0.9)[repeat 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.__repr__">
+<code class="descname">__repr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a printable representation of the variables to
+be adjusted</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="metawards.VariableSet.adjust">
 <code class="descname">adjust</code><span class="sig-paren">(</span><em>params</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.adjust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.adjust" title="Permalink to this definition">¶</a></dt>
