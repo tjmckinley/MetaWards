@@ -103,11 +103,24 @@ def build_custom_mixer(custom_function: _Union[str, MetaFunction],
         if func_name is None:
             # find the last function that starts with 'mix'
             import inspect
+            funcs = []
             for name, value in inspect.getmembers(module):
                 if name.startswith("mix"):
                     if hasattr(value, "__call__"):
-                        # this is a function
-                        func = value
+                        if value.__module__ == module.__name__:
+                            # this is a function defined in this module
+                            funcs.append(value)
+
+            if len(funcs) > 0:
+                func = funcs[0]
+
+                if len(funcs) > 1:
+                    Console.warning(
+                        f"Multiple possible matching functions: {funcs}. "
+                        f"Choosing {func}. Please use the module::function "
+                        f"syntax if this is the wrong choice.")
+            else:
+                func = None
 
             if func is not None:
                 return build_custom_mixer(func)

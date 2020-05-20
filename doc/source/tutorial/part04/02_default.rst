@@ -40,8 +40,10 @@ to read;
 
 .. code-block:: python
 
+    from metawards.utils import Console
+
     def output_population(population, output_dir, **kwargs):
-        print("Hello output_population")
+        Console.debug("Hello output_population")
 
         # create an output file called 'population.dat'
         popfile = output_dir.open("population.dat",
@@ -55,7 +57,7 @@ to read;
 
 
     def extract_population(population, **kwargs):
-        print("hello extract_population")
+        Console.debug("hello extract_population")
 
         from metawards.extractors import output_incidence
 

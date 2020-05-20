@@ -119,7 +119,10 @@ Contributing
    :maxdepth: 2
 
    contributing
+   devsupport
    packaging
+   development
+   snaglist
 
 Documentation
 =============
@@ -128,13 +131,6 @@ Documentation
    :maxdepth: 2
 
    api/index
-
-Development
-===========
-.. toctree::
-   :maxdepth: 2
-
-   development
 
 Changelog
 =========

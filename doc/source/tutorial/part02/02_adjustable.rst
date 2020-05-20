@@ -95,50 +95,98 @@ to complete.
   these jobs, ``metawards`` runs well in parallel
   :doc:`across a slurm or PBS cluster <../../cluster_usage>`.
 
-Once the jobs are complete (which took 14 minutes on my laptop), you
+Once the jobs are complete (which took 15 minutes on my laptop), you
 should have output that looks similar to this;
 
 ::
 
-  Running 9 jobs using 4 process(es)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MULTIPROCESSING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Completed job 1 of 9                                                                  │
+    │  (beta[2]=0.3, too_ill_to_move[2]=0)[repeat 1]                                         │
+    │  2020-12-15: DAY: 209 S: 7978312    E: 0    I: 0    R: 48103765    IW: 1   UV: 1.0     │
+    │  TOTAL POPULATION 56082077                                                             │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Completed job 2 of 9                                                                  │
+    │  (beta[2]=0.4, too_ill_to_move[2]=0)[repeat 1]                                         │
+    │  2020-11-28: DAY: 192 S: 7046459    E: 0    I: 0    R: 49035618    IW: 0   UV: 1.0     │
+    │  TOTAL POPULATION 56082077                                                             │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Completed job 3 of 9                                                                  │
+    │  (beta[2]=0.5, too_ill_to_move[2]=0)[repeat 1]                                         │
+    │  2020-11-17: DAY: 181 S: 6221586    E: 0    I: 0    R: 49860491    IW: 1   UV: 1.0     │
+    │  TOTAL POPULATION 56082077                                                             │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Completed job 4 of 9                                                                  │
+    │  (beta[2]=0.3, too_ill_to_move[2]=0.25)[repeat 1]                                      │
+    │  2020-12-13: DAY: 207 S: 8010218    E: 0    I: 0    R: 48071859    IW: 0   UV: 1.0     │
+    │  TOTAL POPULATION 56082077                                                             │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Completed job 5 of 9                                                                  │
+    │  (beta[2]=0.4, too_ill_to_move[2]=0.25)[repeat 1]                                      │
+    │  2020-12-02: DAY: 196 S: 7071208    E: 0    I: 0    R: 49010869    IW: 1   UV: 1.0     │
+    │  TOTAL POPULATION 56082077                                                             │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Completed job 6 of 9                                                                  │
+    │  (beta[2]=0.5, too_ill_to_move[2]=0.25)[repeat 1]                                      │
+    │  2020-12-01: DAY: 195 S: 6260263    E: 0    I: 0    R: 49821814    IW: 0   UV: 1.0     │
+    │  TOTAL POPULATION 56082077                                                             │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Completed job 7 of 9                                                                  │
+    │  (beta[2]=0.3, too_ill_to_move[2]=0.5)[repeat 1]                                       │
+    │  2021-01-01: DAY: 226 S: 8031161    E: 0    I: 0    R: 48050916    IW: 0   UV: 1.0     │
+    │  TOTAL POPULATION 56082077                                                             │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Completed job 8 of 9                                                                  │
+    │  (beta[2]=0.4, too_ill_to_move[2]=0.5)[repeat 1]                                       │
+    │  2020-11-27: DAY: 191 S: 7103861    E: 0    I: 0    R: 48978216    IW: 0   UV: 1.0     │
+    │  TOTAL POPULATION 56082077                                                             │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Completed job 9 of 9                                                                  │
+    │  (beta[2]=0.5, too_ill_to_move[2]=0.5)[repeat 1]                                       │
+    │  2020-11-16: DAY: 180 S: 6293958    E: 0    I: 0    R: 49788119    IW: 0   UV: 1.0     │
+    │  TOTAL POPULATION 56082077                                                             │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
+    ┌────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                        │
+    │  Writing a summary of all results into the csv file                                    │
+    │  /Users/chris/GitHub/tutorial/test/output/results.csv.bz2. You can use this to         │
+    │  quickly look at statistics across all runs using e.g. R or pandas                     │
+    │                                                                                        │
+    └────────────────────────────────────────────────────────────────────────────────────────┘
 
-  Running jobs in parallel using a multiprocessing pool...
-
-  Completed job 1 of 9
-  (beta[2]=0.3, too_ill_to_move[2]=0.0)[repeat 1]
-  2020-11-10: DAY: 204 S: 7976329    E: 0    I: 0    R: 48105748    IW: 0   TOTAL POPULATION 56082077
-
-  Completed job 2 of 9
-  (beta[2]=0.4, too_ill_to_move[2]=0.0)[repeat 1]
-  2020-10-29: DAY: 192 S: 7039360    E: 0    I: 0    R: 49042717    IW: 0   TOTAL POPULATION 56082077
-
-  Completed job 3 of 9
-  (beta[2]=0.5, too_ill_to_move[2]=0.0)[repeat 1]
-  2020-10-12: DAY: 175 S: 6224108    E: 0    I: 0    R: 49857969    IW: 0   TOTAL POPULATION 56082077
-
-  Completed job 4 of 9
-  (beta[2]=0.3, too_ill_to_move[2]=0.25)[repeat 1]
-  2020-11-11: DAY: 205 S: 8005734    E: 0    I: 0    R: 48076343    IW: 0   TOTAL POPULATION 56082077
-
-  Completed job 5 of 9
-  (beta[2]=0.4, too_ill_to_move[2]=0.25)[repeat 1]
-  2020-11-16: DAY: 210 S: 7073043    E: 0    I: 0    R: 49009034    IW: 0   TOTAL POPULATION 56082077
-
-  Completed job 6 of 9
-  (beta[2]=0.5, too_ill_to_move[2]=0.25)[repeat 1]
-  2020-10-20: DAY: 183 S: 6260111    E: 0    I: 0    R: 49821966    IW: 1   TOTAL POPULATION 56082077
-
-  Completed job 7 of 9
-  (beta[2]=0.3, too_ill_to_move[2]=0.5)[repeat 1]
-  2020-11-21: DAY: 215 S: 8045175    E: 0    I: 0    R: 48036902    IW: 0   TOTAL POPULATION 56082077
-
-  Completed job 8 of 9
-  (beta[2]=0.4, too_ill_to_move[2]=0.5)[repeat 1]
-  2020-11-06: DAY: 200 S: 7106554    E: 0    I: 0    R: 48975523    IW: 1   TOTAL POPULATION 56082077
-
-  Completed job 9 of 9
-  (beta[2]=0.5, too_ill_to_move[2]=0.5)[repeat 1]
-  2020-10-13: DAY: 176 S: 6304109    E: 0    I: 0    R: 49777968    IW: 0   TOTAL POPULATION 56082077
-
-  Writing a summary of all results into the
-  csv file /Users/chris/GitHub/tutorial/output/results.csv.bz2.
