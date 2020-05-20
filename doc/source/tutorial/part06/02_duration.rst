@@ -242,3 +242,162 @@ How many days of self-isolation is needed?
 As it stands, this is just 1-1.5% of the total number of infections, so
 is unlikely to have a big impact. We can investigate this impact by
 scanning the number of days. Edit your ``move_isolate.py`` to read;
+
+.. code-block:: python
+
+    from metawards import Population
+    from metawards import Networks
+    from metawards.movers import go_isolate, go_to
+    from metawards.utils import Console
+
+    def move_isolate(network: Networks, population: Population, **kwargs):
+        user_params = network.params.user_params
+
+        ndays = user_params["isolate_ndays"]
+        isolate_stage = user_params["isolate_stage"]
+
+        if ndays > 7:
+            Console.error(f"move_isolate supports a maximum of 7 days of "
+                        f"isolation, so {ndays} is too many!")
+            raise ValueError("Too many days of isolation requested")
+        elif ndays <= 0:
+            # just send infected individuals straight to "released"
+            # (this is the control)
+            func = lambda **kwargs: go_isolate(
+                                        go_from="home",
+                                        go_to="released",
+                                        self_isolate_stage=isolate_stage,
+                                        **kwargs)
+            return [func]
+
+        day = population.day % ndays
+        isolate = f"isolate_{day}"
+
+        go_isolate_day = lambda **kwargs: go_isolate(
+                                            go_from="home",
+                                            go_to=isolate,
+                                            self_isolate_stage=isolate_stage,
+                                            **kwargs)
+
+        go_released = lambda **kwargs: go_to(go_from=isolate,
+                                            go_to="released",
+                                            **kwargs)
+
+        return [go_released, go_isolate_day]
+
+This move function will now read the number of days to isolate from
+the ``isolate_ndays`` user parameter. It will also move an individual
+into self-isolation when they reach disease stage ``isolate_stage``.
+
+There is a little error-catching, e.g. as we only have seven available
+``isolate_N`` demographics, we can only model up to seven days of
+self-isolation. If more than seven days is requested this calls
+:meth:`Console.error <metawards.utils.Console.error>` to write an
+error to the output, and raises a Python ``ValueError``.
+
+To add a control, we've set that if ``isolate_ndays`` is zero, then
+infected individuals are sent straight from ``home`` to ``released``.
+This way we can compare runs that use self-isolation against a run
+where self-isolation is not performed.
+
+.. note::
+
+    We could of course increase the number of days of self-isolation that
+    could be modelled by editing ``demographics.json`` and
+    ``mix_isolate.py`` and just increasing the number of ``isolate_N``
+    demographics.
+
+Next create a file called ``scan_isolate.dat`` and copy in;
+
+::
+
+    # Scan through self-isolation from 0 to 7 days,
+    # with self-isolation starting from disease
+    # stages 2-4
+
+    .isolate_stage   .isolate_ndays
+            2               0
+            2               1
+            2               2
+            2               3
+            2               4
+            2               5
+            2               6
+            2               7
+
+            3               0
+            3               1
+            3               2
+            3               3
+            3               4
+            3               5
+            3               6
+            3               7
+
+            4               0
+            4               1
+            4               2
+            4               3
+            4               4
+            4               5
+            4               6
+            4               7
+
+This file will scan ``isolate_stage`` from 2 to 4, while scanning
+``isolate_ndays`` from 0 to 7.
+
+You can run this job locally using the command;
+
+.. code-block:: bash
+
+   metawards -d lurgy4 -D demographics.json -a ExtraSeedsLondon.dat --mixer mix_isolate --mover move_isolate --extractor extract_none --nsteps 365 -i scan_isolate.dat
+
+Given that it is good to repeat the runs several times, and there are a lot
+of jobs, you may want to run this on a cluster. To do this, the PBS
+job script could look like;
+
+.. code-block:: bash
+
+    #!/bin/bash
+    #PBS -l walltime=12:00:00
+    #PBS -l select=4:ncpus=64:mem=64GB
+    # The above sets 4 nodes with 64 cores each
+
+    source $HOME/envs/metawards/bin/activate
+
+    # change into the directory from which this job was submitted
+    cd $PBS_O_WORKDIR
+
+    metawards -d lurgy4 -D demographics.json -a ExtraSeedsLondon.dat \
+              --mixer mix_isolate --mover move_isolate --extractor extract_none \
+              --nsteps 365 -i scan_isolate.dat --repeats 8 \
+              --nthreads 16 --force-overwrite-output --no-spinner --theme simple
+
+while the slurm job script would be;
+
+.. code-block:: bash
+
+    #!/bin/bash
+    #SBATCH --time=01:00:00
+    #SBATCH --ntasks=4
+    #SBATCH --cpus-per-task=64
+    # The above sets 4 nodes with 64 cores each
+
+    source $HOME/envs/metawards/bin/activate
+
+    metawards -d lurgy4 -D demographics.json -a ExtraSeedsLondon.dat \
+              --mixer mix_isolate --mover move_isolate --extractor extract_none \
+              --nsteps 365 -i scan_isolate.dat --repeats 8 \
+              --nthreads 16 --force-overwrite-output --no-spinner --theme simple
+
+.. note::
+   Notice that we've set the output theme to ``simple`` using
+   ``--theme simple`` and have switched off the progress spinner
+   using ``--no-spinner`` as these are unnecessary when run in batch
+   mode on a cluster. All of the output will be written to the
+   ``output/console.log.bz2`` file.
+
+Analysing the results
+---------------------
+
+This
