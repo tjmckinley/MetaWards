@@ -1,5 +1,6 @@
 
 from typing import Union as _Union
+from typing import List as _List
 from typing import IO as _IO
 
 from contextlib import contextmanager as _contextmanager
@@ -49,6 +50,12 @@ class Console:
             return True
 
     @staticmethod
+    def set_debugging_enabled(enabled):
+        """Switch on or off debugging output"""
+        console = Console._get_console()
+        console._debugging_enabled = bool(enabled)
+
+    @staticmethod
     def set_theme(theme):
         """Set the theme used for the console - this should be
            one of the themes in metawards.themes
@@ -86,9 +93,12 @@ class Console:
             _console = _Console(record=True,
                                 highlight=theme.should_highlight(),
                                 highlighter=theme.highlighter(),
-                                markup=theme.should_markup())
+                                markup=theme.should_markup(),
+                                log_time=True, log_path=True,
+                                emoji=Console.supports_emojis())
 
             _console._use_spinner = True
+            _console._debugging_enabled = False
 
             # also install pretty traceback support
             from rich.traceback import install as _install_rich
@@ -103,7 +113,7 @@ class Console:
         import os as os
         import sys as sys
         import bz2
-        from rich.console import Console as Console
+        from rich.console import Console as _Console
 
         outfile = os.path.join(outdir, "output.txt")
         errfile = os.path.join(outdir, "output.err")
@@ -119,8 +129,10 @@ class Console:
             ERRFILE = open(errfile, "wt")
 
         global _console
-        new_out = Console(file=OUTFILE, record=False)
+        new_out = _Console(file=OUTFILE, record=False, log_time=True,
+                           log_path=True, emoji=Console.supports_emojis())
         new_out._use_spinner = False
+        new_out._debugging_enabled = _console._debugging_enabled
         old_out = _console
         _console = new_out
 
@@ -135,6 +147,78 @@ class Console:
             sys.stderr = old_err
             OUTFILE.close()
             ERRFILE.close()
+
+    @staticmethod
+    def debugging_enabled():
+        """Return whether debug output is enabled - if not, then
+           anything sent to 'debug' is not printed
+        """
+        console = Console._get_console()
+        return console._debugging_enabled
+
+    @staticmethod
+    def _retrieve_name(variable):
+        # thanks to scohe001 on stackoverflow
+        # https://stackoverflow.com/questions/18425225/getting-the-name-of-a-variable-as-a-string
+        import inspect
+        callers_local_vars = inspect.currentframe().f_back.f_back.f_locals.items()
+        return [var_name for var_name, var_val in callers_local_vars
+                if var_val is variable][-1]
+
+    @staticmethod
+    def debug(text: str, log_variables: _List[any] = None,
+              markdown: bool = False, **kwargs):
+        """Print a debug string to the console. This will only be
+           printed if debugging is enabled. You can also print the
+           values of variables by passing them as a list to
+           'log_variables'
+        """
+        if not Console.debugging_enabled():
+            return
+
+        if hasattr(text, "__call__"):
+            # the user passed in a lambda for delayed printing
+            text = text()
+
+        if not isinstance(text, str):
+            text = str(text)
+
+        console = Console._get_console()
+
+        if markdown:
+            from rich.markdown import Markdown as _Markdown
+            try:
+                text = _Markdown(text)
+            except Exception:
+                text = _Markdown(str(text))
+
+        console.log(text, justify="center", **kwargs)
+
+        if log_variables is not None:
+            from rich.table import Table
+            from rich import box
+            import inspect
+            # get the local variables in the caller's scope
+            callers_local_vars = inspect.currentframe().f_back.f_locals.items()
+
+            table = Table(box=box.MINIMAL_DOUBLE_HEAD, style="on magenta")
+            table.add_column("Name", justify="right", style="cyan",
+                             no_wrap=True)
+            table.add_column("Value", justify="left", style="green")
+
+            for variable in log_variables:
+                # get the name of the variable in the caller
+                try:
+                    # go for the last matching variable in the caller's scope
+                    name = [var_name for var_name, var_val
+                            in callers_local_vars
+                            if var_val is variable][-1]
+                except Exception:
+                    name = "variable"
+
+                table.add_row(name, str(variable))
+
+            console.print(table)
 
     @staticmethod
     def print(text: str, markdown: bool = False, style: str = None,
