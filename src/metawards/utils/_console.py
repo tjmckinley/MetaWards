@@ -130,13 +130,19 @@ class Console:
             OUTFILE = open(outfile, "wt")
             ERRFILE = open(errfile, "wt")
 
-        global _console
+        console = Console._get_console()
+
+        if console is None:
+            raise AssertionError("The global console should never be None")
+
         new_out = _Console(file=OUTFILE, record=False, log_time=True,
                            log_path=True, emoji=Console.supports_emojis())
         new_out._use_spinner = False
-        new_out._debugging_enabled = _console._debugging_enabled
-        new_out._debugging_level = _console._debugging_level
-        old_out = _console
+        new_out._debugging_enabled = console._debugging_enabled
+        new_out._debugging_level = console._debugging_level
+        old_out = console
+
+        global _console
         _console = new_out
 
         new_err = ERRFILE
@@ -331,7 +337,7 @@ class Console:
         console._use_spinner = use_spinner
 
     @staticmethod
-    def spinner(text: str = None):
+    def spinner(text: str = ""):
         try:
             from yaspin import yaspin, Spinner
             have_yaspin = True
