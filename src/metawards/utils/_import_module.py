@@ -26,7 +26,14 @@ def import_module(module):
             f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '}\\|/\n"
             f"Line {e.lineno}.{e.offset}: {e.text}")
         m = None
+    except ImportError:
+        # this is ok and expected if the module is in a python file
+        # that will be loaded below
+        m = None
     except Exception:
+        Console.error(
+            f"\nError when importing {module}\n"
+            f"{e.__class__.__name__}:{e}\n")
         m = None
 
     if m is None:
@@ -60,7 +67,12 @@ def import_module(module):
                 f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '} |\n"
                 f"Line {e.lineno}.{e.offset}:{(e.offset-1)*' '}\\|/\n"
                 f"Line {e.lineno}.{e.offset}: {e.text}")
-        except Exception:
-            pass
+        except Exception as e:
+            Console.error(
+                f"\nError when importing {module}\n"
+                f"{e.__class__.__name__}:{e}\n")
+            m = None
+
+    Console.print(f"IMPORT {m}")
 
     return m

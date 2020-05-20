@@ -42,5 +42,14 @@ This creates the ``home`` demographic, plus one ``isolate`` demographic
 for each day of the week. There is also a ``released`` demographic
 that will be used to release individuals from self-isolation.
 
-We start with all individuals placed into the ``home`` demographic.
+We start with all individuals placed into the ``home`` demographic. We will
+now write a custom move function that will move individuals into the
+assigned ``isolate_N`` demographic for the day in which they develop
+symptoms. This move function will move them into the ``released`` demographic
+once they have spent seven days in self-isolation. To do this,
+create a move function called ``move_isolate.py`` and copy in the below;
+
+.. code-block:: python
+
+
 
