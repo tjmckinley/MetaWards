@@ -14,3 +14,4 @@ In this sixth part of the tutorial you will:
    :maxdepth: 2
 
    part06/01_movers
+   part06/02_duration

@@ -7,7 +7,7 @@ Functions
 .. autosummary::
     :toctree: generated/
 
-    interaction_matrix
+    InteractionMatrix
 
     merge_evenly
 
