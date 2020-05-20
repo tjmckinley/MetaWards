@@ -18,8 +18,10 @@ below;
 
 .. code-block:: python
 
+  from metawards.utils import Console
+
   def extract_hello(**kwargs):
-      print("Hello extract_hello")
+      Console.print("Hello extract_hello")
 
       return []
 
@@ -34,32 +36,36 @@ You should see output something similar to this;
 
 ::
 
-    Loaded iterator from hello.py
-    <function extract_hello at 0x10fe935f0>
-    Building a custom extractor for <function extract_hello at 0x10fe935f0>
-    Setup by seeding all wards
-    Hello extract_hello
-    S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+    Importing a custom extractor from hello
+    Loaded hello from hello.py
+    <function extract_hello at 0x1068599e0>
+    Building a custom extractor for <function extract_hello at 0x1068599e0>
+    S: 56082077  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082077
 
-    0 0
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 0 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Hello extract_hello
-    S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+    S: 56082077  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082077
+    Number of infections: 0
 
-    1 0
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Hello extract_hello
-    S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+    S: 56082077  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082077
+    Number of infections: 0
 
-    2 0
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 2 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Hello extract_hello
-    S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+    S: 56082077  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082077
+    Number of infections: 0
 
-    3 0
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 3 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Hello extract_hello
-    S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+    S: 56082077  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082077
+    Number of infections: 0
 
-    4 0
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 4 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Hello extract_hello
-    S: 56082077    E: 0    I: 0    R: 0    IW: 0   TOTAL POPULATION 56082077
+    S: 56082077  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082077
+    Number of infections: 0
     Infection died ... Ending on day 5
 
 extract_XXX and output_XXX
@@ -79,8 +85,10 @@ the below;
 
 .. code-block:: python
 
+    from metawards.utils import Console
+
     def output_population(population, output_dir, **kwargs):
-        print("Hello output_population")
+        Console.debug("Hello output_population")
 
         # create an output file called 'population.dat'
         popfile = output_dir.open("population.dat")
@@ -91,7 +99,7 @@ the below;
                       f"{population.total} {population.recovereds}\n")
 
     def extract_population(**kwargs):
-        print("hello extract_population")
+        Console.debug("hello extract_population")
 
         return [output_population]
 
@@ -141,8 +149,10 @@ to read;
 
 .. code-block:: python
 
+    from metawards.utils import Console
+
     def output_population(population, output_dir, **kwargs):
-        print("Hello output_population")
+        Console.debug("Hello output_population")
 
         # create an output file called 'population.dat'
         popfile = output_dir.open("population.dat",
@@ -155,7 +165,7 @@ to read;
                       f"{population.total} {population.recovereds}\n")
 
     def extract_population(**kwargs):
-        print("hello extract_population")
+        Console.debug("hello extract_population")
 
         return [output_population]
 
@@ -188,8 +198,10 @@ file on even days, change ``population.py`` to read;
 
 .. code-block:: python
 
+    from metawards.utils import Console
+
     def output_population(population, output_dir, **kwargs):
-        print("Hello output_population")
+        Console.debug("Hello output_population")
 
         # create an output file called 'population.dat'
         popfile = output_dir.open("population.dat",
@@ -203,7 +215,7 @@ file on even days, change ``population.py`` to read;
 
 
     def extract_population(population, **kwargs):
-        print("hello extract_population")
+        Console.debug("hello extract_population")
 
         if population.day % 2 == 0:
             return [output_population]
