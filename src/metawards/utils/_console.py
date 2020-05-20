@@ -50,10 +50,11 @@ class Console:
             return True
 
     @staticmethod
-    def set_debugging_enabled(enabled):
+    def set_debugging_enabled(enabled, level=None):
         """Switch on or off debugging output"""
         console = Console._get_console()
         console._debugging_enabled = bool(enabled)
+        console._debugging_level = level
 
     @staticmethod
     def set_theme(theme):
@@ -99,6 +100,7 @@ class Console:
 
             _console._use_spinner = True
             _console._debugging_enabled = False
+            _console._debugging_level = None
 
             # also install pretty traceback support
             from rich.traceback import install as _install_rich
@@ -133,6 +135,7 @@ class Console:
                            log_path=True, emoji=Console.supports_emojis())
         new_out._use_spinner = False
         new_out._debugging_enabled = _console._debugging_enabled
+        new_out._debugging_level = _console._debugging_level
         old_out = _console
         _console = new_out
 
@@ -149,12 +152,23 @@ class Console:
             ERRFILE.close()
 
     @staticmethod
-    def debugging_enabled():
-        """Return whether debug output is enabled - if not, then
-           anything sent to 'debug' is not printed
+    def debugging_enabled(level: int = None):
+        """Return whether debug output is enabled (optionally for
+           the specified level) - if not, then
+           anything sent to 'debug' (for that level) is not printed
         """
         console = Console._get_console()
-        return console._debugging_enabled
+
+        if not console._debugging_enabled:
+            return False
+
+        elif console._debugging_level is not None:
+            if level is None:
+                return True
+            else:
+                return level <= console._debugging_level
+        else:
+            return level is None
 
     @staticmethod
     def _retrieve_name(variable):
@@ -166,14 +180,14 @@ class Console:
                 if var_val is variable][-1]
 
     @staticmethod
-    def debug(text: str, log_variables: _List[any] = None,
+    def debug(text: str, variables: _List[any] = None, level: int = None,
               markdown: bool = False, **kwargs):
         """Print a debug string to the console. This will only be
            printed if debugging is enabled. You can also print the
            values of variables by passing them as a list to
-           'log_variables'
+           'variables'
         """
-        if not Console.debugging_enabled():
+        if not Console.debugging_enabled(level=level):
             return
 
         if hasattr(text, "__call__"):
@@ -182,6 +196,9 @@ class Console:
 
         if not isinstance(text, str):
             text = str(text)
+
+        if level is not None:
+            text = f"Level {level}: {text}"
 
         console = Console._get_console()
 
@@ -192,9 +209,9 @@ class Console:
             except Exception:
                 text = _Markdown(str(text))
 
-        console.log(text, justify="center", **kwargs)
+        console.log(text, justify="center", _stack_offset=2, **kwargs)
 
-        if log_variables is not None:
+        if variables is not None:
             from rich.table import Table
             from rich import box
             import inspect
@@ -206,7 +223,7 @@ class Console:
                              no_wrap=True)
             table.add_column("Value", justify="left", style="green")
 
-            for variable in log_variables:
+            for variable in variables:
                 # get the name of the variable in the caller
                 try:
                     # go for the last matching variable in the caller's scope

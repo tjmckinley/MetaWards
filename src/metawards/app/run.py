@@ -204,9 +204,12 @@ def parse_args():
                              f"output is being printed to the screen.")
 
     parser.add_argument("--debug", action="store_true", default=None,
-                        help=f"Enable all debugging output. This is useful "
+                        help=f"Enable debugging output. This is useful "
                              f"for MetaWards developers or if you are "
                              f"writing your own iterators, extractors etc.")
+
+    parser.add_argument("--debug-level", type=int, default=None,
+                        help="Limit debug output to the specified level.")
 
     parser.add_argument('--nthreads', type=int, default=None,
                         help="Number of threads over which parallelise an "
@@ -298,7 +301,7 @@ def parse_args():
 
     if args.debug:
         from ..utils._console import Console
-        Console.set_debugging_enabled(args.debug)
+        Console.set_debugging_enabled(args.debug, level=args.debug_level)
 
     if args.version:
         from metawards import print_version_string
