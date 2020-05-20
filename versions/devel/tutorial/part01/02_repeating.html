@@ -121,13 +121,13 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devsupport.html">Developer Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -227,11 +227,11 @@ run the below command to repeat the <em>model run</em> four times;</p>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">metawards</span></code> will automatically use as many of the cores on your computer
 as it can to parallelise the jobs. On my computer, the output shows;</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Performing</span> <span class="mi">4</span> <span class="n">runs</span> <span class="n">of</span> <span class="n">each</span> <span class="nb">set</span> <span class="n">of</span> <span class="n">parameters</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Running the model ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Using random number seed: 87340504
+Running 4 jobs using 4 process(es)
 
-<span class="n">Number</span> <span class="n">of</span> <span class="n">threads</span> <span class="n">to</span> <span class="n">use</span> <span class="k">for</span> <span class="n">each</span> <span class="n">model</span> <span class="n">run</span> <span class="ow">is</span> <span class="mi">1</span>
-<span class="n">Number</span> <span class="n">of</span> <span class="n">processes</span> <span class="n">used</span> <span class="n">to</span> <span class="n">parallelise</span> <span class="n">model</span> <span class="n">runs</span> <span class="ow">is</span> <span class="mi">4</span>
-<span class="n">Parallelisation</span> <span class="n">will</span> <span class="n">be</span> <span class="n">achieved</span> <span class="n">using</span> <span class="n">multiprocessing</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MULTIPROCESSING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 </pre></div>
 </div>
 <p>I have four processor cores on my laptop, so I see the four repeats run
@@ -245,31 +245,62 @@ that <code class="docutils literal notranslate"><span class="pre">metawards</spa
 of seeing a summary of the outbreak, <code class="docutils literal notranslate"><span class="pre">metawards</span></code> will show a summary
 of the different <em>model run</em> jobs. Something similar to this should
 be printed;</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Running</span> <span class="mi">4</span> <span class="n">jobs</span> <span class="n">using</span> <span class="mi">4</span> <span class="n">process</span><span class="p">(</span><span class="n">es</span><span class="p">)</span>
-
-<span class="n">Running</span> <span class="n">jobs</span> <span class="ow">in</span> <span class="n">parallel</span> <span class="n">using</span> <span class="n">a</span> <span class="n">multiprocessing</span> <span class="n">pool</span><span class="o">...</span>
-
-<span class="n">Completed</span> <span class="n">job</span> <span class="mi">1</span> <span class="n">of</span> <span class="mi">4</span>
-<span class="p">(</span><span class="n">NO_CHANGE</span><span class="p">)[</span><span class="n">repeat</span> <span class="mi">1</span><span class="p">]</span>
-<span class="mi">2020</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">19</span><span class="p">:</span> <span class="n">DAY</span><span class="p">:</span> <span class="mi">243</span> <span class="n">S</span><span class="p">:</span> <span class="mi">11776504</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44305573</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">1</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
-
-<span class="n">Completed</span> <span class="n">job</span> <span class="mi">2</span> <span class="n">of</span> <span class="mi">4</span>
-<span class="p">(</span><span class="n">NO_CHANGE</span><span class="p">)[</span><span class="n">repeat</span> <span class="mi">2</span><span class="p">]</span>
-<span class="mi">2020</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">16</span><span class="p">:</span> <span class="n">DAY</span><span class="p">:</span> <span class="mi">240</span> <span class="n">S</span><span class="p">:</span> <span class="mi">11787147</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44294930</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
-
-<span class="n">Completed</span> <span class="n">job</span> <span class="mi">3</span> <span class="n">of</span> <span class="mi">4</span>
-<span class="p">(</span><span class="n">NO_CHANGE</span><span class="p">)[</span><span class="n">repeat</span> <span class="mi">3</span><span class="p">]</span>
-<span class="mi">2020</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">25</span><span class="p">:</span> <span class="n">DAY</span><span class="p">:</span> <span class="mi">219</span> <span class="n">S</span><span class="p">:</span> <span class="mi">11789948</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44292129</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
-
-<span class="n">Completed</span> <span class="n">job</span> <span class="mi">4</span> <span class="n">of</span> <span class="mi">4</span>
-<span class="p">(</span><span class="n">NO_CHANGE</span><span class="p">)[</span><span class="n">repeat</span> <span class="mi">4</span><span class="p">]</span>
-<span class="mi">2020</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">04</span><span class="p">:</span> <span class="n">DAY</span><span class="p">:</span> <span class="mi">228</span> <span class="n">S</span><span class="p">:</span> <span class="mi">11782418</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">44299659</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">1</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
-
-<span class="n">Writing</span> <span class="n">a</span> <span class="n">summary</span> <span class="n">of</span> <span class="nb">all</span> <span class="n">results</span> <span class="n">into</span> <span class="n">the</span>
-<span class="n">csv</span> <span class="n">file</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">chris</span><span class="o">/</span><span class="n">GitHub</span><span class="o">/</span><span class="n">tutorial</span><span class="o">/</span><span class="n">output</span><span class="o">/</span><span class="n">results</span><span class="o">.</span><span class="n">csv</span><span class="o">.</span><span class="n">bz2</span><span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MULTIPROCESSING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Computing model run ✔
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                        │
+│  Completed job 1 of 4                                                                  │
+│  (NO_CHANGE)[repeat 1]                                                                 │
+│  2021-01-13: DAY: 238 S: 11784852    E: 0    I: 0    R: 44297225    IW: 0   UV: 1.0    │
+│  TOTAL POPULATION 56082077                                                             │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+Computing model run ✔
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                        │
+│  Completed job 2 of 4                                                                  │
+│  (NO_CHANGE)[repeat 2]                                                                 │
+│  2021-01-05: DAY: 230 S: 11770162    E: 0    I: 0    R: 44311915    IW: 1   UV: 1.0    │
+│  TOTAL POPULATION 56082077                                                             │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+Computing model run ✔
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                        │
+│  Completed job 3 of 4                                                                  │
+│  (NO_CHANGE)[repeat 3]                                                                 │
+│  2021-02-05: DAY: 261 S: 11789449    E: 0    I: 0    R: 44292628    IW: 1   UV: 1.0    │
+│  TOTAL POPULATION 56082077                                                             │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+Computing model run ✔
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                        │
+│  Completed job 4 of 4                                                                  │
+│  (NO_CHANGE)[repeat 4]                                                                 │
+│  2021-01-04: DAY: 229 S: 11779688    E: 0    I: 0    R: 44302389    IW: 0   UV: 1.0    │
+│  TOTAL POPULATION 56082077                                                             │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                        │
+│  Writing a summary of all results into the csv file                                    │
+│  /Users/chris/GitHub/tutorial/test/output/results.csv.bz2. You can use this to         │
+│  quickly look at statistics across all runs using e.g. R or pandas                     │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 </pre></div>
 </div>
-<p>In this case, all four outbreaks completed within 219-243 days, while the
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">metawards</span></code> prints a progress spinner to the screen while the jobs
+are running, so show you that it hasn’t crashed. You can switch off
+the spinner using the <code class="docutils literal notranslate"><span class="pre">--no-spinner</span></code> option if it annoys you.
+Similarly, <code class="docutils literal notranslate"><span class="pre">metawards</span></code> by default writes output to the screen using
+a very colourful theme. You can change this to a more simple and
+less-colourful theme by passing in the option <code class="docutils literal notranslate"><span class="pre">--theme</span> <span class="pre">simple</span></code>.</p>
+</div>
+<p>In this case, all four outbreaks completed within 229-261 days, while the
 number of the population who progressed to the ‘<strong>R</strong>’ state were all
 around 44.3 million.</p>
 </div>
@@ -342,7 +373,7 @@ later.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 19, 2020.
+        Last updated on May 20, 2020.
       </span>
 
     </p>

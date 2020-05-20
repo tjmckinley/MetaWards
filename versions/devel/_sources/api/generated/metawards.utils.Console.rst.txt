@@ -15,6 +15,8 @@ metawards.utils.Console
    
       ~Console.center
       ~Console.command
+      ~Console.debug
+      ~Console.debugging_enabled
       ~Console.error
       ~Console.info
       ~Console.panel
@@ -24,6 +26,7 @@ metawards.utils.Console
       ~Console.redirect_output
       ~Console.rule
       ~Console.save
+      ~Console.set_debugging_enabled
       ~Console.set_theme
       ~Console.set_use_spinner
       ~Console.spinner

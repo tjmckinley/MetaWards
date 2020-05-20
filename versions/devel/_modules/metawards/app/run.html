@@ -102,13 +102,13 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devsupport.html">Developer Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
@@ -385,6 +385,14 @@
                         <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Disable the spinner that spins when little &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;output is being printed to the screen.&quot;</span><span class="p">)</span>
 
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--debug&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Enable debugging output. This is useful &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;for MetaWards developers or if you are &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;writing your own iterators, extractors etc.&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--debug-level&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Limit debug output to the specified level.&quot;</span><span class="p">)</span>
+
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--nthreads&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of threads over which parallelise an &quot;</span>
                              <span class="s2">&quot;individual model run. The total number of &quot;</span>
@@ -472,6 +480,10 @@
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">no_spinner</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">..utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
         <span class="n">Console</span><span class="o">.</span><span class="n">set_use_spinner</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">set_debugging_enabled</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug_level</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">print_version_string</span>
@@ -1299,7 +1311,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 19, 2020.
+        Last updated on May 20, 2020.
       </span>
 
     </p>

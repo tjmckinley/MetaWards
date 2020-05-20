@@ -123,13 +123,13 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devsupport.html">Developer Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -328,46 +328,57 @@ your file, with or without the <code class="docutils literal notranslate"><span 
 <p>This will run the <code class="docutils literal notranslate"><span class="pre">metawards</span></code> <em>model run</em> for your new version of the
 lurgy. Notice that near the top of the output you have your parameters
 and the metadata printed to the screen, e.g.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Using</span> <span class="n">disease</span>
-<span class="n">Disease</span> <span class="n">lurgy2</span>
-<span class="n">loaded</span> <span class="kn">from</span> <span class="nn">lurgy2.json</span>
-<span class="n">version</span><span class="p">:</span> <span class="kc">None</span>
-<span class="n">author</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="n">Christopher</span> <span class="n">Woods</span>
-<span class="n">contact</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="n">christopher</span><span class="o">.</span><span class="n">woods</span><span class="nd">@bristol</span><span class="o">.</span><span class="n">ac</span><span class="o">.</span><span class="n">uk</span>
-<span class="n">references</span><span class="p">(</span><span class="n">s</span><span class="p">):</span> <span class="n">Completely</span> <span class="n">ficticious</span> <span class="n">disease</span> <span class="o">-</span> <span class="n">no</span> <span class="n">references</span>
-<span class="n">repository</span><span class="p">:</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">chris</span><span class="o">/</span><span class="n">GitHub</span><span class="o">/</span><span class="n">MetaWardsData</span>
-<span class="n">repository_branch</span><span class="p">:</span> <span class="kc">None</span>
-<span class="n">repository_version</span><span class="p">:</span> <span class="kc">None</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Disease ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-<span class="n">beta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="n">progress</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="n">too_ill_to_move</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-<span class="n">contrib_foi</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+• Disease: lurgy2
+• loaded from: lurgy2.json
+• repository: /Users/chris/GitHub/MetaWardsData
+• repository_branch: None
+• repository_version: None
+• beta: [0.0, 0.0, 0.5, 0.5, 0.5, 0.0]
+• progress: [1.0, 1.0, 1.0, 0.5, 0.5, 0.0]
+• too_ill_to_move: [0.0, 0.0, 0.0, 0.5, 0.8, 1.0]
+• contrib_foi: [1.0, 1.0, 1.0, 1.0, 1.0, 0.0]
+• start_symptom: 3
 </pre></div>
 </div>
 <p>Again, this helps someone reproduce this output in the future.</p>
 <p>This model run may take longer, as, intuitively, you would expect that
 the changes we have made mean that more individuals are likely to be
 infected. Indeed, for the run I performed, copied below,
-the outbreak lasted for 175 days, involving over 49m people.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">170</span> <span class="mi">8</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">6229809</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">6</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">49852262</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
+the outbreak lasted for 196 days, involving nearly 50m individuals.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 189 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 6225870  E: 1  I: 3  R: 49856203  IW: 0  POPULATION: 56082077
+Number of infections: 4
 
-<span class="mi">171</span> <span class="mi">6</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">6229809</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">3</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">49852265</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 190 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 6225870  E: 0  I: 2  R: 49856205  IW: 0  POPULATION: 56082077
+Number of infections: 2
 
-<span class="mi">172</span> <span class="mi">3</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">6229809</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">2</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">49852266</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 191 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 6225870  E: 0  I: 2  R: 49856205  IW: 0  POPULATION: 56082077
+Number of infections: 2
 
-<span class="mi">173</span> <span class="mi">2</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">6229809</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">2</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">49852266</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 192 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 6225870  E: 0  I: 2  R: 49856205  IW: 0  POPULATION: 56082077
+Number of infections: 2
 
-<span class="mi">174</span> <span class="mi">2</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">6229809</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">1</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">49852267</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 193 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 6225870  E: 0  I: 2  R: 49856205  IW: 0  POPULATION: 56082077
+Number of infections: 2
 
-<span class="mi">175</span> <span class="mi">1</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">6229809</span>    <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>    <span class="n">R</span><span class="p">:</span> <span class="mi">49852268</span>    <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>   <span class="n">TOTAL</span> <span class="n">POPULATION</span> <span class="mi">56082077</span>
-<span class="n">Infection</span> <span class="n">died</span> <span class="o">...</span> <span class="n">Ending</span> <span class="n">on</span> <span class="n">day</span> <span class="mi">176</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 194 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 6225870  E: 0  I: 2  R: 49856205  IW: 0  POPULATION: 56082077
+Number of infections: 2
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 195 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 6225870  E: 0  I: 1  R: 49856206  IW: 0  POPULATION: 56082077
+Number of infections: 1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 196 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 6225870  E: 0  I: 0  R: 49856207  IW: 0  POPULATION: 56082077
+Number of infections: 0
+Infection died ... Ending on day 197
 </pre></div>
 </div>
 <p>An overview plot of the outbreak, created using</p>
@@ -401,7 +412,7 @@ model of the lurgy.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 19, 2020.
+        Last updated on May 20, 2020.
       </span>
 
     </p>

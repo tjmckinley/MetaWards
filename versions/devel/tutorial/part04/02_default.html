@@ -121,13 +121,13 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devsupport.html">Developer Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -238,8 +238,10 @@ e.g. the <a class="reference internal" href="../../api/generated/metawards.extra
 writes the incidence to a file called <code class="docutils literal notranslate"><span class="pre">incidence.dat.bz2</span></code>. For example,
 you can call this from your <code class="docutils literal notranslate"><span class="pre">population.py</span></code> extractor by changing it
 to read;</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">output_population</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello output_population&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">Console</span>
+
+<span class="k">def</span> <span class="nf">output_population</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">Console</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Hello output_population&quot;</span><span class="p">)</span>
 
     <span class="c1"># create an output file called &#39;population.dat&#39;</span>
     <span class="n">popfile</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;population.dat&quot;</span><span class="p">,</span>
@@ -253,7 +255,7 @@ to read;</p>
 
 
 <span class="k">def</span> <span class="nf">extract_population</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hello extract_population&quot;</span><span class="p">)</span>
+    <span class="n">Console</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;hello extract_population&quot;</span><span class="p">)</span>
 
     <span class="kn">from</span> <span class="nn">metawards.extractors</span> <span class="kn">import</span> <span class="n">output_incidence</span>
 
@@ -330,7 +332,7 @@ you want to restrict output only to <code class="docutils literal notranslate"><
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 19, 2020.
+        Last updated on May 20, 2020.
       </span>
 
     </p>
