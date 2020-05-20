@@ -257,7 +257,14 @@ class Console:
         theme = Console._get_theme()
         style = theme.text(style)
 
-        Console._get_console().print(text, style=style)
+        try:
+            Console._get_console().print(text, style=style)
+        except UnicodeEncodeError:
+            # this output can't cope with a complex theme - switch
+            # to theme 'simple'
+            Console.set_theme("simple")
+            str(text).encode("latin-1", errors="replace").decode("UTF-8")
+            Console._get_console().print(text, style=style)
 
     @staticmethod
     def rule(title: str = None, style=None, **kwargs):
