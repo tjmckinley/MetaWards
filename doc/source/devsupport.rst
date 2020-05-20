@@ -104,7 +104,7 @@ some time is not being reported.
 Profiler
 --------
 
-You control what is reported using the :class:`metawards.Profiler` class.
+You control what is reported using the :class:`metawards.utils.Profiler` class.
 You start timing using ``profiler = profiler.start("name of section")`` and you
 stop timing using ``profiler = profiler.stop()``. For example using the
 iterator ``iterate_profile.py``;
@@ -157,7 +157,7 @@ several times and taking an average, especially if you are interested
 in plotting parallel scaling of the individual ``metawards`` functions.
 
 .. note::
-   A :class:`~metawards.Profiler` is always passed as the ``profiler``
+   A :class:`~metawards.utils.Profiler` is always passed as the ``profiler``
    keyword argument to all of the plugin classes (iterators, extractors etc.)
 
 By default, all plugin functions are timed, hence why in the output
@@ -166,7 +166,7 @@ were called, in which order, and how long they took. This is actually
 the easiest way to debug whether your plugin function has been called - just
 run using ``--profile`` and see if your function is listed in the timing.
 
-Printf Debugging
+printf Debugging
 ----------------
 
 ``metawards`` developers are big fans of
@@ -220,7 +220,7 @@ printed for every iteration.
    in a single second then they won't show the time.
 
 The debug output is only printed when you run ``metawards`` using the
-``--debug`` command line argument, so they are safe to leave in
+``--debug`` command line argument, so it is safe to leave in
 production code.
 
 Debugging levels
@@ -242,18 +242,17 @@ the ``level`` keyword argument, e.g.
 
         return iterate_default(population=population, **kwargs)
 
-would not only print out if the debugging level was ``3`` or above
-(if the debugging level had been set - if not, then the level is
-ignored).
+would only print out if the debugging level was ``3`` or above.
 
 You can set the level using the ``--debug-level`` command line argument,
 e.g.
 
 .. code-block:: bash
 
-   metawards -d lurgy --iterator iterate_debug --debug --debug-level 3
+   metawards -d lurgy --iterator iterate_debug --debug --debug-level 5
 
-would set the debug level to ``3``, and so the debug output can be printed;
+would set the debug level to ``5``, which is above ``3``,
+and so the debug output will be printed;
 
 ::
 
@@ -274,15 +273,18 @@ Debugging lambdas
 It is better to avoid constructing expensive debug strings if they are
 not going to be printed to the screen. There are two ways to avoid this;
 
-1. Use the :meth:`~metawards.Console.debugging_enabled` function of
-   :class:`~metawards.Console` to see if debugging is enabled for
-   the level you wish, and only call ``Console.debug`` if it is.
+1. Use the :meth:`~metawards.utils.Console.debugging_enabled` function of
+   :class:`~metawards.utils.Console` to see if debugging is enabled for
+   the level you wish, and only call
+   :meth:`Console.debug <metawards.utils.Console.debug>` if it is.
 
-2. Put your debug string into a lambda function. The ``Console.debug``
+2. Put your debug string into a lambda function. The
+   :meth:`Console.debug <metawards.utils.Console.debug>`
    function will call this lambda function only if the debug output
-   is enabled. This is really easy to do, e.g.
+   is enabled. This is really easy to do, e.g. here we change the
+   debug statement to;
 
-.. code-block::
+.. code-block:: python
 
     from metawards import Population
     from metawards.iterators import iterate_default
@@ -295,7 +297,7 @@ not going to be printed to the screen. There are two ways to avoid this;
 
         return iterate_default(population=population, **kwargs)
 
-the above ``debug`` call passes in ``lambda: "Hello!"`` instead of
+such that we use ``lambda: "Hello!"`` instead of
 ``"Hello!"``. This converts the string into a lambda function, meaning
 that it should not be generated unless the debug statement is
 actually printed.
@@ -303,7 +305,9 @@ actually printed.
 Testing
 -------
 
-``metawards`` has a large test suite built using
-`pytest <https://docs.pytest.org/en/latest/>`__. We encourage you to
+``metawards`` has a
+`large test suite <https://github.com/metawards/MetaWards/tree/devel/tests>`__
+built using `pytest <https://docs.pytest.org/en/latest/>`__.
+We encourage you to
 look through the tests and use these to help learn how to use the classes.
 We also encourage you to write your own tests for your new code :-)
