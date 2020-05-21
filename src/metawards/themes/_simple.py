@@ -26,7 +26,7 @@ class Simple:
         return _box.SQUARE
 
     def padding_style(self, style):
-        return "on black"
+        return ""
 
     def text(self, style):
         return "white"
@@ -59,7 +59,7 @@ class Simple:
         return "white"
 
     def panel(self, style):
-        return "white on black"
+        return "white"
 
     def get_frames(self, width: int = 80):
         """Return the frames used to animate a spinner in a console

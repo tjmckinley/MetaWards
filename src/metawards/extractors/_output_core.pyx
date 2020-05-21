@@ -463,10 +463,14 @@ def output_core_omp(network: Network, population: Population,
         R += R_in_wards[j]
 
     if S != susceptibles or E != latent or I != total or R != recovereds:
-        raise AssertionError(
-            f"Disagreement in accumulated totals - indicates a program bug! "
-            f"{S} vs {susceptibles}, {E} vs {latent}, {I} vs {total}, "
-            f"{R} vs {recovereds}")
+        error = \
+            f"Disagreement in accumulated totals - indicates a program bug! " \
+            f"{S} vs {susceptibles}, {E} vs {latent}, {I} vs {total}, " \
+            f"{R} vs {recovereds}"
+
+        from ..utils._console import Console
+        Console.error(error)
+        raise AssertionError(error)
 
     if population is not None:
         population.susceptibles = susceptibles
@@ -702,10 +706,14 @@ def output_core_serial(network: Network, population: Population,
         R += R_in_wards[j]
 
     if S != susceptibles or E != latent or I != total or R != recovereds:
-        raise AssertionError(
-            f"Disagreement in accumulated totals - indicates a program bug! "
-            f"{S} vs {susceptibles}, {E} vs {latent}, {I} vs {total}, "
-            f"{R} vs {recovereds}")
+        error = \
+            f"Disagreement in accumulated totals - indicates a program bug! " \
+            f"{S} vs {susceptibles}, {E} vs {latent}, {I} vs {total}, " \
+            f"{R} vs {recovereds}"
+
+        from ..utils._console import Console
+        Console.error(error)
+        raise AssertionError(error)
 
     if population is not None:
         population.susceptibles = susceptibles

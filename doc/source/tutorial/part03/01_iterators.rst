@@ -41,8 +41,8 @@ What is a normal day?
 
 ``metawards`` uses an ``iterator`` to iterate the model outbreak forward
 day by day. All of the iterators are in the
-:doc:`metawards.iterators <../../api/index_api_MetaWards_iterators>` module.
-The default iterator is :doc:`~metawards.iterators.iterate_default`.
+:doc:`metawards.iterators <../../api/index_MetaWards_iterators>` module.
+The default iterator is :class:`~metawards.iterators.iterate_default`.
 
 An iterator applies a sequence of functions that advance the disease step
 by step through each day. These ``advance_functions`` control exactly

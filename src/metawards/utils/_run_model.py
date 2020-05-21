@@ -219,7 +219,6 @@ def run_model(network: _Union[Network, Networks],
 
         if nsteps is not None:
             if iteration_count >= nsteps:
-                trajectory.append(population)
                 Console.print(f"Exiting model run early")
                 break
 

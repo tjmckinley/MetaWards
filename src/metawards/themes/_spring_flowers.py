@@ -80,18 +80,25 @@ class SpringFlowers:
 
         if style == "header":
             return _box.HEAVY_EDGE
+        elif style == "command":
+            return _box.MINIMAL_HEAVY_HEAD
         else:
             return _box.SQUARE
 
     def padding_style(self, style):
         if style == "header":
             return "on #220077"
+        elif style == "command":
+            return "bold white on #222222"
         else:
             return self.panel(style, advance=False)
 
     def panel(self, style, advance=True):
         if style is None:
             return "on black"
+
+        elif style == "command":
+            return "white on #222222"
 
         elif style == "alternate":
             if len(self.panel_colors) == 0:

@@ -19,7 +19,7 @@ def output_final_report(output_dir: OutputFiles,
 Writing a summary of all results into the csv file
 **{output_dir.get_filename('results.csv')}**. You can use this to quickly
 look at statistics across all runs using e.g. R or pandas""",
-                  markdown=True)
+                  markdown=True, style="alternate")
 
     varnames = results[0][0].variable_names()
 
