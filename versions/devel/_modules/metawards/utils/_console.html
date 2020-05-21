@@ -85,6 +85,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -103,6 +106,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../packaging.html">Packaging releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../development.html">Developer’s guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../snaglist.html">Snag list</a></li>
@@ -481,9 +485,12 @@
         <span class="n">style</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">panel_box</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
 
+        <span class="kn">from</span> <span class="nn">rich.padding</span> <span class="kn">import</span> <span class="n">Padding</span> <span class="k">as</span> <span class="n">_Padding</span>
+
         <span class="k">if</span> <span class="n">padding</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">rich.padding</span> <span class="kn">import</span> <span class="n">Padding</span> <span class="k">as</span> <span class="n">_Padding</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">_Padding</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="n">padding_style</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">_Padding</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="n">padding_style</span><span class="p">)</span>
 
         <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">_Panel</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
                              <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span>
@@ -517,7 +524,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;    &quot;</span> <span class="o">+</span> <span class="n">text</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;command&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">print_population</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">demographics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>

@@ -85,6 +85,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -103,6 +106,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../packaging.html">Packaging releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../development.html">Developer’s guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../snaglist.html">Snag list</a></li>
@@ -262,18 +266,25 @@
 
         <span class="k">if</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;header&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_box</span><span class="o">.</span><span class="n">HEAVY_EDGE</span>
+        <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;command&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_box</span><span class="o">.</span><span class="n">MINIMAL_HEAVY_HEAD</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_box</span><span class="o">.</span><span class="n">SQUARE</span>
 
     <span class="k">def</span> <span class="nf">padding_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;header&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;on #220077&quot;</span>
+        <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;command&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;bold white on #222222&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span><span class="n">style</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">style</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;on black&quot;</span>
+
+        <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;command&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;white on #222222&quot;</span>
 
         <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;alternate&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel_colors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>

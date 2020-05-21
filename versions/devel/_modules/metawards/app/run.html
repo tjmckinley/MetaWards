@@ -85,6 +85,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -103,6 +106,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../packaging.html">Packaging releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../development.html">Developer’s guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../snaglist.html">Snag list</a></li>
@@ -197,7 +201,7 @@
            <span class="s2">&quot;cli&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_parallel_scheme"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_parallel_scheme.html#metawards.app.get_parallel_scheme">[docs]</a><span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;This function tries to work out which of the different parallel</span>
 <span class="sd">       methods we should use to distribute work between multiple processes.</span>
 
@@ -211,7 +215,7 @@
     <span class="k">elif</span> <span class="s2">&quot;scoop&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;scoop&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span></div>
+        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span>
 
 
 <span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
@@ -538,7 +542,7 @@
                      <span class="s2">&quot;environment variable METAWARDS_CORES_PER_NODE&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_threads_per_task"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_threads_per_task.html#metawards.app.get_threads_per_task">[docs]</a><span class="k">def</span> <span class="nf">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_threads_per_task</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">nthreads</span>
 
@@ -560,7 +564,7 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must specify the number of threads per task &quot;</span>
                      <span class="s2">&quot;using --nthreads or by setting the &quot;</span>
                      <span class="s2">&quot;environment variables METAWARDS_THREADS_PER_TASK &quot;</span>
-                     <span class="s2">&quot;or OMP_NUM_THREADS&quot;</span><span class="p">)</span></div>
+                     <span class="s2">&quot;or OMP_NUM_THREADS&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="scoop_supervisor"><a class="viewcode-back" href="../../../api/generated/metawards.app.scoop_supervisor.html#metawards.app.scoop_supervisor">[docs]</a><span class="k">def</span> <span class="nf">scoop_supervisor</span><span class="p">(</span><span class="n">hostfile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

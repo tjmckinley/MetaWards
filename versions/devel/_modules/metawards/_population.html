@@ -85,6 +85,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -103,6 +106,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../snaglist.html">Snag list</a></li>
@@ -356,7 +360,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">summary</span><span class="si">}</span><span class="se">\n</span><span class="s2">  &quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subs</span><span class="p">)</span></div></div>
 
 
-<span class="nd">@_dataclass</span>
+<div class="viewcode-block" id="Populations"><a class="viewcode-back" href="../../api/generated/metawards.Populations.html#metawards.Populations">[docs]</a><span class="nd">@_dataclass</span>
 <span class="k">class</span> <span class="nc">Populations</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;This class holds the trajectory of Population objects recorded</span>
 <span class="sd">       for every step (day) of a model outbreak</span>
@@ -364,18 +368,18 @@
     <span class="c1">#: The trajectory of Population objects</span>
     <span class="n">_trajectory</span><span class="p">:</span> <span class="n">_List</span><span class="p">[</span><span class="n">Population</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Populations.__str__"><a class="viewcode-back" href="../../api/generated/metawards.Populations.html#metawards.Populations.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;Populations:empty&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Latest: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Latest: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="Populations.__getitem__"><a class="viewcode-back" href="../../api/generated/metawards.Populations.html#metawards.Populations.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the ith Population in the trajectory&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;No trajectory data collected&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -383,16 +387,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">strip_demographics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Populations.strip_demographics"><a class="viewcode-back" href="../../api/generated/metawards.Populations.html#metawards.Populations.strip_demographics">[docs]</a>    <span class="k">def</span> <span class="nf">strip_demographics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove the demographics information from this trajectory. This</span>
 <span class="sd">           makes it much smaller and easier to transmit over a network</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">:</span>
             <span class="n">value</span><span class="o">.</span><span class="n">_subpops</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">):</span>
+<div class="viewcode-block" id="Populations.append"><a class="viewcode-back" href="../../api/generated/metawards.Populations.html#metawards.Populations.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Append the next step in the trajectory.</span>
 
 <span class="sd">           Parameters</span>
@@ -406,7 +410,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_deepcopy</span><span class="p">(</span><span class="n">population</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_deepcopy</span><span class="p">(</span><span class="n">population</span><span class="p">))</span></div></div>
 </pre></div>
 
            </div>
