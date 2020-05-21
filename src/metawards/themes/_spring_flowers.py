@@ -54,7 +54,7 @@ class SpringFlowers:
             spinner.green.ok("Success")
 
     def spinner_failure(self, spinner):
-        if Console.support_emojis():
+        if Console.supports_emojis():
             spinner.red.fail("✘")
         else:
             spinner.red.fail("Failed")

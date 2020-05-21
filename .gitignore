@@ -16,7 +16,8 @@ src/metawards/mixers/*.so
 src/metawards/movers/*.c
 src/metawards/movers/*.so
 __pycache__
-/dist
+/dist/*.tar.gz
+/dist/*.whl
 /src/metawards.egg-info
 /2011Data
 /.pytest_cache
