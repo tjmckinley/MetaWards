@@ -124,19 +124,25 @@ class Console:
             outfile += ".bz2"
             errfile += ".bz2"
 
-            OUTFILE = bz2.open(outfile, "wt")
-            ERRFILE = bz2.open(errfile, "wt")
+            OUTFILE = bz2.open(outfile, "wt", encoding="utf-8")
+            ERRFILE = bz2.open(errfile, "wt", encoding="utf-8")
         else:
-            OUTFILE = open(outfile, "wt")
-            ERRFILE = open(errfile, "wt")
+            OUTFILE = open(outfile, "wt", encoding="utf-8")
+            ERRFILE = open(errfile, "wt", encoding="utf-8")
 
-        global _console
+        console = Console._get_console()
+
+        if console is None:
+            raise AssertionError("The global console should never be None")
+
         new_out = _Console(file=OUTFILE, record=False, log_time=True,
                            log_path=True, emoji=Console.supports_emojis())
         new_out._use_spinner = False
-        new_out._debugging_enabled = _console._debugging_enabled
-        new_out._debugging_level = _console._debugging_level
-        old_out = _console
+        new_out._debugging_enabled = console._debugging_enabled
+        new_out._debugging_level = console._debugging_level
+        old_out = console
+
+        global _console
         _console = new_out
 
         new_err = ERRFILE
@@ -251,7 +257,22 @@ class Console:
         theme = Console._get_theme()
         style = theme.text(style)
 
-        Console._get_console().print(text, style=style)
+        try:
+            Console._get_console().print(text, style=style)
+        except UnicodeEncodeError:
+            # this output can't cope with a complex theme - switch
+            # to theme 'simple'
+            Console.set_theme("simple")
+
+            if isinstance(text, str):
+                # try to print this as latin-1
+                try:
+                    text = text.encode("latin-1",
+                                       errors="replace").decode("latin-1")
+                    Console._get_console().print(text)
+                except Exception:
+                    # accept that this isn't going to be printable
+                    pass
 
     @staticmethod
     def rule(title: str = None, style=None, **kwargs):
@@ -331,7 +352,7 @@ class Console:
         console._use_spinner = use_spinner
 
     @staticmethod
-    def spinner(text: str = None):
+    def spinner(text: str = ""):
         try:
             from yaspin import yaspin, Spinner
             have_yaspin = True
@@ -373,26 +394,22 @@ class Console:
             Console.error(f"Cannot get console output: {e.__class__} {e}")
             return
 
-        try:
-            if isinstance(file, str):
-                with open(file, "w", encoding="UTF-8") as FILE:
-                    FILE.write(text)
-            else:
+        if isinstance(file, str):
+            with open(file, "w", encoding="UTF-8") as FILE:
+                FILE.write(text)
+        else:
+            try:
+                if file.encoding.lower() != "utf-8":
+                    # make sure that encoding the file to the right character
+                    # set will replace invalid characters, rather than throw
+                    # unicode encoding errors
+                    text = text.encode(file.encoding,
+                                       errors="replace").decode(file.encoding)
+
                 file.write(text)
-
-        except UnicodeEncodeError as e:
-            # something went wrong writing the file - we should encode
-            # this ourselves directly to latin-1 so we at least save something
-            Console.warning(f"UnicodeEncodeError: {e}. Console output will "
-                            f"be saved using latin1 (may lose some info)")
-
-            # take the text through a latin-1 to UTF-8 cycle. This will
-            # replace all non-latin1 characters with "?" so that
-            # the result is valid latin-1 and UTF-8
-            text = text.encode("latin-1", errors="replace").decode("UTF-8")
-
-            if isinstance(file, str):
-                with open(file, "w", encoding="UTF-8") as FILE:
-                    FILE.write(text)
-            else:
+            except UnicodeEncodeError:
+                # this still didn't work - use a latin-1 round-robin
+                # to make everything ascii...
+                text = text.encode("latin-1",
+                                   errors="replace").decode("latin-1")
                 file.write(text)
