@@ -15,3 +15,4 @@ In this sixth part of the tutorial you will:
 
    part06/01_movers
    part06/02_duration
+   part06/03_scan_duration
