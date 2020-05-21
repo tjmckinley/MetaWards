@@ -306,19 +306,25 @@
             <span class="n">outfile</span> <span class="o">+=</span> <span class="s2">&quot;.bz2&quot;</span>
             <span class="n">errfile</span> <span class="o">+=</span> <span class="s2">&quot;.bz2&quot;</span>
 
-            <span class="n">OUTFILE</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span>
-            <span class="n">ERRFILE</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">errfile</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span>
+            <span class="n">OUTFILE</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="n">ERRFILE</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">errfile</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">OUTFILE</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span>
-            <span class="n">ERRFILE</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">errfile</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span>
+            <span class="n">OUTFILE</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="n">ERRFILE</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">errfile</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
-        <span class="k">global</span> <span class="n">_console</span>
+        <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="o">.</span><span class="n">_get_console</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">console</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;The global console should never be None&quot;</span><span class="p">)</span>
+
         <span class="n">new_out</span> <span class="o">=</span> <span class="n">_Console</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">OUTFILE</span><span class="p">,</span> <span class="n">record</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">log_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                            <span class="n">log_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="n">Console</span><span class="o">.</span><span class="n">supports_emojis</span><span class="p">())</span>
         <span class="n">new_out</span><span class="o">.</span><span class="n">_use_spinner</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">new_out</span><span class="o">.</span><span class="n">_debugging_enabled</span> <span class="o">=</span> <span class="n">_console</span><span class="o">.</span><span class="n">_debugging_enabled</span>
-        <span class="n">new_out</span><span class="o">.</span><span class="n">_debugging_level</span> <span class="o">=</span> <span class="n">_console</span><span class="o">.</span><span class="n">_debugging_level</span>
-        <span class="n">old_out</span> <span class="o">=</span> <span class="n">_console</span>
+        <span class="n">new_out</span><span class="o">.</span><span class="n">_debugging_enabled</span> <span class="o">=</span> <span class="n">console</span><span class="o">.</span><span class="n">_debugging_enabled</span>
+        <span class="n">new_out</span><span class="o">.</span><span class="n">_debugging_level</span> <span class="o">=</span> <span class="n">console</span><span class="o">.</span><span class="n">_debugging_level</span>
+        <span class="n">old_out</span> <span class="o">=</span> <span class="n">console</span>
+
+        <span class="k">global</span> <span class="n">_console</span>
         <span class="n">_console</span> <span class="o">=</span> <span class="n">new_out</span>
 
         <span class="n">new_err</span> <span class="o">=</span> <span class="n">ERRFILE</span>
@@ -433,7 +439,22 @@
         <span class="n">theme</span> <span class="o">=</span> <span class="n">Console</span><span class="o">.</span><span class="n">_get_theme</span><span class="p">()</span>
         <span class="n">style</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
 
-        <span class="n">Console</span><span class="o">.</span><span class="n">_get_console</span><span class="p">()</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">_get_console</span><span class="p">()</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
+            <span class="c1"># this output can&#39;t cope with a complex theme - switch</span>
+            <span class="c1"># to theme &#39;simple&#39;</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="s2">&quot;simple&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="c1"># try to print this as latin-1</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;latin-1&quot;</span><span class="p">,</span>
+                                       <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;latin-1&quot;</span><span class="p">)</span>
+                    <span class="n">Console</span><span class="o">.</span><span class="n">_get_console</span><span class="p">()</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="c1"># accept that this isn&#39;t going to be printable</span>
+                    <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Console.rule"><a class="viewcode-back" href="../../../api/generated/metawards.utils.Console.html#metawards.utils.Console.rule">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">rule</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -513,7 +534,7 @@
         <span class="n">console</span><span class="o">.</span><span class="n">_use_spinner</span> <span class="o">=</span> <span class="n">use_spinner</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">spinner</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spinner</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">yaspin</span> <span class="kn">import</span> <span class="n">yaspin</span><span class="p">,</span> <span class="n">Spinner</span>
             <span class="n">have_yaspin</span> <span class="o">=</span> <span class="kc">True</span>
@@ -555,28 +576,24 @@
             <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot get console output: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
-                    <span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
+                <span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">encoding</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">:</span>
+                    <span class="c1"># make sure that encoding the file to the right character</span>
+                    <span class="c1"># set will replace invalid characters, rather than throw</span>
+                    <span class="c1"># unicode encoding errors</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
+                                       <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+
                 <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-
-        <span class="k">except</span> <span class="ne">UnicodeEncodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="c1"># something went wrong writing the file - we should encode</span>
-            <span class="c1"># this ourselves directly to latin-1 so we at least save something</span>
-            <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UnicodeEncodeError: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Console output will &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;be saved using latin1 (may lose some info)&quot;</span><span class="p">)</span>
-
-            <span class="c1"># take the text through a latin-1 to UTF-8 cycle. This will</span>
-            <span class="c1"># replace all non-latin1 characters with &quot;?&quot; so that</span>
-            <span class="c1"># the result is valid latin-1 and UTF-8</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;latin-1&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
-                    <span class="n">FILE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
+                <span class="c1"># this still didn&#39;t work - use a latin-1 round-robin</span>
+                <span class="c1"># to make everything ascii...</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;latin-1&quot;</span><span class="p">,</span>
+                                   <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;latin-1&quot;</span><span class="p">)</span>
                 <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div></div>
 </pre></div>
 
@@ -591,7 +608,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 20, 2020.
+        Last updated on May 21, 2020.
       </span>
 
     </p>
