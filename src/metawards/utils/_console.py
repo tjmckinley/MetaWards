@@ -299,9 +299,12 @@ class Console:
         style = theme.panel(style)
         box = theme.panel_box(style)
 
+        from rich.padding import Padding as _Padding
+
         if padding:
-            from rich.padding import Padding as _Padding
             text = _Padding(text, (1, 2), style=padding_style)
+        else:
+            text = _Padding(text, (0, 1), style=padding_style)
 
         Console.print(_Panel(text, box=box, width=width,
                              expand=expand,
@@ -335,7 +338,7 @@ class Console:
 
     @staticmethod
     def command(text: str, *args, **kwargs):
-        Console.print("    " + text, markdown=True)
+        Console.panel(text, style="command", padding=False)
 
     @staticmethod
     def print_population(population, demographics=None,
