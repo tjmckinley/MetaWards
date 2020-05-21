@@ -64,14 +64,18 @@ def test_console():
 
     import bz2
 
-    with bz2.open(os.path.join(outdir, "console.log.bz2"), "t") as FILE:
+    with bz2.open(os.path.join(outdir,
+                               "console.log.bz2"),
+                  "t", encoding="utf-8") as FILE:
         lines = FILE.readlines()
 
     print("\nMain output")
     for line in lines:
         print(line.strip())
 
-    with bz2.open(os.path.join(outdir, "output.txt.bz2"), "t") as FILE:
+    with bz2.open(os.path.join(outdir,
+                               "output.txt.bz2"),
+                  "t", encoding="utf-8") as FILE:
         lines = FILE.readlines()
 
     print("\nRedirected output")
