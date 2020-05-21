@@ -398,12 +398,29 @@ def run_models(network: _Union[Network, Networks],
             Console.print("Running jobs in parallel using a scoop pool")
             from scoop import futures
 
-            results = futures.map_as_completed(run_worker, arguments)
+            results = []
 
-            for i in range(0, len(variables)):
+            for argument in arguments:
+                try:
+                    results.append(futures.submit(run_worker, argument))
+                except Exception as e:
+                    Console.error(
+                        f"Error submitting calculation: {e.__class__} {e}\n"
+                        f"Trying to submit again...")
+
+                    # try again
+                    try:
+                        results.append(futures.submit(run_worker, argument))
+                    except Exception as e:
+                        Console.error(
+                            f"No - another error: {e.__class__} {e}\n"
+                            f"Skipping this job")
+                        results.append(None)
+
+            for i in range(0, len(results)):
                 with Console.spinner("Computing model run") as spinner:
                     try:
-                        output = next(results)
+                        output = results[i].result()
                         spinner.success()
                     except Exception as e:
                         spinner.failure()
