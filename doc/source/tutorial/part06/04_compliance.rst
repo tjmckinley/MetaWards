@@ -27,7 +27,8 @@ Both the :meth:`~metawards.movers.go_isolate` and
 :meth:`~metawards.movers.go_to` go functions accept the ``fraction``
 keyword argument. This argument sets the percentage (or fraction)
 of the population who should move. By default this is ``1.0`` (representing
-100%).
+100%). This fraction is used to sample a random number of individuals
+according to a binomial distribution.
 
 We can adjust this value to examine impact of reduced self-isolation
 compliance on the outbreak.
@@ -63,9 +64,10 @@ To do this, update your ``move_isolate.py`` move function to;
 
         return [go_released, go_isolate_day]
 
-Here we have added ``compliance_fraction``, set to ``0.5`` so represent
-50% of individuals complying with the need to go into self-isolation.
-This fraction is passed as ``fraction`` to the ``go_isolate`` function.
+Here we have added ``compliance_fraction``, set to ``0.5`` to represent,
+on average, to 50% of individuals complying with the need to go into
+self-isolation. This fraction is passed as ``fraction`` to the
+``go_isolate`` function.
 
 Run ``metawards`` using;
 
@@ -73,10 +75,12 @@ Run ``metawards`` using;
 
    metawards -d lurgy4 -D demographics.json -a ExtraSeedsLondon.dat --mixer mix_isolate --mover move_isolate --nsteps 365
 
-You should see that infection spreads slowly, as the 50% of individuals who
+You should see that infection spreads quickly, as the 50% of individuals who
 each day decide not to self-isolate from stage 2 of the lurgy infect the
-susceptible population. A plot of the the demographics shows exponential
-growth in the disease, e.g. via;
+susceptible population. The outbreak should end with approximately
+two thirds of those infected recovering in ``released`` (and so had
+isolated), and one third recovering in ``home`` (having never isolated).
+A plot of the the demographics shows this more clearly;
 
 .. code-block:: bash
 
@@ -99,6 +103,7 @@ leaving quarantine early each day by passing ``fraction`` to
     from metawards import Population
     from metawards import Networks
     from metawards.movers import go_isolate, go_to
+    from metawards.utils import Console
 
     def move_isolate(network: Networks, population: Population, **kwargs):
         user_params = network.params.user_params
@@ -110,22 +115,46 @@ leaving quarantine early each day by passing ``fraction`` to
         # fraction who leave early, counting from the longest to
         # shortest stay in isolation. 50% leave after 6 days, while
         # only 0% leave after 1 day
-        leave_early = [0.5, 0.4, 0.3, 0.2, 0.1, 0.0]
+        leave_early = [0.5, 0.4, 0.3, 0.2, 0.1, 0.05]
 
-        day = population.day % ndays
+        day = population.day % 7
         isolate = f"isolate_{day}"
 
-        funcs = []
+        go_early = []
 
-        for i in range(1, ndays):
-            quarantine = f"isolate_{(day + i) % ndays}"
-            fraction_leave = leave_early[i-1]
-            go_release_early = lambda **kwargs: go_to(go_from=quarantine,
-                                                    go_to="released",
-                                                    fraction=fraction_leave,
-                                                    **kwargs)
-
-            funcs.append(go_release_early)
+        # have to define this functions one-by-one and not in a loop
+        # otherwise python will bind all functions to the value of i
+        # of the last iteration of the loop
+        go_early.append(lambda **kwargs: go_to(
+                                go_from=f"isolate_{(day + 1) % 7}",
+                                go_to="released",
+                                fraction=leave_early[0],
+                                **kwargs))
+        go_early.append(lambda **kwargs: go_to(
+                                go_from=f"isolate_{(day + 2) % 7}",
+                                go_to="released",
+                                fraction=leave_early[1],
+                                **kwargs))
+        go_early.append(lambda **kwargs: go_to(
+                                go_from=f"isolate_{(day + 3) % 7}",
+                                go_to="released",
+                                fraction=leave_early[2],
+                                **kwargs))
+        go_early.append(lambda **kwargs: go_to(
+                                go_from=f"isolate_{(day + 4) % 7}",
+                                go_to="released",
+                                fraction=leave_early[3],
+                                **kwargs))
+        go_early.append(lambda **kwargs: go_to(
+                                go_from=f"isolate_{(day + 5) % 7}",
+                                go_to="released",
+                                fraction=leave_early[4],
+                                **kwargs))
+        go_early.append(lambda **kwargs: go_to(
+                                go_from=f"isolate_{(day + 6) % 7}",
+                                go_to="released",
+                                fraction=leave_early[5],
+                                **kwargs))
 
         go_isolate_day = lambda **kwargs: go_isolate(
                                             go_from="home",
@@ -138,7 +167,16 @@ leaving quarantine early each day by passing ``fraction`` to
                                             go_to="released",
                                             **kwargs)
 
-        return funcs + [go_released, go_isolate_day]
+        return go_early + [go_released, go_isolate_day]
+
+.. note::
+   It would be nicer and less error-prone if we could create the
+   ``go_early`` functions in a loop. However, this would not work
+   because of the that Python lambda functions bind their arguments.
+   If we did this, the arguments from the last iteration of the loop
+   would be used for all of the ``go_early`` functions, i.e. we would
+   try to move individuals out of the same ``isolate_N`` demographic
+   six times.
 
 Here, we've created a new set of go functions called ``go_release_early``.
 There is one for each ``isolate_N`` demographic *except* for the

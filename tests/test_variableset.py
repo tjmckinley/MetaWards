@@ -8,6 +8,7 @@ script_dir = os.path.dirname(__file__)
 ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
 params_with_repeats_csv = os.path.join(script_dir, "data",
                                        "params_with_repeats.csv")
+compliance_dat = os.path.join(script_dir, "data", "compliance.dat")
 
 
 def test_variableset():
@@ -83,6 +84,23 @@ def test_variables_with_repeats():
         assert variable.output_dir() == o
 
 
+def test_variables_compliance():
+    variables = VariableSets.read(compliance_dat)
+
+    assert len(variables) == 11
+
+    values = [1.0, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7,
+              0.65, 0.6, 0.55, 0.5]
+
+    for variable, f in zip(variables, values):
+        print(variable)
+        print(len(variable))
+        print(variable[".compliance"], f)
+        assert len(variable) == 1
+        assert variable[".compliance"] == f
+
+
 if __name__ == "__main__":
     test_variableset()
     test_variables_with_repeats()
+    test_variables_compliance()
