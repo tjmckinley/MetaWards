@@ -6,6 +6,8 @@ from metawards import VariableSets
 
 script_dir = os.path.dirname(__file__)
 ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
+params_with_repeats_csv = os.path.join(script_dir, "data",
+                                       "params_with_repeats.csv")
 
 
 def test_variableset():
@@ -60,6 +62,27 @@ def test_variableset():
     with pytest.raises(ValueError):
         variables.repeat([2, 4, 6])
 
+    for variable in v4:
+        assert variable.output_dir() == variable.fingerprint(
+            include_index=True)
+
+
+def test_variables_with_repeats():
+    variables = VariableSets.read(params_with_repeats_csv)
+
+    for variable in variables:
+        assert variable.output_dir() != variable.fingerprint(
+            include_index=True)
+
+        o = "beta_%.1f_ill_%.2f" % (variable["beta[2]"],
+                                    variable["too_ill_to_move[2]"])
+        o = o.replace(".", "i")
+
+        print(variable.output_dir(), o)
+
+        assert variable.output_dir() == o
+
 
 if __name__ == "__main__":
     test_variableset()
+    test_variables_with_repeats()

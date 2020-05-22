@@ -198,8 +198,16 @@ def run_models(network: _Union[Network, Networks],
     outdirs = []
 
     for v in variables:
-        f = v.fingerprint(include_index=True)
+        f = v.output_dir()
         d = _os.path.join(output_dir.get_path(), f)
+
+        i = 1
+        base = d
+
+        while d in outdirs:
+            i += 1
+            d = base + "x%03d" % i
+
         outdirs.append(d)
 
     outputs = []
