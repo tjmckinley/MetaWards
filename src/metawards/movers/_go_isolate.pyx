@@ -2,13 +2,18 @@
 from typing import Union as _Union
 from typing import List as _List
 
+cimport cython
 from cython.parallel import parallel, prange
+from libc.stdint cimport uintptr_t
 
 from libc.math cimport ceil
 
 from .._networks import Networks
 from .._infections import Infections
 from .._demographics import DemographicID, DemographicIDs
+
+from ..utils._ran_binomial cimport _ran_binomial, \
+                                   _get_binomial_ptr, binomial_rng
 
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
@@ -20,6 +25,7 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
                         network: Networks,
                         infections: Infections,
                         nthreads: int,
+                        rngs,
                         self_isolate_stage: _Union[_List[int], int] = 2,
                         fraction: _Union[_List[float], float] = 1.0,
                         **kwargs) -> None:
@@ -27,7 +33,10 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
        demographic(s) to the "to" demographic if they show any
        signs of infection (the disease stage is greater or equal
        to 'self_isolate_stage' - by default this is level '2',
-       which is one level above "latent").
+       which is one level above "latent"). This can move
+       a subset of individuals if 'fraction' is less than 1, e.g.
+       0.5 would move 50% of individuals (chosen using
+       a random binomial distribution)
 
        Parameters
        ----------
@@ -51,6 +60,9 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
          this stage into isolation. If this is a single value then
          the same fraction applies to all self_isolation_stages. Otherwise,
          the fraction for self_isolate_stage[i] is fraction[i]
+       rngs:
+         Thread-safe random number generators used to choose the fraction
+         of individuals
     """
 
     # make sure that all of the needed demographics exist, and
@@ -109,6 +121,12 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
     cdef int * to_play_infections_i
 
     cdef int nsubnets = len(subnets)
+
+    # get the random number generator
+    cdef uintptr_t [::1] rngs_view = rngs
+    cdef binomial_rng* rng   # pointer to parallel rng
+
+    cdef int thread_id
 
     cdef int num_threads = nthreads
 
@@ -150,9 +168,13 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 play_infections_i[j]
                             play_infections_i[j] = 0
                 else:
+                    thread_id = cython.parallel.threadid()
+                    rng = _get_binomial_ptr(rngs_view[thread_id])
+
                     for j in prange(1, nlinks_plus_one, schedule="static"):
-                        to_move = <int>(ceil(fraction_i *
-                                             work_infections_i[j]))
+                        to_move = _ran_binomial(rng, fraction_i,
+                                                <int>(work_infections_i[j]))
+
                         if to_move > 0:
                             to_work_infections_i[j] = \
                                                 to_work_infections_i[j] + \
@@ -162,8 +184,9 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 to_move
 
                     for j in prange(1, nnodes_plus_one, schedule="static"):
-                        to_move = <int>(ceil(fraction_i *
-                                             play_infections_i[j]))
+                        to_move = _ran_binomial(rng, fraction_i,
+                                                <int>(play_infections_i[j]))
+
                         if to_move > 0:
                             to_play_infections_i[j] = \
                                                 to_play_infections_i[j] + \
@@ -177,6 +200,7 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
                       go_to: DemographicID,
                       network: Networks,
                       infections: Infections,
+                      rngs,
                       self_isolate_stage: _Union[_List[int], int] = 2,
                       fraction: _Union[_List[float], float] = 1.0,
                       **kwargs) -> None:
@@ -184,7 +208,10 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
        demographic(s) to the "to" demographic if they show any
        signs of infection (the disease stage is greater or equal
        to 'self_isolate_stage' - by default this is level '2',
-       which is one level above "latent").
+       which is one level above "latent"). This can move
+       a subset of individuals if 'fraction' is less than 1, e.g.
+       0.5 would move 50% of individuals (chosen using
+       a random binomial distribution)
 
        Parameters
        ----------
@@ -208,6 +235,9 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
          this stage into isolation. If this is a single value then
          the same fraction applies to all self_isolation_stages. Otherwise,
          the fraction for self_isolate_stage[i] is fraction[i]
+       rngs:
+         Thread-safe random number generators used to choose the fraction
+         of individuals
     """
 
     # make sure that all of the needed demographics exist, and
@@ -271,6 +301,9 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
     cdef int i = 0
     cdef int j = 0
 
+    # get the random number generator
+    cdef binomial_rng* rng = _get_binomial_ptr(rngs[0])
+
     cdef double fraction_i = 1.0
 
     for ii in go_from:
@@ -302,7 +335,8 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
                         play_infections_i[j] = 0
             else:
                 for j in range(1, nlinks_plus_one):
-                    to_move = <int>(ceil(fraction_i * work_infections_i[j]))
+                    to_move = _ran_binomial(rng, fraction_i,
+                                            <int>(work_infections_i[j]))
                     if to_move > 0:
                         to_work_infections_i[j] = to_work_infections_i[j] + \
                                                   to_move
@@ -310,7 +344,8 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
                                                to_move
 
                 for j in range(1, nnodes_plus_one):
-                    to_move = <int>(ceil(fraction_i * play_infections_i[j]))
+                    to_move = _ran_binomial(rng, fraction_i,
+                                            <int>(play_infections_i[j]))
                     if to_move > 0:
                         to_play_infections_i[j] = to_play_infections_i[j] + \
                                                   to_move

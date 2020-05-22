@@ -2,16 +2,20 @@
 from typing import Union as _Union
 from typing import List as _List
 
+cimport cython
 from cython.parallel import parallel, prange
-
-from libc.math cimport ceil
+from libc.stdint cimport uintptr_t
 
 from .._networks import Networks
 from .._infections import Infections
 from .._demographics import DemographicID, DemographicIDs
 
+from ..utils._console import Console
 from ..utils._profiler import Profiler
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
+
+from ..utils._ran_binomial cimport _ran_binomial, \
+                                   _get_binomial_ptr, binomial_rng
 
 __all__ = ["go_to", "go_to_serial", "go_to_parallel"]
 
@@ -21,13 +25,15 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                    network: Networks,
                    infections: Infections,
                    profiler: Profiler,
+                   rngs,
                    nthreads: int,
                    fraction: float = 1.0,
                    **kwargs) -> None:
     """This go function will move individuals from the "from"
        demographic(s) to the "to" demographic. This can move
-       a subset of individuals is 'fraction' is less than 1, e.g.
-       0.5 would move 50% of individuals.
+       a subset of individuals if 'fraction' is less than 1, e.g.
+       0.5 would move 50% of individuals (chosen using
+       a random binomial distribution)
 
        Parameters
        ----------
@@ -43,6 +49,9 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
        fraction: float
          The fraction of individuals to move, e.g. 0.75 would move
          75% of the individuals
+       rngs:
+         Thread-safe random number generators used to choose the
+         individuals to move
     """
 
     if fraction < 0 or fraction > 1:
@@ -104,6 +113,11 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
 
     cdef int nsubnets = len(subnets)
 
+    # get the random number generator
+    cdef uintptr_t [::1] rngs_view = rngs
+    cdef binomial_rng* rng   # pointer to parallel rng
+
+    cdef int thread_id
     cdef int num_threads = nthreads
 
     cdef int ii = 0
@@ -152,25 +166,30 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                     to_nodes_play_suscept[j]
                         nodes_save_play_suscept[j] = nodes_play_suscept[j]
             else:
-                for j in prange(1, nlinks_plus_one, schedule="static"):
-                    to_move_d = ceil(frac * links_suscept[j])
+                thread_id = cython.parallel.threadid()
+                rng = _get_binomial_ptr(rngs_view[thread_id])
 
-                    if to_move_d > 0:
+                for j in prange(1, nlinks_plus_one, schedule="static"):
+                    to_move = _ran_binomial(rng, frac,
+                                            <int>(links_suscept[j]))
+
+                    if to_move > 0:
                         to_links_suscept[j] = to_links_suscept[j] + \
-                                              to_move_d
-                        links_suscept[j] = links_suscept[j] - to_move_d
+                                              to_move
+                        links_suscept[j] = links_suscept[j] - to_move
 
                         to_links_weight[j] = to_links_suscept[j]
                         links_weight[j] = links_suscept[j]
 
                 for j in prange(1, nnodes_plus_one, schedule="static"):
-                    to_move_d = ceil(frac * nodes_play_suscept[j])
+                    to_move = _ran_binomial(rng, frac,
+                                            <int>(nodes_play_suscept[j]))
 
-                    if to_move_d > 0:
+                    if to_move > 0:
                         to_nodes_play_suscept[j] = to_nodes_play_suscept[j] + \
-                                                   to_move_d
+                                                   to_move
                         nodes_play_suscept[j] = nodes_play_suscept[j] - \
-                                                to_move_d
+                                                to_move
 
                         to_nodes_save_play_suscept[j] = \
                                                     to_nodes_play_suscept[j]
@@ -210,8 +229,12 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 to_move
                 else:
                     # only move a fraction of the population
+                    thread_id = cython.parallel.threadid()
+                    rng = _get_binomial_ptr(rngs_view[thread_id])
+
                     for j in prange(1, nlinks_plus_one, schedule="static"):
-                        to_move = <int>(ceil(frac * work_infections_i[j]))
+                        to_move = _ran_binomial(rng, frac,
+                                                <int>(work_infections_i[j]))
 
                         if to_move > 0:
                             to_work_infections_i[j] = \
@@ -222,7 +245,8 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 to_move
 
                     for j in prange(1, nnodes_plus_one, schedule="static"):
-                        to_move = <int>(ceil(frac * work_infections_i[j]))
+                        to_move = _ran_binomial(rng, frac,
+                                                <int>(play_infections_i[j]))
 
                         if to_move > 0:
                             to_play_infections_i[j] = \
