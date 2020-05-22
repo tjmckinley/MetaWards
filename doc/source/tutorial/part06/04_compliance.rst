@@ -186,12 +186,52 @@ PBS and slurm job file;
             --nsteps 365 -i scan_compliance.dat --repeats 8 \
             --nthreads 16 --force-overwrite-output --no-spinner --theme simple
 
-You can generate the animations of the demographic...
+You can generate an overview animation using;
+
+.. code-block:: bash
+
+   metawards-plot -i output/results.csv.bz2
+   metawards-plot --animate output/overview*
+
+The resulting animation should look like this;
+
+.. image:: ../../images/tutorial_6_4_2.gif
+   :alt: Animation showing effect on the outbreak of different levels
+         of compliance with self-isolation
+
+From this it is clear the high compliance with self-isolation is needed
+to prevent a large-scale outbreak. You can see exactly the effect
+by plotting the average number of recovereds as a function of the level
+of compliance at the end of the year (365 days). This can be done
+in Python pandas, R or Excel. For example, here is how you would make
+this plot in pandas;
+
+.. code-block:: python
+
+   >>> import pandas as pd
+   >>> import matplotlib as mpl
+   >>> df = pd.read_csv("output/results.csv.bz2")
+   >>> day_365 = df[df["day"] == 365]
+   >>> day_365_mean = day_365.groupby("fingerprint").mean()
+   >>> ax = day_365_mean.plot.line(x=".compliance", y="R")
+   >>> ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
+   >>> fig = ax.get_figure()
+   >>> fig.tight_layout()
+   >>> fig.savefig("compliance.jpg")
+
+The figure I get is shown here;
+
+.. image:: ../../images/tutorial_6_4_3.jpg
+   :alt: Effect of compliance on the number of infections (recovereds)
+
+For the lurgy, compliance of 90% still leads to ~6 million infections over
+the year, while compliance of 80% leads to ~20 million. If compliance drops
+to 50%, then ~39 million individuals are infected.
 
 Breaking quarantine early
 -------------------------
 
-From the above, we see that we need at least XX% of individuals to
+From the above, we see that we need at least 90% of individuals to
 comply with self-isolation. However, compliance with self-isolation
 requests applies as much to remaining
 in quarantine as joining. We can represent a fraction of individuals
@@ -209,13 +249,12 @@ leaving quarantine early each day by passing ``fraction`` to
         user_params = network.params.user_params
 
         ndays = 7
-        isolate_stage = 2
-        compliance_fraction = 0.8
+        isolate_stage = 3
+        compliance_fraction = 0.9
 
-        # fraction who leave early, counting from the longest to
-        # shortest stay in isolation. 50% leave after 6 days, while
-        # only 0% leave after 1 day
-        leave_early = [0.5, 0.4, 0.3, 0.2, 0.1, 0.0]
+        # fraction who remain in isolation, counting from the longest to
+        # shortest stay in isolation.
+        remain = [0.9, 0.9, 0.95, 0.95, 1.00, 1.00]
 
         day = population.day % 7
         isolate = f"isolate_{day}"
@@ -228,32 +267,32 @@ leaving quarantine early each day by passing ``fraction`` to
         go_early.append(lambda **kwargs: go_to(
                                 go_from=f"isolate_{(day + 1) % 7}",
                                 go_to="released",
-                                fraction=leave_early[0],
+                                fraction=(1.0 - remain[0]),
                                 **kwargs))
         go_early.append(lambda **kwargs: go_to(
                                 go_from=f"isolate_{(day + 2) % 7}",
                                 go_to="released",
-                                fraction=leave_early[1],
+                                fraction=(1.0 - remain[1]),
                                 **kwargs))
         go_early.append(lambda **kwargs: go_to(
                                 go_from=f"isolate_{(day + 3) % 7}",
                                 go_to="released",
-                                fraction=leave_early[2],
+                                fraction=(1.0 - remain[2]),
                                 **kwargs))
         go_early.append(lambda **kwargs: go_to(
                                 go_from=f"isolate_{(day + 4) % 7}",
                                 go_to="released",
-                                fraction=leave_early[3],
+                                fraction=(1.0 - remain[3]),
                                 **kwargs))
         go_early.append(lambda **kwargs: go_to(
                                 go_from=f"isolate_{(day + 5) % 7}",
                                 go_to="released",
-                                fraction=leave_early[4],
+                                fraction=(1.0 - remain[4]),
                                 **kwargs))
         go_early.append(lambda **kwargs: go_to(
                                 go_from=f"isolate_{(day + 6) % 7}",
                                 go_to="released",
-                                fraction=leave_early[5],
+                                fraction=(1.0 - remain[5]),
                                 **kwargs))
 
         go_isolate_day = lambda **kwargs: go_isolate(
@@ -269,6 +308,7 @@ leaving quarantine early each day by passing ``fraction`` to
 
         return go_early + [go_released, go_isolate_day]
 
+
 .. note::
    It would be nicer and less error-prone if we could create the
    ``go_early`` functions in a loop. However, this would not work
@@ -279,7 +319,7 @@ leaving quarantine early each day by passing ``fraction`` to
    six times.
 
 .. note::
-   Note that we've set ``compliance`` to 0.8 based on the results of the
+   Note that we've set ``compliance`` to 0.9 based on the results of the
    last scan.
 
 Here, we've created a new set of go functions called ``go_release_early``.
@@ -289,10 +329,12 @@ demographic to which individuals will be moved on each day.
 This ``go_release_early`` function moves a fraction of individuals from
 the ``isolate_N`` demographic to ``released``, representing that fraction
 breaking their quarantine early. This fraction is taken from the list
-``leave_early``, which counts down from ``0.5`` to ``0.0``. The first value
-(``0.5``) is the fraction for individuals that have been isolating the longest
-(six days), and the last value (``0.0``) is the fraction for the individuals
-who only entered isolation the previous day.
+``remain``, which counts up from ``0.90`` to ``1.00``. The first value
+(``0.90``) is the fraction for individuals that have been isolating the longest
+(six days), and that will remain in isolation that day (i.e. 90% will remain,
+while 10% will break quarantine early). The last value (``1.00``) is the
+fraction for the individuals who only entered isolation the previous day,
+i.e. everyone remains in isolation for at least one day.
 
 These ``go_release_early`` functions are added before ``go_released``
 and ``go_isolate_day``.
@@ -305,5 +347,15 @@ Now run ``metawards`` using your ``move_isolate.py`` via;
 
 You should see that the disease spreads, now both from individuals who
 choose not to self-isolate, and now also from individuals who break
-their quarantine early.
+their quarantine early. Graphing the output via;
+
+.. code-block:: bash
+
+   metawards-plot -i output/results.csv.bz2
+
+gives an overview plot that should look something like;
+
+.. image:: ../../images/tutorial_6_4_4.jpg
+   :alt: Effect of compliance of remaining in quarantine
+
 
