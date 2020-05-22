@@ -533,6 +533,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_varnames</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_varidxs</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_idx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -643,6 +644,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_varidxs</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;output&quot;</span><span class="p">:</span>
+            <span class="c1"># this is the output directory for this run. This will</span>
+            <span class="c1"># replace the default name, which is based on the fingerprint</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You cannot use an empty string as the &quot;</span>
+                                 <span class="s2">&quot;output directory&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">return</span>
 
         <span class="c1"># look for &#39;variable[index]&#39;</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([\.\w]+)\[(\d+)\]&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -955,6 +968,18 @@
         <span class="k">return</span> <span class="n">VariableSet</span><span class="o">.</span><span class="n">create_fingerprint</span><span class="p">(</span><span class="n">vals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">,</span>
                                               <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_idx</span><span class="p">,</span>
                                               <span class="n">include_index</span><span class="o">=</span><span class="n">include_index</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VariableSet.output_dir"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.output_dir">[docs]</a>    <span class="k">def</span> <span class="nf">output_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the output directory in which runs using this</span>
+<span class="sd">           variable set should be placed. Normally this would</span>
+<span class="sd">           be the fingerprint of the variable set, but users may</span>
+<span class="sd">           prefer to specify their own naming scheme, which</span>
+<span class="sd">           can be added via a design file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">(</span><span class="n">include_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output</span></div>
 
 <div class="viewcode-block" id="VariableSet.read"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.read">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>

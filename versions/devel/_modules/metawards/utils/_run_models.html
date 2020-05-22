@@ -384,8 +384,16 @@
     <span class="n">outdirs</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">(</span><span class="n">include_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">output_dir</span><span class="p">()</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">d</span>
+
+        <span class="k">while</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">outdirs</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="s2">&quot;x</span><span class="si">%03d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span>
+
         <span class="n">outdirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
     <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>

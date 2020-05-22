@@ -295,19 +295,22 @@ VariableSet from one another</li>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.make_compatible_with" title="metawards.VariableSet.make_compatible_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_compatible_with</span></code></a>(other)</td>
 <td>Return a copy of this VariableSet which has been made compatible with ‘other’.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.read" title="metawards.VariableSet.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filename)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.output_dir" title="metawards.VariableSet.output_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_dir</span></code></a>()</td>
+<td>Return the output directory in which runs using this variable set should be placed.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.read" title="metawards.VariableSet.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filename)</td>
 <td>Read a single set of adjustable variables from the passed file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.repeat_index" title="metawards.VariableSet.repeat_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_index</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.repeat_index" title="metawards.VariableSet.repeat_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_index</span></code></a>()</td>
 <td>Return the repeat index of this set.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.variable_names" title="metawards.VariableSet.variable_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_names</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.variable_names" title="metawards.VariableSet.variable_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_names</span></code></a>()</td>
 <td>Return the names of the variables that will be adjusted by this VariableSet</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.variable_values" title="metawards.VariableSet.variable_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_values</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.variable_values" title="metawards.VariableSet.variable_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_values</span></code></a>()</td>
 <td>Return the values that the variables will be adjusted to.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.variables" title="metawards.VariableSet.variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variables</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.variables" title="metawards.VariableSet.variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variables</span></code></a>()</td>
 <td>Return the variables (name and values) to be adjusted</td>
 </tr>
 </tbody>
@@ -485,6 +488,16 @@ if it is not possible to make this set compatible</p>
 <span class="go">(beta[1]=0.6, beta[2]=0.8)[repeat 1]</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.output_dir">
+<code class="descname">output_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.output_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.output_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the output directory in which runs using this
+variable set should be placed. Normally this would
+be the fingerprint of the variable set, but users may
+prefer to specify their own naming scheme, which
+can be added via a design file</p>
 </dd></dl>
 
 <dl class="staticmethod">

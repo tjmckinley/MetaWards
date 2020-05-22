@@ -102,6 +102,7 @@
 <li class="toctree-l3"><a class="reference internal" href="01_disease.html">Refining the disease model</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Adjustable Variables</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#choosing-what-to-adjust">Choosing what to adjust</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#output-directories">Output directories</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="03_analysis.html">Analysing the output</a></li>
@@ -392,6 +393,63 @@ Computing model run ✔
 │  quickly look at statistics across all runs using e.g. R or pandas                     │
 │                                                                                        │
 └────────────────────────────────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</div>
+<div class="section" id="output-directories">
+<h2>Output directories<a class="headerlink" href="#output-directories" title="Permalink to this headline">¶</a></h2>
+<p>The output files for each repeat are placed into subdirectories of the
+main output directory. By default, these subdirectories are named
+according to the fingerprint of the adjustable variables used for each
+run, e.g. listing the contents of the output directory using;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ls output
+0i3v0i0x001     0i3v0i5x001     0i4v0i25x001    0i5v0i0x001     0i5v0i5x001     console.log.bz2
+0i3v0i25x001    0i4v0i0x001     0i4v0i5x001     0i5v0i25x001    config.yaml     results.csv.bz2
+</pre></div>
+</div>
+<p>The fingerprint is a unique key used for each run, e.g.
+<code class="docutils literal notranslate"><span class="pre">0i3v0i0x001</span></code> refers to the run using values <code class="docutils literal notranslate"><span class="pre">0.3</span> <span class="pre">0.0</span></code>, and the
+first repeat. The <code class="docutils literal notranslate"><span class="pre">i</span></code> represents a decimal point, <code class="docutils literal notranslate"><span class="pre">v</span></code> is used to
+separate values, and <code class="docutils literal notranslate"><span class="pre">x001</span></code> means the first repeat.</p>
+<p>Similarly, <code class="docutils literal notranslate"><span class="pre">0i4v0i25x001</span></code> refers to the first repeat of the values
+<code class="docutils literal notranslate"><span class="pre">0.4</span> <span class="pre">0.25</span></code>.</p>
+<p>Sometimes you may want to specify the names of the output directories
+yourself. You can do this by adding a <code class="docutils literal notranslate"><span class="pre">output</span></code> column to your scan file,
+e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">beta</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="n">too_ill_to_move</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>      <span class="n">output</span>
+  <span class="mf">0.3</span>         <span class="mf">0.00</span>           <span class="n">beta_0i3_ill_0i00</span>
+  <span class="mf">0.4</span>         <span class="mf">0.00</span>           <span class="n">beta_0i4_ill_0i00</span>
+  <span class="mf">0.5</span>         <span class="mf">0.00</span>           <span class="n">beta_0i5_ill_0i00</span>
+  <span class="mf">0.3</span>         <span class="mf">0.25</span>           <span class="n">beta_0i3_ill_0i25</span>
+  <span class="mf">0.4</span>         <span class="mf">0.25</span>           <span class="n">beta_0i4_ill_0i25</span>
+  <span class="mf">0.5</span>         <span class="mf">0.25</span>           <span class="n">beta_0i5_ill_0i25</span>
+  <span class="mf">0.3</span>         <span class="mf">0.50</span>           <span class="n">beta_0i3_ill_0i50</span>
+  <span class="mf">0.4</span>         <span class="mf">0.50</span>           <span class="n">beta_0i4_ill_0i50</span>
+  <span class="mf">0.5</span>         <span class="mf">0.50</span>           <span class="n">beta_0i5_ill_0i50</span>
+</pre></div>
+</div>
+<p>Running <code class="docutils literal notranslate"><span class="pre">metawards</span></code> with this file would place output in the following
+directories;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ls output
+beta_0i3_ill_0i00 beta_0i4_ill_0i00 beta_0i5_ill_0i00 config.yaml
+beta_0i3_ill_0i25 beta_0i4_ill_0i25 beta_0i5_ill_0i25 console.log.bz2
+beta_0i3_ill_0i50 beta_0i4_ill_0i50 beta_0i5_ill_0i50 results.csv.bz2
+</pre></div>
+</div>
+<p>If you run multiple repeats of these jobs, e.g. using the <code class="docutils literal notranslate"><span class="pre">--repeats</span></code>
+keyword via;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy2 -a ExtraSeedsLondon.dat --input lurgyparams.csv --repeats <span class="m">2</span>
+</pre></div>
+</div>
+<p>then the repeat number will be automatically added to the directory names,
+e.g.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ls output
+beta_0i3_ill_0i00     beta_0i4_ill_0i00     beta_0i5_ill_0i00     config.yaml
+beta_0i3_ill_0i00x002 beta_0i4_ill_0i00x002 beta_0i5_ill_0i00x002 console.log.bz2
+beta_0i3_ill_0i25     beta_0i4_ill_0i25     beta_0i5_ill_0i25     results.csv.bz2
+beta_0i3_ill_0i25x002 beta_0i4_ill_0i25x002 beta_0i5_ill_0i25x002
+beta_0i3_ill_0i50     beta_0i4_ill_0i50     beta_0i5_ill_0i50
+beta_0i3_ill_0i50x002 beta_0i4_ill_0i50x002 beta_0i5_ill_0i50x002
 </pre></div>
 </div>
 </div>
