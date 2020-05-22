@@ -347,6 +347,7 @@ class VariableSet:
         self._varnames = None
         self._varidxs = None
         self._idx = None
+        self._output = None
 
         if variables is not None:
             for name, value in variables.items():
@@ -457,6 +458,18 @@ class VariableSet:
             self._varidxs = []
 
         name = name.strip()
+
+        if name == "output":
+            # this is the output directory for this run. This will
+            # replace the default name, which is based on the fingerprint
+            value = str(value).strip()
+
+            if len(value) == 0:
+                raise ValueError("You cannot use an empty string as the "
+                                 "output directory")
+
+            self._output = value
+            return
 
         # look for 'variable[index]'
         m = re.search(r"([\.\w]+)\[(\d+)\]", name)
@@ -769,6 +782,18 @@ class VariableSet:
         return VariableSet.create_fingerprint(vals=self._vals,
                                               index=self._idx,
                                               include_index=include_index)
+
+    def output_dir(self):
+        """Return the output directory in which runs using this
+           variable set should be placed. Normally this would
+           be the fingerprint of the variable set, but users may
+           prefer to specify their own naming scheme, which
+           can be added via a design file
+        """
+        if self._output is None:
+            return self.fingerprint(include_index=True)
+        else:
+            return self._output
 
     @staticmethod
     def read(filename: str):

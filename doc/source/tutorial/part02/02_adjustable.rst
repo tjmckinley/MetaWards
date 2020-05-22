@@ -190,3 +190,72 @@ should have output that looks similar to this;
     │                                                                                        │
     └────────────────────────────────────────────────────────────────────────────────────────┘
 
+
+Output directories
+------------------
+
+The output files for each repeat are placed into subdirectories of the
+main output directory. By default, these subdirectories are named
+according to the fingerprint of the adjustable variables used for each
+run, e.g. listing the contents of the output directory using;
+
+.. code-block:: bash
+
+   $ ls output
+   0i3v0i0x001     0i3v0i5x001     0i4v0i25x001    0i5v0i0x001     0i5v0i5x001     console.log.bz2
+   0i3v0i25x001    0i4v0i0x001     0i4v0i5x001     0i5v0i25x001    config.yaml     results.csv.bz2
+
+The fingerprint is a unique key used for each run, e.g.
+``0i3v0i0x001`` refers to the run using values ``0.3 0.0``, and the
+first repeat. The ``i`` represents a decimal point, ``v`` is used to
+separate values, and ``x001`` means the first repeat.
+
+Similarly, ``0i4v0i25x001`` refers to the first repeat of the values
+``0.4 0.25``.
+
+Sometimes you may want to specify the names of the output directories
+yourself. You can do this by adding a ``output`` column to your scan file,
+e.g.
+
+::
+
+  beta[2]  too_ill_to_move[2]      output
+    0.3         0.00           beta_0i3_ill_0i00
+    0.4         0.00           beta_0i4_ill_0i00
+    0.5         0.00           beta_0i5_ill_0i00
+    0.3         0.25           beta_0i3_ill_0i25
+    0.4         0.25           beta_0i4_ill_0i25
+    0.5         0.25           beta_0i5_ill_0i25
+    0.3         0.50           beta_0i3_ill_0i50
+    0.4         0.50           beta_0i4_ill_0i50
+    0.5         0.50           beta_0i5_ill_0i50
+
+Running ``metawards`` with this file would place output in the following
+directories;
+
+.. code-block:: bash
+
+   $ ls output
+   beta_0i3_ill_0i00 beta_0i4_ill_0i00 beta_0i5_ill_0i00 config.yaml
+   beta_0i3_ill_0i25 beta_0i4_ill_0i25 beta_0i5_ill_0i25 console.log.bz2
+   beta_0i3_ill_0i50 beta_0i4_ill_0i50 beta_0i5_ill_0i50 results.csv.bz2
+
+If you run multiple repeats of these jobs, e.g. using the ``--repeats``
+keyword via;
+
+.. code-block:: bash
+
+   metawards -d lurgy2 -a ExtraSeedsLondon.dat --input lurgyparams.csv --repeats 2
+
+then the repeat number will be automatically added to the directory names,
+e.g.
+
+.. code-block:: bash
+
+   $ ls output
+   beta_0i3_ill_0i00     beta_0i4_ill_0i00     beta_0i5_ill_0i00     config.yaml
+   beta_0i3_ill_0i00x002 beta_0i4_ill_0i00x002 beta_0i5_ill_0i00x002 console.log.bz2
+   beta_0i3_ill_0i25     beta_0i4_ill_0i25     beta_0i5_ill_0i25     results.csv.bz2
+   beta_0i3_ill_0i25x002 beta_0i4_ill_0i25x002 beta_0i5_ill_0i25x002
+   beta_0i3_ill_0i50     beta_0i4_ill_0i50     beta_0i5_ill_0i50
+   beta_0i3_ill_0i50x002 beta_0i4_ill_0i50x002 beta_0i5_ill_0i50x002

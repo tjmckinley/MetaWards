@@ -728,6 +728,23 @@ def output_core_serial(network: Network, population: Population,
     return total + latent
 
 
+def _safe_run(func, **kwargs):
+    try:
+        func(**kwargs)
+    except AssertionError as e:
+        if func is output_core_omp:
+            # this may be a race condition - rerun in serial
+            from metawards.utils import Console
+            Console.print("Repeating this part of the calculation in serial "
+                          "to correct this problem")
+            kwargs["nthreads"] = 1
+            output_core_serial(**kwargs)
+            Console.print("Calculation successful, the bug has been mitigated")
+        else:
+            # the error was in serial, so big problem
+            raise e
+
+
 def output_core(network: _Union[Network, Networks],
                 population: Population,
                 workspace: Workspace,
@@ -768,9 +785,11 @@ def output_core(network: _Union[Network, Networks],
     from ..utils._console import Console
 
     if isinstance(network, Network):
-        output_func(network=network, population=population,
-                    workspace=workspace, infections=infections,
-                    profiler=profiler, **kwargs)
+        _safe_run(func=output_func,
+                  network=network, population=population,
+                  workspace=workspace, infections=infections,
+                  profiler=profiler, **kwargs)
+
         Console.print_population(population)
 
     elif isinstance(network, Networks):
@@ -785,12 +804,13 @@ def output_core(network: _Union[Network, Networks],
 
         for i, subnet in enumerate(network.subnets):
             p = p.start(f"output-{i}")
-            output_func(network=subnet,
-                        population=population.subpops[i],
-                        workspace=workspace.subspaces[i],
-                        infections=infections.subinfs[i],
-                        profiler=p,
-                        **kwargs)
+            _safe_run(func=output_func,
+                      network=subnet,
+                      population=population.subpops[i],
+                      workspace=workspace.subspaces[i],
+                      infections=infections.subinfs[i],
+                      profiler=p,
+                      **kwargs)
             p = p.stop()
 
         # aggregate the infection information from across
@@ -801,12 +821,13 @@ def output_core(network: _Union[Network, Networks],
         p = p.stop()
 
         p = p.start("overall_output")
-        output_func(network=network.overall,
-                    population=population,
-                    workspace=workspace,
-                    infections=infections,
-                    profiler=profiler,
-                    **kwargs)
+        _safe_run(func=output_func,
+                  network=network.overall,
+                  population=population,
+                  workspace=workspace,
+                  infections=infections,
+                  profiler=profiler,
+                  **kwargs)
         p = p.stop()
 
         Console.print_population(population=population,
