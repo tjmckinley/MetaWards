@@ -7,8 +7,13 @@ In this sixth part of the tutorial you will:
 * Understand how you can move individuals between demographics using
   :doc:`metawards.movers <../api/index_MetaWards_movers>`.
 * Use ``go functions`` to model the movement of individuals as they
-  go into isolation, go to hospital, or go back home
-* Learn how to write custom movers to model holidays and quarantine
+  go into isolation and then are released back to their normal life
+* Learn how to write custom movers to investigate when individuals
+  should isolate, and how many days they should stay quarantined.
+* Learn how to conditionally send a fraction of individuals to
+  another demographic, so you can investigate different levels of
+  compliance with self-isolation orders, and different quitting
+  rates for quarantine
 
 .. toctree::
    :maxdepth: 2
