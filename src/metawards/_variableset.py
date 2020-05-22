@@ -1190,7 +1190,6 @@ class VariableSets:
 
                 variable = VariableSet()
 
-                print(titles)
                 for j, key in enumerate(titles):
                     variable[key] = values[j]
 

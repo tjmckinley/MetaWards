@@ -42,10 +42,8 @@ To do this, update your ``move_isolate.py`` move function to;
     from metawards.movers import go_isolate, go_to
 
     def move_isolate(network: Networks, population: Population, **kwargs):
-        user_params = network.params.user_params
-
         ndays = 7
-        isolate_stage = 2
+        isolate_stage = 3
         compliance_fraction = 0.5
 
         day = population.day % ndays
@@ -89,10 +87,113 @@ A plot of the the demographics shows this more clearly;
 .. image:: ../../images/tutorial_6_4_1.jpg
    :alt: Demographics for 50% self-isolation compliance
 
+Scanning compliance
+-------------------
+
+We can investigate the effect of different levels of compliance by
+scanning through ``compliance_fraction``. Update your ``move_isolate.py``
+to read;
+
+.. code-block:: python
+
+    from metawards import Population
+    from metawards import Networks
+    from metawards.movers import go_isolate, go_to
+
+    def move_isolate(network: Networks, population: Population, **kwargs):
+        user_params = network.params.user_params
+
+        ndays = 7
+        isolate_stage = 3
+        compliance_fraction = user_params["compliance"]
+
+        day = population.day % 7
+        isolate = f"isolate_{day}"
+
+        go_isolate_day = lambda **kwargs: go_isolate(
+                                            go_from="home",
+                                            go_to=isolate,
+                                            self_isolate_stage=isolate_stage,
+                                            fraction=compliance_fraction,
+                                            **kwargs)
+
+        go_released = lambda **kwargs: go_to(go_from=isolate,
+                                            go_to="released",
+                                            **kwargs)
+
+        return [go_released, go_isolate_day]
+
+The only change here is that we now set ``compliance_fraction`` from the
+``compliance`` user defined parameter.
+
+Now create a scan file called ``scan_compliance.dat`` that contains;
+
+::
+
+    .compliance
+        1.00
+        0.95
+        0.90
+        0.85
+        0.80
+        0.75
+        0.70
+        0.65
+        0.60
+        0.55
+        0.50
+
+This scans ``compliance`` from ``1.00`` to ``0.50`` in increments of ``0.05``.
+
+This is the command to run a single scan locally;
+
+.. code-block:: bash
+
+   metawards -d lurgy4 -D demographics.json -a ExtraSeedsLondon.dat --mixer mix_isolate --mover move_isolate --extractor extract_none --nsteps 365 -i scan_compliance.dat
+
+You will likely need a cluster to perform repeats, so here is a suitable
+PBS and slurm job file;
+
+::
+
+    #!/bin/bash
+    #PBS -l walltime=12:00:00
+    #PBS -l select=4:ncpus=64:mem=64GB
+    # The above sets 4 nodes with 64 cores each
+
+    source $HOME/envs/metawards/bin/activate
+
+    # change into the directory from which this job was submitted
+    cd $PBS_O_WORKDIR
+
+    metawards -d lurgy4 -D demographics.json -a ExtraSeedsLondon.dat \
+            --mixer mix_isolate --mover move_isolate --extractor extract_none \
+            --nsteps 365 -i scan_compliance.dat --repeats 8 \
+            --nthreads 16 --force-overwrite-output --no-spinner --theme simple
+
+::
+
+    #!/bin/bash
+    #SBATCH --time=01:00:00
+    #SBATCH --ntasks=4
+    #SBATCH --cpus-per-task=64
+    # The above sets 4 nodes with 64 cores each
+
+    source $HOME/envs/metawards/bin/activate
+
+    metawards -d lurgy4 -D demographics.json -a ExtraSeedsLondon.dat \
+            --mixer mix_isolate --mover move_isolate --extractor extract_none \
+            --nsteps 365 -i scan_compliance.dat --repeats 8 \
+            --nthreads 16 --force-overwrite-output --no-spinner --theme simple
+
+You can generate the animations of the demographic...
+
 Breaking quarantine early
 -------------------------
 
-Compliance with self-isolation requests applies as much to remaining
+From the above, we see that we need at least XX% of individuals to
+comply with self-isolation. However, compliance with self-isolation
+requests applies as much to remaining
 in quarantine as joining. We can represent a fraction of individuals
 leaving quarantine early each day by passing ``fraction`` to
 :meth:`~metawards.movers.go_to`. Do this by updating your
@@ -103,19 +204,18 @@ leaving quarantine early each day by passing ``fraction`` to
     from metawards import Population
     from metawards import Networks
     from metawards.movers import go_isolate, go_to
-    from metawards.utils import Console
 
     def move_isolate(network: Networks, population: Population, **kwargs):
         user_params = network.params.user_params
 
         ndays = 7
         isolate_stage = 2
-        compliance_fraction = 0.5
+        compliance_fraction = 0.8
 
         # fraction who leave early, counting from the longest to
         # shortest stay in isolation. 50% leave after 6 days, while
         # only 0% leave after 1 day
-        leave_early = [0.5, 0.4, 0.3, 0.2, 0.1, 0.05]
+        leave_early = [0.5, 0.4, 0.3, 0.2, 0.1, 0.0]
 
         day = population.day % 7
         isolate = f"isolate_{day}"
@@ -172,11 +272,15 @@ leaving quarantine early each day by passing ``fraction`` to
 .. note::
    It would be nicer and less error-prone if we could create the
    ``go_early`` functions in a loop. However, this would not work
-   because of the that Python lambda functions bind their arguments.
+   because of the way that Python lambda functions bind their arguments.
    If we did this, the arguments from the last iteration of the loop
    would be used for all of the ``go_early`` functions, i.e. we would
    try to move individuals out of the same ``isolate_N`` demographic
    six times.
+
+.. note::
+   Note that we've set ``compliance`` to 0.8 based on the results of the
+   last scan.
 
 Here, we've created a new set of go functions called ``go_release_early``.
 There is one for each ``isolate_N`` demographic *except* for the
@@ -187,7 +291,7 @@ the ``isolate_N`` demographic to ``released``, representing that fraction
 breaking their quarantine early. This fraction is taken from the list
 ``leave_early``, which counts down from ``0.5`` to ``0.0``. The first value
 (``0.5``) is the fraction for individuals that have been isolating the longest
-(6 days), and the last value (``0.0``) is the fraction for the individuals
+(six days), and the last value (``0.0``) is the fraction for the individuals
 who only entered isolation the previous day.
 
 These ``go_release_early`` functions are added before ``go_released``
