@@ -1,0 +1,11 @@
+{
+      "demographics" : ["home", "released",
+                        "isolate_0", "isolate_1", "isolate_2",
+                        "isolate_3", "isolate_4", "isolate_5",
+                        "isolate_6" ],
+      "work_ratios"  : [ 1.0, 0.0,
+                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+      "play_ratios"  : [ 1.0, 0.0,
+                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ]
+}
+

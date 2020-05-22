@@ -4,6 +4,8 @@ from typing import List as _List
 
 from cython.parallel import parallel, prange
 
+from libc.math cimport ceil
+
 from .._networks import Networks
 from .._infections import Infections
 from .._demographics import DemographicID, DemographicIDs
@@ -18,7 +20,8 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
                         network: Networks,
                         infections: Infections,
                         nthreads: int,
-                        self_isolate_stage: int = 2,
+                        self_isolate_stage: _Union[_List[int], int] = 2,
+                        fraction: _Union[_List[float], float] = 1.0,
                         **kwargs) -> None:
     """This go function will move individuals from the "from"
        demographic(s) to the "to" demographic if they show any
@@ -32,14 +35,22 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
          ID (name or index) or IDs of the demographics to scan for
          infected individuals
        to: DemographicID
-         ID (name or index) of the demographic to send infected
+         ID (name or index) of the isolation demographic to send infected
          individuals to
        network: Networks
          The networks to be modelled. This must contain all of the
          demographics that are needed for this go function
-       self_isolate_stage: int
+       self_isolate_stage: int or List[int]
          The stage of infection an individual must be at before they
-         are moved into this demographic
+         are moved into this demographic. If a list is passed then
+         this can be multiple stages, e.g. [2, 3] will move at
+         stages 2 and 3. Multiple stages are needed if only
+         a fraction of individuals move.
+       fraction: float or List[float]
+         The fraction (percentage) of individuals who are moved from
+         this stage into isolation. If this is a single value then
+         the same fraction applies to all self_isolation_stages. Otherwise,
+         the fraction for self_isolate_stage[i] is fraction[i]
     """
 
     # make sure that all of the needed demographics exist, and
@@ -58,17 +69,38 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
     to_subnet = subnets[go_to]
     to_subinf = subinfs[go_to]
 
-    cdef int N_INF_CLASSES = infections.N_INF_CLASSES
+    if isinstance(self_isolate_stage, list):
+        stages = [int(stage) for stage in self_isolate_stage]
+    else:
+        stages = [int(self_isolate_stage)]
 
-    if self_isolate_stage < 0 or self_isolate_stage >= N_INF_CLASSES:
+    if isinstance(fraction, list):
+        fractions = [float(frac) for frac in fraction]
+    else:
+        fractions = [float(fraction)] * len(stages)
+
+    for fraction in fractions:
+        if fraction < 0 or fraction > 1:
+            raise ValueError(
+                f"The move fractions {fractions} should all be 0 to 1")
+
+    N_INF_CLASSES = infections.N_INF_CLASSES
+
+    for stage in stages:
+        if stage < 1 or stage >= N_INF_CLASSES:
+            raise ValueError(
+                f"The stage(s) of self-isolation {stages} "
+                f"is invalid for a disease with {N_INF_CLASSES} stages")
+
+    if len(stages) != len(fractions):
         raise ValueError(
-            f"The start stage of self-isolation {self_isolate_stage} "
-            f"is invalid for a disease with {N_INF_CLASSES} stages")
-
-    cdef int start_stage = self_isolate_stage
+            f"The number of self isolation stages {stages} must equal "
+            f"the number of fractions {fractions}")
 
     cdef int nnodes_plus_one = 0
     cdef int nlinks_plus_one = 0
+
+    cdef int to_move = 0
 
     cdef int * work_infections_i
     cdef int * play_infections_i
@@ -84,13 +116,17 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
     cdef int i = 0
     cdef int j = 0
 
+    cdef double fraction_i = 1.0
+
     for ii in go_from:
         subnet = subnets[ii]
         subinf = subinfs[ii]
         nnodes_plus_one = subinf.nnodes + 1
         nlinks_plus_one = subinf.nlinks + 1
 
-        for i in range(start_stage, N_INF_CLASSES):
+        for i, fraction in zip(stages, fractions):
+            fraction_i = fraction
+
             work_infections_i = get_int_array_ptr(subinf.work[i])
             play_infections_i = get_int_array_ptr(subinf.play[i])
 
@@ -98,24 +134,51 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
             to_play_infections_i = get_int_array_ptr(to_subinf.play[i])
 
             with nogil, parallel(num_threads=num_threads):
-                for j in prange(1, nlinks_plus_one, schedule="static"):
-                    if work_infections_i[j] > 0:
-                        to_work_infections_i[j] = to_work_infections_i[j] + \
-                                                  work_infections_i[j]
-                        work_infections_i[j] = 0
+                if fraction_i == 1.0:
+                    for j in prange(1, nlinks_plus_one, schedule="static"):
+                        if work_infections_i[j] > 0:
 
-                for j in prange(1, nnodes_plus_one, schedule="static"):
-                    if play_infections_i[j] > 0:
-                        to_play_infections_i[j] = to_play_infections_i[j] + \
-                                                  play_infections_i[j]
-                        play_infections_i[j] = 0
+                            to_work_infections_i[j] = \
+                                                to_work_infections_i[j] + \
+                                                work_infections_i[j]
+                            work_infections_i[j] = 0
+
+                    for j in prange(1, nnodes_plus_one, schedule="static"):
+                        if play_infections_i[j] > 0:
+                            to_play_infections_i[j] = \
+                                                to_play_infections_i[j] + \
+                                                play_infections_i[j]
+                            play_infections_i[j] = 0
+                else:
+                    for j in prange(1, nlinks_plus_one, schedule="static"):
+                        to_move = <int>(ceil(fraction_i *
+                                             work_infections_i[j]))
+                        if to_move > 0:
+                            to_work_infections_i[j] = \
+                                                to_work_infections_i[j] + \
+                                                to_move
+                            work_infections_i[j] = \
+                                                work_infections_i[j] - \
+                                                to_move
+
+                    for j in prange(1, nnodes_plus_one, schedule="static"):
+                        to_move = <int>(ceil(fraction_i *
+                                             play_infections_i[j]))
+                        if to_move > 0:
+                            to_play_infections_i[j] = \
+                                                to_play_infections_i[j] + \
+                                                to_move
+                            play_infections_i[j] = \
+                                                play_infections_i[j] - \
+                                                to_move
 
 
 def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
                       go_to: DemographicID,
                       network: Networks,
                       infections: Infections,
-                      self_isolate_stage: int = 2,
+                      self_isolate_stage: _Union[_List[int], int] = 2,
+                      fraction: _Union[_List[float], float] = 1.0,
                       **kwargs) -> None:
     """This go function will move individuals from the "from"
        demographic(s) to the "to" demographic if they show any
@@ -134,9 +197,17 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
        network: Networks
          The networks to be modelled. This must contain all of the
          demographics that are needed for this go function
-       self_isolate_stage: int
+       self_isolate_stage: int or List[int]
          The stage of infection an individual must be at before they
-         are moved into this demographic
+         are moved into this demographic. If a list is passed then
+         this can be multiple stages, e.g. [2, 3] will move at
+         stages 2 and 3. Multiple stages are needed if only
+         a fraction of individuals move.
+       fraction: float or List[float]
+         The fraction (percentage) of individuals who are moved from
+         this stage into isolation. If this is a single value then
+         the same fraction applies to all self_isolation_stages. Otherwise,
+         the fraction for self_isolate_stage[i] is fraction[i]
     """
 
     # make sure that all of the needed demographics exist, and
@@ -152,24 +223,41 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
 
     go_to = demographics.get_index(go_to)
 
-    if go_to in go_from:
-        raise ValueError(
-            f"You cannot move to {go_to} as it is also in {go_from}")
-
     to_subnet = subnets[go_to]
     to_subinf = subinfs[go_to]
 
-    cdef int N_INF_CLASSES = infections.N_INF_CLASSES
+    if isinstance(self_isolate_stage, list):
+        stages = [int(stage) for stage in self_isolate_stage]
+    else:
+        stages = [int(self_isolate_stage)]
 
-    if self_isolate_stage < 0 or self_isolate_stage >= N_INF_CLASSES:
+    if isinstance(fraction, list):
+        fractions = [float(frac) for frac in fraction]
+    else:
+        fractions = [float(fraction)] * len(stages)
+
+    for fraction in fractions:
+        if fraction < 0 or fraction > 1:
+            raise ValueError(
+                f"The move fractions {fractions} should all be 0 to 1")
+
+    N_INF_CLASSES = infections.N_INF_CLASSES
+
+    for stage in stages:
+        if stage < 1 or stage >= N_INF_CLASSES:
+            raise ValueError(
+                f"The stage(s) of self-isolation {stages} "
+                f"is invalid for a disease with {N_INF_CLASSES} stages")
+
+    if len(stages) != len(fractions):
         raise ValueError(
-            f"The start stage of self-isolation {self_isolate_stage} "
-            f"is invalid for a disease with {N_INF_CLASSES} stages")
-
-    cdef int start_stage = self_isolate_stage
+            f"The number of self isolation stages {stages} must equal "
+            f"the number of fractions {fractions}")
 
     cdef int nnodes_plus_one = 0
     cdef int nlinks_plus_one = 0
+
+    cdef int to_move = 0
 
     cdef int * work_infections_i
     cdef int * play_infections_i
@@ -183,30 +271,51 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
     cdef int i = 0
     cdef int j = 0
 
+    cdef double fraction_i = 1.0
+
     for ii in go_from:
         subnet = subnets[ii]
         subinf = subinfs[ii]
         nnodes_plus_one = subinf.nnodes + 1
         nlinks_plus_one = subinf.nlinks + 1
 
-        for i in range(start_stage, N_INF_CLASSES):
+        for i, fraction in zip(stages, fractions):
+            fraction_i = fraction
+
             work_infections_i = get_int_array_ptr(subinf.work[i])
             play_infections_i = get_int_array_ptr(subinf.play[i])
 
             to_work_infections_i = get_int_array_ptr(to_subinf.work[i])
             to_play_infections_i = get_int_array_ptr(to_subinf.play[i])
 
-            for j in range(1, nlinks_plus_one):
-                if work_infections_i[j] > 0:
-                    to_work_infections_i[j] = to_work_infections_i[j] + \
-                                                work_infections_i[j]
-                    work_infections_i[j] = 0
+            if fraction_i == 1.0:
+                for j in range(1, nlinks_plus_one):
+                    if work_infections_i[j] > 0:
+                        to_work_infections_i[j] = to_work_infections_i[j] + \
+                                                  work_infections_i[j]
+                        work_infections_i[j] = 0
 
-            for j in range(1, nnodes_plus_one):
-                if play_infections_i[j] > 0:
-                    to_play_infections_i[j] = to_play_infections_i[j] + \
-                                                play_infections_i[j]
-                    play_infections_i[j] = 0
+                for j in range(1, nnodes_plus_one):
+                    if play_infections_i[j] > 0:
+                        to_play_infections_i[j] = to_play_infections_i[j] + \
+                                                  play_infections_i[j]
+                        play_infections_i[j] = 0
+            else:
+                for j in range(1, nlinks_plus_one):
+                    to_move = <int>(ceil(fraction_i * work_infections_i[j]))
+                    if to_move > 0:
+                        to_work_infections_i[j] = to_work_infections_i[j] + \
+                                                  to_move
+                        work_infections_i[j] = work_infections_i[j] - \
+                                               to_move
+
+                for j in range(1, nnodes_plus_one):
+                    to_move = <int>(ceil(fraction_i * play_infections_i[j]))
+                    if to_move > 0:
+                        to_play_infections_i[j] = to_play_infections_i[j] + \
+                                                  to_move
+                        play_infections_i[j] = play_infections_i[j] - \
+                                               to_move
 
 
 def go_isolate(nthreads: int = 1, **kwargs) -> None:
