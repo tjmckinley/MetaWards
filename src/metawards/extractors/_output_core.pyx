@@ -734,8 +734,12 @@ def _safe_run(func, **kwargs):
     except AssertionError as e:
         if func is output_core_omp:
             # this may be a race condition - rerun in serial
+            from metawards.utils import Console
+            Console.print("Repeating this part of the calculation in serial "
+                          "to correct this problem")
             kwargs["nthreads"] = 1
             output_core_serial(**kwargs)
+            Console.print("Calculation successful, the bug has been mitigated")
         else:
             # the error was in serial, so big problem
             raise e
