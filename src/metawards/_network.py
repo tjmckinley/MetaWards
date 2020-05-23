@@ -68,7 +68,59 @@ class Network:
         return int(node_pop + link_pop)
 
     @staticmethod
+    def single(params: Parameters,
+               population: Population,
+               profiler=None):
+        """Builds and returns a new Network that contains just a single
+           ward, in which 'population' individuals are resident.
+        """
+        if profiler is None:
+            from .utils import NullProfiler
+            profiler = NullProfiler()
+
+        pop = float(population.population)
+
+        if pop <= 0:
+            pop = float(population.initial)
+
+        if pop <= 0:
+            raise ValueError(
+                f"You cannot create a Network with a zero or negative "
+                f"population ({population}).")
+
+        from .utils._console import Console
+        Console.print(
+            f"Creating a single ward Network with a population "
+            f"of {int(pop)}")
+
+        network = Network()
+        network.nnodes = 1
+        network.nlinks = 0
+        network.nplay = 0
+
+        # Everything is 1-indexed, so need to create space for the
+        # null 0-index objects...
+        network.params = params
+        network.play = Links(1)
+        network.links = Links(1)
+
+        nodes = Nodes(2)
+        from ._node import Node
+        # 1-indexed node
+        nodes[1] = Node(label=1, play_suscept=pop,
+                        save_play_suscept=pop)
+
+        network.nodes = nodes
+
+        network.reset_everything(profiler=profiler)
+        network.rescale_play_matrix(profiler=profiler)
+        network.move_from_play_to_work(profiler=profiler)
+
+        return network
+
+    @staticmethod
     def build(params: Parameters,
+              population: Population = None,
               max_nodes: int = 16384,
               max_links: int = 4194304,
               nthreads: int = 1,
@@ -85,6 +137,16 @@ class Network:
             profiler = NullProfiler()
 
         p = profiler.start("Network.build")
+
+        if params.input_files.is_single:
+            if population is None:
+                population = Population(initial=1000)
+
+            network = Network.single(params=params,
+                                     population=population,
+                                     profiler=profiler)
+            p.stop()
+            return network
 
         p = p.start("build_function")
         from .utils import build_wards_network

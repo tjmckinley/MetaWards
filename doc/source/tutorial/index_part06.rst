@@ -12,7 +12,7 @@ In this sixth part of the tutorial you will:
   should isolate, and how many days they should stay quarantined.
 * Learn how to conditionally send a fraction of individuals to
   another demographic, so you can investigate different levels of
-  compliance with self-isolation orders, and different quitting
+  compliance with self-isolation orders, and different compliance
   rates for quarantine
 
 .. toctree::
