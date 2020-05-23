@@ -47,8 +47,8 @@ to read;
 
         # create an output file called 'population.dat'
         popfile = output_dir.open("population.dat",
-                                headers=["day", "date", "S", "E",
-                                        "I", "R"])
+                                  headers=["day", "date", "S", "E",
+                                           "I", "R"])
 
         # write the population to this file
         popfile.write(f"{population.day} {population.date.isoformat()} "

@@ -184,12 +184,25 @@ def run_model(network: _Union[Network, Networks],
             mixer=mixer, mover=mover,
             nthreads=nthreads, profiler=p)
 
+        should_finish_early = False
+
         for func in funcs:
             p2 = p2.start(str(func))
-            func(network=network, population=population,
-                 infections=infections, output_dir=output_dir,
-                 workspace=workspace, rngs=rngs, nthreads=nthreads,
-                 profiler=p2)
+            try:
+                func(network=network, population=population,
+                     infections=infections, output_dir=output_dir,
+                     workspace=workspace, rngs=rngs, nthreads=nthreads,
+                     profiler=p2)
+            except StopIteration:
+                # this function has signalled that the simulation
+                # should now stop - we record this request but will
+                # still let the other functions complete this
+                # iteration
+                Console.print(f"{func} has indicated that the model run "
+                              f"should stop early. Will finish the run "
+                              f"at the end of this iteration")
+                should_finish_early = True
+
             p2 = p2.stop()
 
         if population.population != start_population:
@@ -217,9 +230,15 @@ def run_model(network: _Union[Network, Networks],
         # save the population trajectory
         trajectory.append(population)
 
-        if nsteps is not None:
+        if should_finish_early:
+            Console.print(f"Exiting model run early due to function request")
+            break
+
+        elif nsteps is not None:
             if iteration_count >= nsteps:
-                Console.print(f"Exiting model run early")
+                Console.print(
+                    f"Exiting model run early as number of steps ({nsteps}) "
+                    f"reached.")
                 break
 
     # end of while loop

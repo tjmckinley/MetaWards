@@ -57,6 +57,8 @@ class InputFiles:
     nodes_to_track: str = None
     #: UV file
     uv: str = None
+    #: Whether or not this is the special "single" ward model
+    is_single: bool = False
 
     _filename: str = None            # Full path of the description.json file
     _model_name: str = None          # Name of the model
@@ -82,7 +84,10 @@ class InputFiles:
         return self._model_version
 
     def __str__(self):
-        return f"""
+        if self.is_single:
+            return "Model: single ward"
+        else:
+            return f"""
 * Model: {self._model_name}
 * loaded from: {self._filename}
 * repository: {self._repository}
@@ -169,6 +174,11 @@ class InputFiles:
         """
         repository_version = None
         repository_branch = None
+
+        if model == "single":
+            # This is the special 'single-ward' model - just return
+            # a basic InputFiles
+            return InputFiles(is_single=True)
 
         if filename is None:
             from ._parameters import get_repository

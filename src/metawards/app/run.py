@@ -993,6 +993,7 @@ def cli():
 
     Console.rule("Building the network")
     network = Network.build(params=params,
+                            population=population,
                             max_nodes=args.max_nodes,
                             max_links=args.max_links,
                             profiler=profiler)
