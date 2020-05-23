@@ -1267,14 +1267,15 @@
         <span class="c1"># first try to guess the dialect of the file (space or comma</span>
         <span class="c1"># separated, newline character etc.)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">csvlines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">csvlines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delimiters</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.utils.console</span> <span class="kn">import</span> <span class="n">Console</span>
-            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Could not identify what sort of separator to use to &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;read </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">. Could you add commas to separate the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;read </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">, so will assume commas. If this is wrong, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;then could you add commas to separate the &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;fields?&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid syntax in </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">excel</span>  <span class="c1">#  default comma-separated file</span>
 
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvlines</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span>
                                <span class="n">quoting</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">QUOTE_ALL</span><span class="p">,</span>
@@ -1298,7 +1299,7 @@
             <span class="c1"># there is nothing to read?</span>
             <span class="k">return</span> <span class="n">VariableSets</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;==&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;==&quot;</span><span class="p">:</span>
             <span class="c1"># this is a vertical file</span>
             <span class="k">if</span> <span class="n">line_numbers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -1410,7 +1411,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 22, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>
