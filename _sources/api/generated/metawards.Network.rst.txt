@@ -26,6 +26,7 @@ metawards.Network
       ~Network.reset_everything
       ~Network.run
       ~Network.scale_susceptibles
+      ~Network.single
       ~Network.specialise
       ~Network.update
    

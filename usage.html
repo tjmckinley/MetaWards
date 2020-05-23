@@ -40,7 +40,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Command line options" href="metawards_help.html" />
-    <link rel="prev" title="Movers and go functions" href="tutorial/part06/01_movers.html" /> 
+    <link rel="prev" title="Staying under quarantine" href="tutorial/part06/05_quarantine.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,6 +87,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -120,13 +123,14 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -195,7 +199,7 @@
         <a href="metawards_help.html" class="btn btn-neutral float-right" title="Command line options" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tutorial/part06/01_movers.html" class="btn btn-neutral float-left" title="Movers and go functions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tutorial/part06/05_quarantine.html" class="btn btn-neutral float-left" title="Staying under quarantine" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -220,7 +224,7 @@ like this;</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌──────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │                                                                      │
-│                       MetaWards version 0.12.0                       │
+│                MetaWards version 0.12.0+60.g035e9eac                 │
 │                                                                      │
 │                                                                      │
 │                        https://metawards.org                         │
@@ -228,9 +232,9 @@ like this;</p>
 │                          Source information                          │
 │                                                                      │
 │   • repository: https://github.com/metawards/MetaWards               │
-│   • branch: 0.12.0)                                                  │
-│   • revision: a15883bea96dff10754f18fccadbefd0647bb5b3               │
-│   • last modified: 2020-05-18T14:47:32+0100                          │
+│   • branch: master                                                   │
+│   • revision: 035e9eacaba23b18ddce6788fe9222e04147fe33               │
+│   • last modified: 2020-05-23T12:20:01+0100                          │
 │                                                                      │
 │  WARNING: MetaWardsData cannot be found! Please see                  │
 │  https://metawards.org/model_data for instructions on how to         │
@@ -248,24 +252,38 @@ like this;</p>
 should help in reproducing output. It is written to the top of all
 metawards outputs.</p>
 <p>If you see output like this, with <code class="docutils literal notranslate"><span class="pre">WARNING</span></code> lines about the version
-being <code class="docutils literal notranslate"><span class="pre">dirty</span></code>…</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   *****************************************
-   metawards version 0.3.0+58.g6e1f4c4.dirty
-   *****************************************
-
-            -- Source information --
-repository: https://github.com/metawards/MetaWards
-                 branch: devel
-revision: 6e1f4c45092ec345ee3673709d780ebe71ca0309
-    last modified: 2020-04-09T17:57:18+0100
-
-WARNING: This version has not been committed to git,
-WARNING: so you may not be able to recover the original
-WARNING: source code that was used to generate this run!
-
-          -- Additional information --
- Visit https://metawards.org for more informaion
-  about metawards, its authors and its license
+not having been committed to git…</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌──────────────────────────────────────────────────────────────────────┐
+│                                                                      │
+│                                                                      │
+│             MetaWards version 0.12.0+17.gd839bca1.dirty              │
+│                                                                      │
+│                                                                      │
+│                        https://metawards.org                         │
+│                                                                      │
+│                          Source information                          │
+│                                                                      │
+│   • repository: https://github.com/metawards/MetaWards               │
+│   • branch: feature-mover-tutorial                                   │
+│   • revision: d839bca1e32e8c8b1814d7f72667e84ead1a59d7               │
+│   • last modified: 2020-05-20T13:01:14+0100                          │
+│                                                                      │
+│  WARNING: This version has not been committed to git, so you may     │
+│  not be able to recover the original source code that was used to    │
+│  generate this run!                                                  │
+│                                                                      │
+│                      MetaWardsData information                       │
+│                                                                      │
+│   • version: 0.5.0                                                   │
+│   • repository: https://github.com/metawards/MetaWardsData           │
+│   • branch: master                                                   │
+│                                                                      │
+│                        Additional information                        │
+│                                                                      │
+│  Visit https://metawards.org for more information about metawards,   │
+│  its authors and its license                                         │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 </pre></div>
 </div>
 <p>then this means that your <code class="docutils literal notranslate"><span class="pre">metawards</span></code> executable has been built using
@@ -523,7 +541,7 @@ The full help is <a class="reference internal" href="metawards_plot_help.html"><
         <a href="metawards_help.html" class="btn btn-neutral float-right" title="Command line options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tutorial/part06/01_movers.html" class="btn btn-neutral float-left" title="Movers and go functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tutorial/part06/05_quarantine.html" class="btn btn-neutral float-left" title="Staying under quarantine" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -533,7 +551,7 @@ The full help is <a class="reference internal" href="metawards_plot_help.html"><
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>

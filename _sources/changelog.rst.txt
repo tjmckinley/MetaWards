@@ -2,6 +2,33 @@
 Changelog
 =========
 
+`1.0.0 <https://github.com/metawards/MetaWards/compare/0.12.0...1.0.0>`__ - May 23rd 2020
+-----------------------------------------------------------------------------------------
+
+* Improved "go_to" and "go_isolate" functions, which now support modelling
+  self-isolation and quarantine. This is all demonstrated in a new
+  part 6 of the tutorial.
+* Added an InteractionMatrix class to make it easier to create more
+  sophisticated interaction matricies.
+* Added ability for any plugin to signal that the model run should end
+  after the current iteration by raising a StopIteration exception
+* Added a "--model single" mode that uses a single-ward model for
+  debugging and validation purposes.
+* Updated parallel runners (multiprocessing, scoop and MPI) to return
+  results as they are available, so that the Console can report summaries
+  and live progress.
+* Added a developer's "debug" mode to the Console, complete with nice
+  variable printing.
+* Lots of file and text encoding fixes, particularly to fix unicode
+  issues on windows.
+* Finally fixed the issue on windows where the wrong plugin would
+  sometimes be loaded.
+* Updated all tutorial outputs to the new format.
+* Fixed a runtime check exception that occurred on rare occasions on Windows.
+  This didn't cause any errors in data, but did stop runs from continuing
+  when the run-time test was failed.
+
+
 `0.12.0 <https://github.com/metawards/MetaWards/compare/0.11.2...0.12.0>`__ - May 18th 2020
 --------------------------------------------------------------------------------------------
 

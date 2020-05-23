@@ -87,6 +87,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -104,7 +107,11 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../snaglist.html">Snag list</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Documentation</a><ul class="current">
@@ -123,11 +130,9 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_MetaWards_themes.html">MetaWards.themes</a></li>
 </ul>
 </li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -256,6 +261,18 @@ profiling.</p>
 </tbody>
 </table>
 <dl class="method">
+<dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>name: str = None</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_profiler.html#Profiler.__init__"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.utils.Profiler.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/utils/_profiler.html#Profiler.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.Profiler.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the results of profiling as a report</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.utils.Profiler.child_total">
 <code class="descname">child_total</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/metawards/utils/_profiler.html#Profiler.child_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.utils.Profiler.child_total" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the sum of time spent in the child profilers</p>
@@ -324,7 +341,7 @@ profiler in milliseconds (accurate to ~nanoseconds)</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>

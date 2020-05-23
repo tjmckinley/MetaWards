@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="metawards.mixers.merge_evenly" href="generated/metawards.mixers.merge_evenly.html" />
+    <link rel="next" title="metawards.mixers.InteractionMatrix" href="generated/metawards.mixers.InteractionMatrix.html" />
     <link rel="prev" title="MetaWards.mixers" href="index_MetaWards_mixers.html" /> 
 </head>
 
@@ -87,6 +87,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -104,7 +107,11 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../snaglist.html">Snag list</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Documentation</a><ul class="current">
@@ -122,11 +129,9 @@
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_movers.html">MetaWards.movers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_analysis.html">MetaWards.analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index_MetaWards_utils.html">MetaWards.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index_MetaWards_themes.html">MetaWards.themes</a></li>
 </ul>
 </li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
@@ -196,7 +201,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="generated/metawards.mixers.merge_evenly.html" class="btn btn-neutral float-right" title="metawards.mixers.merge_evenly" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="generated/metawards.mixers.InteractionMatrix.html" class="btn btn-neutral float-right" title="metawards.mixers.InteractionMatrix" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index_MetaWards_mixers.html" class="btn btn-neutral float-left" title="MetaWards.mixers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -218,19 +223,22 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.mixers.merge_evenly.html#metawards.mixers.merge_evenly" title="metawards.mixers.merge_evenly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_evenly</span></code></a>(network,&nbsp;nthreads,&nbsp;profiler,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.mixers.InteractionMatrix.html#metawards.mixers.InteractionMatrix" title="metawards.mixers.InteractionMatrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InteractionMatrix</span></code></a>(n,&nbsp;value)</td>
+<td>This is an interaction matrix, which is used to control how the FOIs of different demographics are merged together.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.mixers.merge_evenly.html#metawards.mixers.merge_evenly" title="metawards.mixers.merge_evenly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_evenly</span></code></a>(network,&nbsp;nthreads,&nbsp;profiler,&nbsp;…)</td>
 <td>This merge_function merges the FOIs across all demographic sub-networks evenly.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.mixers.mix_custom.html#metawards.mixers.mix_custom" title="metawards.mixers.mix_custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_custom</span></code></a>(custom_function,&nbsp;None],&nbsp;stage,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.mixers.mix_custom.html#metawards.mixers.mix_custom" title="metawards.mixers.mix_custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_custom</span></code></a>(custom_function,&nbsp;None],&nbsp;stage,&nbsp;…)</td>
 <td>This returns the default list of ‘merge_XXX’ functions that are called in sequence for each iteration of the model run.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.mixers.mix_default.html#metawards.mixers.mix_default" title="metawards.mixers.mix_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_default</span></code></a>(**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.mixers.mix_default.html#metawards.mixers.mix_default" title="metawards.mixers.mix_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_default</span></code></a>(**kwargs)</td>
 <td>This is the default mixer.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/metawards.mixers.mix_evenly.html#metawards.mixers.mix_evenly" title="metawards.mixers.mix_evenly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_evenly</span></code></a>(stage,&nbsp;**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.mixers.mix_evenly.html#metawards.mixers.mix_evenly" title="metawards.mixers.mix_evenly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_evenly</span></code></a>(stage,&nbsp;**kwargs)</td>
 <td>This mixer will evenly mix all demographics.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.mixers.mix_none.html#metawards.mixers.mix_none" title="metawards.mixers.mix_none"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_none</span></code></a>(**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/metawards.mixers.mix_none.html#metawards.mixers.mix_none" title="metawards.mixers.mix_none"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_none</span></code></a>(**kwargs)</td>
 <td>This mixer will perform no mixing.</td>
 </tr>
 </tbody>
@@ -248,7 +256,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="generated/metawards.mixers.merge_evenly.html" class="btn btn-neutral float-right" title="metawards.mixers.merge_evenly" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="generated/metawards.mixers.InteractionMatrix.html" class="btn btn-neutral float-right" title="metawards.mixers.InteractionMatrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index_MetaWards_mixers.html" class="btn btn-neutral float-left" title="MetaWards.mixers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -261,7 +269,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>

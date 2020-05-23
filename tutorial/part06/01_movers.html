@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Usage" href="../../usage.html" />
+    <link rel="next" title="Self-isolation duration" href="02_duration.html" />
     <link rel="prev" title="Part 6 - Moving between demographics" href="../index_part06.html" /> 
 </head>
 
@@ -87,6 +87,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -106,8 +109,13 @@
 <li class="toctree-l4"><a class="reference internal" href="#mixing-without-infection">Mixing without infection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#running-the-model">Running the model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#the-asymptomatic-stage">The asymptomatic stage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adjusting-progress">Adjusting progress</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="02_duration.html">Self-isolation duration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03_scan_duration.html">How many days of self-isolation is needed?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04_compliance.html">Conditional Compliance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="05_quarantine.html">Staying under quarantine</a></li>
 </ul>
 </li>
 </ul>
@@ -122,13 +130,14 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -198,7 +207,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../../usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="02_duration.html" class="btn btn-neutral float-right" title="Self-isolation duration" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../index_part06.html" class="btn btn-neutral float-left" title="Part 6 - Moving between demographics" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -230,24 +239,19 @@ demographics to model the effect of self-isolation or
 quarantine during an outbreak.</p>
 <p>First, create a new <code class="docutils literal notranslate"><span class="pre">demographics.json</span></code> file that contains;</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;demographics&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;home&quot;</span><span class="p">,</span> <span class="s2">&quot;isolate&quot;</span><span class="p">,</span> <span class="s2">&quot;released&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;work_ratios&quot;</span>  <span class="p">:</span> <span class="p">[</span> <span class="mf">1.0</span><span class="p">,</span>      <span class="mf">0.0</span><span class="p">,</span>       <span class="mf">0.0</span>    <span class="p">],</span>
-    <span class="s2">&quot;play_ratios&quot;</span>  <span class="p">:</span> <span class="p">[</span> <span class="mf">1.0</span><span class="p">,</span>      <span class="mf">0.0</span><span class="p">,</span>       <span class="mf">0.0</span>    <span class="p">]</span>
+    <span class="s2">&quot;demographics&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="s2">&quot;home&quot;</span><span class="p">,</span> <span class="s2">&quot;isolate&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;work_ratios&quot;</span>  <span class="p">:</span> <span class="p">[</span> <span class="mf">1.0</span><span class="p">,</span>      <span class="mf">0.0</span>   <span class="p">],</span>
+    <span class="s2">&quot;play_ratios&quot;</span>  <span class="p">:</span> <span class="p">[</span> <span class="mf">1.0</span><span class="p">,</span>      <span class="mf">0.0</span>   <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>This specifies three demographics:</p>
+<p>This specifies two demographics:</p>
 <ol class="arabic simple">
 <li><code class="docutils literal notranslate"><span class="pre">home</span></code> - this holds the entire population and represents individuals
 behaving “normally”, e.g. continuing to <em>work</em> and <em>play</em>.</li>
 <li><code class="docutils literal notranslate"><span class="pre">isolate</span></code> - this currently has no members. We will use this demographic
 to represent individuals who are self-isolating or in quarantine, e.g.
-they will not <em>work</em> or <em>play</em> and will not contribute to the
-force of infection of their home ward.</li>
-<li><code class="docutils literal notranslate"><span class="pre">released</span></code> - this currently has no members. We will use this demographic
-to represent individuals who have been released from self-isolation or
-quarantine. They will be free to resume their normal behaviour, e.g.
-they wil return to <em>work</em> and <em>play</em>.</li>
+they will not contribute to the force of infection of any ward.</li>
 </ol>
 </div>
 <div class="section" id="moving-individuals-to-isolation">
@@ -260,9 +264,7 @@ and copying in the below;</p>
 <span class="k">def</span> <span class="nf">move_isolate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">go_isolate</span><span class="p">(</span><span class="n">go_from</span><span class="o">=</span><span class="s2">&quot;home&quot;</span><span class="p">,</span>
                                        <span class="n">go_to</span><span class="o">=</span><span class="s2">&quot;isolate&quot;</span><span class="p">,</span>
-                                       <span class="n">release_to</span><span class="o">=</span><span class="s2">&quot;released&quot;</span><span class="p">,</span>
                                        <span class="n">self_isolate_stage</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                                       <span class="n">duration</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
                                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">[</span><span class="n">func</span><span class="p">]</span>
@@ -278,8 +280,7 @@ are showing signs of infection, i.e. individuals in a disease stage
 that is greater or equal to <code class="docutils literal notranslate"><span class="pre">self_isolate_stage</span></code>.</p>
 <p><a class="reference internal" href="../../api/generated/metawards.movers.go_isolate.html#metawards.movers.go_isolate" title="metawards.movers.go_isolate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">go_isolate()</span></code></a> moves these infected individuals
 from their existing demographic into the new demographic identified
-by <code class="docutils literal notranslate"><span class="pre">go_to</span></code>. Individuals are held here for <code class="docutils literal notranslate"><span class="pre">duration</span></code> days, before
-being released to the demographic identified by <code class="docutils literal notranslate"><span class="pre">release_to</span></code>.</p>
+by <code class="docutils literal notranslate"><span class="pre">go_to</span></code>.</p>
 <p>This go function has several parameters that must be set before it
 can be returned by <code class="docutils literal notranslate"><span class="pre">move_isolate</span></code>. We set these parameters by using
 <a class="reference external" href="https://chryswoods.com/parallel_python/lambda.html">lambda</a> to create
@@ -290,34 +291,31 @@ values.</p>
 <p class="last">Here is a <a class="reference external" href="https://chryswoods.com/parallel_python/lambda.html">good explanation of lambda and argument binding</a>
 if you’ve never seen this before. In this case we have bound
 <code class="docutils literal notranslate"><span class="pre">go_from</span></code> to equal <code class="docutils literal notranslate"><span class="pre">&quot;home&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">go_to</span></code> to equal <code class="docutils literal notranslate"><span class="pre">&quot;isolate&quot;</span></code>,
-<code class="docutils literal notranslate"><span class="pre">release_to</span></code> to equal <code class="docutils literal notranslate"><span class="pre">&quot;released&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">self_isolate_stage</span></code> to equal
-<code class="docutils literal notranslate"><span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">duration</span></code> to equal <code class="docutils literal notranslate"><span class="pre">7</span></code>. This means that these values
+and <code class="docutils literal notranslate"><span class="pre">self_isolate_stage</span></code> to equal <code class="docutils literal notranslate"><span class="pre">2</span></code> . This means that these values
 will be used every time the <code class="docutils literal notranslate"><span class="pre">go_isolate</span></code> function returned
 from <code class="docutils literal notranslate"><span class="pre">move_isolate</span></code> is called.</p>
 </div>
 </div>
 <div class="section" id="mixing-without-infection">
 <h2>Mixing without infection<a class="headerlink" href="#mixing-without-infection" title="Permalink to this headline">¶</a></h2>
-<p>Next, create a <span class="xref std std-doc">mixer</span> in
+<p>Next, create a <a class="reference internal" href="../../api/index_MetaWards_mixers.html"><span class="doc">mixer</span></a> in
 <code class="docutils literal notranslate"><span class="pre">mix_isolate.py</span></code> and copy in the below;</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">metawards.mixers</span> <span class="kn">import</span> <span class="n">merge_using_matrix</span>
 
 <span class="k">def</span> <span class="nf">mix_isolate</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-    <span class="n">matrix</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-               <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-               <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span> <span class="p">]</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+               <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span> <span class="p">]</span>
 
     <span class="n">network</span><span class="o">.</span><span class="n">demographics</span><span class="o">.</span><span class="n">interaction_matrix</span> <span class="o">=</span> <span class="n">matrix</span>
 
     <span class="k">return</span> <span class="p">[</span><span class="n">merge_using_matrix</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>This mixer specifies an interaction matrix that merges the FOIs evenly
-between the <code class="docutils literal notranslate"><span class="pre">home</span></code> and <code class="docutils literal notranslate"><span class="pre">released</span></code> demographics, while preventing
-any contribution to FOI from individuals in the <code class="docutils literal notranslate"><span class="pre">isolate</span></code> demographic.
-This includes turning off all interactions between isolated individuals,
-hence why <code class="docutils literal notranslate"><span class="pre">matrix[1][1]</span> <span class="pre">==</span> <span class="pre">0</span></code>.</p>
+<p>This mixer specifies an interaction matrix where the only contribution
+to the FOIs comes from the <code class="docutils literal notranslate"><span class="pre">home</span></code> demographic (<code class="docutils literal notranslate"><span class="pre">matrix[0][0]</span> <span class="pre">==</span> <span class="pre">1</span></code>).
+The <code class="docutils literal notranslate"><span class="pre">isolate</span></code> demographic makes no contribution to the FOI
+(<code class="docutils literal notranslate"><span class="pre">matrix[0][1]</span></code>, <code class="docutils literal notranslate"><span class="pre">matrix[1][0]</span></code> and <code class="docutils literal notranslate"><span class="pre">matrix[1][1]</span></code> are all zero).</p>
 </div>
 <div class="section" id="running-the-model">
 <h2>Running the model<a class="headerlink" href="#running-the-model" title="Permalink to this headline">¶</a></h2>
@@ -336,67 +334,56 @@ which you should copy into this directory. Run the job using;</p>
 long-lived asymptomatic but infectious stage 3 of the disease.</p>
 </div>
 <p>You should see a trajectory that looks something like this;</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">S</span><span class="p">:</span> <span class="mi">56082077</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
-    <span class="n">home</span>  <span class="n">S</span><span class="p">:</span> <span class="mi">56082077</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
- <span class="n">isolate</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
-<span class="n">released</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 0 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 56082077  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082077
+      home  S: 56082077  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082077
+   isolate  S:        0  E: 0  I: 0  R: 0  IW: 0  POPULATION:        0
+Number of infections: 0
 
-<span class="mi">0</span> <span class="mi">0</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+seeding demographic 0 play_infections[0][2124] += 5
+S: 56082072  E: 5  I: 0  R: 0  IW: 0  POPULATION: 56082077
+      home  S: 56082072  E: 5  I: 0  R: 0  IW: 0  POPULATION: 56082077
+   isolate  S:        0  E: 0  I: 0  R: 0  IW: 0  POPULATION:        0
+Number of infections: 5
 
-<span class="n">seeding</span> <span class="n">demographic</span> <span class="mi">0</span> <span class="n">play_infections</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2124</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">5</span>
-<span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
-    <span class="n">home</span>  <span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
- <span class="n">isolate</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
-<span class="n">released</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 2 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 56082072  E: 0  I: 5  R: 0  IW: 0  POPULATION: 56082077
+      home  S: 56082072  E: 0  I: 5  R: 0  IW: 0  POPULATION: 56082077
+   isolate  S:        0  E: 0  I: 0  R: 0  IW: 0  POPULATION:        0
+Number of infections: 5
 
-<span class="mi">1</span> <span class="mi">0</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 3 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 56082072  E: 0  I: 5  R: 0  IW: 0  POPULATION: 56082077
+      home  S: 56082072  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082072
+   isolate  S:        0  E: 0  I: 5  R: 0  IW: 0  POPULATION:        5
+Number of infections: 5
 
-<span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
-    <span class="n">home</span>  <span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
- <span class="n">isolate</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
-<span class="n">released</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 4 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 56082072  E: 0  I: 5  R: 0  IW: 0  POPULATION: 56082077
+      home  S: 56082072  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082072
+   isolate  S:        0  E: 0  I: 5  R: 0  IW: 0  POPULATION:        5
+Number of infections: 5
+...
+...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 20 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 56082072  E: 0  I: 1  R: 4  IW: 0  POPULATION: 56082077
+      home  S: 56082072  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082072
+   isolate  S:        0  E: 0  I: 1  R: 4  IW: 0  POPULATION:        5
+Number of infections: 1
 
-<span class="mi">2</span> <span class="mi">5</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 21 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 56082072  E: 0  I: 1  R: 4  IW: 0  POPULATION: 56082077
+      home  S: 56082072  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082072
+   isolate  S:        0  E: 0  I: 1  R: 4  IW: 0  POPULATION:        5
+Number of infections: 1
 
-<span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
-    <span class="n">home</span>  <span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082072</span>
- <span class="n">isolate</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">5</span>
-<span class="n">released</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
-
-<span class="mi">3</span> <span class="mi">5</span>
-
-<span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
-    <span class="n">home</span>  <span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082072</span>
- <span class="n">isolate</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">5</span>
-<span class="n">released</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
-
-<span class="mi">4</span> <span class="mi">5</span>
-
-<span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">2</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">3</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
-    <span class="n">home</span>  <span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082072</span>
- <span class="n">isolate</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">2</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">3</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">5</span>
-<span class="n">released</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
-
-<span class="mi">5</span> <span class="mi">5</span>
-
-<span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">2</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">3</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
-    <span class="n">home</span>  <span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082072</span>
- <span class="n">isolate</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">2</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">3</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">5</span>
-<span class="n">released</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
-
-<span class="mi">6</span> <span class="mi">2</span>
-
-<span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">1</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">4</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
-    <span class="n">home</span>  <span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082072</span>
- <span class="n">isolate</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">1</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">4</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">5</span>
-<span class="n">released</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
-
-<span class="mi">7</span> <span class="mi">2</span>
-
-<span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082077</span>
-    <span class="n">home</span>  <span class="n">S</span><span class="p">:</span> <span class="mi">56082072</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span> <span class="mi">56082072</span>
- <span class="n">isolate</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">5</span>
-<span class="n">released</span>  <span class="n">S</span><span class="p">:</span>        <span class="mi">0</span>  <span class="n">E</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">I</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">R</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">IW</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">POPULATION</span><span class="p">:</span>        <span class="mi">0</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 22 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 56082072  E: 0  I: 0  R: 5  IW: 0  POPULATION: 56082077
+      home  S: 56082072  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082072
+   isolate  S:        0  E: 0  I: 0  R: 5  IW: 0  POPULATION:        5
+Number of infections: 0
+Infection died ... Ending on day 22
 </pre></div>
 </div>
 <p>The infection was seeded with five individuals on day 1. They had a
@@ -404,7 +391,7 @@ latent infection for a day (<code class="docutils literal notranslate"><span cla
 on day 2 (<code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">==</span> <span class="pre">5</span></code>). At the beginning of day 3 then were moved
 into the <code class="docutils literal notranslate"><span class="pre">isolate</span></code> demographic, in which they were unable to
 infect others, and so progressed through the disease until they had
-all recovered by day 8.</p>
+all recovered by day 22.</p>
 </div>
 <div class="section" id="the-asymptomatic-stage">
 <h2>The asymptomatic stage<a class="headerlink" href="#the-asymptomatic-stage" title="Permalink to this headline">¶</a></h2>
@@ -419,9 +406,7 @@ that they have symptoms. Edit <code class="docutils literal notranslate"><span c
 <span class="k">def</span> <span class="nf">move_isolate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">go_isolate</span><span class="p">(</span><span class="n">go_from</span><span class="o">=</span><span class="s2">&quot;home&quot;</span><span class="p">,</span>
                                        <span class="n">go_to</span><span class="o">=</span><span class="s2">&quot;isolate&quot;</span><span class="p">,</span>
-                                       <span class="n">release_to</span><span class="o">=</span><span class="s2">&quot;released&quot;</span><span class="p">,</span>
                                        <span class="n">self_isolate_stage</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                                       <span class="n">duration</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
                                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">[</span><span class="n">func</span><span class="p">]</span>
@@ -432,6 +417,106 @@ that they have symptoms. Edit <code class="docutils literal notranslate"><span c
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy3 -D demographics.json -a ExtraSeedsBrighton.dat --mover move_isolate --mixer mix_isolate
 </pre></div>
 </div>
+<p>We now have a completely different outbreak. Asymptomatic (and thus not
+self-isolating) individuals were able to spread the infection to others
+before going into isolation. This spread was exponential, and so
+the epidemic lasted for a long time, with the vast majority of Individuals
+in the model being infected. For example;</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 370 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 11394138  E: 0  I: 1  R: 44687938  IW: 0  POPULATION: 56082077
+      home  S: 11394138  E: 0  I: 0  R:        0  IW: 0  POPULATION: 11394138
+   isolate  S:        0  E: 0  I: 1  R: 44687938  IW: 0  POPULATION: 44687939
+Number of infections: 1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 371 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 11394138  E: 0  I: 1  R: 44687938  IW: 0  POPULATION: 56082077
+      home  S: 11394138  E: 0  I: 0  R:        0  IW: 0  POPULATION: 11394138
+   isolate  S:        0  E: 0  I: 1  R: 44687938  IW: 0  POPULATION: 44687939
+Number of infections: 1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 372 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 11394138  E: 0  I: 0  R: 44687939  IW: 0  POPULATION: 56082077
+      home  S: 11394138  E: 0  I: 0  R:        0  IW: 0  POPULATION: 11394138
+   isolate  S:        0  E: 0  I: 0  R: 44687939  IW: 0  POPULATION: 44687939
+Number of infections: 0
+Infection died ... Ending on day 373
+</pre></div>
+</div>
+<p>Here, the outbreak lasted for 372 days, with ~45M infections.</p>
+</div>
+<div class="section" id="adjusting-progress">
+<h2>Adjusting progress<a class="headerlink" href="#adjusting-progress" title="Permalink to this headline">¶</a></h2>
+<p>The issue here is that the amount of time spent in the asymptomatic but
+infectious stage was very long (<code class="docutils literal notranslate"><span class="pre">progress[3]</span> <span class="pre">==</span> <span class="pre">0.2</span></code>) and the
+infectiousness of asymptomatic individuals was very high
+(<code class="docutils literal notranslate"><span class="pre">beta[3]</span> <span class="pre">==</span> <span class="pre">0.4</span></code>). During a real outbreak it is likely that individuals
+would take actions that would reduce the chance of infection even from
+asymptomatic carriers, e.g. by generally being more wary of one another,
+washing hands, wearing masks etc. To account for this, we should reduce
+the value of <code class="docutils literal notranslate"><span class="pre">beta[3]</span></code> to a lower value, e.g. to <code class="docutils literal notranslate"><span class="pre">0.2</span></code>. Copy
+<code class="docutils literal notranslate"><span class="pre">lurgy3.json</span></code> to <code class="docutils literal notranslate"><span class="pre">lurgy4.json</span></code> and update that to read;</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s2">&quot;name&quot;</span>             <span class="p">:</span> <span class="s2">&quot;The Lurgy&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;version&quot;</span>          <span class="p">:</span> <span class="s2">&quot;May 18th 2020&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;author(s)&quot;</span>        <span class="p">:</span> <span class="s2">&quot;Christopher Woods&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;contact(s)&quot;</span>       <span class="p">:</span> <span class="s2">&quot;christopher.woods@bristol.ac.uk&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;reference(s)&quot;</span>     <span class="p">:</span> <span class="s2">&quot;Completely ficticious disease - no references&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;beta&quot;</span>             <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+  <span class="s2">&quot;progress&quot;</span>         <span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+  <span class="s2">&quot;too_ill_to_move&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+  <span class="s2">&quot;contrib_foi&quot;</span>      <span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>(we have just changed <code class="docutils literal notranslate"><span class="pre">beta[3]</span></code> from <code class="docutils literal notranslate"><span class="pre">0.4</span></code> to <code class="docutils literal notranslate"><span class="pre">0.2</span></code>)</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In a real outbreak you should scan the value of <code class="docutils literal notranslate"><span class="pre">beta[3]</span></code> to match
+against observations. We are not doing this now as the lurgy is a
+fictional disease.</p>
+</div>
+<p>Now run the model using the command;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy4 -D demographics.json -a ExtraSeedsBrighton.dat --mover move_isolate --mixer mix_isolate --nsteps <span class="m">365</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We’ve switched to using <code class="docutils literal notranslate"><span class="pre">lurgy4</span></code> and have limited the run to modelling
+just a single year (365 days)</p>
+</div>
+<p>You should see output similar to;</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 362 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 55673047  E: 4015  I: 35748  R: 369267  IW: 3073  POPULATION: 56082077
+      home  S: 55673047  E: 4015  I: 23938  R:   4094  IW: 3073  POPULATION: 55705094
+   isolate  S:        0  E:    0  I: 11810  R: 365173  IW:    0  POPULATION:   376983
+Number of infections: 39763
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 363 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 55668968  E: 4094  I: 35800  R: 373215  IW: 2990  POPULATION: 56082077
+      home  S: 55668968  E: 4094  I: 23987  R:   4079  IW: 2990  POPULATION: 55701128
+   isolate  S:        0  E:    0  I: 11813  R: 369136  IW:    0  POPULATION:   380949
+Number of infections: 39894
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 364 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+S: 55664887  E: 4079  I: 35966  R: 377145  IW: 3028  POPULATION: 56082077
+      home  S: 55664887  E: 4079  I: 24148  R:   4081  IW: 3028  POPULATION: 55697195
+   isolate  S:        0  E:    0  I: 11818  R: 373064  IW:    0  POPULATION:   384882
+Number of infections: 40045
+Exiting model run early
+Infection died ... Ending on day 365
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You may find that the outbreak dies out quite quickly. The number of
+infections is low at the start, and the action of low <code class="docutils literal notranslate"><span class="pre">beta</span></code> and
+the move to self-isolating does quench the outbreak during some runs.
+However, once it catches light, the outbreak will spread to approximately
+40,000 individuals within one year.</p>
+</div>
+<p>The spread of the infection was significantly reduced by the reduction
+in <code class="docutils literal notranslate"><span class="pre">beta[3]</span></code> for the asymptomatic stage. This demonstrates how small changes
+in <code class="docutils literal notranslate"><span class="pre">beta</span></code>, e.g. caused by increased hand-washing, masks etc., can have
+a big impact on the spread of the disease in the model.</p>
 </div>
 </div>
 
@@ -443,7 +528,7 @@ that they have symptoms. Edit <code class="docutils literal notranslate"><span c
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="02_duration.html" class="btn btn-neutral float-right" title="Self-isolation duration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../index_part06.html" class="btn btn-neutral float-left" title="Part 6 - Moving between demographics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -456,7 +541,7 @@ that they have symptoms. Edit <code class="docutils literal notranslate"><span c
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>

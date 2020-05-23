@@ -71,6 +71,14 @@ been optimised and parallelised, with additional testing added to ensure
 that future development and scale-up of MetaWards can be robustly and
 efficiently conducted.
 
+Features
+========
+
+.. toctree::
+   :maxdepth: 2
+
+   features
+
 Installation
 ============
 
@@ -119,7 +127,11 @@ Contributing
    :maxdepth: 2
 
    contributing
+   devsupport
+   roadmap
    packaging
+   development
+   snaglist
 
 Documentation
 =============
@@ -128,13 +140,6 @@ Documentation
    :maxdepth: 2
 
    api/index
-
-Development
-===========
-.. toctree::
-   :maxdepth: 2
-
-   development
 
 Changelog
 =========

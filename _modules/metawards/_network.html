@@ -85,6 +85,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -102,13 +105,14 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -249,8 +253,60 @@
 
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">node_pop</span> <span class="o">+</span> <span class="n">link_pop</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Network.single"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.single">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">single</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
+               <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
+               <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds and returns a new Network that contains just a single</span>
+<span class="sd">           ward, in which &#39;population&#39; individuals are resident.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">profiler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">NullProfiler</span>
+            <span class="n">profiler</span> <span class="o">=</span> <span class="n">NullProfiler</span><span class="p">()</span>
+
+        <span class="n">pop</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">population</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">pop</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pop</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">initial</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">pop</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;You cannot create a Network with a zero or negative &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;population (</span><span class="si">{</span><span class="n">population</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Creating a single ward Network with a population &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;of </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="p">()</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">nnodes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">nlinks</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">nplay</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Everything is 1-indexed, so need to create space for the</span>
+        <span class="c1"># null 0-index objects...</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">play</span> <span class="o">=</span> <span class="n">Links</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="n">Links</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">nodes</span> <span class="o">=</span> <span class="n">Nodes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">._node</span> <span class="kn">import</span> <span class="n">Node</span>
+        <span class="c1"># 1-indexed node</span>
+        <span class="n">nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">play_suscept</span><span class="o">=</span><span class="n">pop</span><span class="p">,</span>
+                        <span class="n">save_play_suscept</span><span class="o">=</span><span class="n">pop</span><span class="p">)</span>
+
+        <span class="n">network</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="n">nodes</span>
+
+        <span class="n">network</span><span class="o">.</span><span class="n">reset_everything</span><span class="p">(</span><span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">rescale_play_matrix</span><span class="p">(</span><span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">move_from_play_to_work</span><span class="p">(</span><span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">network</span></div>
+
 <div class="viewcode-block" id="Network.build"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.build">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
+              <span class="n">population</span><span class="p">:</span> <span class="n">Population</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">max_nodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16384</span><span class="p">,</span>
               <span class="n">max_links</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4194304</span><span class="p">,</span>
               <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -267,6 +323,16 @@
             <span class="n">profiler</span> <span class="o">=</span> <span class="n">NullProfiler</span><span class="p">()</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">profiler</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;Network.build&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">input_files</span><span class="o">.</span><span class="n">is_single</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">population</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">population</span> <span class="o">=</span> <span class="n">Population</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+            <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">single</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                                     <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
+                                     <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">network</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;build_function&quot;</span><span class="p">)</span>
         <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">build_wards_network</span>
@@ -664,7 +730,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>

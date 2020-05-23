@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation instructions" href="install.html" /> 
+    <link rel="next" title="Features" href="features.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,6 +86,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -103,13 +106,14 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -175,7 +179,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="install.html" class="btn btn-neutral float-right" title="Installation instructions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="features.html" class="btn btn-neutral float-right" title="Features" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
   </div>
@@ -232,6 +236,17 @@ from the original C code as used in that work. This Python code has
 been optimised and parallelised, with additional testing added to ensure
 that future development and scale-up of MetaWards can be robustly and
 efficiently conducted.</p>
+</div>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="features.html#software-design">Software design</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -311,7 +326,21 @@ efficiently conducted.</p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-new-code">Contributing new code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#snaglist">Snaglist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devsupport.html">Developer Support</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devsupport.html#profiling">Profiling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devsupport.html#profiler">Profiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devsupport.html#printf-debugging">printf Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devsupport.html#debugging-levels">Debugging levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devsupport.html#debugging-lambdas">Debugging lambdas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devsupport.html#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="roadmap.html#different-demographics-using-different-parameters">Different demographics using different parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roadmap.html#different-demographics-using-different-networks">Different demographics using different networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roadmap.html#different-nodes-using-different-parameters">Different nodes using different parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging releases</a><ul>
@@ -321,6 +350,20 @@ efficiently conducted.</p>
 <li class="toctree-l2"><a class="reference internal" href="packaging.html#tagging-a-new-release">Tagging a new release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="packaging.html#uploading-packages-to-pypi">Uploading packages to pypi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="packaging.html#testing-the-final-release">Testing the final release</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="development.html#setting-up-your-computer">Setting up your computer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#coding-style">Coding Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#committing">Committing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#thanks">Thanks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="snaglist.html">Snag list</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="snaglist.html#snags">Snags</a></li>
 </ul>
 </li>
 </ul>
@@ -339,23 +382,7 @@ efficiently conducted.</p>
 <li class="toctree-l2"><a class="reference internal" href="api/index_MetaWards_movers.html">MetaWards.movers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/index_MetaWards_analysis.html">MetaWards.analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/index_MetaWards_utils.html">MetaWards.utils</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="development">
-<h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="development.html#setting-up-your-computer">Setting up your computer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#coding-style">Coding Style</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#workflow">Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#testing">Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#documentation">Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#committing">Committing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#thanks">Thanks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index_MetaWards_themes.html">MetaWards.themes</a></li>
 </ul>
 </li>
 </ul>
@@ -366,6 +393,7 @@ efficiently conducted.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#may-23rd-2020">1.0.0 - May 23rd 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#may-18th-2020">0.12.0 - May 18th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#may-11th-2020">0.11.2 - May 11th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog.html#may-10th-2020">0.11.1 - May 10th 2020</a></li>
@@ -415,7 +443,7 @@ efficiently conducted.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="install.html" class="btn btn-neutral float-right" title="Installation instructions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="features.html" class="btn btn-neutral float-right" title="Features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -426,7 +454,7 @@ efficiently conducted.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>

@@ -87,6 +87,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -114,13 +117,14 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -210,8 +214,9 @@
                  [--start-day START_DAY] [-p PARAMETERS] [-R REPOSITORY]
                  [-P POPULATION] [-n NSTEPS] [-u USER_VARIABLES]
                  [--iterator ITERATOR] [--extractor EXTRACTOR] [--mixer MIXER]
-                 [--mover MOVER] [--UV UV] [--theme THEME]
-                 [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
+                 [--mover MOVER] [--UV UV] [--theme THEME] [--no-spinner]
+                 [--debug] [--debug-level DEBUG_LEVEL] [--nthreads NTHREADS]
+                 [--nprocs NPROCS] [--hostfile HOSTFILE]
                  [--cores-per-node CORES_PER_NODE] [--auto-bzip]
                  [--no-auto-bzip] [--force-overwrite-output]
                  [--max-nodes MAX_NODES] [--max-links MAX_LINKS] [--profile]
@@ -334,9 +339,17 @@ optional arguments:
                         (default: None)
   --UV UV               Value for the UV parameter for the model (default is
                         0.0) (default: 0.0)
-  --theme THEME         The theme to use to color the output. Use
-                        --theme=simple if you prefer a simple and colorless
-                        output. (default: None)
+  --theme THEME         The theme to use to color the output. Use &#39;--theme
+                        simple&#39; if you prefer a simple and colorless output.
+                        (default: None)
+  --no-spinner          Disable the spinner that spins when little output is
+                        being printed to the screen. (default: None)
+  --debug               Enable debugging output. This is useful for MetaWards
+                        developers or if you are writing your own iterators,
+                        extractors etc. (default: None)
+  --debug-level DEBUG_LEVEL
+                        Limit debug output to the specified level. (default:
+                        None)
   --nthreads NTHREADS   Number of threads over which parallelise an individual
                         model run. The total number of cores used by metawards
                         will be nprocesses x nthreads [env var:
@@ -408,7 +421,7 @@ optional arguments:
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>

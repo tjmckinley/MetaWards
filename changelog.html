@@ -40,7 +40,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Acknowledgements" href="acknowledgements.html" />
-    <link rel="prev" title="Developer’s guide" href="development.html" /> 
+    <link rel="prev" title="metawards.themes.SpringFlowers" href="api/generated/metawards.themes.SpringFlowers.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,6 +87,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -104,16 +107,18 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">Documentation</a></li>
 </ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Developer’s guide</a></li>
-</ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#may-23rd-2020">1.0.0 - May 23rd 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#may-18th-2020">0.12.0 - May 18th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#may-11th-2020">0.11.2 - May 11th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#may-10th-2020">0.11.1 - May 10th 2020</a></li>
@@ -200,7 +205,7 @@
         <a href="acknowledgements.html" class="btn btn-neutral float-right" title="Acknowledgements" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="development.html" class="btn btn-neutral float-left" title="Developer’s guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="api/generated/metawards.themes.SpringFlowers.html" class="btn btn-neutral float-left" title="metawards.themes.SpringFlowers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -211,6 +216,33 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="may-23rd-2020">
+<h2><a class="reference external" href="https://github.com/metawards/MetaWards/compare/0.12.0...1.0.0">1.0.0</a> - May 23rd 2020<a class="headerlink" href="#may-23rd-2020" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Improved “go_to” and “go_isolate” functions, which now support modelling
+self-isolation and quarantine. This is all demonstrated in a new
+part 6 of the tutorial.</li>
+<li>Added an InteractionMatrix class to make it easier to create more
+sophisticated interaction matricies.</li>
+<li>Added ability for any plugin to signal that the model run should end
+after the current iteration by raising a StopIteration exception</li>
+<li>Added a “–model single” mode that uses a single-ward model for
+debugging and validation purposes.</li>
+<li>Updated parallel runners (multiprocessing, scoop and MPI) to return
+results as they are available, so that the Console can report summaries
+and live progress.</li>
+<li>Added a developer’s “debug” mode to the Console, complete with nice
+variable printing.</li>
+<li>Lots of file and text encoding fixes, particularly to fix unicode
+issues on windows.</li>
+<li>Finally fixed the issue on windows where the wrong plugin would
+sometimes be loaded.</li>
+<li>Updated all tutorial outputs to the new format.</li>
+<li>Fixed a runtime check exception that occurred on rare occasions on Windows.
+This didn’t cause any errors in data, but did stop runs from continuing
+when the run-time test was failed.</li>
+</ul>
+</div>
 <div class="section" id="may-18th-2020">
 <h2><a class="reference external" href="https://github.com/metawards/MetaWards/compare/0.11.2...0.12.0">0.12.0</a> - May 18th 2020<a class="headerlink" href="#may-18th-2020" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -444,7 +476,7 @@ understand it.</li>
         <a href="acknowledgements.html" class="btn btn-neutral float-right" title="Acknowledgements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="development.html" class="btn btn-neutral float-left" title="Developer’s guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="api/generated/metawards.themes.SpringFlowers.html" class="btn btn-neutral float-left" title="metawards.themes.SpringFlowers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -454,7 +486,7 @@ understand it.</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>

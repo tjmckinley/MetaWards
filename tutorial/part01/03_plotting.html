@@ -87,6 +87,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -121,13 +124,14 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -220,6 +224,18 @@ To run this, type;</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards-plot --input output/results.csv.bz2
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">metawards-plot</span></code> uses <a class="reference external" href="https://pandas.pydata.org">pandas</a> and
+<a class="reference external" href="https://matplotlib.org">matplotlib</a> for plotting. If you don’t have
+these on your computer then you will see an error message giving
+instructions on how to install the packages. Note that the default
+format of the output is jpeg. You can change the format using the
+<code class="docutils literal notranslate"><span class="pre">--format</span></code> option, e.g. <code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">png</span></code> or <code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">pdf</span></code>.
+You may need to install
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/">Pillow</a>
+to support output in some file formats.</p>
+</div>
 <div class="section" id="understanding-the-graphs">
 <h2>Understanding the graphs<a class="headerlink" href="#understanding-the-graphs" title="Permalink to this headline">¶</a></h2>
 <p>This will create two sets of graphs;</p>
@@ -294,7 +310,7 @@ uses pandas and matplotlib to render these two graphs.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>

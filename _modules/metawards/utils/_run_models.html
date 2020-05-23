@@ -85,6 +85,9 @@
             
             
               <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation instructions</a></li>
 </ul>
 <ul>
@@ -102,13 +105,14 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devsupport.html">Developer Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roadmap.html">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../packaging.html">Packaging releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Developer’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../snaglist.html">Snag list</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">Documentation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Developer’s guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
@@ -238,7 +242,7 @@
             <span class="sa">f</span><span class="s2">&quot;Unrecognised parallelisation scheme </span><span class="si">{</span><span class="n">parallel_scheme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="run_models"><a class="viewcode-back" href="../../../api/generated/metawards.utils.run_models.html#metawards.utils.run_models">[docs]</a><span class="k">def</span> <span class="nf">run_models</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">Network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">],</span>
+<span class="k">def</span> <span class="nf">run_models</span><span class="p">(</span><span class="n">network</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="n">Network</span><span class="p">,</span> <span class="n">Networks</span><span class="p">],</span>
                <span class="n">variables</span><span class="p">:</span> <span class="n">VariableSets</span><span class="p">,</span>
                <span class="n">population</span><span class="p">:</span> <span class="n">Population</span><span class="p">,</span>
                <span class="n">nprocs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -380,8 +384,16 @@
     <span class="n">outdirs</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">(</span><span class="n">include_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">output_dir</span><span class="p">()</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">d</span>
+
+        <span class="k">while</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">outdirs</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="s2">&quot;x</span><span class="si">%03d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span>
+
         <span class="n">outdirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
     <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -580,12 +592,29 @@
             <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Running jobs in parallel using a scoop pool&quot;</span><span class="p">)</span>
             <span class="kn">from</span> <span class="nn">scoop</span> <span class="kn">import</span> <span class="n">futures</span>
 
-            <span class="n">results</span> <span class="o">=</span> <span class="n">futures</span><span class="o">.</span><span class="n">map_as_completed</span><span class="p">(</span><span class="n">run_worker</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">argument</span> <span class="ow">in</span> <span class="n">arguments</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">futures</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">run_worker</span><span class="p">,</span> <span class="n">argument</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Error submitting calculation: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Trying to submit again...&quot;</span><span class="p">)</span>
+
+                    <span class="c1"># try again</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">futures</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">run_worker</span><span class="p">,</span> <span class="n">argument</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;No - another error: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Skipping this job&quot;</span><span class="p">)</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)):</span>
                 <span class="k">with</span> <span class="n">Console</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="s2">&quot;Computing model run&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">spinner</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">output</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+                        <span class="n">output</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
                         <span class="n">spinner</span><span class="o">.</span><span class="n">success</span><span class="p">()</span>
                     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                         <span class="n">spinner</span><span class="o">.</span><span class="n">failure</span><span class="p">()</span>
@@ -631,7 +660,7 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error calling </span><span class="si">{</span><span class="n">func</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">outputs</span></div>
+    <span class="k">return</span> <span class="n">outputs</span>
 </pre></div>
 
            </div>
@@ -645,7 +674,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 18, 2020.
+        Last updated on May 23, 2020.
       </span>
 
     </p>
