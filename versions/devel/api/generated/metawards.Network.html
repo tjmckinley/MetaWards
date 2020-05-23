@@ -242,7 +242,7 @@ work (predictable movements) and play (unpredictable movements)</p>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Network.assert_sane" title="metawards.Network.assert_sane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_sane</span></code></a>(profiler)</td>
 <td>Assert that this network is sane.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.build" title="metawards.Network.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(params,&nbsp;max_nodes,&nbsp;max_links,&nbsp;nthreads)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.build" title="metawards.Network.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(params,&nbsp;population,&nbsp;max_nodes,&nbsp;…[,&nbsp;…])</td>
 <td>Builds and returns a new Network that is described by the passed parameters.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Network.copy" title="metawards.Network.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</td>
@@ -275,10 +275,13 @@ work (predictable movements) and play (unpredictable movements)</p>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.scale_susceptibles" title="metawards.Network.scale_susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_susceptibles</span></code></a>(ratio,&nbsp;work_ratio,&nbsp;play_ratio)</td>
 <td>Scale the number of susceptibles in this Network by the passed scale ratios.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.specialise" title="metawards.Network.specialise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specialise</span></code></a>(demographic[,&nbsp;profiler])</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.single" title="metawards.Network.single"><code class="xref py py-obj docutils literal notranslate"><span class="pre">single</span></code></a>(params,&nbsp;population[,&nbsp;profiler])</td>
+<td>Builds and returns a new Network that contains just a single ward, in which ‘population’ individuals are resident.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.specialise" title="metawards.Network.specialise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specialise</span></code></a>(demographic[,&nbsp;profiler])</td>
 <td>Return a copy of this network that has been specialised for the passed demographic.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Network.update" title="metawards.Network.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(params[,&nbsp;demographics,&nbsp;profiler])</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Network.update" title="metawards.Network.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(params[,&nbsp;demographics,&nbsp;profiler])</td>
 <td>Update this network with a new set of parameters (and optionally demographics).</td>
 </tr>
 </tbody>
@@ -342,7 +345,7 @@ to check every time the network is accessed</p>
 
 <dl class="staticmethod">
 <dt id="metawards.Network.build">
-<em class="property">static </em><code class="descname">build</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.build" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">build</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>population: metawards._population.Population = None</em>, <em>max_nodes: int = 16384</em>, <em>max_links: int = 4194304</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds and returns a new Network that is described by the
 passed parameters.</p>
 <p>The network is built in allocated memory, so you need to specify
@@ -545,6 +548,13 @@ susceptibles - evenly scales the work and play populations</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="metawards.Network.single">
+<em class="property">static </em><code class="descname">single</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>population: metawards._population.Population</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.single"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and returns a new Network that contains just a single
+ward, in which ‘population’ individuals are resident.</p>
 </dd></dl>
 
 <dl class="method">

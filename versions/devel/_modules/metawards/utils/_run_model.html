@@ -370,12 +370,25 @@
             <span class="n">mixer</span><span class="o">=</span><span class="n">mixer</span><span class="p">,</span> <span class="n">mover</span><span class="o">=</span><span class="n">mover</span><span class="p">,</span>
             <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
 
+        <span class="n">should_finish_early</span> <span class="o">=</span> <span class="kc">False</span>
+
         <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">funcs</span><span class="p">:</span>
             <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">func</span><span class="p">))</span>
-            <span class="n">func</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
-                 <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
-                 <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
-                 <span class="n">profiler</span><span class="o">=</span><span class="n">p2</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">func</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
+                     <span class="n">infections</span><span class="o">=</span><span class="n">infections</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+                     <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span> <span class="n">rngs</span><span class="o">=</span><span class="n">rngs</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
+                     <span class="n">profiler</span><span class="o">=</span><span class="n">p2</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="c1"># this function has signalled that the simulation</span>
+                <span class="c1"># should now stop - we record this request but will</span>
+                <span class="c1"># still let the other functions complete this</span>
+                <span class="c1"># iteration</span>
+                <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func</span><span class="si">}</span><span class="s2"> has indicated that the model run &quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;should stop early. Will finish the run &quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;at the end of this iteration&quot;</span><span class="p">)</span>
+                <span class="n">should_finish_early</span> <span class="o">=</span> <span class="kc">True</span>
+
             <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">population</span><span class="o">.</span><span class="n">population</span> <span class="o">!=</span> <span class="n">start_population</span><span class="p">:</span>
@@ -403,9 +416,15 @@
         <span class="c1"># save the population trajectory</span>
         <span class="n">trajectory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">population</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">nsteps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">should_finish_early</span><span class="p">:</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exiting model run early due to function request&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+        <span class="k">elif</span> <span class="n">nsteps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">iteration_count</span> <span class="o">&gt;=</span> <span class="n">nsteps</span><span class="p">:</span>
-                <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exiting model run early&quot;</span><span class="p">)</span>
+                <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Exiting model run early as number of steps (</span><span class="si">{</span><span class="n">nsteps</span><span class="si">}</span><span class="s2">) &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;reached.&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
 
     <span class="c1"># end of while loop</span>
