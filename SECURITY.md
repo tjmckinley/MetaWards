@@ -8,13 +8,12 @@ is 1.1, then only versions 1.1 and 1.0 will have security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.11.x  | :white_check_mark: |
-| 0.10.x  | :white_check_mark: |
-| <= 0.9.x| :x:                |
+| 1.0.x   | :white_check_mark: |
+| <= 1.0.x| :x:                |
 
 ## Reporting a Vulnerability
 
-Please report a vulnerability by emailing the Bristol RSE development 
-team at ask-rse@bristol.ac.uk. We will review your report as quickly 
-as we can, and will aim to respond to you within seven days with 
+Please report a vulnerability by emailing the Bristol RSE development
+team at ask-rse@bristol.ac.uk. We will review your report as quickly
+as we can, and will aim to respond to you within seven days with
 the outcome. We really appreciate your help and your patience.
