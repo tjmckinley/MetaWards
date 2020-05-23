@@ -22,3 +22,4 @@ In this sixth part of the tutorial you will:
    part06/02_duration
    part06/03_scan_duration
    part06/04_compliance
+   part06/05_quarantine
