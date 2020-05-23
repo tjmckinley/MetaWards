@@ -1081,14 +1081,15 @@ class VariableSets:
         # first try to guess the dialect of the file (space or comma
         # separated, newline character etc.)
         try:
-            dialect = csv.Sniffer().sniff(csvlines[0])
+            dialect = csv.Sniffer().sniff(csvlines[0], delimiters=[" ", ","])
         except Exception:
-            from .utils.console import Console
-            Console.error(
+            from .utils._console import Console
+            Console.warning(
                 f"Could not identify what sort of separator to use to "
-                f"read {filename}. Could you add commas to separate the "
+                f"read {filename}, so will assume commas. If this is wrong, "
+                f"then could you add commas to separate the "
                 f"fields?")
-            raise SyntaxError(f"Invalid syntax in {filename}")
+            dialect = csv.excel  #  default comma-separated file
 
         for line in csv.reader(csvlines, dialect=dialect,
                                quoting=csv.QUOTE_ALL,
@@ -1112,7 +1113,7 @@ class VariableSets:
             # there is nothing to read?
             return VariableSets()
 
-        if len(lines[0]) > 1 and lines[0][1] == "==":
+        if len(lines[0]) > 1 and len(lines[0]) > 1 and lines[0][1] == "==":
             # this is a vertical file
             if line_numbers is not None:
                 raise ValueError(

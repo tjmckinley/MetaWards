@@ -1,6 +1,6 @@
 /.vscode
-*.dat
 original/metawards
+original/*.dat
 notebooks/.ipynb_checkpoints
 /build
 src/metawards/*.c
