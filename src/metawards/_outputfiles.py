@@ -244,7 +244,13 @@ class OutputFiles:
 
                     # remake the directory after it has been removed
                     try:
+                        import stat
+                        import sys
+
                         os.makedirs(outdir)
+                        # Make sure write bit is set on Windows.
+                        if sys.platform == "win32":
+                            os.chmod(outdir, stat.S_IWRITE)
                     except FileExistsError:
                         pass
 
@@ -255,7 +261,13 @@ class OutputFiles:
                 raise FileExistsError(f"{outdir} is an existing file!")
 
         try:
+            import stat
+            import sys
+
             os.makedirs(outdir)
+            # Make sure write bit is set on Windows.
+            if sys.platform == "win32":
+                os.chmod(outdir, stat.S_IWRITE)
         except FileExistsError as e:
             # this is no problem, as we have already validated
             # that the directory already existing is ok

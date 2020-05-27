@@ -386,14 +386,19 @@ def scoop_supervisor(hostfile, args):
        form the scoop call to run a scoop version of the program
     """
     import os
+    import stat
     import sys
     from metawards.utils import Console
+
     Console.print("RUNNING A SCOOP PROGRAM")
 
     outdir = args.output
 
     if not os.path.exists(outdir):
         os.mkdir(outdir)
+        # Make sure write bit is set on Windows.
+        if sys.platform == "win32":
+            os.chmod(outdir, stat.S_IWRITE)
 
     cores_per_node = get_cores_per_node(args)
 
@@ -497,6 +502,7 @@ def mpi_supervisor(hostfile, args):
        form the mpiexec call to run an MPI version of the program
     """
     import os
+    import stat
     import sys
     from metawards.utils import Console
 
@@ -506,6 +512,9 @@ def mpi_supervisor(hostfile, args):
 
     if not os.path.exists(outdir):
         os.mkdir(outdir)
+        # Make sure write bit is set on Windows.
+        if sys.platform == "win32":
+            os.chmod(outdir, stat.S_IWRITE)
 
     cores_per_node = get_cores_per_node(args)
 
