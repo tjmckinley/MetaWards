@@ -107,18 +107,33 @@ Next, we need to create the ``demographics.json`` file that should contain;
         "demographics" : ["home", "super"],
         "work_ratios"  : [ 0.9, 0.1 ],
         "play_ratios"  : [ 0.9, 0.1 ],
-        "diseases"     : [ "lurgy_home", "lurgy_super" ]
+        "diseases"     : [ null, "lurgy_super" ]
     }
 
 This describes the two demographics, with 90% of individuals in the
 ``home`` demographic, and 10% in the ``super`` demographic. The new
 line here, ``disease_stages``, specifies the file for the disease stages
-for each demographic, e.g. ``home`` will follow ``lurgy_home``, while
+for each demographic, e.g. ``home`` will follow the default disease, while
 ``super`` will follow ``lurgy_super``.
+
+.. note::
+
+   ``null`` in a json file means "nothing". In this case, "nothing" means
+   that the ``home`` demographic should use the disease parameters from
+   the global disease file set by the user.
 
 Run ``metawards`` using the command;
 
 .. code-block:: bash
 
-  metawards -D demographics.json --mixer mix_evenly -a ExtraSeedsLondon.dat
+  metawards -d lurgy_home -D demographics.json --mixer mix_evenly -a ExtraSeedsLondon.dat
+
+.. note::
+
+   Here we set the global disease file, via ``-d lurgy_home`` to ``lurgy_home``.
+   This will be used by the ``home`` demographic. In theory we could have
+   specified ``lurgy_home`` directly in the ``demographics.json`` file,
+   but this would mean we would have to specify it twice, once there and once
+   globally. It is better to define things once only, as this leads to fewer
+   bugs.
 
