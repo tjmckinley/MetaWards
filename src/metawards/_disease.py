@@ -65,6 +65,11 @@ class Disease:
 * start_symptom: {self.start_symptom}
 """
 
+    def __repr__(self):
+        return f"Disease(beta={self.beta}, progress={self.progress}, " \
+               f"too_ill_to_move={self.too_ill_to_move}, contrib_foi=" \
+               f"{self.contrib_foi})"
+
     def __eq__(self, other):
         return self.beta == other.beta and \
             self.progress == other.progress and \

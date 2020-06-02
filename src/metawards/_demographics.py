@@ -267,14 +267,24 @@ follow the instructions at
         work_ratios = data.get("work_ratios", [])
         play_ratios = data.get("play_ratios", [])
         random_seed = data.get("random_seed", None)
+        diseases = data.get("diseases", None)
+
+        if diseases is None:
+            diseases = len(demographics) * [None]
+        else:
+            from ._disease import Disease
+            diseases = [Disease.load(x) if x is not None
+                        else None for x in diseases]
 
         if (len(demographics) != len(work_ratios) or
-                len(demographics) != len(play_ratios)):
+                len(demographics) != len(play_ratios) or
+                len(demographics) != len(diseases)):
             raise ValueError(
                 f"The number of work_ratios ({len(work_ratios)}) must "
                 f"equal to number of play_ratios "
                 f"({len(play_ratios)}) which must equal the number "
-                f"of demographics ({len(demographics)})")
+                f"of diseases ({len(diseases)}) which must equal "
+                f"the number of demographics ({len(demographics)})")
 
         demos = Demographics(random_seed=random_seed,
                              _name=name,
@@ -289,7 +299,8 @@ follow the instructions at
         for i in range(0, len(demographics)):
             demographic = Demographic(name=demographics[i],
                                       work_ratio=_get_value(work_ratios[i]),
-                                      play_ratio=_get_value(play_ratios[i]))
+                                      play_ratio=_get_value(play_ratios[i]),
+                                      disease=diseases[i])
             demos.add(demographic)
 
         return demos

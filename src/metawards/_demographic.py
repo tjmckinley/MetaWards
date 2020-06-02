@@ -3,6 +3,7 @@ from dataclasses import dataclass as _dataclass
 
 from ._variableset import VariableSet
 from ._network import Network
+from ._disease import Disease
 
 __all__ = ["Demographic"]
 
@@ -38,6 +39,11 @@ class Demographic:
     #: If this is None then this demographic will have the same
     #: parameters as the whole population
     adjustment: VariableSet = None
+
+    #: The Disease that should be used for this demographic. Is this
+    #: is None, then the global Disease is used. Otherwise
+    #: this demographic will follow this Disease
+    disease: Disease = None
 
     def specialise(self, network: Network, profiler=None,
                    nthreads: int = 1):

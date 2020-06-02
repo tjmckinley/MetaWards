@@ -104,10 +104,10 @@ Next, we need to create the ``demographics.json`` file that should contain;
 ::
 
     {
-        "demographics"   : ["home", "super"],
-        "work_ratios"    : [ 0.9, 0.1 ],
-        "play_ratios"    : [ 0.9, 0.1 ],
-        "disease_stages" : [ "lurgy_home", "lurgy_super" ]
+        "demographics" : ["home", "super"],
+        "work_ratios"  : [ 0.9, 0.1 ],
+        "play_ratios"  : [ 0.9, 0.1 ],
+        "diseases"     : [ "lurgy_home", "lurgy_super" ]
     }
 
 This describes the two demographics, with 90% of individuals in the
