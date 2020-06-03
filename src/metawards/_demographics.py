@@ -263,6 +263,8 @@ follow the instructions at
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 
+        json_dir = os.path.split(os.path.abspath(json_file))[0]
+
         demographics = data.get("demographics", [])
         work_ratios = data.get("work_ratios", [])
         play_ratios = data.get("play_ratios", [])
@@ -273,7 +275,7 @@ follow the instructions at
             diseases = len(demographics) * [None]
         else:
             from ._disease import Disease
-            diseases = [Disease.load(x) if x is not None
+            diseases = [Disease.load(x, folder=json_dir) if x is not None
                         else None for x in diseases]
 
         if (len(demographics) != len(work_ratios) or

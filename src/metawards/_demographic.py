@@ -82,9 +82,15 @@ class Demographic:
         subnet.scale_susceptibles(work_ratio=self.work_ratio,
                                   play_ratio=self.play_ratio)
 
-        # Now specialise the parameters for this network
+        subnet.params = copy.copy(network.params)
+
+        # Does this demographic have a custom disease pathway?
+        if self.disease is not None:
+            subnet.params.disease_params = self.disease
+
+        # Do we need to specialise the parameters for this demographic?
         if self.adjustment is not None:
-            subnet.params = network.params.set_variables(self.adjustment)
+            subnet.params = subnet.params.set_variables(self.adjustment)
 
         subnet.name = self.name
 
