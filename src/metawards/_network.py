@@ -492,6 +492,7 @@ class Network:
             # all jobs to use the same random number seed (15324) that
             # is used for comparing outputs. This should NEVER be used
             # for production code
+            from .utils._console import Console
             Console.warning("Using special mode to fix all random number "
                             "seeds to 15324. DO NOT USE IN PRODUCTION!!!")
             rng = seed_ran_binomial(seed=15324)

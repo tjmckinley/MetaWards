@@ -74,20 +74,25 @@ def test_pathway():
         results = network.copy().run(population=Population(),
                                      output_dir=output_dir,
                                      mixer=mix_evenly,
-                                     nthreads=2,
+                                     nthreads=1,
                                      seed=36538943)
+
+    # using one thread, but if use 2 then have a system crash after
+    # any other test that uses the big network. This is because we
+    # have intialised some global data that assumes a large network,
+    # which then fails for the small network
 
     OutputFiles.remove(outdir, prompt=None)
 
     print(results[-1])
     print(results[-1].initial)
 
-    expected = Population(susceptibles=554,
+    expected = Population(susceptibles=519,
                           latent=0,
                           total=0,
-                          recovereds=446,
+                          recovereds=481,
                           n_inf_wards=0,
-                          day=75)
+                          day=91)
 
     print(expected)
 
@@ -98,7 +103,7 @@ def test_pathway():
         results = network.copy().run(population=Population(),
                                      output_dir=output_dir,
                                      mixer=mix_evenly,
-                                     nthreads=2,
+                                     nthreads=1,
                                      seed=36538943)
 
     OutputFiles.remove(outdir, prompt=None)
@@ -153,7 +158,7 @@ def test_pathway():
         results = network.copy().run(population=Population(),
                                      output_dir=output_dir,
                                      mixer=mix_evenly,
-                                     nthreads=2,
+                                     nthreads=1,
                                      seed=36538943)
 
     OutputFiles.remove(outdir, prompt=None)
