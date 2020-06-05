@@ -82,7 +82,10 @@ class Demographic:
         subnet.scale_susceptibles(work_ratio=self.work_ratio,
                                   play_ratio=self.play_ratio)
 
-        subnet.params = copy.copy(network.params)
+        if self.name in network.params.specialised_demographics():
+            subnet.params = network.params[self.name].copy()
+        else:
+            subnet.params = network.params.copy()
 
         # Does this demographic have a custom disease pathway?
         if self.disease is not None:
@@ -93,5 +96,9 @@ class Demographic:
             subnet.params = subnet.params.set_variables(self.adjustment)
 
         subnet.name = self.name
+
+        subnet.reset_everything(nthreads=nthreads, profiler=profiler)
+        subnet.rescale_play_matrix(nthreads=nthreads, profiler=profiler)
+        subnet.move_from_play_to_work(nthreads=nthreads, profiler=profiler)
 
         return subnet

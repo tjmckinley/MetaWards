@@ -348,14 +348,40 @@ set the model data.""")
            specifically then the parameters for the overall network
            are used
         """
+        if demographic == "overall":
+            return self
+
         if self._subparams is None:
             self._subparams = {}
 
         if demographic not in self._subparams:
             from copy import deepcopy
             self._subparams[demographic] = deepcopy(self)
+            self._subparams[demographic]._subparams = {}
 
         return self._subparams[demographic]
+
+    def copy(self, include_subparams: bool = False):
+        """Return a safe copy of these parameters, which does not
+           include any subnetwork parameters if 'include_subparams' is False
+        """
+        from copy import deepcopy
+        params = deepcopy(self)
+
+        if not include_subparams:
+            params._subparams = None
+
+        return params
+
+    def specialised_demographics(self) -> _List[str]:
+        """Return the names of demographics that have specialised
+           parameters that are different to those of the overall
+           network
+        """
+        if self._subparams is None:
+            return []
+        else:
+            return list(self._subparams.keys())
 
     def add_seeds(self, filename: str):
         """Add an 'additional seeds' file that can be used to

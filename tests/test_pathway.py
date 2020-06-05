@@ -1,5 +1,6 @@
 
 import os
+import pytest
 
 from metawards import Parameters, Network, Population, \
     OutputFiles, Demographics, Disease, VariableSets, VariableSet
@@ -15,6 +16,7 @@ home_json = os.path.join(script_dir, "data", "lurgy_home.json")
 super_json = os.path.join(script_dir, "data", "lurgy_super.json")
 
 
+@pytest.mark.slow
 def test_pathway():
     demographics = Demographics.load(demographics_json)
     assert len(demographics) == 2
@@ -80,12 +82,29 @@ def test_pathway():
     print(results[-1])
     print(results[-1].initial)
 
-    expected = Population(susceptibles=902,
+    expected = Population(susceptibles=554,
                           latent=0,
                           total=0,
-                          recovereds=98,
+                          recovereds=446,
                           n_inf_wards=0,
-                          day=119)
+                          day=75)
+
+    print(expected)
+
+    assert results[-1].has_equal_SEIR(expected)
+    assert results[-1].day == expected.day
+
+    with OutputFiles(outdir, force_empty=True, prompt=None) as output_dir:
+        results = network.copy().run(population=Population(),
+                                     output_dir=output_dir,
+                                     mixer=mix_evenly,
+                                     nthreads=2,
+                                     seed=36538943)
+
+    OutputFiles.remove(outdir, prompt=None)
+
+    print(results[-1])
+    print(results[-1].initial)
 
     print(expected)
 
@@ -95,8 +114,11 @@ def test_pathway():
     variables = VariableSet()
 
     print("\nUpdate with null variables")
+    oldparams = network.params
     params = network.params.set_variables(variables)
     network.update(params)
+
+    assert oldparams == network.params
 
     print(network.params.disease_params)
     print(disease_home)
@@ -150,25 +172,41 @@ def test_variable_pathway():
     demographics = Demographics.load(demographics_json)
     variables = VariableSets.read(variables_csv)
 
-    print(demographics)
-    print(variables)
-
     print(variables[0].fingerprint(include_index=True))
 
     params = Parameters.load()
     params.set_disease("lurgy")
+    params.set_input_files("single")
 
-    params = params.set_variables(variables[0])
+    network = Network.build(params)
+    network = network.specialise(demographics)
 
-    assert params.disease_params.beta == [0.0, 0.0, 0.1, 0.5, 0.0]
+    params = network.params.set_variables(variables[0])
+
+    assert params.disease_params.beta == [0.0, 0.0, 0.1, 0.2, 0.0]
     assert params["overall"].disease_params.beta == \
         [0.0, 0.0, 0.1, 0.2, 0.0]
-    assert params["blue"].disease_params.beta == \
-        [0.0, 0.0, 0.1, 0.5, 0.25]
     assert params["red one"].disease_params.beta == \
         [0.0, 0.0, 0.1, 0.5, 0.27]
+    print(params["blue"].disease_params.beta)
+    assert params["blue"].disease_params.beta == \
+        [0.0, 0.0, 0.1, 0.2, 0.25, 0.0]
+
+    network.update(params)
+
+    d = network.params.disease_params
+    print(d.beta)
+    assert d.beta == [0.0, 0.0, 0.1, 0.2, 0.0]
+
+    d = network.subnets[0].params.disease_params
+    print(d.beta)
+    assert d.beta == [0.0, 0.0, 0.1, 0.5, 0.27]
+
+    d = network.subnets[1].params.disease_params
+    print(d.beta)
+    assert d.beta == [0.0, 0.0, 0.1, 0.2, 0.25, 0.0]
 
 
 if __name__ == "__main__":
     test_variable_pathway()
-    # test_pathway()
+    test_pathway()

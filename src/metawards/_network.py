@@ -315,7 +315,11 @@ class Network:
 
         p = profiler.start("Network.update")
 
-        self.params = params
+        if self.name is None or \
+                self.name not in params.specialised_demographics():
+            self.params = params
+        else:
+            self.params = params[self.name]
 
         p = p.start("reset_everything")
         self.reset_everything(nthreads=nthreads, profiler=p)
@@ -325,7 +329,6 @@ class Network:
             network = demographics.specialise(network=self,
                                               profiler=profiler,
                                               nthreads=nthreads)
-
         else:
             network = self
 

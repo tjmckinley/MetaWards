@@ -877,6 +877,8 @@ class VariableSet:
         try:
             # loop over all adjustable variables, and adjust global
             # (all demographic) variables first
+            specialised = params.specialised_demographics()
+
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
                 try:
@@ -885,23 +887,36 @@ class VariableSet:
                 except Exception:
                     pass
 
-                print(f"ADJUST {varname} {varidx} to {value}")
                 if varname.startswith("user.") or varname.startswith("."):
                     _adjustable["user"](params=params,
                                         name=varname,
                                         index=varidx,
                                         value=value)
+                    for s in specialised:
+                        _adjustable["user"](params=params[s],
+                                            name=varname,
+                                            index=varidx,
+                                            value=value)
+
                 elif varname in _adjustable:
                     _adjustable[varname](params=params,
                                          name=varname,
                                          index=varidx,
                                          value=value)
+                    for s in specialised:
+                        _adjustable[varname](params=params[s],
+                                             name=varname,
+                                             index=varidx,
+                                             value=value)
                 else:
                     raise KeyError(
                         f"Cannot set unrecognised parameter {varname} "
                         f"to {value}")
 
             # now loop over and adjust the demographic-specific values
+            # (except for 'overall', which must be done last)
+            need_overall = False
+
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
                 try:
@@ -909,7 +924,10 @@ class VariableSet:
                 except Exception:
                     continue
 
-                print(f"ADJUST {varname} {varidx} to {value}")
+                if demographic == "overall":
+                    need_overall = True
+                    continue
+
                 if varname.startswith("user.") or varname.startswith("."):
                     _adjustable["user"](params=params[demographic],
                                         name=varname,
@@ -924,6 +942,34 @@ class VariableSet:
                     raise KeyError(
                         f"Cannot set unrecognised parameter {varname} "
                         f"to {value} in demographic {demographic}")
+
+            # finally(!) loop over and adjust the overall values
+            if need_overall:
+                for varname, varidx, value in zip(self._varnames,
+                                                  self._varidxs,
+                                                  self._vals):
+                    try:
+                        (demographic, varname) = varname
+                    except Exception:
+                        continue
+
+                    if demographic != "overall":
+                        continue
+
+                    if varname.startswith("user.") or varname.startswith("."):
+                        _adjustable["user"](params=params[demographic],
+                                            name=varname,
+                                            index=varidx,
+                                            value=value)
+                    elif varname in _adjustable:
+                        _adjustable[varname](params=params[demographic],
+                                             name=varname,
+                                             index=varidx,
+                                             value=value)
+                    else:
+                        raise KeyError(
+                            f"Cannot set unrecognised parameter {varname} "
+                            f"to {value} in demographic {demographic}")
 
         except Exception as e:
             raise ValueError(
