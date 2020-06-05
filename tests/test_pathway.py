@@ -2,7 +2,7 @@
 import os
 
 from metawards import Parameters, Network, Population, \
-    OutputFiles, Demographics, Disease
+    OutputFiles, Demographics, Disease, VariableSets, VariableSet
 
 from metawards.mixers import mix_evenly
 
@@ -69,11 +69,11 @@ def test_pathway():
     outdir = os.path.join(script_dir, "test_pathway")
 
     with OutputFiles(outdir, force_empty=True, prompt=None) as output_dir:
-        results = network.run(population=Population(),
-                              output_dir=output_dir,
-                              mixer=mix_evenly,
-                              nthreads=2,
-                              seed=36538943)
+        results = network.copy().run(population=Population(),
+                                     output_dir=output_dir,
+                                     mixer=mix_evenly,
+                                     nthreads=2,
+                                     seed=36538943)
 
     OutputFiles.remove(outdir, prompt=None)
 
@@ -92,6 +92,83 @@ def test_pathway():
     assert results[-1].has_equal_SEIR(expected)
     assert results[-1].day == expected.day
 
+    variables = VariableSet()
+
+    print("\nUpdate with null variables")
+    params = network.params.set_variables(variables)
+    network.update(params)
+
+    print(network.params.disease_params)
+    print(disease_home)
+
+    assert network.params.disease_params == disease_home
+
+    print(network.subnets[1].params.disease_params)
+    print(disease_home)
+
+    assert network.subnets[1].params.disease_params == disease_home
+
+    print(network.subnets[0].params.disease_params)
+    print(disease_super)
+
+    assert network.subnets[0].params.disease_params == disease_super
+
+    infections = network.initialise_infections()
+
+    assert infections.N_INF_CLASSES == disease_home.N_INF_CLASSES()
+
+    assert \
+        infections.subinfs[1].N_INF_CLASSES == disease_home.N_INF_CLASSES()
+
+    assert \
+        infections.subinfs[0].N_INF_CLASSES == disease_super.N_INF_CLASSES()
+
+    assert disease_super.N_INF_CLASSES() != disease_home.N_INF_CLASSES()
+
+    outdir = os.path.join(script_dir, "test_pathway")
+
+    with OutputFiles(outdir, force_empty=True, prompt=None) as output_dir:
+        results = network.copy().run(population=Population(),
+                                     output_dir=output_dir,
+                                     mixer=mix_evenly,
+                                     nthreads=2,
+                                     seed=36538943)
+
+    OutputFiles.remove(outdir, prompt=None)
+
+    print(results[-1])
+    print(expected)
+
+    assert results[-1].has_equal_SEIR(expected)
+    assert results[-1].day == expected.day
+
+
+def test_variable_pathway():
+    demographics_json = os.path.join(script_dir, "data", "red_one_blue.json")
+    variables_csv = os.path.join(script_dir, "data", "demographic_scan.csv")
+
+    demographics = Demographics.load(demographics_json)
+    variables = VariableSets.read(variables_csv)
+
+    print(demographics)
+    print(variables)
+
+    print(variables[0].fingerprint(include_index=True))
+
+    params = Parameters.load()
+    params.set_disease("lurgy")
+
+    params = params.set_variables(variables[0])
+
+    assert params.disease_params.beta == [0.0, 0.0, 0.1, 0.5, 0.0]
+    assert params["overall"].disease_params.beta == \
+        [0.0, 0.0, 0.1, 0.2, 0.0]
+    assert params["blue"].disease_params.beta == \
+        [0.0, 0.0, 0.1, 0.5, 0.25]
+    assert params["red one"].disease_params.beta == \
+        [0.0, 0.0, 0.1, 0.5, 0.27]
+
 
 if __name__ == "__main__":
-    test_pathway()
+    test_variable_pathway()
+    # test_pathway()

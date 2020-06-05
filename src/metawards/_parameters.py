@@ -191,6 +191,10 @@ class Parameters:
     _repository_branch: str = None
     _repository_dir: str = None
 
+    #: The parameters for demographic sub-networks. If this is None then
+    #: the parameters are the same as the overall parameters
+    _subparams = None
+
     def __str__(self):
         return f"""
 * Parameters: {self._name}
@@ -337,6 +341,21 @@ set the model data.""")
         Console.print(par, markdown=True)
 
         return par
+
+    def __getitem__(self, demographic: str):
+        """Return the parameters that should be used for the demographic
+           subnetwork called 'demographic'. If these have not been set
+           specifically then the parameters for the overall network
+           are used
+        """
+        if self._subparams is None:
+            self._subparams = {}
+
+        if demographic not in self._subparams:
+            from copy import deepcopy
+            self._subparams[demographic] = deepcopy(self)
+
+        return self._subparams[demographic]
 
     def add_seeds(self, filename: str):
         """Add an 'additional seeds' file that can be used to
