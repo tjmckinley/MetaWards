@@ -881,11 +881,8 @@ class VariableSet:
 
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
-                try:
-                    (demographic, varname) = varname
+                if isinstance(varname, tuple):
                     continue
-                except Exception:
-                    pass
 
                 if varname.startswith("user.") or varname.startswith("."):
                     _adjustable["user"](params=params,
@@ -919,9 +916,9 @@ class VariableSet:
 
             for varname, varidx, value in zip(self._varnames, self._varidxs,
                                               self._vals):
-                try:
-                    (demographic, varname) = varname
-                except Exception:
+                if isinstance(varname, tuple):
+                    demographic, varname = varname
+                else:
                     continue
 
                 if demographic == "overall":
@@ -948,9 +945,9 @@ class VariableSet:
                 for varname, varidx, value in zip(self._varnames,
                                                   self._varidxs,
                                                   self._vals):
-                    try:
-                        (demographic, varname) = varname
-                    except Exception:
+                    if isinstance(varname, tuple):
+                        demographic, varname = varname
+                    else:
                         continue
 
                     if demographic != "overall":
