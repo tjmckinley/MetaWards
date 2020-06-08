@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../model_data.html">Model data</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorial</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
@@ -292,7 +292,7 @@ that each network will have the same nodes.</p>
 <td>The overall Network, which contains a combination of all of the sub-networks.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.Networks.params" title="metawards.Networks.params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">params</span></code></a></td>
-<td>The overall parameters that are then specialised for the different demographics</td>
+<td>The overall parameters that are then specialised for the different demographics.</td>
 </tr>
 </tbody>
 </table>
@@ -386,7 +386,9 @@ a means of merging and distributing data between sub-networks</p>
 <dt id="metawards.Networks.params">
 <code class="descname">params</code><a class="headerlink" href="#metawards.Networks.params" title="Permalink to this definition">¶</a></dt>
 <dd><p>The overall parameters that are then specialised for the
-different demographics</p>
+different demographics. Note that this returns a copy,
+so changing this will not change any parameters in the
+networks</p>
 </dd></dl>
 
 <dl class="method">
@@ -515,7 +517,7 @@ Demographics</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 26, 2020.
+        Last updated on Jun 08, 2020.
       </span>
 
     </p>

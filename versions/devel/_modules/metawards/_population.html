@@ -94,7 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../model_data.html">Model data</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorial</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
@@ -232,6 +232,15 @@
     <span class="k">def</span> <span class="nf">infecteds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The number who are infected across all wards&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">latent</span>
+
+<div class="viewcode-block" id="Population.has_equal_SEIR"><a class="viewcode-back" href="../../api/generated/metawards.Population.html#metawards.Population.has_equal_SEIR">[docs]</a>    <span class="k">def</span> <span class="nf">has_equal_SEIR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return whether or not the SEIR values for this population</span>
+<span class="sd">           equal &#39;other&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">susceptibles</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">susceptibles</span> <span class="ow">and</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">latent</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">latent</span> <span class="ow">and</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">total</span> <span class="ow">and</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">recovereds</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">recovereds</span></div>
 
 <div class="viewcode-block" id="Population.increment_day"><a class="viewcode-back" href="../../api/generated/metawards.Population.html#metawards.Population.increment_day">[docs]</a>    <span class="k">def</span> <span class="nf">increment_day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndays</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Advance the day count by &#39;ndays&#39; (default 1)&quot;&quot;&quot;</span>
@@ -424,7 +433,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 26, 2020.
+        Last updated on Jun 08, 2020.
       </span>
 
     </p>
