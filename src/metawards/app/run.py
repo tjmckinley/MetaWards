@@ -190,6 +190,21 @@ def parse_args():
                              f"a model run. For a full explanation see "
                              f"the tutorial at {metawards_url}")
 
+    parser.add_argument("--star-is-E", action="store_true", default=None,
+                        help=f"Set the state 0 (* state) as an extra latent "
+                             f"state, as opposed to an extra R state")
+
+    parser.add_argument("--star-is-R", action="store_true", default=None,
+                        help=f"Set the state 0 (* state) as an extra R "
+                             f"state (the default). Individuals in this "
+                             f"state are calculated as 'R', even though "
+                             f"they will progress on the next day to the "
+                             f"E state")
+
+    parser.add_argument("--disable-star", action="store_true", default=None,
+                        help=f"Disable the * state. Now state 0 is the first "
+                             f"and only latent state. There is no star state.")
+
     parser.add_argument('--UV', type=float, default=0.0,
                         help="Value for the UV parameter for the model "
                              "(default is 0.0)")
@@ -924,8 +939,6 @@ def cli():
                   "written to the output directory and use the command;")
     Console.command("metawards -c config.yaml")
 
-    Console.rule("Parameters")
-
     # load all of the parameters
     try:
         params = Parameters.load(parameters=args.parameters)
@@ -977,6 +990,22 @@ def cli():
             Console.print(f"Loading additional seeds from {additional}")
             params.add_seeds(additional)
 
+    # what to do with the 0 state?
+    stage_0 = "R"
+
+    if args.disable_star:
+        Console.print("Disabling the * state. Stage 0 is the one and "
+                      "only E state.")
+        stage_0 = "disable"
+    elif args.star_is_E:
+        Console.print("Setting the * state as an additional E state.")
+        stage_0 = "E"
+    else:
+        Console.print("Setting the * state as an additional R state.")
+        stage_0 = "R"
+
+    params.stage_0 = stage_0
+
     # extra parameters that are set
     params.UV = args.UV
 
@@ -985,6 +1014,9 @@ def cli():
     params.play_to_work = 0
     params.work_to_play = 0
     params.daily_imports = 0.0
+
+    Console.rule("Parameters")
+    Console.print(params, markdown=True)
 
     # the size of the starting population
     population = Population(initial=args.population,

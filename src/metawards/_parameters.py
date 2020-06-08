@@ -174,6 +174,11 @@ class Parameters:
     #: proportion of daily imports
     daily_imports: float = 0.0
 
+    #: how to treat the * state (stage 0). This should be a string
+    #: describing the method. Currently "R", "E" and "disable" are
+    #: supported
+    stage_0: str = "R"
+
     #: Seasonality parameter
     UV: float = 0.0
 
@@ -217,6 +222,7 @@ class Parameters:
 * neighbour_weight_threshold: {self.neighbour_weight_threshold}
 * daily_imports: {self.daily_imports}
 * UV: {self.UV}
+* stage_0: {self.stage_0}
 * additional_seeds: {self.additional_seeds}"""
 
     @staticmethod
@@ -336,9 +342,6 @@ set the model data.""")
             _repository_branch=repository_branch,
             _repository_version=repository_version
         )
-
-        from .utils._console import Console
-        Console.print(par, markdown=True)
 
         return par
 
