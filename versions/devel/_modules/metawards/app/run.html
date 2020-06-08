@@ -376,6 +376,21 @@
                              <span class="sa">f</span><span class="s2">&quot;a model run. For a full explanation see &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;the tutorial at </span><span class="si">{</span><span class="n">metawards_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--star-is-E&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Set the state 0 (* state) as an extra latent &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;state, as opposed to an extra R state&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--star-is-R&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Set the state 0 (* state) as an extra R &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;state (the default). Individuals in this &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;state are calculated as &#39;R&#39;, even though &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;they will progress on the next day to the &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;E state&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--disable-star&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Disable the * state. Now state 0 is the first &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;and only latent state. There is no star state.&quot;</span><span class="p">)</span>
+
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--UV&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Value for the UV parameter for the model &quot;</span>
                              <span class="s2">&quot;(default is 0.0)&quot;</span><span class="p">)</span>
@@ -1110,8 +1125,6 @@
                   <span class="s2">&quot;written to the output directory and use the command;&quot;</span><span class="p">)</span>
     <span class="n">Console</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;metawards -c config.yaml&quot;</span><span class="p">)</span>
 
-    <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;Parameters&quot;</span><span class="p">)</span>
-
     <span class="c1"># load all of the parameters</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
@@ -1163,6 +1176,22 @@
             <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading additional seeds from </span><span class="si">{</span><span class="n">additional</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">params</span><span class="o">.</span><span class="n">add_seeds</span><span class="p">(</span><span class="n">additional</span><span class="p">)</span>
 
+    <span class="c1"># what to do with the 0 state?</span>
+    <span class="n">stage_0</span> <span class="o">=</span> <span class="s2">&quot;R&quot;</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">disable_star</span><span class="p">:</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Disabling the * state. Stage 0 is the one and &quot;</span>
+                      <span class="s2">&quot;only E state.&quot;</span><span class="p">)</span>
+        <span class="n">stage_0</span> <span class="o">=</span> <span class="s2">&quot;disable&quot;</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">star_is_E</span><span class="p">:</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Setting the * state as an additional E state.&quot;</span><span class="p">)</span>
+        <span class="n">stage_0</span> <span class="o">=</span> <span class="s2">&quot;E&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Setting the * state as an additional R state.&quot;</span><span class="p">)</span>
+        <span class="n">stage_0</span> <span class="o">=</span> <span class="s2">&quot;R&quot;</span>
+
+    <span class="n">params</span><span class="o">.</span><span class="n">stage_0</span> <span class="o">=</span> <span class="n">stage_0</span>
+
     <span class="c1"># extra parameters that are set</span>
     <span class="n">params</span><span class="o">.</span><span class="n">UV</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">UV</span>
 
@@ -1171,6 +1200,9 @@
     <span class="n">params</span><span class="o">.</span><span class="n">play_to_work</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">params</span><span class="o">.</span><span class="n">work_to_play</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">params</span><span class="o">.</span><span class="n">daily_imports</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;Parameters&quot;</span><span class="p">)</span>
+    <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># the size of the starting population</span>
     <span class="n">population</span> <span class="o">=</span> <span class="n">Population</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">population</span><span class="p">,</span>

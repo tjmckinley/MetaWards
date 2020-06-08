@@ -48,6 +48,7 @@ metawards.Parameters
       ~Parameters.neighbour_weight_threshold
       ~Parameters.play_to_work
       ~Parameters.plength_day
+      ~Parameters.stage_0
       ~Parameters.static_play_at_home
       ~Parameters.user_params
       ~Parameters.uv_filename
