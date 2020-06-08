@@ -39,7 +39,7 @@ class Workspace:
     total_new_inf_ward: _List[int] = None
 
     #: The incidence of the infection (sum of infections up to
-    #: disease_class == 2)
+    #: disease_class == I_start)
     incidence: _List[int] = None
 
     #: The size of the S population in each ward
