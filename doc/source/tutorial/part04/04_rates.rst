@@ -225,3 +225,204 @@ You should see that you have files ``rate_0.csv.bz2``, ``rate_1.csv.bz2`` etc.
 now created in the output directory. If you look at these files you should
 see that they contain the differences between the populations in each ward
 for each disease stage between each day.
+
+Writing to a database
+---------------------
+
+In the last example we wrote rates to a large number of files. While this has
+worked, the data is beginning to get so large and multi-dimensional that
+we are reaching the limits of what a CSV or other data file can
+reasonably support. As data sizes get larger, it is better to start
+writing data to a database.
+
+The :class:`~metawards.OutputFiles` class has in-built support for opening
+connections to `SQLite3 <https://docs.python.org/3/library/sqlite3.html>`__
+databases. To use this, we call the function
+:meth:`~metawards.OutputFiles.open_db`. For example, let's now create a new
+extractor that will output the size of the population at each disease stage
+for each day, and the change compared to the previous day. To do this,
+open a file called ``extract_db.py`` and copy in the below;
+
+.. code-block:: python
+
+    from metawards.extractors import extract_default
+
+
+    def create_tables(N_INF_CLASSES):
+        # return a function that creates the tables
+        # for the specified number of disease classes
+
+        def initialise(conn):
+            # create a table for the values...
+            values = ",".join([f"stage_{i} int" for i in range(0, N_INF_CLASSES)])
+            c = conn.cursor()
+            c.execute(f"create table totals(day int, S int, {values})")
+
+            # create a table for the rates...
+            c.execute(f"create table deltas(day int, S int, {values})")
+
+            conn.commit()
+
+        return initialise
+
+
+    def output_db(population, workspace, output_dir, **kwargs):
+        have_yesterday = hasattr(workspace, "output_rate_previous")
+
+        # get today's data
+        inf_tot = workspace.inf_tot
+        pinf_tot = workspace.pinf_tot
+        S = population.susceptibles
+
+        N_INF_CLASSES = workspace.n_inf_classes
+
+        # open a database to hold the data - call the 'create_tables'
+        # function on this database when it is first opened
+        conn = output_dir.open_db("stages.db",
+                                initialise=create_tables(N_INF_CLASSES))
+
+        c = conn.cursor()
+
+        # get the values for today
+        today = [population.day, S] + [inf+pinf for inf, pinf in zip(inf_tot, pinf_tot)]
+
+        # convert this to a string
+        today_str = ",".join([str(t) for t in today])
+
+        # write these to the database
+        c.execute(f"insert into totals VALUES ({today_str})")
+
+        if hasattr(workspace, "output_rate_db"):
+            yesterday = workspace.output_rate_db
+
+            # calculate the difference in all columns of today and yesterday
+            deltas = [t - y for t, y in zip(today, yesterday)]
+            # (except for the day, which should be today)
+            deltas[0] = today[0]
+
+            delta_str = ",".join([str(d) for d in deltas])
+
+            # write this to the database
+            c.execute(f"insert into deltas values ({delta_str})")
+
+        conn.commit()
+
+        # save today's data so that it can be used tomorrow
+        workspace.output_rate_db = today
+
+
+    def extract_db(**kwargs):
+        funcs = extract_default(**kwargs)
+        funcs.append(output_db)
+        return funcs
+
+Here, we have created a new function called ``create_tables`` that is called
+to create a function that is returned and passed to
+:meth:`~metawards.OutputFiles.open_db`. This function creates two tables
+in the database; ``totals`` which contains the total population at each
+disease stage, and ``deltas``, which contains the difference from the
+previous day.
+
+Next, we have ``output_db``. This function calls
+:meth:`~metawards.OutputFiles.open_db` to create the connection, ``conn``
+to the SQLite3 database. This connection is a standard Python
+`sqlite3 connection object <https://docs.python.org/3/library/sqlite3.html>`__.
+
+We calculate the total population in each stage as the sum of
+``inf_tot`` (the workers at each stage) and ``pinf_tot`` (the players
+at each stage). We prepend the number of susceptibles and also the
+day number.
+
+We then write this, as today's data, to the database via a cursor.
+
+Next, we check if there is any data from yesterday by looking for the
+custom attribute ``workspace.output_rate_db``. If there is, then we
+get this data, and then calculate the difference from the previous day.
+This is then written to the ``deltas`` table via the cursor.
+
+Finally, we commit the changes to the database, and then save today's
+data to ``workspace.output_rate_db`` so that it can be used tomorrow.
+
+Run this extractor by typing;
+
+.. code-block:: bash
+
+   metawards -d lurgy3 --extract extract_db -a ExtraSeedsLondon.dat --nsteps 30
+
+(again, we limit to 30 days just for illustration purposes)
+
+Once this has finished, you should see a file called ``output/stages.db.bz2``.
+
+Uncompress this file and then examine it using any SQLite3 database viewer,
+e.g.
+
+.. code-block:: bash
+
+    # sqlite3 output/stages.db
+    SQLite version 3.31.1 2020-01-27 19:55:54
+    Enter ".help" for usage hints.
+    sqlite> .dump
+    PRAGMA foreign_keys=OFF;
+    BEGIN TRANSACTION;
+    CREATE TABLE totals(day int, S int, stage_0 int,stage_1 int,stage_2 int,stage_3 int,stage_4 int,stage_5 int);
+    INSERT INTO totals VALUES(0,56082077,0,0,0,0,0,0);
+    INSERT INTO totals VALUES(1,56082072,0,5,0,0,0,0);
+    INSERT INTO totals VALUES(2,56082072,0,0,5,0,0,0);
+    INSERT INTO totals VALUES(3,56082067,5,0,3,2,0,0);
+    INSERT INTO totals VALUES(4,56082064,3,5,2,1,2,0);
+    INSERT INTO totals VALUES(5,56082061,3,3,6,1,2,1);
+    INSERT INTO totals VALUES(6,56082051,10,3,8,1,3,1);
+    INSERT INTO totals VALUES(7,56082039,12,10,9,3,2,2);
+    INSERT INTO totals VALUES(8,56082026,13,12,17,4,2,3);
+    INSERT INTO totals VALUES(9,56082002,24,13,26,4,4,4);
+    INSERT INTO totals VALUES(10,56081982,20,24,34,8,3,6);
+    INSERT INTO totals VALUES(11,56081950,32,20,55,5,8,7);
+    INSERT INTO totals VALUES(12,56081887,63,32,66,10,6,13);
+    INSERT INTO totals VALUES(13,56081827,60,63,76,30,6,15);
+    INSERT INTO totals VALUES(14,56081733,94,60,128,25,20,17);
+    INSERT INTO totals VALUES(15,56081588,145,94,169,31,21,29);
+    INSERT INTO totals VALUES(16,56081405,183,145,222,58,22,42);
+    INSERT INTO totals VALUES(17,56081131,274,183,317,78,42,52);
+    INSERT INTO totals VALUES(18,56080808,323,274,434,105,57,76);
+    INSERT INTO totals VALUES(19,56080318,490,323,618,144,82,102);
+    INSERT INTO totals VALUES(20,56079687,631,490,798,229,96,146);
+    INSERT INTO totals VALUES(21,56078886,801,631,1134,273,159,193);
+    INSERT INTO totals VALUES(22,56077748,1138,801,1539,356,224,271);
+    INSERT INTO totals VALUES(23,56076190,1558,1138,2028,488,301,374);
+    INSERT INTO totals VALUES(24,56074172,2018,1558,2759,652,388,530);
+    INSERT INTO totals VALUES(25,56071530,2642,2018,3760,883,525,719);
+    INSERT INTO totals VALUES(26,56067981,3549,2642,4997,1226,714,968);
+    INSERT INTO totals VALUES(27,56063321,4660,3549,6723,1522,961,1341);
+    INSERT INTO totals VALUES(28,56057020,6301,4660,8943,2095,1221,1837);
+    INSERT INTO totals VALUES(29,56048552,8468,6301,11808,2834,1631,2483);
+    CREATE TABLE deltas(day int, S int, stage_0 int,stage_1 int,stage_2 int,stage_3 int,stage_4 int,stage_5 int);
+    INSERT INTO deltas VALUES(1,-5,0,5,0,0,0,0);
+    INSERT INTO deltas VALUES(2,0,0,-5,5,0,0,0);
+    INSERT INTO deltas VALUES(3,-5,5,0,-2,2,0,0);
+    INSERT INTO deltas VALUES(4,-3,-2,5,-1,-1,2,0);
+    INSERT INTO deltas VALUES(5,-3,0,-2,4,0,0,1);
+    INSERT INTO deltas VALUES(6,-10,7,0,2,0,1,0);
+    INSERT INTO deltas VALUES(7,-12,2,7,1,2,-1,1);
+    INSERT INTO deltas VALUES(8,-13,1,2,8,1,0,1);
+    INSERT INTO deltas VALUES(9,-24,11,1,9,0,2,1);
+    INSERT INTO deltas VALUES(10,-20,-4,11,8,4,-1,2);
+    INSERT INTO deltas VALUES(11,-32,12,-4,21,-3,5,1);
+    INSERT INTO deltas VALUES(12,-63,31,12,11,5,-2,6);
+    INSERT INTO deltas VALUES(13,-60,-3,31,10,20,0,2);
+    INSERT INTO deltas VALUES(14,-94,34,-3,52,-5,14,2);
+    INSERT INTO deltas VALUES(15,-145,51,34,41,6,1,12);
+    INSERT INTO deltas VALUES(16,-183,38,51,53,27,1,13);
+    INSERT INTO deltas VALUES(17,-274,91,38,95,20,20,10);
+    INSERT INTO deltas VALUES(18,-323,49,91,117,27,15,24);
+    INSERT INTO deltas VALUES(19,-490,167,49,184,39,25,26);
+    INSERT INTO deltas VALUES(20,-631,141,167,180,85,14,44);
+    INSERT INTO deltas VALUES(21,-801,170,141,336,44,63,47);
+    INSERT INTO deltas VALUES(22,-1138,337,170,405,83,65,78);
+    INSERT INTO deltas VALUES(23,-1558,420,337,489,132,77,103);
+    INSERT INTO deltas VALUES(24,-2018,460,420,731,164,87,156);
+    INSERT INTO deltas VALUES(25,-2642,624,460,1001,231,137,189);
+    INSERT INTO deltas VALUES(26,-3549,907,624,1237,343,189,249);
+    INSERT INTO deltas VALUES(27,-4660,1111,907,1726,296,247,373);
+    INSERT INTO deltas VALUES(28,-6301,1641,1111,2220,573,260,496);
+    INSERT INTO deltas VALUES(29,-8468,2167,1641,2865,739,410,646);
+    COMMIT;
