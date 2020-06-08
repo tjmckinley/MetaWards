@@ -44,10 +44,19 @@ class Networks:
     @property
     def params(self) -> int:
         """The overall parameters that are then specialised for the
-           different demographics
+           different demographics. Note that this returns a copy,
+           so changing this will not change any parameters in the
+           networks
         """
         if self.overall is not None:
-            return self.overall.params
+            # return the parameters for all of the demographics
+            params = self.overall.params.copy()
+
+            params._subparams = {}
+            for subnet in self.subnets:
+                params._subparams[subnet.name] = subnet.params
+
+            return params
         else:
             return None
 
@@ -351,10 +360,14 @@ class Networks:
             #         WHERE THEY SHOULD BE AT THE START OF THE RUN
 
             p = p.start(f"{demographic.name}.update")
-            if demographic.adjustment:
-                subnet_params = params.set_variables(demographic.adjustment)
+            if demographic.name in params.specialised_demographics():
+                subnet_params = params[demographic.name]
             else:
                 subnet_params = params
+
+            if demographic.adjustment:
+                subnet_params = subnet_params.set_variables(
+                    demographic.adjustment)
 
             self.subnets[i].update(subnet_params, profiler=p)
             p = p.stop()
