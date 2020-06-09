@@ -146,12 +146,11 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                     to_move_d = links_suscept[j]
 
                     if to_move_d > 0:
-                        to_links_suscept[j] = to_links_suscept[j] + \
-                                              to_move_d
+                        to_links_suscept[j] = to_links_suscept[j] + to_move_d
                         links_suscept[j] = links_suscept[j] - to_move_d
 
-                        to_links_weight[j] = to_links_suscept[j]
-                        links_weight[j] = links_suscept[j]
+                        to_links_weight[j] = to_links_weight[j] + to_move_d
+                        links_weight[j] = links_weight[j] - to_move_d
 
                 for j in prange(1, nnodes_plus_one, schedule="static"):
                     to_move_d = nodes_play_suscept[j]
@@ -163,8 +162,11 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 to_move_d
 
                         to_nodes_save_play_suscept[j] = \
-                                                    to_nodes_play_suscept[j]
-                        nodes_save_play_suscept[j] = nodes_play_suscept[j]
+                                            to_nodes_save_play_suscept[j] + \
+                                            to_move_d
+                        nodes_save_play_suscept[j] = \
+                                            nodes_save_play_suscept[j] - \
+                                            to_move_d
             else:
                 thread_id = cython.parallel.threadid()
                 rng = _get_binomial_ptr(rngs_view[thread_id])
@@ -174,12 +176,11 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                             <int>(links_suscept[j]))
 
                     if to_move > 0:
-                        to_links_suscept[j] = to_links_suscept[j] + \
-                                              to_move
+                        to_links_suscept[j] = to_links_suscept[j] + to_move
                         links_suscept[j] = links_suscept[j] - to_move
 
-                        to_links_weight[j] = to_links_suscept[j]
-                        links_weight[j] = links_suscept[j]
+                        to_links_weight[j] = to_links_weight[j] + to_move
+                        links_weight[j] = links_weight[j] - to_move
 
                 for j in prange(1, nnodes_plus_one, schedule="static"):
                     to_move = _ran_binomial(rng, frac,
@@ -192,8 +193,11 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 to_move
 
                         to_nodes_save_play_suscept[j] = \
-                                                    to_nodes_play_suscept[j]
-                        nodes_save_play_suscept[j] = nodes_play_suscept[j]
+                                            to_nodes_save_play_suscept[j] + \
+                                            to_move
+                        nodes_save_play_suscept[j] = \
+                                            nodes_save_play_suscept[j] - \
+                                            to_move
 
         # move infected / recovered individuals
         for i in range(0, N_INF_CLASSES):
@@ -256,6 +260,13 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                             play_infections_i[j] = \
                                                 play_infections_i[j] - \
                                                 to_move
+
+    # we need to recalculate the denominators for the subnets that
+    # are involved in this move
+    for ii in go_from:
+        subnet.recalculate_denominators(nthreads=nthreads, profiler=profiler)
+
+    to_subnet.recalculate_denominators(nthreads=nthreads, profiler=profiler)
 
 
 def go_to_serial(**kwargs):
