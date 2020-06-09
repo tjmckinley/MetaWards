@@ -427,8 +427,8 @@ class Network:
         if work_ratio is not None:
             self.links.scale_susceptibles(work_ratio)
 
-        if play_ratio is not None:
-            self.play.scale_susceptibles(play_ratio)
+        # if play_ratio is not None:
+        #    self.play.scale_susceptibles(play_ratio)
 
         self.nodes.scale_susceptibles(work_ratio=work_ratio,
                                       play_ratio=play_ratio)

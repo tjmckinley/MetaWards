@@ -137,3 +137,14 @@ Run ``metawards`` using the command;
    globally. It is better to define things once only, as this leads to fewer
    bugs.
 
+You should see that the disease spreads quickly via the super-spreaders, with
+all, or almost all becoming infected. You can see this in the demographics
+plot, produced via;
+
+.. code-block:: bash
+
+    metawards-plot -i output/trajectory.csv.bz2
+
+You should see something similar to this, which shows that the infection
+burns quickly through the super-spreader demographic, moving through that
+entire demographic is just a couple of months.

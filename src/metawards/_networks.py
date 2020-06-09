@@ -135,6 +135,14 @@ class Networks:
         distribute_remainders(network=network, subnets=subnets,
                               profiler=p, nthreads=nthreads,
                               random_seed=demographics.random_seed)
+
+        # we have changed the population, so need to recalculate the
+        # denominators again...
+        for subnet in subnets:
+            subnet.reset_everything(nthreads=nthreads, profiler=p)
+            subnet.rescale_play_matrix(nthreads=nthreads, profiler=p)
+            subnet.move_from_play_to_work(nthreads=nthreads, profiler=p)
+
         p = p.stop()
 
         total_pop = network.population
