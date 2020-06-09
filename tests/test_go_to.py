@@ -73,7 +73,7 @@ def move_partial(population: Population, **kwargs):
 
 @pytest.mark.slow
 def test_go_to(prompt=None, nthreads=1):
-    seed = 883467
+    seed = 797747
 
     # load all of the parameters
     try:

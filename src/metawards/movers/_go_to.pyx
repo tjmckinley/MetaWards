@@ -240,6 +240,12 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 work_infections_i[j] - \
                                                 to_move
 
+                            to_links_weight[j] = to_links_weight[j] + \
+                                                 to_move
+
+                            links_weight[j] = links_weight[j] - \
+                                              to_move
+
                     for j in prange(1, nnodes_plus_one, schedule="static"):
                         to_move = play_infections_i[j]
 
@@ -253,6 +259,14 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                             play_infections_i[j] = \
                                                 play_infections_i[j] - \
                                                 to_move
+
+                            to_nodes_save_play_suscept[j] = \
+                                            to_nodes_save_play_suscept[j] + \
+                                            to_move
+
+                            nodes_save_play_suscept[j] = \
+                                            nodes_save_play_suscept[j] - \
+                                            to_move
                 else:
                     # only move a fraction of the population
                     thread_id = cython.parallel.threadid()
@@ -271,6 +285,10 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                             work_infections_i[j] = \
                                                 work_infections_i[j] - \
                                                 to_move
+                            to_links_weight[j] = to_links_weight[j] + \
+                                                    to_move
+                            links_weight[j] = links_weight[j] - \
+                                                    to_move
 
                     for j in prange(1, nnodes_plus_one, schedule="static"):
                         to_move = _ran_binomial(rng, frac,
@@ -286,6 +304,14 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                             play_infections_i[j] = \
                                                 play_infections_i[j] - \
                                                 to_move
+
+                            to_nodes_save_play_suscept[j] = \
+                                            to_nodes_save_play_suscept[j] + \
+                                            to_move
+
+                            nodes_save_play_suscept[j] = \
+                                            nodes_save_play_suscept[j] - \
+                                            to_move
 
     if sum(updated) > 0:
         # we need to recalculate the denominators for the subnets that
