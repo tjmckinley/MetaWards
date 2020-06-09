@@ -106,12 +106,8 @@ def move_population_from_play_to_work(network: Network,
                                             profiler=profiler)
 
     # the sum of these 2 should equal the population of the network
-    from ._console import Console
-    Console.print(f"Network population equals {int(sum1+sum2)}. This is "
-                  f"made up of workers={int(sum1)} and players={int(sum2)}")
-    Console.print(f"Expected population is {network.population}")
-
     if int(sum1 + sum2) != network.population:
+        from ._console import Console
         Console.error(f"The rescaled population {int(sum1+sum2)} does not "
                       f"equal the expected population {network.population}")
 

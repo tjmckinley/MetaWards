@@ -211,7 +211,9 @@ class Network:
             p = p.stop()
             print(p)
 
-        Console.print(f"**Network loaded. Population: {network.population}**",
+        Console.print(f"**Network loaded. Population: {network.population}, "
+                      f"Workers: {network.work_population}, Players: "
+                      f"{network.play_population}**",
                       markdown=True)
 
         return network
