@@ -148,3 +148,32 @@ plot, produced via;
 You should see something similar to this, which shows that the infection
 burns quickly through the super-spreader demographic, moving through that
 entire demographic is just a couple of months.
+
+.. image:: ../../images/tutorial_7_1.jpg
+   :alt: Demographic trajectory including the super-spreaders
+
+.. note::
+
+   It is counter-intuitive that the super-spreaders are all infected quickly,
+   and complete the outbreak long before the general population. This is
+   due to the model setup. The super-spreaders all interact with each other
+   within their demographic, and so, as their ``beta`` value is high,
+   there is a high probability that they will infect each other quickly.
+   Their limited population naturally means that it takes less time until
+   all members of the this population are infected.
+
+   While not wholly realistic, this does make some practical sense,
+   as real super-spreaders will
+   go about their normal day during an outbreak as they do not noticeably
+   become ill. As they will continue normally, it could make sense that
+   they outbreak could burn through that population quickly,
+   until the point where there are few remaining. Meanwhile, the larger,
+   more general population experiences a slower outbreak.
+
+   One way to counter this effect would be to use an interaction matrix
+   to slow down the rate of infection in the super-spreader demographic,
+   so to model the reality that super-spreaders are more dispersed,
+   and so less likely to interact with one another than with members
+   of the general population. An interaction matrix of, e.g.
+   (1, 1, 1, 0.5) may thus be appropriate, although data fitting would
+   be needed to find the exact values.
