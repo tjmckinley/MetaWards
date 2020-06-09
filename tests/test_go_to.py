@@ -73,8 +73,7 @@ def move_partial(population: Population, **kwargs):
 
 @pytest.mark.slow
 def test_go_to(prompt=None, nthreads=1):
-    import random
-    seed = random.randint(100000, 1000000)
+    seed = 883467
 
     # load all of the parameters
     try:

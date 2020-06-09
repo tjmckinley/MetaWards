@@ -12,6 +12,7 @@ from .._demographics import DemographicID, DemographicIDs
 
 from ..utils._console import Console
 from ..utils._profiler import Profiler
+from ..utils._array import create_int_array
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
 from ..utils._ran_binomial cimport _ran_binomial, \
@@ -127,6 +128,11 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
     cdef int to_move = 0
     cdef double to_move_d = 0.0
 
+    updated = create_int_array(nthreads, 0)
+    cdef int * have_updated = get_int_array_ptr(updated)
+
+    cdef int nmoved = 0
+
     for ii in go_from:
         subnet = subnets[ii]
         subinf = subinfs[ii]
@@ -141,11 +147,15 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 subnet.nodes.save_play_suscept)
 
         with nogil, parallel(num_threads=num_threads):
+            thread_id = cython.parallel.threadid()
+
             if frac == 1.0:
                 for j in prange(1, nlinks_plus_one, schedule="static"):
                     to_move_d = links_suscept[j]
 
                     if to_move_d > 0:
+                        have_updated[thread_id] = 1
+
                         to_links_suscept[j] = to_links_suscept[j] + to_move_d
                         links_suscept[j] = links_suscept[j] - to_move_d
 
@@ -156,6 +166,8 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                     to_move_d = nodes_play_suscept[j]
 
                     if to_move_d > 0:
+                        have_updated[thread_id] = 1
+
                         to_nodes_play_suscept[j] = to_nodes_play_suscept[j] + \
                                                    to_move_d
                         nodes_play_suscept[j] = nodes_play_suscept[j] - \
@@ -176,6 +188,8 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                             <int>(links_suscept[j]))
 
                     if to_move > 0:
+                        have_updated[thread_id] = 1
+
                         to_links_suscept[j] = to_links_suscept[j] + to_move
                         links_suscept[j] = links_suscept[j] - to_move
 
@@ -187,6 +201,8 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                             <int>(nodes_play_suscept[j]))
 
                     if to_move > 0:
+                        have_updated[thread_id] = 1
+
                         to_nodes_play_suscept[j] = to_nodes_play_suscept[j] + \
                                                    to_move
                         nodes_play_suscept[j] = nodes_play_suscept[j] - \
@@ -208,11 +224,15 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
             to_play_infections_i = get_int_array_ptr(to_subinf.play[i])
 
             with nogil, parallel(num_threads=num_threads):
+                thread_id = cython.parallel.threadid()
+
                 if frac == 1.0:
                     for j in prange(1, nlinks_plus_one, schedule="static"):
                         to_move = work_infections_i[j]
 
                         if to_move > 0:
+                            have_updated[thread_id] = 1
+
                             to_work_infections_i[j] = \
                                                 to_work_infections_i[j] + \
                                                 to_move
@@ -224,6 +244,8 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                         to_move = play_infections_i[j]
 
                         if to_move > 0:
+                            have_updated[thread_id] = 1
+
                             to_play_infections_i[j] = \
                                                 to_play_infections_i[j] + \
                                                 to_move
@@ -241,6 +263,8 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 <int>(work_infections_i[j]))
 
                         if to_move > 0:
+                            have_updated[thread_id] = 1
+
                             to_work_infections_i[j] = \
                                                 to_work_infections_i[j] + \
                                                 to_move
@@ -253,6 +277,8 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 <int>(play_infections_i[j]))
 
                         if to_move > 0:
+                            have_updated[thread_id] = 1
+
                             to_play_infections_i[j] = \
                                                 to_play_infections_i[j] + \
                                                 to_move
@@ -261,12 +287,13 @@ def go_to_parallel(go_from: _Union[DemographicID, DemographicIDs],
                                                 play_infections_i[j] - \
                                                 to_move
 
-    # we need to recalculate the denominators for the subnets that
-    # are involved in this move
-    for ii in go_from:
-        subnet.recalculate_denominators(nthreads=nthreads, profiler=profiler)
+    if sum(updated) > 0:
+        # we need to recalculate the denominators for the subnets that
+        # are involved in this move
+        for ii in go_from:
+            subnet.recalculate_denominators(nthreads=nthreads, profiler=profiler)
 
-    to_subnet.recalculate_denominators(nthreads=nthreads, profiler=profiler)
+        to_subnet.recalculate_denominators(nthreads=nthreads, profiler=profiler)
 
 
 def go_to_serial(**kwargs):
