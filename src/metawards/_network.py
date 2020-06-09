@@ -50,6 +50,12 @@ class Network:
     #: The parameters used to generate this network
     params: Parameters = None
 
+    #: The number of workers
+    work_population: int = None
+
+    #: The number of players
+    play_population: int = None
+
     #: The index in the overall network's work matrix of the ith
     #: index in this subnetworks work matrix. If this is None then
     #: both this subnetwork has the same work matrix as the overall
@@ -211,7 +217,9 @@ class Network:
             p = p.stop()
             print(p)
 
-        Console.print(f"**Network loaded. Population: {network.population}**",
+        Console.print(f"**Network loaded. Population: {network.population}, "
+                      f"Workers: {network.work_population}, Players: "
+                      f"{network.play_population}**",
                       markdown=True)
 
         return network
@@ -257,6 +265,30 @@ class Network:
         """
         from ._infections import Infections
         return Infections.build(network=self)
+
+    def recalculate_denominators(self, nthreads: int = 1, profiler=None):
+        """Recalculate the denominators used in the calculation. This should
+           be called after you have changed the population of the
+           network, e.g. during a move function
+        """
+        from .utils._recalculate_denominators import \
+            recalculate_play_denominator_day, \
+            recalculate_work_denominator_day
+
+        workers = recalculate_work_denominator_day(self, nthreads=nthreads,
+                                                   profiler=profiler)
+        players = recalculate_play_denominator_day(self, nthreads=nthreads,
+                                                   profiler=profiler)
+
+        self.work_population = workers
+        self.play_population = players
+
+        if self.work_population + self.play_population != self.population:
+            from .utils._console import Console
+            Console.error(f"Disagreement in the population size: "
+                          f"{self.work_population}+{self.play_population} != "
+                          f"{self.population}")
+            raise AssertionError("Disagreement in population size")
 
     def get_min_max_distances(self, nthreads: int = 1,
                               profiler=None):
@@ -427,8 +459,8 @@ class Network:
         if work_ratio is not None:
             self.links.scale_susceptibles(work_ratio)
 
-        if play_ratio is not None:
-            self.play.scale_susceptibles(play_ratio)
+        # if play_ratio is not None:
+        #    self.play.scale_susceptibles(play_ratio)
 
         self.nodes.scale_susceptibles(work_ratio=work_ratio,
                                       play_ratio=play_ratio)
