@@ -443,6 +443,8 @@
 
         <span class="n">outdir</span> <span class="o">=</span> <span class="n">_expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_dir</span><span class="p">)</span>
 
+        <span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
             <span class="n">outdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
 
@@ -455,9 +457,25 @@
 
                     <span class="c1"># remake the directory after it has been removed</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
+                        <span class="kn">import</span> <span class="nn">sys</span>
+
+                        <span class="c1"># Make sure write bit is set on Windows.</span>
+                        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+                            <span class="c1"># Safely preserve the permissions of the</span>
+                            <span class="c1"># current process</span>
+                            <span class="kn">import</span> <span class="nn">stat</span>
+                            <span class="n">mask</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">umask</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IWRITE</span><span class="p">)</span>
+                            <span class="n">os</span><span class="o">.</span><span class="n">umask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+                            <span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">FileExistsError</span><span class="p">:</span>
                         <span class="k">pass</span>
+                    <span class="k">finally</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">os</span><span class="o">.</span><span class="n">umask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+                            <span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
                 <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
@@ -466,13 +484,29 @@
                 <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outdir</span><span class="si">}</span><span class="s2"> is an existing file!&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">sys</span>
+
+            <span class="c1"># Make sure write bit is set on Windows.</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+                <span class="c1"># Safely preserve the permissions of the current process</span>
+                <span class="kn">import</span> <span class="nn">stat</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">umask</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IWRITE</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">umask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
+
         <span class="k">except</span> <span class="ne">FileExistsError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="c1"># this is no problem, as we have already validated</span>
             <span class="c1"># that the directory already existing is ok</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
                 <span class="c1"># but it is a problem if it is not a directory...</span>
                 <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">umask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">_Path</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
 
@@ -832,7 +866,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 09, 2020.
+        Last updated on Jun 10, 2020.
       </span>
 
     </p>
