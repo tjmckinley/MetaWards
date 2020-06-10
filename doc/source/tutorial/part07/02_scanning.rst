@@ -228,3 +228,56 @@ slurm and PBS job submission scripts for these runs;
    we've only asked for 256 cores. You should adjust the request depending
    on how many cores are available on your cluster.
 
+The jobs will take a while to run, e.g. in my case it took 90 minutes using
+256 cores, with each individual *model run* taking about 3 minutes.
+
+Analysing the results
+---------------------
+
+The first stage in the analysis is to look at the four overview plots.
+These can be generated via;
+
+.. code-block:: bash
+
+   metawards-plot -i output_05/results.csv.bz2
+   metawards-plot --animate output_05/overview_*.jpg
+   metawards-plot -i output_10/results.csv.bz2
+   metawards-plot --animate output_10/overview_*.jpg
+   metawards-plot -i output_15/results.csv.bz2
+   metawards-plot --animate output_15/overview_*.jpg
+   metawards-plot -i output_20/results.csv.bz2
+   metawards-plot --animate output_20/overview_*.jpg
+
+You will see plots similar to this (which is for the ``output_20`` 20%
+super-spreader demographic)
+
+.. image:: ../../images/tutorial_7_2_1.gif
+   :alt: Overview of the scan of the 20% super-spreader demographic
+
+You should see in these that, regardless of the percentage of super-spreaders,
+the larger the value of ``super:beta[2]``, the more intense the outbreak,
+and the smaller the value of ``super:progress[2]``, the more intense
+the outbreak. This makes sense, as you would expect a stronger outbreak
+the more infectious the super-spreaders are, and the longer they spend in
+the infective state.
+
+By eye you can see that this effect is greatest for the run with the
+largest percentage of super-spreaders. We can plot the demographics
+for the first run of the ``super:beta[2]==1.0`` and ``super:progress[2]==1.0``
+parameters, and animate using the commands;
+
+.. code-block:: bash
+
+   metawards-plot -i output_*/1i0v0i5x001/trajectory.csv.bz2
+   metawards-plot --animate output_*/1i0v0i5x001/demographics.jpg -o demographics_1i0v0i5.gif --order filename
+
+This should result in an animation that looks something like this;
+
+.. image:: ../../images/tutorial_7_2_2.gif
+   :alt: Overview of the scan of the 20% super-spreader demographic
+
+You can see in this plot that the greater the percentage of super-spreaders,
+the faster the outbreak and the more individuals who are infected. Again,
+this is what you would expect. As we are modelling the lurgy, we don't have
+real data to compare against. For a real outbreak, you would fit the parameters
+for the super-spreaders to match observed data.
