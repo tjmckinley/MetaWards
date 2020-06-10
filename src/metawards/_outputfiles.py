@@ -257,6 +257,8 @@ class OutputFiles:
 
         outdir = _expand(self._output_dir)
 
+        mask = None
+
         if os.path.exists(outdir):
             outdir = os.path.abspath(outdir)
 
@@ -269,15 +271,25 @@ class OutputFiles:
 
                     # remake the directory after it has been removed
                     try:
-                        import stat
                         import sys
 
-                        os.makedirs(outdir)
                         # Make sure write bit is set on Windows.
                         if sys.platform == "win32":
-                            os.chmod(outdir, stat.S_IWRITE)
+                            # Safely preserve the permissions of the
+                            # current process
+                            import stat
+                            mask = os.umask(0)
+                            os.makedirs(outdir, stat.S_IWRITE)
+                            os.umask(mask)
+                            mask = None
+                        else:
+                            os.makedirs(outdir)
                     except FileExistsError:
                         pass
+                    finally:
+                        if mask is not None:
+                            os.umask(mask)
+                            mask = None
 
             if not os.path.isdir(outdir):
                 from .utils._console import Console
@@ -286,19 +298,29 @@ class OutputFiles:
                 raise FileExistsError(f"{outdir} is an existing file!")
 
         try:
-            import stat
             import sys
 
-            os.makedirs(outdir)
             # Make sure write bit is set on Windows.
             if sys.platform == "win32":
-                os.chmod(outdir, stat.S_IWRITE)
+                # Safely preserve the permissions of the current process
+                import stat
+                mask = os.umask(0)
+                os.makedirs(outdir, stat.S_IWRITE)
+                os.umask(mask)
+                mask = None
+            else:
+                os.makedirs(outdir)
+
         except FileExistsError as e:
             # this is no problem, as we have already validated
             # that the directory already existing is ok
             if not os.path.isdir(outdir):
                 # but it is a problem if it is not a directory...
                 raise e
+        finally:
+            if mask is not None:
+                os.umask(mask)
+                mask = None
 
         self._output_dir = str(_Path(outdir).absolute().resolve())
 

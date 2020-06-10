@@ -407,14 +407,6 @@ def scoop_supervisor(hostfile, args):
 
     Console.print("RUNNING A SCOOP PROGRAM")
 
-    outdir = args.output
-
-    if not os.path.exists(outdir):
-        os.mkdir(outdir)
-        # Make sure write bit is set on Windows.
-        if sys.platform == "win32":
-            os.chmod(outdir, stat.S_IWRITE)
-
     cores_per_node = get_cores_per_node(args)
 
     Console.print(
@@ -522,14 +514,6 @@ def mpi_supervisor(hostfile, args):
     from metawards.utils import Console
 
     Console.print("RUNNING AN MPI PROGRAM")
-
-    outdir = args.output
-
-    if not os.path.exists(outdir):
-        os.mkdir(outdir)
-        # Make sure write bit is set on Windows.
-        if sys.platform == "win32":
-            os.chmod(outdir, stat.S_IWRITE)
 
     cores_per_node = get_cores_per_node(args)
 
