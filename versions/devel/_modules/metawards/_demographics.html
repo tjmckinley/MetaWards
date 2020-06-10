@@ -303,7 +303,7 @@
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># Lookup by name</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">demographics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">[</span><span class="n">item</span><span class="p">]]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">demographics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">item</span><span class="p">)]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Lookup by index</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">demographics</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
@@ -367,7 +367,9 @@
 
         <span class="c1"># haven&#39;t found the item</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There is no demographic is this set that &quot;</span>
-                       <span class="sa">f</span><span class="s2">&quot;matches </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
+                       <span class="sa">f</span><span class="s2">&quot;matches </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">. Available names are &quot;</span>
+                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="si">}</span><span class="s2">. Available indexes are &quot;</span>
+                       <span class="sa">f</span><span class="s2">&quot;0 -&gt; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Demographics.load"><a class="viewcode-back" href="../../api/generated/metawards.Demographics.html#metawards.Demographics.load">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

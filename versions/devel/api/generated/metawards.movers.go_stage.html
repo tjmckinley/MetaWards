@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>metawards.movers.go_to &mdash; MetaWards Documentation</title>
+  <title>metawards.movers.go_stage &mdash; MetaWards Documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="metawards.movers.move_custom" href="metawards.movers.move_custom.html" />
-    <link rel="prev" title="metawards.movers.go_stage" href="metawards.movers.go_stage.html" /> 
+    <link rel="next" title="metawards.movers.go_to" href="metawards.movers.go_to.html" />
+    <link rel="prev" title="metawards.movers.go_isolate" href="metawards.movers.go_isolate.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -189,7 +189,7 @@
         
           <li><a href="../index_api_MetaWards_movers.html">MetaWards.movers API Detail</a> &raquo;</li>
         
-      <li>metawards.movers.go_to</li>
+      <li>metawards.movers.go_stage</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -203,10 +203,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="metawards.movers.move_custom.html" class="btn btn-neutral float-right" title="metawards.movers.move_custom" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards.movers.go_to.html" class="btn btn-neutral float-right" title="metawards.movers.go_to" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="metawards.movers.go_stage.html" class="btn btn-neutral float-left" title="metawards.movers.go_stage" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="metawards.movers.go_isolate.html" class="btn btn-neutral float-left" title="metawards.movers.go_isolate" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -215,15 +215,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="metawards-movers-go-to">
-<h1>metawards.movers.go_to<a class="headerlink" href="#metawards-movers-go-to" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="metawards-movers-go-stage">
+<h1>metawards.movers.go_stage<a class="headerlink" href="#metawards-movers-go-stage" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="metawards.movers.go_to">
-<code class="descclassname">metawards.movers.</code><code class="descname">go_to</code><span class="sig-paren">(</span><em>nthreads: int = 1</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.movers.go_to" title="Permalink to this definition">¶</a></dt>
-<dd><p>This go function will move individuals from the “from”
-demographic(s) to the “to” demographic. This can move
-a subset of individuals is ‘fraction’ is less than 1, e.g.
-0.5 would move 50% of individuals.</p>
+<dt id="metawards.movers.go_stage">
+<code class="descclassname">metawards.movers.</code><code class="descname">go_stage</code><span class="sig-paren">(</span><em>nthreads: int = 1</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.movers.go_stage" title="Permalink to this definition">¶</a></dt>
+<dd><p>This go function will move individuals from the “from_stage”
+stage(s) of the “from” demographic(s) to the “to_stage” stage
+of the “to” demographic. This can move
+a subset of individuals if ‘fraction’ is less than 1, e.g.
+0.5 would move 50% of individuals (chosen using
+a random binomial distribution)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -231,12 +233,16 @@ a subset of individuals is ‘fraction’ is less than 1, e.g.
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>from</strong> (<em>DemographicID</em><em> or </em><em>DemographicIDs</em>) – ID (name or index) or IDs of the demographics to scan for
 infected individuals</li>
-<li><strong>to</strong> (<em>DemographicID</em>) – ID (name or index) of the demographic to send infected
+<li><strong>to</strong> (<em>DemographicID</em>) – ID (name or index) of the isolation demographic to send infected
 individuals to</li>
+<li><strong>from_stage</strong> (<em>int</em><em> or </em><em>list</em><em>[</em><em>int</em><em>]</em>) – The stage to move from (or list of stages if there are multiple
+from demographics)</li>
+<li><strong>to_stage</strong> (<em>int</em>) – The stage to move to</li>
 <li><strong>network</strong> (<a class="reference internal" href="metawards.Networks.html#metawards.Networks" title="metawards.Networks"><em>Networks</em></a>) – The networks to be modelled. This must contain all of the
 demographics that are needed for this go function</li>
-<li><strong>fraction</strong> (<em>float</em>) – The fraction of individuals to move, e.g. 0.75 would move
-75% of the individuals</li>
+<li><strong>fraction</strong> (<em>float</em><em> or </em><em>List</em><em>[</em><em>float</em><em>]</em>) – The fraction (percentage) of individuals who are moved.</li>
+<li><strong>rngs</strong> – Thread-safe random number generators used to choose the fraction
+of individuals</li>
 </ul>
 </td>
 </tr>
@@ -254,10 +260,10 @@ demographics that are needed for this go function</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="metawards.movers.move_custom.html" class="btn btn-neutral float-right" title="metawards.movers.move_custom" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards.movers.go_to.html" class="btn btn-neutral float-right" title="metawards.movers.go_to" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="metawards.movers.go_stage.html" class="btn btn-neutral float-left" title="metawards.movers.go_stage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="metawards.movers.go_isolate.html" class="btn btn-neutral float-left" title="metawards.movers.go_isolate" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
