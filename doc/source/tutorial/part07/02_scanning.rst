@@ -159,25 +159,25 @@ slurm and PBS job submission scripts for these runs;
 
     metawards -d lurgy_home -D demographics_05.json -a ExtraSeedsLondon.dat \
             --extractor extract_none -i scan.dat --repeats 8 \
-            --nthreads 16 --force-overwrite-output \
+            --nthreads 16 --force-overwrite-output --mixer mix_evenly \
             --no-spinner --theme simple \
             --output output_05
 
     metawards -d lurgy_home -D demographics_10.json -a ExtraSeedsLondon.dat \
             --extractor extract_none -i scan.dat --repeats 8 \
-            --nthreads 16 --force-overwrite-output \
+            --nthreads 16 --force-overwrite-output --mixer mix_evenly \
             --no-spinner --theme simple \
             --output output_10
 
     metawards -d lurgy_home -D demographics_15.json -a ExtraSeedsLondon.dat \
             --extractor extract_none -i scan.dat --repeats 8 \
-            --nthreads 16 --force-overwrite-output \
+            --nthreads 16 --force-overwrite-output --mixer mix_evenly \
             --no-spinner --theme simple \
             --output output_15
 
     metawards -d lurgy_home -D demographics_20.json -a ExtraSeedsLondon.dat \
             --extractor extract_none -i scan.dat --repeats 8 \
-            --nthreads 16 --force-overwrite-output \
+            --nthreads 16 --force-overwrite-output --mixer mix_evenly \
             --no-spinner --theme simple \
             --output output_20
 
@@ -193,25 +193,25 @@ slurm and PBS job submission scripts for these runs;
 
     metawards -d lurgy_home -D demographics_05.json -a ExtraSeedsLondon.dat \
             --extractor extract_none -i scan.dat --repeats 8 \
-            --nthreads 16 --force-overwrite-output \
+            --nthreads 16 --force-overwrite-output --mixer mix_evenly \
             --no-spinner --theme simple \
             --output output_05
 
     metawards -d lurgy_home -D demographics_10.json -a ExtraSeedsLondon.dat \
             --extractor extract_none -i scan.dat --repeats 8 \
-            --nthreads 16 --force-overwrite-output \
+            --nthreads 16 --force-overwrite-output --mixer mix_evenly \
             --no-spinner --theme simple \
             --output output_10
 
     metawards -d lurgy_home -D demographics_15.json -a ExtraSeedsLondon.dat \
             --extractor extract_none -i scan.dat --repeats 8 \
-            --nthreads 16 --force-overwrite-output \
+            --nthreads 16 --force-overwrite-output --mixer mix_evenly \
             --no-spinner --theme simple \
             --output output_15
 
     metawards -d lurgy_home -D demographics_20.json -a ExtraSeedsLondon.dat \
             --extractor extract_none -i scan.dat --repeats 8 \
-            --nthreads 16 --force-overwrite-output \
+            --nthreads 16 --force-overwrite-output --mixer mix_evenly \
             --no-spinner --theme simple \
             --output output_20
 
