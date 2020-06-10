@@ -147,7 +147,7 @@ plot, produced via;
 
 You should see something similar to this, which shows that the infection
 burns quickly through the super-spreader demographic, moving through that
-entire demographic is just a couple of months.
+entire demographic in just a couple of months.
 
 .. image:: ../../images/tutorial_7_1.jpg
    :alt: Demographic trajectory including the super-spreaders
@@ -171,8 +171,8 @@ entire demographic is just a couple of months.
    more general population experiences a slower outbreak.
 
    One way to counter this effect would be to use an interaction matrix
-   to slow down the rate of infection in the super-spreader demographic,
-   so to model the reality that super-spreaders are more dispersed,
+   to slow down the rate of infection in the super-spreader demographic.
+   This would reflect the reality that super-spreaders are more dispersed,
    and so less likely to interact with one another than with members
    of the general population. An interaction matrix of, e.g.
    (1, 1, 1, 0.5) may thus be appropriate, although data fitting would
