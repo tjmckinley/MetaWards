@@ -133,6 +133,7 @@ class Networks:
         p = p.start("distribute_remainders")
         from .utils._scale_susceptibles import distribute_remainders
         distribute_remainders(network=network, subnets=subnets,
+                              demographics=demographics,
                               profiler=p, nthreads=nthreads,
                               random_seed=demographics.random_seed)
 

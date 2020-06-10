@@ -145,3 +145,29 @@ copy in the below;
 
 .. code-block:: python
 
+    from metawards.movers import go_stage
+
+
+    def move_hospital(**kwargs):
+        func = lambda **kwargs: go_stage(go_from=["home", "staff"],
+                                         go_to=["patients"],
+                                         from_stage=4,
+                                         to_stage=2,
+                                         fraction=0.2,
+                                         **kwargs)
+
+        return [func]
+
+This move function returns :meth:`~metawards.movers.go_stage`. This is
+very similar to :meth:`~metawards.movers.go_to`, except you also specify
+the ``from_stage`` and ``to_stage``, which are the stage(s) to move from,
+and the stage to move to. In this case, we will move 20% of individuals
+from the ``I2``
+stage from the ``home`` and ``staff`` demographics, which is stage 4
+of ``lurgy4.json``. We will move these individuals to stage 2, which is
+``H2``, in the ``patients`` demographic.
+
+Now this is set, we can run the model using;
+
+.. code-block:: bash
+
