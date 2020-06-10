@@ -14,3 +14,4 @@ In this seventh part of the tutorial you will;
    :maxdepth: 2
 
    part07/01_pathways
+   part07/02_scanning
