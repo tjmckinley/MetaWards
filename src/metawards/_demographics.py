@@ -117,7 +117,7 @@ class Demographics:
     def __getitem__(self, item):
         if isinstance(item, str):
             # Lookup by name
-            return self.demographics[self._names[item]]
+            return self.demographics[self.get_index(item)]
         else:
             # Lookup by index
             return self.demographics[item]
@@ -181,7 +181,9 @@ class Demographics:
 
         # haven't found the item
         raise KeyError(f"There is no demographic is this set that "
-                       f"matches {item}.")
+                       f"matches {item}. Available names are "
+                       f"{self._names}. Available indexes are "
+                       f"0 -> {len(self._names)}")
 
     @staticmethod
     def load(name: str = None,
