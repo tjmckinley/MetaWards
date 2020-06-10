@@ -333,7 +333,7 @@ def get_color(name=None, idx=None):
         return name
 
     else:
-        names = ["red", "blue", "green", "orange", "yellow", "gray", "pink"]
+        names = ["red", "blue", "green", "orange", "pink", "gray"]
 
         if idx is None or idx < 0 or idx >= len(names):
             # return a random colour

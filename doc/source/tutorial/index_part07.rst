@@ -16,3 +16,4 @@ In this seventh part of the tutorial you will;
    part07/01_pathways
    part07/02_scanning
    part07/03_conditional
+   part07/04_icu

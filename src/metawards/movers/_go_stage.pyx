@@ -74,6 +74,11 @@ def go_stage_parallel(go_from: _Union[DemographicID, DemographicIDs],
         raise ValueError(f"The 'go_from' {go_from} and 'from_stage' "
                          f"{from_stage} values must have the same length")
 
+    if isinstance(go_to, list):
+        if len(go_to) != 1:
+            raise ValueError(f"The 'go_to' {go_to} must be a single value!")
+        go_to = go_to[0]
+
     subnets = network.subnets
     demographics = network.demographics
     subinfs = infections.subinfs
@@ -93,6 +98,9 @@ def go_stage_parallel(go_from: _Union[DemographicID, DemographicIDs],
 
     to_stage = int(to_stage)
 
+    if to_stage < 0:
+        to_stage = to_subinf.N_INF_CLASSES + to_stage
+
     if to_stage < 0 or to_stage >= to_subinf.N_INF_CLASSES:
         raise ValueError(
             f"The to_stage '{to_stage}' is invalid for a disease "
@@ -101,6 +109,9 @@ def go_stage_parallel(go_from: _Union[DemographicID, DemographicIDs],
     from_stage = [int(x) for x in from_stage]
 
     for _i, g in enumerate(go_from):
+        if from_stage[_i] < 0:
+            from_stage[_i] = subinfs[g].N_INF_CLASSES + from_stage[_i]
+
         if from_stage[_i] < 0 or from_stage[_i] >= subinfs[g].N_INF_CLASSES:
             raise ValueError(
                 f"The from_stage '{from_stage[_i]}' for demographic {g} "
