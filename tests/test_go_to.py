@@ -239,4 +239,4 @@ def test_go_partial(prompt=None, nthreads=1):
 
 if __name__ == "__main__":
     test_go_to(nthreads=2)
-    # test_go_partial(nthreads=2)
+    test_go_partial(nthreads=2)
