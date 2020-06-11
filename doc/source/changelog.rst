@@ -20,6 +20,12 @@ Changelog
   arguments to control how the "*" state is counted in the summary outputs.
   This enables it to be counted as an extra "E" state, which makes the
   output more meaningful and more easily interpretable.
+* Clarified the meaning the "day 0" and "day 1". Now "day 0" is before
+  the model run starts (i.e. setup). The first iteration of the model
+  run is "day 1". This is a change from previous versions, which called
+  the first half of the first iteration "day 0" and the second half "day 1".
+  Since seeding happens in the first half, this means that we now seed one
+  day earlier than previous versions, so outbreaks are now one day ahead.
 * Fixed a major bug in calculation of the demographic sub-networks
   denominators. These have not been used in production yet. If you
   are going to use demographic sub-networks then please make sure
