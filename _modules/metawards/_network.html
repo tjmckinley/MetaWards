@@ -94,7 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../model_data.html">Model data</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorial</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
@@ -235,6 +235,12 @@
 
     <span class="c1">#: The parameters used to generate this network</span>
     <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The number of workers</span>
+    <span class="n">work_population</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: The number of players</span>
+    <span class="n">play_population</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1">#: The index in the overall network&#39;s work matrix of the ith</span>
     <span class="c1">#: index in this subnetworks work matrix. If this is None then</span>
@@ -397,7 +403,9 @@
             <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;**Network loaded. Population: </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">population</span><span class="si">}</span><span class="s2">**&quot;</span><span class="p">,</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;**Network loaded. Population: </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">population</span><span class="si">}</span><span class="s2">, &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;Workers: </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">work_population</span><span class="si">}</span><span class="s2">, Players: &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">play_population</span><span class="si">}</span><span class="s2">**&quot;</span><span class="p">,</span>
                       <span class="n">markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">network</span></div>
@@ -443,6 +451,30 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">._infections</span> <span class="kn">import</span> <span class="n">Infections</span>
         <span class="k">return</span> <span class="n">Infections</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Network.recalculate_denominators"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.recalculate_denominators">[docs]</a>    <span class="k">def</span> <span class="nf">recalculate_denominators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Recalculate the denominators used in the calculation. This should</span>
+<span class="sd">           be called after you have changed the population of the</span>
+<span class="sd">           network, e.g. during a move function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.utils._recalculate_denominators</span> <span class="kn">import</span> \
+            <span class="n">recalculate_play_denominator_day</span><span class="p">,</span> \
+            <span class="n">recalculate_work_denominator_day</span>
+
+        <span class="n">workers</span> <span class="o">=</span> <span class="n">recalculate_work_denominator_day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
+                                                   <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
+        <span class="n">players</span> <span class="o">=</span> <span class="n">recalculate_play_denominator_day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
+                                                   <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">work_population</span> <span class="o">=</span> <span class="n">workers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">play_population</span> <span class="o">=</span> <span class="n">players</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_population</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">play_population</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Disagreement in the population size: &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">work_population</span><span class="si">}</span><span class="s2">+</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">play_population</span><span class="si">}</span><span class="s2"> != &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Disagreement in population size&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Network.get_min_max_distances"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.get_min_max_distances">[docs]</a>    <span class="k">def</span> <span class="nf">get_min_max_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                               <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -501,7 +533,11 @@
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">profiler</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;Network.update&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">specialised_demographics</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;reset_everything&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_everything</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
@@ -511,7 +547,6 @@
             <span class="n">network</span> <span class="o">=</span> <span class="n">demographics</span><span class="o">.</span><span class="n">specialise</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
                                               <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">,</span>
                                               <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
-
         <span class="k">else</span><span class="p">:</span>
             <span class="n">network</span> <span class="o">=</span> <span class="bp">self</span>
 
@@ -610,8 +645,8 @@
         <span class="k">if</span> <span class="n">work_ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">scale_susceptibles</span><span class="p">(</span><span class="n">work_ratio</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">play_ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">play</span><span class="o">.</span><span class="n">scale_susceptibles</span><span class="p">(</span><span class="n">play_ratio</span><span class="p">)</span>
+        <span class="c1"># if play_ratio is not None:</span>
+        <span class="c1">#    self.play.scale_susceptibles(play_ratio)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">scale_susceptibles</span><span class="p">(</span><span class="n">work_ratio</span><span class="o">=</span><span class="n">work_ratio</span><span class="p">,</span>
                                       <span class="n">play_ratio</span><span class="o">=</span><span class="n">play_ratio</span><span class="p">)</span></div>
@@ -675,6 +710,7 @@
             <span class="c1"># all jobs to use the same random number seed (15324) that</span>
             <span class="c1"># is used for comparing outputs. This should NEVER be used</span>
             <span class="c1"># for production code</span>
+            <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
             <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using special mode to fix all random number &quot;</span>
                             <span class="s2">&quot;seeds to 15324. DO NOT USE IN PRODUCTION!!!&quot;</span><span class="p">)</span>
             <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">15324</span><span class="p">)</span>
@@ -730,7 +766,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 23, 2020.
+        Last updated on Jun 11, 2020.
       </span>
 
     </p>

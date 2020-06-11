@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="model_data.html">Model data</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Tutorial</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="usage.html">Usage</a><ul class="current">
@@ -214,8 +214,9 @@
                  [--start-day START_DAY] [-p PARAMETERS] [-R REPOSITORY]
                  [-P POPULATION] [-n NSTEPS] [-u USER_VARIABLES]
                  [--iterator ITERATOR] [--extractor EXTRACTOR] [--mixer MIXER]
-                 [--mover MOVER] [--UV UV] [--theme THEME] [--no-spinner]
-                 [--debug] [--debug-level DEBUG_LEVEL] [--nthreads NTHREADS]
+                 [--mover MOVER] [--star-is-E] [--star-is-R] [--disable-star]
+                 [--UV UV] [--theme THEME] [--no-spinner] [--debug]
+                 [--debug-level DEBUG_LEVEL] [--nthreads NTHREADS]
                  [--nprocs NPROCS] [--hostfile HOSTFILE]
                  [--cores-per-node CORES_PER_NODE] [--auto-bzip]
                  [--no-auto-bzip] [--force-overwrite-output]
@@ -337,6 +338,14 @@ optional arguments:
                         between demographics during a model run. For a full
                         explanation see the tutorial at https://metawards.org
                         (default: None)
+  --star-is-E           Set the state 0 (* state) as an extra latent state, as
+                        opposed to an extra R state (default: None)
+  --star-is-R           Set the state 0 (* state) as an extra R state (the
+                        default). Individuals in this state are calculated as
+                        &#39;R&#39;, even though they will progress on the next day to
+                        the E state (default: None)
+  --disable-star        Disable the * state. Now state 0 is the first and only
+                        latent state. There is no star state. (default: None)
   --UV UV               Value for the UV parameter for the model (default is
                         0.0) (default: 0.0)
   --theme THEME         The theme to use to color the output. Use &#39;--theme
@@ -421,7 +430,7 @@ optional arguments:
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 23, 2020.
+        Last updated on Jun 11, 2020.
       </span>
 
     </p>

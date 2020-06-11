@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="model_data.html">Model data</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Tutorial</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
@@ -118,6 +118,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#june-11th-2020">1.1.0 - June 11th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#may-23rd-2020">1.0.0 - May 23rd 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#may-18th-2020">0.12.0 - May 18th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#may-11th-2020">0.11.2 - May 11th 2020</a></li>
@@ -216,6 +217,49 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="june-11th-2020">
+<h2><a class="reference external" href="https://github.com/metawards/MetaWards/compare/1.0.0...1.1.0">1.1.0</a> - June 11th 2020<a class="headerlink" href="#june-11th-2020" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Different demographics can now follow different disease pathways. This
+supports modelling of super-spreaders and hospitals, as described
+in <a class="reference internal" href="tutorial/index_part07.html"><span class="doc">part 7 of the tutorial</span></a>.</li>
+<li>Variables in demographic sub-networks can be scanned independently from
+the overal network or other sub-networks. This means you can, e.g.
+enact lock-downs in specific demographics, or scan disease parameters
+for different demographics.</li>
+<li>Added a <a class="reference internal" href="api/generated/metawards.movers.go_stage.html#metawards.movers.go_stage" title="metawards.movers.go_stage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">go_stage()</span></code></a> function that moves individuals
+from and to specific disease stages in different demographics. This is
+used to support conditional branching, e.g. 20% of I2 infecteds go to
+hospital.</li>
+<li>Added “–star-as-E”, “–star-as-R” and “–disable-star” command line
+arguments to control how the “*” state is counted in the summary outputs.
+This enables it to be counted as an extra “E” state, which makes the
+output more meaningful and more easily interpretable.</li>
+<li>Clarified the meaning the “day 0” and “day 1”. Now “day 0” is before
+the model run starts (i.e. setup). The first iteration of the model
+run is “day 1”. This is a change from previous versions, which called
+the first half of the first iteration “day 0” and the second half “day 1”.
+Since seeding happens in the first half, this means that we now seed one
+day earlier than previous versions, so outbreaks are now one day ahead.</li>
+<li>Fixed a major bug in calculation of the demographic sub-networks
+denominators. These have not been used in production yet. If you
+are going to use demographic sub-networks then please make sure
+you use this version (1.1.0) or above.</li>
+<li>Added database support to <a class="reference internal" href="api/generated/metawards.OutputFiles.html#metawards.OutputFiles" title="metawards.OutputFiles"><code class="xref py py-class docutils literal notranslate"><span class="pre">OutputFiles</span></code></a>, so that you
+can now write data to SQLite3 databases. This is described in a new
+part of <a class="reference internal" href="tutorial/part04/04_rates.html"><span class="doc">tutorial chapter 4</span></a>.</li>
+<li>Added in extra output to <a class="reference internal" href="api/generated/metawards.Workspace.html#metawards.Workspace" title="metawards.Workspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">Workspace</span></code></a> so that you can
+get the populations of all disease stages for all demographics. This
+is demonstrated in a rate calculation, also in the
+<a class="reference internal" href="tutorial/part04/04_rates.html"><span class="doc">new tutorial chapter 4</span></a>.</li>
+<li>Fixed a directory permissions bug that appeared sometimes on windows.</li>
+<li>Fixed an existing bug from the C code whereby user-set values of
+contrib_foi are ignored. This had no impact as these values are always 1.0.</li>
+<li>Fixed a bug in distribute_remainders that meant that individuals could
+sometimes still be added to a demographic even if the desired percentage
+was zero.</li>
+</ul>
+</div>
 <div class="section" id="may-23rd-2020">
 <h2><a class="reference external" href="https://github.com/metawards/MetaWards/compare/0.12.0...1.0.0">1.0.0</a> - May 23rd 2020<a class="headerlink" href="#may-23rd-2020" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -486,7 +530,7 @@ understand it.</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 23, 2020.
+        Last updated on Jun 11, 2020.
       </span>
 
     </p>

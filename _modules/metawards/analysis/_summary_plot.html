@@ -94,7 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../model_data.html">Model data</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/index.html">Tutorial</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
@@ -507,8 +507,8 @@
         <span class="k">return</span> <span class="n">figs</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a good color for the passed name&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a good color for the passed name or passed index (idx)&quot;&quot;&quot;</span>
     <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;overall&quot;</span><span class="p">:</span>
@@ -519,10 +519,15 @@
         <span class="k">return</span> <span class="n">name</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># return a random colour</span>
-        <span class="kn">import</span> <span class="nn">random</span>
-        <span class="n">rgb</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">rgb</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;pink&quot;</span><span class="p">,</span> <span class="s2">&quot;gray&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+            <span class="c1"># return a random colour</span>
+            <span class="kn">import</span> <span class="nn">random</span>
+            <span class="n">rgb</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">rgb</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">names</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span>
 
 
 <span class="k">def</span> <span class="nf">create_demographics_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -580,8 +585,8 @@
     <span class="n">demographics</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;demographic&quot;</span><span class="p">,</span>
                             <span class="n">values</span><span class="o">=</span><span class="s2">&quot;day&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span>
 
-    <span class="k">for</span> <span class="n">demographic</span> <span class="ow">in</span> <span class="n">demographics</span><span class="p">:</span>
-        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_color</span><span class="p">(</span><span class="n">demographic</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">demographic</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">demographics</span><span class="p">):</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_color</span><span class="p">(</span><span class="n">demographic</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
 
     <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
@@ -735,7 +740,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on May 23, 2020.
+        Last updated on Jun 11, 2020.
       </span>
 
     </p>

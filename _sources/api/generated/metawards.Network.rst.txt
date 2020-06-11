@@ -22,6 +22,7 @@ metawards.Network
       ~Network.has_different_work_matrix
       ~Network.initialise_infections
       ~Network.move_from_play_to_work
+      ~Network.recalculate_denominators
       ~Network.rescale_play_matrix
       ~Network.reset_everything
       ~Network.run
@@ -49,7 +50,9 @@ metawards.Network
       ~Network.nplay
       ~Network.params
       ~Network.play
+      ~Network.play_population
       ~Network.population
       ~Network.to_seed
+      ~Network.work_population
    
    
