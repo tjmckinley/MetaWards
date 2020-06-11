@@ -329,6 +329,10 @@
                                      <span class="n">mixer</span><span class="o">=</span><span class="n">mixer</span><span class="p">,</span> <span class="n">mover</span><span class="o">=</span><span class="n">mover</span><span class="p">,</span>
                                      <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
 
+    <span class="c1"># setup takes place on &quot;day 0&quot;</span>
+    <span class="kn">from</span> <span class="nn">._console</span> <span class="kn">import</span> <span class="n">Console</span>
+    <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Day </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;iteration&quot;</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">funcs</span><span class="p">:</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">func</span><span class="p">))</span>
         <span class="n">func</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
@@ -347,13 +351,16 @@
     <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;run_model_loop&quot;</span><span class="p">)</span>
     <span class="n">iteration_count</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="kn">from</span> <span class="nn">._console</span> <span class="kn">import</span> <span class="n">Console</span>
-
     <span class="c1"># keep looping until the outbreak is over or until we have completed</span>
     <span class="c1"># at least 5 loop iterations</span>
     <span class="k">while</span> <span class="p">(</span><span class="n">infecteds</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">iteration_count</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">):</span>
         <span class="c1"># construct a new profiler of the same type as &#39;profiler&#39;</span>
         <span class="n">p2</span> <span class="o">=</span> <span class="n">profiler</span><span class="o">.</span><span class="vm">__class__</span><span class="p">()</span>
+
+        <span class="c1"># increment the day at the beginning, before anything happens.</span>
+        <span class="c1"># This way, the statistics for &quot;day 1&quot; are everything that</span>
+        <span class="c1"># happened since the end of day 0 and the end of day 1</span>
+        <span class="n">population</span><span class="o">.</span><span class="n">increment_day</span><span class="p">()</span>
 
         <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;timing for day </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -406,7 +413,6 @@
         <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of infections: </span><span class="si">{</span><span class="n">infecteds</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">iteration_count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">population</span><span class="o">.</span><span class="n">increment_day</span><span class="p">()</span>
 
         <span class="n">p2</span> <span class="o">=</span> <span class="n">p2</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
@@ -477,7 +483,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 10, 2020.
+        Last updated on Jun 11, 2020.
       </span>
 
     </p>
