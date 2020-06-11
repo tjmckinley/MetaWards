@@ -1,0 +1,33 @@
+metawards.Demographic
+=====================
+
+.. currentmodule:: metawards
+
+.. autoclass:: Demographic
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Demographic.__init__
+      ~Demographic.specialise
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Demographic.adjustment
+      ~Demographic.disease
+      ~Demographic.name
+      ~Demographic.play_ratio
+      ~Demographic.work_ratio
+   
+   
