@@ -92,7 +92,7 @@ def test_pathway():
                           total=0,
                           recovereds=481,
                           n_inf_wards=0,
-                          day=91)
+                          day=90)
 
     print(expected)
 

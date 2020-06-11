@@ -431,7 +431,8 @@ def scoop_supervisor(hostfile, args):
         line = FILE.readline()
         while line:
             hostname = line.strip()
-            hostnames[hostname] = 1
+            if len(hostname) > 0:
+                hostnames[hostname] = 1
             line = FILE.readline()
 
     hostnames = list(hostnames.keys())
@@ -539,7 +540,8 @@ def mpi_supervisor(hostfile, args):
         line = FILE.readline()
         while line:
             hostname = line.strip()
-            hostnames[hostname] = 1
+            if len(hostname) > 0:
+                hostnames[hostname] = 1
             line = FILE.readline()
 
     hostnames = list(hostnames.keys())
@@ -608,7 +610,8 @@ def mpi_supervisor(hostfile, args):
     args = " ".join(sys.argv[1:])
 
     cmd = f"{mpiexec} -np {nprocs} -hostfile {hostfile} " \
-          f"{pyexe} -m mpi4py {script} --already-supervised {args}"
+          f"{pyexe} -m mpi4py {script} --already-supervised {args} " \
+          f"--nprocs {nprocs}"
 
     Console.print("Executing MPI job using")
     Console.command(cmd)
