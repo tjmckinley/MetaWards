@@ -669,6 +669,26 @@ def cli():
     elif parallel_scheme == "scoop":
         Console.print("STARTING SCOOP PROCESS")
 
+    else:
+        # Multiprocessing
+        import multiprocessing as _mp
+        try:
+            # needed to stop OpenMP hang on Linux with libgomp
+            _mp.set_start_method("spawn")
+            _mp.freeze_support()  # needed to stop fork bombs
+        except Exception:
+            pass
+
+        _method = _mp.get_start_method()
+
+        if _method != "spawn":
+            _error = \
+                f"We need to run with multiprocessing in 'spawn' mode, " \
+                f"else this will cause deadlocks with OpenMP. The mode " \
+                f"'{_method}' is thus not supported!"
+            Console.error(_error)
+            raise AssertionError(_error)
+
     import sys
 
     args, parser = parse_args()
@@ -1024,7 +1044,8 @@ def cli():
                             population=population,
                             max_nodes=args.max_nodes,
                             max_links=args.max_links,
-                            profiler=profiler)
+                            profiler=profiler,
+                            nthreads=nthreads)
 
     if args.demographics:
         from metawards import Demographics
@@ -1144,4 +1165,21 @@ def cli():
 if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()  # needed to stop fork bombs
+
+    try:
+        # needed to stop OpenMP hang on Linux with libgomp
+        multiprocessing.set_start_method("spawn")
+    except Exception:
+        pass
+
+    method = multiprocessing.get_start_method()
+
+    if method != "spawn":
+        from ..utils._console import Console
+        error = f"We need to run with multiprocessing in 'spawn' mode, " \
+                f"else this will cause deadlocks with OpenMP. The mode " \
+                f"'{method}' is thus not supported!"
+        Console.error(error)
+        raise AssertionError(error)
+
     cli()
