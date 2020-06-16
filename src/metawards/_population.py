@@ -1,6 +1,7 @@
 
 from dataclasses import dataclass as _dataclass
 from typing import List as _List
+from typing import Dict as _Dict
 from copy import deepcopy as _deepcopy
 from datetime import date as _date
 
@@ -14,23 +15,34 @@ class Population:
     """
     #: The initial population loaded into the model
     initial: int = 0
+
     #: The number of members who could be infected
     susceptibles: int = 0
+
     #: The number of latent infections
     latent: int = 0
+
     #: The total number of infections
     total: int = 0
+
+    #: The totao number of infections in other states
+    totals: _Dict[str, int] = None
+
     #: The total number who are removed from the outbreak,
     #: either because they have recovered, or are otherwise
     #: no longer able to be infected
     recovereds: int = 0
+
     #: The number infected in all wards
     n_inf_wards: int = 0
+
     #: The scale_uv parameter that can be used to affect the
     #: foi calculation. A value of 1.0 means do nothing
     scale_uv: float = 1.0
+
     #: The day in the outbreak of this record (e.g. day 0, day 10 etc.)
     day: int = 0
+
     #: The date in the outbreak of this record
     date: _date = None
 
@@ -54,7 +66,8 @@ class Population:
         return self.susceptibles == other.susceptibles and \
             self.latent == other.latent and \
             self.total == other.total and \
-            self.recovereds == other.recovereds
+            self.recovereds == other.recovereds and \
+            self.totals == other.totals
 
     def increment_day(self, ndays: int = 1) -> None:
         """Advance the day count by 'ndays' (default 1)"""
@@ -86,6 +99,24 @@ class Population:
         self.subpops = subpops
 
     def __str__(self):
+        parts = []
+
+        parts.append(f"DAY: {self.day}")
+        parts.append(f"S: {self.susceptibles}")
+
+        if self.latent is not None:
+            parts.append(f"E: {self.latent}")
+
+        if self.total is not None:
+            parts.append(f"I: {self.total}")
+
+        if self.totals is not None:
+            for key, value in self.totals.items:
+                parts.append(f"{key}: {value}")
+
+        if self.recovereds is not None:
+            parts.append(f"R: {self.recovereds}")
+
         s = f"DAY: {self.day} " \
             f"S: {self.susceptibles}    " \
             f"E: {self.latent}    " \

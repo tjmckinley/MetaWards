@@ -588,6 +588,7 @@ def output_core_serial(network: Network, population: Population,
 
     cdef int * ward_inf_tot_i
     cdef int * X_in_wards
+    cdef int * S_in_wards = get_int_array_ptr(workspace.S_in_wards)
 
     # get pointers to arrays from links and play to read data
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
@@ -610,6 +611,7 @@ def output_core_serial(network: Network, population: Population,
     cdef int i = 0
     cdef int j = 0
     cdef int ifrom = 0
+    cdef int I_start = 0
 
     cdef int n_inf_wards_i = 0
     cdef int total_new_i = 0
@@ -654,12 +656,25 @@ def output_core_serial(network: Network, population: Population,
         # now get the "summary" stage into which this stage is mapped
         mapping = disease.mapping[i]
 
+        I_start = disease.start_symptom
+
         if mapping == "E":
             X_in_wards = get_int_array_ptr(workspace.E_in_wards)
         elif mapping == "I":
             X_in_wards = get_int_array_ptr(workspace.I_in_wards)
         elif mapping == "R":
             X_in_wards = get_int_array_ptr(workspace.R_in_wards)
+        elif mapping == "*":
+            if network.params.stage_0 == "R":
+                X_in_wards = get_int_array_ptr(workspace.R_in_wards)
+            elif network.params.stage_0 == "E":
+                X_in_wards = get_int_array_ptr(workspace.E_in_wards)
+            elif network.params.stage_0 == "disable":
+                raise AssertionError(
+                    f"Have a '*' state, despite this being disabled!")
+            else:
+                raise ValueError(
+                    f"Unrecognised '*' directive '{network.params.stage_0}'")
         else:
             X_in_wards = get_int_array_ptr(workspace.X_in_wards[mapping])
 
@@ -741,6 +756,17 @@ def output_core_serial(network: Network, population: Population,
             total += inf_tot[i] + pinf_tot[i]
         elif mapping == "R":
             recovereds += inf_tot[i] + pinf_tot[i]
+        elif mapping == "*":
+            if network.params.stage_0 == "R":
+                recovereds += inf_tot[i] + pinf_tot[i]
+            elif network.params.stage_0 == "E":
+                latent += inf_tot[i] + pinf_tot[i]
+            elif network.params.stage_0 == "disable":
+                raise AssertionError(
+                    f"Have a '*' state, despite this being disabled!")
+            else:
+                raise ValueError(
+                    f"Unrecognised '*' directive '{network.params.stage_0}'")
         else:
             if mapping not in totals:
                 totals[mapping] = 0
@@ -751,7 +777,6 @@ def output_core_serial(network: Network, population: Population,
     cdef int I = 0
     cdef int R = 0
 
-    cdef int * S_in_wards = get_int_array_ptr(workspace.S_in_wards)
     cdef int * E_in_wards = get_int_array_ptr(workspace.E_in_wards)
     cdef int * I_in_wards = get_int_array_ptr(workspace.I_in_wards)
     cdef int * R_in_wards = get_int_array_ptr(workspace.R_in_wards)
