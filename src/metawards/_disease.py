@@ -48,6 +48,9 @@ class Disease:
     #: Mapping label, e.g. "*", "E", "I" or "R"
     mapping: _List[str] = None
 
+    #: Name of the stage, e.g. "H1", "I2", "E1" etc.
+    stage: _List[str] = None
+
     _name: str = None
     _version: str = None
     _authors: str = None
@@ -65,6 +68,7 @@ class Disease:
 * repository: {self._repository}
 * repository_branch: {self._repository_branch}
 * repository_version: {self._repository_version}
+* stage: {self.stage}
 * mapping: {self.mapping}
 * beta: {self.beta}
 * progress: {self.progress}
@@ -79,7 +83,10 @@ class Disease:
                f"{self.contrib_foi})"
 
     def __eq__(self, other):
-        return self.beta == other.beta and \
+        return \
+            self.stage == other.stage and \
+            self.mapping == other.mapping and \
+            self.beta == other.beta and \
             self.progress == other.progress and \
             self.too_ill_to_move == other.too_ill_to_move and \
             self.contrib_foi == other.contrib_foi and \
@@ -107,7 +114,7 @@ class Disease:
             raise AssertionError(f"Data read for disease {self._name} "
                                  f"is corrupted! {e.__class__}: {e}")
 
-        if n < 4:
+        if self.stage is None and n < 4:
             raise AssertionError(
                 f"There must be at least 4 disease stages ('*', 'E', 'I', "
                 f"'R') - the number of stages here is {n}")
@@ -136,58 +143,81 @@ class Disease:
         # for the model to work the different stages have set meanings
         errors = []
 
-        # - stage 0 is newly infected that day, so progress must be 1
-        #   and beta must be 0 (not infective)
-        # This is not an error - the pox and flu2 diseases have this.
-        # I don't think I understand correctly though if that is right,
-        # as this means that individuals will stay longer in the
-        # post-infect but pre-latent stage and be recorded as "recovered"?
-        # if self.progress[0] != 1.0:
-        #    errors.append(
-        #        f"The progress[0] value must be 1.0 as individuals are "
-        #        f"only newly infected for one day, and so must progress "
-        #        f"immediately to the 'latent' stage.")
+        if self.stage is None:
+            # - stage 0 is newly infected that day, so progress must be 1
+            #   and beta must be 0 (not infective)
+            # This is not an error - the pox and flu2 diseases have this.
+            # I don't think I understand correctly though if that is right,
+            # as this means that individuals will stay longer in the
+            # post-infect but pre-latent stage and be recorded as "recovered"?
+            # if self.progress[0] != 1.0:
+            #    errors.append(
+            #        f"The progress[0] value must be 1.0 as individuals are "
+            #        f"only newly infected for one day, and so must progress "
+            #        f"immediately to the 'latent' stage.")
 
-        if self.beta[0] != 0.0:
-            errors.append(
-                f"The beta[0] value must be 0.0 as newly infected "
-                f"individuals should not be infective and cannot "
-                f"infect others.")
+            if self.beta[0] != 0.0:
+                errors.append(
+                    f"The beta[0] value must be 0.0 as newly infected "
+                    f"individuals should not be infective and cannot "
+                    f"infect others.")
 
-        # - stage 1 is 'latent', meaning that beta must be 0 (not infective)
-        if self.beta[1] != 0.0:
-            errors.append(
-                f"The beta[1] value must be 0.0 as 'latent' individuals "
-                f"are not infectious and should not be able to infect "
-                f"others.")
+            # - stage 1 is 'latent', meaning that beta must be 0
+            # (not infective)
+            if self.beta[1] != 0.0:
+                errors.append(
+                    f"The beta[1] value must be 0.0 as 'latent' individuals "
+                    f"are not infectious and should not be able to infect "
+                    f"others.")
 
-        # - stage -1 is 'recovered', meaning that beta must not be 0
-        #   and progress is 0, as once recovered, always recovered
-        if self.beta[-1] != 0.0:
-            errors.append(
-                f"The beta[-1] value must be 0.0 as 'recovered' individuals "
-                f"are not infectious and should not be able to infect "
-                f"others.")
+            # - stage -1 is 'recovered', meaning that beta must not be 0
+            #   and progress is 0, as once recovered, always recovered
+            if self.beta[-1] != 0.0:
+                errors.append(
+                    f"The beta[-1] value must be 0.0 as 'recovered' "
+                    f"are not infectious and should not be able to infect "
+                    f"others.")
 
-        if self.progress[-1] != 0.0:
-            errors.append(
-                f"The progress[-1] value must be 0.0 as 'recovered' "
-                f"individuals have no further disease stage to progress to. "
-                f"We hope that once recovered, always recovered.")
+            if self.progress[-1] != 0.0:
+                errors.append(
+                    f"The progress[-1] value must be 0.0 as 'recovered' "
+                    f"individuals have no further disease stage to progress "
+                    f"to. We hope that once recovered, always recovered.")
 
-        if len(errors) > 0:
-            from .utils._console import Console
-            Console.error("\n".join(errors))
-            raise AssertionError("Invalid disease parameters!\n" +
-                                 "\n".join(errors))
+            if len(errors) > 0:
+                from .utils._console import Console
+                Console.error("\n".join(errors))
+                raise AssertionError("Invalid disease parameters!\n" +
+                                     "\n".join(errors))
+        else:
+            if len(self.stage) != n:
+                raise AssertionError(
+                    f"Number of named stages ({len(self.stage)}) does not "
+                    f"equal the number of stages ({n}).")
+
+            self.stage = [str(x) for x in self.stage]
 
         if self.mapping is None:
-            # default mapping is first stage is '*', second stage is 'E',
-            # last stage is 'R' and remaining stages are 'I'
-            self.mapping = ["I"] * self.N_INF_CLASSES()
-            self.mapping[0] = "*"
-            self.mapping[1] = "E"
-            self.mapping[-1] = "R"
+            if self.stage is None:
+                # default mapping is first stage is '*', second stage is 'E',
+                # last stage is 'R' and remaining stages are 'I'
+                self.mapping = ["I"] * self.N_INF_CLASSES()
+                self.mapping[0] = "*"
+                self.mapping[1] = "E"
+                self.mapping[-1] = "R"
+            else:
+                # the mapping is the character part of the stage name, e.g.
+                # "H1" maps to "H", "ICU2" maps to ICU etc.
+                self.mapping = []
+                import re as _re
+
+                for stage in self.stage:
+                    m = _re.search(r"(.*[^\d^\b^\s])[\b\s]*([\d]*)", stage)
+
+                    if m is None:
+                        raise AssertionError(f"Invalid stage name {stage}")
+
+                    self.mapping.append(str(m.groups()[0]))
 
         elif len(self.mapping) != self.N_INF_CLASSES():
             raise AssertionError(
@@ -213,6 +243,21 @@ class Disease:
                 raise AssertionError(
                     f"The mapping must contain at least one 'I' stage. "
                     f"You cannot have '{self.mapping}'")
+
+        if self.stage is None:
+            # set the default names - these are '*', "E", "I?", "R"
+            self.stage = ["R"] * self.N_INF_CLASSES()
+
+            self.stage[0] = "*"
+            self.stage[1] = "E"
+
+            if len(self.stage) == 4:
+                self.stage[2] = "I"
+            else:
+                j = 1
+                for i in range(2, self.N_INF_CLASSES() - 1):
+                    self.stage[i] = f"I{j}"
+                    j += 1
 
     def get_mapping_to(self, other):
         """Return the mapping from stage index i of this disease to
@@ -354,6 +399,7 @@ set the model data.""")
                           contrib_foi=data.get("contrib_foi", []),
                           start_symptom=data.get("start_symptom", 3),
                           mapping=data.get("mapping", None),
+                          stage=data.get("stage", None),
                           _name=data.get("name", disease),
                           _authors=data.get("author(s)", "unknown"),
                           _contacts=data.get("contact(s)", "unknown"),

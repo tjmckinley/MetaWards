@@ -7,14 +7,28 @@ script_dir = os.path.dirname(__file__)
 
 home_json = os.path.join(script_dir, "data", "lurgy_home.json")
 super_json = os.path.join(script_dir, "data", "lurgy_super.json")
+hospital_json = os.path.join(script_dir, "data", "lurgy_hospital.json")
+
+
+def test_disease_hospital():
+    lurgy = Disease.load(hospital_json)
+    print(lurgy)
+
+    assert lurgy.mapping == ["H", "H", "ICU", "R"]
+    assert lurgy.stage == ["H1", "H2", "ICU", "R"]
+    assert lurgy.start_symptom == 0
 
 
 def test_disease():
     lurgy = Disease.load(home_json)
+    print(lurgy)
     super_lurgy = Disease.load(super_json)
+    print(super_lurgy)
 
     assert lurgy.mapping == ["*", "E", "I", "I", "R"]
+    assert lurgy.stage == ["*", "E", "I1", "I2", "R"]
     assert super_lurgy.mapping == ["*", "E", "I", "I", "I", "R"]
+    assert super_lurgy.stage == ["*", "E", "I1", "I2", "I3", "R"]
 
     assert super_lurgy.get_mapping_to(super_lurgy) is None
     assert lurgy.get_mapping_to(lurgy) is None
@@ -38,3 +52,4 @@ def test_disease():
 
 if __name__ == "__main__":
     test_disease()
+    test_disease_hospital()
