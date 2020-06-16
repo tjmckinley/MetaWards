@@ -15,6 +15,8 @@ from .._demographics import DemographicID, DemographicIDs
 from ..utils._ran_binomial cimport _ran_binomial, \
                                    _get_binomial_ptr, binomial_rng
 
+from ..utils._console import Console
+
 from ..utils._array import create_int_array
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
@@ -79,16 +81,26 @@ def go_stage_parallel(go_from: _Union[DemographicID, DemographicIDs],
             raise ValueError(f"The 'go_to' {go_to} must be a single value!")
         go_to = go_to[0]
 
-    subnets = network.subnets
-    demographics = network.demographics
-    subinfs = infections.subinfs
+    if isinstance(network, Networks):
+        subnets = network.subnets
+        demographics = network.demographics
+        subinfs = infections.subinfs
 
-    go_from = [demographics.get_index(x) for x in go_from]
+        go_from = [demographics.get_index(x) for x in go_from]
 
-    go_to = demographics.get_index(go_to)
+        go_to = demographics.get_index(go_to)
 
-    to_subnet = subnets[go_to]
-    to_subinf = subinfs[go_to]
+        to_subnet = subnets[go_to]
+        to_subinf = subinfs[go_to]
+    else:
+        if go_from != [0] or go_to != 0:
+            raise AssertionError(
+                "You cannot change demographics with a single Network")
+
+        subnets = [network]
+        subinfs = [infections]
+        to_subnet = network
+        to_subinf = infections
 
     fraction = float(fraction)
 
@@ -174,6 +186,9 @@ def go_stage_parallel(go_from: _Union[DemographicID, DemographicIDs],
 
         to_work_infections = get_int_array_ptr(to_subinf.work[stage_to])
         to_play_infections = get_int_array_ptr(to_subinf.play[stage_to])
+
+        Console.debug(f"Move from {subnet.name}:{stage_from} to "
+                      f"{to_subnet.name}:{stage_to} with fraction {frac}")
 
         with nogil, parallel(num_threads=num_threads):
             thread_id = cython.parallel.threadid()
