@@ -18,6 +18,16 @@ def test_disease_hospital():
     assert lurgy.stage == ["H1", "H2", "ICU", "R"]
     assert lurgy.start_symptom == 0
 
+    super_lurgy = Disease.load(super_json)
+
+    mapping = lurgy.get_mapping_to(super_lurgy)
+
+    assert mapping == [-1, -1, -1, 5]
+
+    mapping = super_lurgy.get_mapping_to(lurgy)
+
+    assert mapping == [-1, -1, -1, -1, -1, 3]
+
 
 def test_disease():
     lurgy = Disease.load(home_json)

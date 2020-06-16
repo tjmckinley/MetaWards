@@ -78,7 +78,8 @@ class Disease:
 """
 
     def __repr__(self):
-        return f"Disease(beta={self.beta}, progress={self.progress}, " \
+        return f"Disease(stage={self.stage}, beta={self.beta}, " \
+               f"progress={self.progress}, " \
                f"too_ill_to_move={self.too_ill_to_move}, contrib_foi=" \
                f"{self.contrib_foi})"
 
@@ -259,6 +260,30 @@ class Disease:
                     self.stage[i] = f"I{j}"
                     j += 1
 
+    def get_index(self, idx):
+        """Return the index of disease stage 'idx' in this disease"""
+        if isinstance(idx, str):
+            # lookup by name
+            for i, name in enumerate(self.stage):
+                if idx == name:
+                    return i
+
+            raise KeyError(
+                f"There is no disease stage called {idx}. Available "
+                f"stages are {self.stage}.")
+        else:
+            idx = int(idx)
+
+            if idx < 0:
+                idx = self.N_INF_CLASSES() + idx
+
+            if idx < 0 or idx >= self.N_INF_CLASSES():
+                raise IndexError(
+                    f"There is no diseaes stage at index {idx}. The number "
+                    f"of stages is {self.N_INF_CLASSES()}")
+
+            return idx
+
     def get_mapping_to(self, other):
         """Return the mapping from stage index i of this disease to
            stage index j other the passed other disease. This returns
@@ -292,12 +317,20 @@ class Disease:
                   "R": []}
 
         for i, stage in enumerate(other.mapping):
-            stages[stage].append(i)
+            try:
+                stages[stage].append(i)
+            except KeyError:
+                stages[stage] = [i]
 
         for stage in self.mapping:
-            s = stages[stage]
+            try:
+                s = stages[stage]
+            except KeyError:
+                s = []
 
-            if len(s) == 1:
+            if len(s) == 0:
+                mapping.append(-1)
+            elif len(s) == 1:
                 mapping.append(s[0])
             else:
                 mapping.append(s.pop(0))
