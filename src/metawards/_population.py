@@ -111,20 +111,21 @@ class Population:
             parts.append(f"I: {self.total}")
 
         if self.totals is not None:
-            for key, value in self.totals.items:
+            for key, value in self.totals.items():
                 parts.append(f"{key}: {value}")
 
         if self.recovereds is not None:
             parts.append(f"R: {self.recovereds}")
 
-        s = f"DAY: {self.day} " \
-            f"S: {self.susceptibles}    " \
-            f"E: {self.latent}    " \
-            f"I: {self.total}    " \
-            f"R: {self.recovereds}    " \
-            f"IW: {self.n_inf_wards}   " \
-            f"UV: {self.scale_uv}   " \
-            f"TOTAL POPULATION {self.population}"
+        if self.n_inf_wards is not None:
+            parts.append(f"IW: {self.n_inf_wards}")
+
+        if self.scale_uv is not None:
+            parts.append(f"UV: {self.scale_uv}")
+
+        parts.append(f"TOTAL POPULATION {self.population}")
+
+        s = "  ".join(parts)
 
         if self.date:
             return f"{self.date.isoformat()}: {s}"
@@ -193,9 +194,29 @@ class Population:
            summary: str
              The short summary string
         """
-        summary = f"S: {self.susceptibles}  E: {self.latent}  " \
-                  f"I: {self.total}  R: {self.recovereds}  " \
-                  f"IW: {self.n_inf_wards}  POPULATION: {self.population}"
+        parts = []
+
+        parts.append(f"S: {self.susceptibles}")
+
+        if self.latent is not None:
+            parts.append(f"E: {self.latent}")
+
+        if self.total is not None:
+            parts.append(f"I: {self.total}")
+
+        if self.totals is not None:
+            for key, value in self.totals.items():
+                parts.append(f"{key}: {value}")
+
+        if self.recovereds is not None:
+            parts.append(f"R: {self.recovereds}")
+
+        if self.n_inf_wards is not None:
+            parts.append(f"IW: {self.n_inf_wards}")
+
+        parts.append(f"POPULATION {self.population}")
+
+        summary = "  ".join(parts)
 
         if self.subpops is None or len(self.subpops) == 0:
             return summary

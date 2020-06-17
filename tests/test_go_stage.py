@@ -160,4 +160,4 @@ def test_skip_stage(nthreads=1, prompt=None):
 
 if __name__ == "__main__":
     test_skip_stage(nthreads=2)
-    # test_go_stage(nthreads=2)
+    test_go_stage(nthreads=2)
