@@ -564,6 +564,7 @@ class Network:
                                nsteps=nsteps,
                                nthreads=nthreads,
                                profiler=profiler,
-                               iterator=iterator, extractor=extractor)
+                               iterator=iterator, extractor=extractor,
+                               mover=mover, mixer=mixer)
 
         return population
