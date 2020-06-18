@@ -120,10 +120,27 @@ class Disease:
                 f"There must be at least 4 disease stages ('*', 'E', 'I', "
                 f"'R') - the number of stages here is {n}")
 
-        if self.start_symptom is None or self.start_symptom < 0 or \
-                self.start_symptom >= n:
+        elif n == 0:
+            # we haven't set any parameters. This is likely an "overall"
+            # disease file, where just names are needed. Populate wuth
+            # default parameters
+            n = len(self.stage)
+
+            self.beta = [0.0] * n
+            self.progress = [1.0] * n
+            self.too_ill_to_move = [0.0] * n
+            self.contrib_foi = [1.0] * n
+
+            self.progress[-1] = 0.0
+
+        if self.start_symptom is None or self.start_symptom == 0:
+            self.start_symptom = min(3, n)
+
+        if self.start_symptom is None or self.start_symptom < 1 or \
+                self.start_symptom > n:
             raise AssertionError(f"start_symptom {self.start_symptom} is "
-                                 f"invalid for a disease with {n} stages")
+                                 f"invalid for a disease with {n} stages. "
+                                 f"It should be between 1 and {n}")
 
         self.start_symptom = int(self.start_symptom)
 
@@ -304,6 +321,9 @@ class Disease:
 
            self.get_mapping_to(other) = [0, 1, 2, 3, 5]
            other.get_mapping_to(self) = [0, 1, 2, 3, 3, 4]
+
+           If we can't map a state, then we will try to map to "I".
+           If we still can't map, then this is an error.
         """
         if self.mapping == other.mapping:
             # no need to map,
@@ -326,14 +346,22 @@ class Disease:
             try:
                 s = stages[stage]
             except KeyError:
-                s = []
+                s = stages["I"]
 
             if len(s) == 0:
+                # we are mapped to an invalid state
                 mapping.append(-1)
             elif len(s) == 1:
                 mapping.append(s[0])
             else:
                 mapping.append(s.pop(0))
+
+        if -1 in mapping:
+            # we are missing a state
+            raise ValueError(
+                f"It is not possible to map from {self.mapping} to "
+                f"{other.mapping}, as the stages marked '-1' cannot be "
+                f"safely mapped: {mapping}")
 
         return mapping
 

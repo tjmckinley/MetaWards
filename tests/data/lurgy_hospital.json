@@ -8,5 +8,5 @@
   "progress"         : [0.2,  0.5,   0.2,  0.0],
   "too_ill_to_move"  : [1.0,  1.0,   1.0,  1.0],
   "contrib_foi"      : [1.0,  1.0,   1.0,  1.0],
-  "start_symptom"    : 0
+  "start_symptom"    : 1
 }

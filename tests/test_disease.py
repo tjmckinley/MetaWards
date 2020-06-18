@@ -1,5 +1,6 @@
 
 import os
+import pytest
 
 from metawards import Disease
 
@@ -8,6 +9,7 @@ script_dir = os.path.dirname(__file__)
 home_json = os.path.join(script_dir, "data", "lurgy_home.json")
 super_json = os.path.join(script_dir, "data", "lurgy_super.json")
 hospital_json = os.path.join(script_dir, "data", "lurgy_hospital.json")
+overall_json = os.path.join(script_dir, "data", "lurgy_overall.json")
 
 
 def test_disease_hospital():
@@ -16,17 +18,32 @@ def test_disease_hospital():
 
     assert lurgy.mapping == ["H", "H", "ICU", "R"]
     assert lurgy.stage == ["H1", "H2", "ICU", "R"]
-    assert lurgy.start_symptom == 0
+    assert lurgy.start_symptom == 1
 
     super_lurgy = Disease.load(super_json)
 
     mapping = lurgy.get_mapping_to(super_lurgy)
+    print(mapping)
 
-    assert mapping == [-1, -1, -1, 5]
+    assert mapping == [2, 3, 4, 5]
 
-    mapping = super_lurgy.get_mapping_to(lurgy)
+    with pytest.raises(ValueError):
+        mapping = super_lurgy.get_mapping_to(lurgy)
 
-    assert mapping == [-1, -1, -1, -1, -1, 3]
+    lurgy_overall = Disease.load(overall_json)
+    print(lurgy_overall)
+
+    assert lurgy_overall.mapping == ["*", "E", "I", "H", "ICU", "R"]
+
+    mapping = lurgy.get_mapping_to(lurgy_overall)
+    print(mapping)
+
+    assert mapping == [3, 3, 4, 5]
+
+    mapping = super_lurgy.get_mapping_to(lurgy_overall)
+    print(mapping)
+
+    assert mapping == [0, 1, 2, 2, 2, 5]
 
 
 def test_disease():
