@@ -118,17 +118,13 @@ class Console:
         from rich.console import Console as _Console
 
         outfile = os.path.join(outdir, "output.txt")
-        errfile = os.path.join(outdir, "output.err")
 
         if auto_bzip:
             outfile += ".bz2"
-            errfile += ".bz2"
 
             OUTFILE = bz2.open(outfile, "wt", encoding="utf-8")
-            ERRFILE = bz2.open(errfile, "wt", encoding="utf-8")
         else:
             OUTFILE = open(outfile, "wt", encoding="utf-8")
-            ERRFILE = open(errfile, "wt", encoding="utf-8")
 
         console = Console._get_console()
 
@@ -145,17 +141,11 @@ class Console:
         global _console
         _console = new_out
 
-        new_err = ERRFILE
-        old_err = sys.stderr
-        sys.stderr = new_err
-
         try:
             yield new_out
         finally:
             _console = old_out
-            sys.stderr = old_err
             OUTFILE.close()
-            ERRFILE.close()
 
     @staticmethod
     def debugging_enabled(level: int = None):
