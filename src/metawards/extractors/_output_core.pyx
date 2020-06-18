@@ -747,7 +747,7 @@ def output_core_serial(network: Network, population: Population,
     latent = 0
     total = 0
     recovereds = 0
-    totals = {}
+    totals = None
 
     for i, mapping in enumerate(disease.mapping):
         if mapping == "E":
@@ -768,8 +768,12 @@ def output_core_serial(network: Network, population: Population,
                 raise ValueError(
                     f"Unrecognised '*' directive '{network.params.stage_0}'")
         else:
+            if totals is None:
+                totals = {}
+
             if mapping not in totals:
                 totals[mapping] = 0
+
             totals[mapping] += inf_tot[i] + pinf_tot[i]
 
     cdef int S = 0
@@ -806,16 +810,32 @@ def output_core_serial(network: Network, population: Population,
 
     if population is not None:
         population.susceptibles = susceptibles
-        population.total = total
-        population.recovereds = recovereds
-        population.latent = latent
+
+        if "I" in disease.mapping:
+            population.total = total
+        else:
+            population.total = None
+
+        if "R" in disease.mapping:
+            population.recovereds = recovereds
+        else:
+            population.recovereds = None
+
+        if "E" in disease.mapping:
+            population.latent = latent
+        else:
+            population.latent = None
+
         population.totals = totals
 
         # save the number of wards that have at least one new
         # infection (index 0 is new infections)
         population.n_inf_wards = n_inf_wards[0]
 
-    return total + latent + sum(totals.values())
+    if totals is None:
+        return total + latent
+    else:
+        return total + latent + sum(totals.values())
 
 
 def _safe_run(func, **kwargs):

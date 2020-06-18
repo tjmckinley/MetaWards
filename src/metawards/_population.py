@@ -52,12 +52,26 @@ class Population:
     @property
     def population(self) -> int:
         """The total population in all wards"""
-        return self.susceptibles + self.latent + self.total + self.recovereds
+        pop: int = 0
+
+        for val in [self.susceptibles, self.latent,
+                    self.total, self.recovereds]:
+            if val is not None:
+                pop += val
+
+        if self.totals is not None:
+            for val in self.totals.values():
+                pop += val
+
+        return pop
 
     @property
     def infecteds(self) -> int:
         """The number who are infected across all wards"""
-        return self.total + self.latent
+        return self.population - \
+            int(self.latent or 0) - \
+            int(self.susceptibles or 0) - \
+            int(self.recovereds or 0)
 
     def has_equal_SEIR(self, other):
         """Return whether or not the SEIR values for this population
@@ -139,7 +153,11 @@ class Population:
         """
         errors = []
 
-        t = self.susceptibles + self.latent + self.total + self.recovereds
+        t = 0
+
+        for val in [self.susceptibles, self.infecteds, self.recovereds]:
+            if val is not None:
+                t += val
 
         if t != self.population:
             errors.append(f"Disagreement in total overall population: "
@@ -153,29 +171,29 @@ class Population:
             P = 0
 
             for subpop in self.subpops:
-                S += subpop.susceptibles
-                E += subpop.latent
-                I += subpop.infecteds
-                R += subpop.recovereds
-                P += subpop.population
+                S += int(subpop.susceptibles or 0)
+                E += int(subpop.latent or 0)
+                I += int(subpop.total or 0)
+                R += int(subpop.recovereds or 0)
+                P += int(subpop.population or 0)
 
-            if S != self.susceptibles:
+            if S != int(self.susceptibles or 0):
                 errors.append(f"Disagreement in S: {S} "
                               f"versus {self.susceptibles}")
 
-            if E != self.latent:
+            if E != int(self.latent or 0):
                 errors.append(f"Disagreement in E: {E} "
                               f"versus {self.latent}")
 
-            if I != self.infecteds:
+            if I != int(self.total or 0):
                 errors.append(f"Disagreement in I: {I} "
-                              f"versus {self.infecteds}")
+                              f"versus {self.total}")
 
-            if R != self.recovereds:
+            if R != int(self.recovereds or 0):
                 errors.append(f"Disagreement in R: {R} "
                               f"versus {self.recovereds}")
 
-            if P != self.population:
+            if P != int(self.population or 0):
                 errors.append(f"Disagreement in Population: {P} "
                               f"versus {self.population}")
 

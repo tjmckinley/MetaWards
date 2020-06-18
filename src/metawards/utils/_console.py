@@ -350,6 +350,12 @@ class Console:
         Console.print(str(profiler))
 
     @staticmethod
+    def print_exception():
+        """Print the current-handled exception"""
+        console = Console._get_console()
+        console.print_exception()
+
+    @staticmethod
     def set_use_spinner(use_spinner: bool = True):
         console = Console._get_console()
         console._use_spinner = use_spinner
