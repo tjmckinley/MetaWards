@@ -231,25 +231,80 @@ class Population:
         if self.n_inf_wards is not None:
             parts.append(f"IW: {self.n_inf_wards}")
 
-        parts.append(f"POPULATION {self.population}")
+        parts.append(f"POPULATION: {self.population}")
 
         summary = "  ".join(parts)
 
         if self.subpops is None or len(self.subpops) == 0:
             return summary
 
-        subs = []
+        from .utils._console import Table
+
+        table = Table(show_edge=True, show_footer=True)
+
+        table.add_column("", footer="total")
+        table.add_column("S", footer=self.susceptibles)
+        columns = {}
+        count = 0
+        columns[""] = count
+        count += 1
+
+        columns["S"] = count
+        count += 1
+
+        if self.latent is not None:
+            table.add_column("E", footer=self.latent)
+            columns["E"] = count
+            count += 1
+
+        if self.total is not None:
+            table.add_column("I", footer=self.total)
+            columns["I"] = count
+            count += 1
+
+        if self.totals is not None:
+            for key, value in self.totals.items():
+                table.add_column(key, footer=value)
+                columns[key] = count
+                count += 1
+
+        if self.recovereds is not None:
+            table.add_column("R", footer=self.recovereds)
+            columns["R"] = count
+            count += 1
+
+        if self.n_inf_wards is not None:
+            table.add_column("IW", footer=self.n_inf_wards)
+            columns["IW"] = count
+            count += 1
+
+        table.add_column("POPULATION", footer=self.population)
+        columns["POPULATION"] = count
+        count += 1
+
         for i, subpop in enumerate(self.subpops):
+            row = [None] * count
             if demographics is not None:
                 name = demographics.get_name(i)
-                subs.append(f"{name}  {subpop.summary()}")
+                row[0] = name
             else:
-                subs.append(f"{i}  {subpop.summary()}")
+                row[0] = str(i)
 
-        from .utils._align_strings import align_strings
-        subs = align_strings(subs, ":")
+            row[columns["S"]] = subpop.susceptibles
+            row[columns["E"]] = subpop.latent
+            row[columns["R"]] = subpop.recovereds
+            row[columns["I"]] = subpop.total
+            row[columns["IW"]] = subpop.n_inf_wards
 
-        return f"{summary}\n  " + "\n  ".join(subs)
+            if subpop.totals is not None:
+                for key, value in subpop.totals.items():
+                    row[columns[key]] = value
+
+            row[-1] = subpop.population
+
+            table.add_row(row)
+
+        return summary + "\n" + table.to_string()
 
 
 @_dataclass

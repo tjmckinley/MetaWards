@@ -6,7 +6,7 @@ from typing import IO as _IO
 from contextlib import contextmanager as _contextmanager
 
 
-__all__ = ["Console"]
+__all__ = ["Console", "Table"]
 
 
 # Global rich.Console()
@@ -33,6 +33,42 @@ class _NullSpinner:
 
     def failure(self):
         pass
+
+
+class Table:
+    """This a rich.table, with an additional "to_string()" function"""
+
+    def __init__(self, title=None, show_footer=False, show_edge=True):
+        from rich.table import Table as _Table
+        self._table = _Table(title=title, show_edge=show_edge,
+                             show_footer=show_footer)
+
+    def add_column(self, header, justify="center", style=None, no_wrap=False,
+                   footer=None):
+        """Add a column called 'header', with specified justification,
+           style and wrapping
+        """
+        if footer is not None:
+            footer = str(footer)
+
+        self._table.add_column(header=header, style=style, justify=justify,
+                               no_wrap=no_wrap, footer=footer)
+
+    def add_row(self, row):
+        """Add the passed row of data to the table"""
+        row = [str(x) if x is not None else None for x in row]
+        self._table.add_row(*row)
+
+    def to_string(self):
+        """Return this table rendered to a string"""
+        from rich.console import Console as _Console
+        console = _Console()
+        output = ""
+
+        for s in console.render(self._table):
+            output += s.text
+
+        return output
 
 
 class Console:
