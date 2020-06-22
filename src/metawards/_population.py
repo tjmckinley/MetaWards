@@ -69,7 +69,6 @@ class Population:
     def infecteds(self) -> int:
         """The number who are infected across all wards"""
         return self.population - \
-            int(self.latent or 0) - \
             int(self.susceptibles or 0) - \
             int(self.recovereds or 0)
 
