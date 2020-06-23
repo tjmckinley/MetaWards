@@ -268,6 +268,11 @@ class Network:
            the WardInfo will be used to identify the node and
            look up the index from there.
         """
+        try:
+            index = int(index)
+        except Exception:
+            pass
+
         if isinstance(index, int):
             return self.nodes.get_index(index)
         else:

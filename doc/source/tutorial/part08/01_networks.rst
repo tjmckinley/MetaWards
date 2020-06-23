@@ -139,5 +139,7 @@ and then 10 individuals on day 2, via;
    metawards -d lurgy_home -m single -P 100 -a "1 5 1\n2 10 1"
 
 The contents of the string is interpreted identically to if it had been
-read from a file.
+read from a file, with ``\n`` representing a newline character.
+
+You can...
 

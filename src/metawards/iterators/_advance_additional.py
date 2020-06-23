@@ -7,13 +7,77 @@ from .._population import Population
 from ..utils._profiler import Profiler
 from .._infections import Infections
 
-__all__ = ["setup_additional_seeds",
-           "advance_additional",
-           "advance_additional_serial",
-           "advance_additional_omp"]
+__all__ = ["advance_additional"]
 
 
-def _load_additional_seeds(filename: str):
+def _get_day(s, network, row, rng):
+    if s is None:
+        row.append("1")
+        return 1
+
+    try:
+        day = int(s)
+        row.append(s)
+        return day
+    except Exception:
+        pass
+
+    # read the day from a string
+    row.append(f"{s} : {s}")
+    return s
+
+
+def _get_ward(s, network, row, rng):
+    if s is None:
+        row.append("1")
+        return 1
+
+    index = network.get_node_index(s)
+
+    try:
+        row.append(f"{s} : {network.info[index]}")
+    except Exception:
+        row.append(s)
+
+    return index
+
+
+def _get_number_to_seed(s, network, row, rng):
+    if s is None:
+        row.append("0")
+        return 0
+
+    n = int(s)
+
+    if str(n) == s:
+        row.append(s)
+    else:
+        row.append(f"{s} : {n}")
+
+    return n
+
+
+def _get_demographic(s, network, row, rng):
+    if s is None:
+        row.append(None)
+        return s
+
+    if isinstance(network, Network):
+        row.append(None)
+        return None
+
+    index = network.demographics.get_index(s)
+
+    if str(index) != s:
+        row.append(f"{s} : {index}")
+    else:
+        row.append(s)
+
+    return index
+
+
+def _load_additional_seeds(network: _Union[Network, Networks],
+                           filename: str, rng):
     """Load additional seeds from the passed filename. This returns
        the added seeds. Note that the filename can be interpreted
        as the actual contents of the file, meaning that for short
@@ -27,7 +91,7 @@ def _load_additional_seeds(filename: str):
         with open(filename, "r") as FILE:
             lines = FILE.readlines()
     else:
-        Console.print(f"Loading additional seeds from command line")
+        Console.print(f"Loading additional seeds from the command line")
         lines = filename.split("\\n")
 
     seeds = []
@@ -65,32 +129,35 @@ def _load_additional_seeds(filename: str):
         if len(words) == 0:
             continue
 
+        if len(words) < 3:
+            raise ValueError(
+                f"Can not interpret additional seeds from the line '{line}'")
+
+        row = []
+
         # yes, this is really the order of the seeds - "t num loc"
         # is in the file as "t loc num"
+        day = _get_day(words[0], network, row, rng)
+
         if len(words) == 4:
-            seeds.append((words[0], words[2],
-                          words[1], words[3]))
-            table.add_row((words[0], words[3], words[2], words[1]))
+            demographic = _get_demographic(words[3], network, row, rng)
         else:
-            seeds.append((words[0], words[2],
-                          words[1], None))
-            table.add_row((words[0], None, words[2], words[1]))
+            demographic = None
+            row.append(None)
+
+        ward = _get_ward(words[2], network, row, rng)
+        seed = _get_number_to_seed(words[1], network, row, rng)
+        seeds.append((day, ward, seed, demographic))
+        table.add_row(row)
 
     Console.print(table.to_string())
 
     return seeds
 
 
-# This is the global 'additional_seeds' that are loaded
-# by 'setup_additional_seed' and used by 'advance_additional'
-# This is a safe global as it is only used in this file scope
-# and multiple runs are not performed in the same process in
-# parallel
-_additional_seeds = None
-
-
 def setup_additional_seeds(network: _Union[Network, Networks],
                            profiler: Profiler,
+                           rng,
                            **kwargs):
     """Setup function that reads in the additional seeds held
        in `params.additional_seeds` and puts them ready to
@@ -104,26 +171,32 @@ def setup_additional_seeds(network: _Union[Network, Networks],
          The network to be seeded
        profiler: Profiler
          Profiler used to profile this function
+       rng:
+         Random number generator used to generate any random seeding
        kwargs
          Arguments that are not used by this setup function
     """
     params = network.params
 
     p = profiler.start("load_additional_seeds")
-    global _additional_seeds
-    _additional_seeds = []
+    additional_seeds = []
 
     if params.additional_seeds is not None:
         for additional in params.additional_seeds:
-            _additional_seeds += _load_additional_seeds(additional)
+            additional_seeds += _load_additional_seeds(network=network,
+                                                       filename=additional,
+                                                       rng=rng)
     p = p.stop()
 
+    return additional_seeds
 
-def advance_additional_serial(network: _Union[Network, Networks],
-                              population: Population,
-                              infections: Infections,
-                              profiler: Profiler,
-                              **kwargs):
+
+def advance_additional(network: _Union[Network, Networks],
+                       population: Population,
+                       infections: Infections,
+                       profiler: Profiler,
+                       rngs,
+                       **kwargs):
     """Advance the infection by infecting additional wards based
        on a pre-determined pattern based on the additional seeds
 
@@ -136,20 +209,25 @@ def advance_additional_serial(network: _Union[Network, Networks],
          of the outbreak
        infections: Infections
          Space to hold the infections
+       rngs:
+         The list of thread-safe random number generators, one per thread
        profiler: Profiler
          Used to profile this function
        kwargs
          Arguments that aren't used by this advancer
     """
 
-    # The 'setup_additional_seeds' function should have loaded
-    # all additional seeds into this global '_additional_seeds' variable
-    global _additional_seeds
+    if not hasattr(network, "_advance_additional_seeds"):
+        network._advance_additional_seeds = \
+            setup_additional_seeds(network=network, profiler=profiler,
+                                   rng=rngs[0])
 
     from ..utils._console import Console
 
+    additional_seeds = network._advance_additional_seeds
+
     p = profiler.start("additional_seeds")
-    for seed in _additional_seeds:
+    for seed in additional_seeds:
         if seed[0] == population.day:
             ward = seed[1]
             num = seed[2]
@@ -198,48 +276,3 @@ def advance_additional_serial(network: _Union[Network, Networks],
                 raise e
 
     p.stop()
-
-
-def advance_additional_omp(**kwargs):
-    """Advance the infection by infecting additional wards based
-       on a pre-determined pattern based on the additional seeds
-       (parallel version)
-
-       Parameters
-       ----------
-       network: Network
-         The network being modelled
-       population: Population
-         The population experiencing the outbreak - also contains the day
-         of the outbreak
-       infections: Infections
-         Space to hold the infections
-       profiler: Profiler
-         Used to profile this function
-       kwargs
-         Arguments that aren't used by this advancer
-    """
-    kwargs["nthreads"] = 1
-    advance_additional(**kwargs)
-
-
-def advance_additional(nthreads, **kwargs):
-    """Advance the infection by infecting additional wards based
-       on a pre-determined pattern based on the additional seeds
-       (parallel version)
-
-       Parameters
-       ----------
-       network: Network
-         The network being modelled
-       population: Population
-         The population experiencing the outbreak - also contains the day
-         of the outbreak
-       infections: Infections
-         Space to hold the infections
-       profiler: Profiler
-         Used to profile this function
-       kwargs
-         Arguments that aren't used by this advancer
-    """
-    advance_additional_serial(**kwargs)
