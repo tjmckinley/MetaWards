@@ -15,35 +15,47 @@ __all__ = ["setup_additional_seeds",
 
 def _load_additional_seeds(filename: str):
     """Load additional seeds from the passed filename. This returns
-       the added seeds
+       the added seeds. Note that the filename can be interpreted
+       as the actual contents of the file, meaning that for short
+       content, it is quicker to pass this than the filename
     """
-    lines = [f"Loading additional seeds from {filename}"]
+    import os as _os
+    from ..utils._console import Console, Table
 
-    with open(filename, "r") as FILE:
-        line = FILE.readline()
-        seeds = []
+    if _os.path.exists(filename):
+        Console.print(f"Loading additional seeds from {filename}")
+        with open(filename, "r") as FILE:
+            lines = FILE.readlines()
+    else:
+        Console.print(f"Loading additional seeds from command line")
+        lines = filename.split("\\n")
 
-        while line:
-            words = line.strip().split()
+    seeds = []
 
-            if len(words) == 0:
-                line = FILE.readline()
-                continue
+    table = Table()
+    table.add_column("Day")
+    table.add_column("Demographic")
+    table.add_column("Ward")
+    table.add_column("Number seeded")
 
-            # yes, this is really the order of the seeds - "t num loc"
-            # is in the file as "t loc num"
-            if len(words) == 4:
-                seeds.append((int(words[0]), int(words[2]),
-                              int(words[1]), words[3]))
-            else:
-                seeds.append((int(words[0]), int(words[2]),
-                              int(words[1]), None))
+    for line in lines:
+        words = line.strip().split()
 
-            lines.append(str(seeds[-1]))
-            line = FILE.readline()
+        if len(words) == 0:
+            continue
 
-    from ..utils._console import Console
-    Console.print("\n".join(lines))
+        # yes, this is really the order of the seeds - "t num loc"
+        # is in the file as "t loc num"
+        if len(words) == 4:
+            seeds.append((words[0], words[2],
+                          words[1], words[3]))
+            table.add_row((words[0], words[3], words[2], words[1]))
+        else:
+            seeds.append((words[0], words[2],
+                          words[1], None))
+            table.add_row((words[0], None, words[2], words[1]))
+
+    Console.print(table.to_string())
 
     return seeds
 
@@ -130,26 +142,40 @@ def advance_additional_serial(network: _Union[Network, Networks],
                 else:
                     demographic = network.demographics.get_index(demographic)
 
-                wards = network.subnets[demographic].nodes
+                network = network.subnets[demographic]
+                wards = network.nodes
                 play_infections = infections.subinfs[demographic].play
             else:
                 demographic = None
                 wards = network.nodes
                 play_infections = infections.play
 
-            if wards.play_suscept[ward] < num:
-                Console.warning(f"Not enough susceptibles in ward for seeding")
-            else:
-                wards.play_suscept[ward] -= num
-                if demographic is not None:
-                    Console.print(
-                        f"seeding demographic {demographic} "
-                        f"play_infections[0][{ward}] += {num}")
-                else:
-                    Console.print(
-                        f"seeding play_infections[0][{ward}] += {num}")
+            try:
+                ward = network.get_node_index(ward)
 
-                play_infections[0][ward] += num
+                if wards.play_suscept[ward] < num:
+                    Console.warning(
+                        f"Not enough susceptibles in ward for seeding")
+                else:
+                    wards.play_suscept[ward] -= num
+                    if demographic is not None:
+                        Console.print(
+                            f"seeding demographic {demographic} "
+                            f"play_infections[0][{ward}] += {num}")
+                    else:
+                        Console.print(
+                            f"seeding play_infections[0][{ward}] += {num}")
+
+                    play_infections[0][ward] += num
+
+            except Exception as e:
+                Console.error(
+                    f"Unable to seed the infection using {seed}. The "
+                    f"error was {e.__class__}: {e}. Please double-check "
+                    f"that you are trying to seed a node that exists "
+                    f"in this network.")
+                raise e
+
     p.stop()
 
 

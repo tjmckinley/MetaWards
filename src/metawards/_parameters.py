@@ -404,10 +404,6 @@ set the model data.""")
 
             if os.path.exists(f):
                 filename = f
-            else:
-                raise FileExistsError(
-                    f"Unable to find extra seeds file {filename} in "
-                    f"the current directory or in {f}")
 
         self.additional_seeds.append(filename)
 
