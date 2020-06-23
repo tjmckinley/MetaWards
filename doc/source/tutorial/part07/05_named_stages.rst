@@ -247,3 +247,201 @@ have a population infected in the ``B1`` state on each day.
 Scanning named stage parameters
 -------------------------------
 
+You can also use the name of a stage when scanning disease parameters.
+For example, create a file called ``scan.dat`` and copy in the below;
+
+::
+
+    beta["B1"]  beta["B2"]
+      0.2         0.7
+      0.3         0.8
+
+Hopefully you can see that this will adjust the ``beta`` parameters for
+the ``B1`` and ``B2`` stages. You can run this file using;
+
+.. code-block:: bash
+
+    metawards -a ExtraSeedsLondon.dat -d named.json --nsteps 20 -i scan.dat
+
+and should see that the specified variables are indeed scanned, e.g.
+
+::
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Adjustable parameters to scan ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    • (beta["B1"]=0.2, beta["B2"]=0.7)[repeat 1]
+    • (beta["B1"]=0.3, beta["B2"]=0.8)[repeat 1]
+
+    [...]
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MULTIPROCESSING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                                            │
+    │  Completed job 1 of 2                                                                                      │
+    │  (beta["B1"]=0.2, beta["B2"]=0.7)[repeat 1]                                                                │
+    │  2020-07-13: DAY: 20  S: 56081987  A: 6  B: 21  C: 63  IW: 6  UV: 1.0  TOTAL POPULATION 56082077           │
+    │                                                                                                            │
+    └────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+    Computing model run ✔
+    ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                                            │
+    │  Completed job 2 of 2                                                                                      │
+    │  (beta["B1"]=0.3, beta["B2"]=0.8)[repeat 1]                                                                │
+    │  2020-07-13: DAY: 20  S: 56081794  A: 47  B: 93  C: 143  IW: 43  UV: 1.0  TOTAL POPULATION 56082077        │
+    │                                                                                                            │
+    └────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+Mapping stages to summaries
+---------------------------
+
+By default, the population of a disease sub-stage is summed into a summary
+value that has the same name (but missing the sub-stage number). So ``B1``,
+``B2`` and ``B3`` sub-stages will accumulate into the ``B`` stage.
+
+You can control this mapping via the ``mapping`` value in the disease file.
+You can set a disease stage to map to any individual stage (e.g. you could
+map ``B1`` to be ``B1`` only), to any grouped stage (e.g. you could map
+``C`` to map to the grouped ``B`` stage), or to any of the standard mapped
+stages (``E``, ``I``, ``R`` or ``*``).
+
+For example, you could output every stage to the summary via;
+
+::
+
+    {
+        "stage"            : [ "A", "B1", "B2", "B3", "C" ],
+        "mapping"          : [ "A", "B1", "B2", "B3", "C" ],
+        "beta"             : [ 0.0, 0.2,  0.8,  0.1,  0.0 ],
+        "progress"         : [ 1.0, 1.0,  1.0,  1.0,  0.0 ],
+        "too_ill_to_move"  : [ 0.0, 0.0,  0.2,  0.8,  0.0 ],
+        "contrib_foi"      : [ 1.0, 1.0,  1.0,  1.0,  0.0 ],
+        "start_symptom"    : 1
+    }
+
+Running ``metawards`` using this file will tell it to output every stage,
+e.g.
+
+::
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 0 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Loading additional seeds from /Users/chris/GitHub/MetaWardsData/extra_seeds/ExtraSeedsLondon.dat
+    (1, 255, 5, None)
+    S: 56082077  A: 0  B1: 0  B2: 0  B3: 0  C: 0  IW: 0  POPULATION: 56082077
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    seeding play_infections[0][255] += 5
+    S: 56082072  A: 0  B1: 5  B2: 0  B3: 0  C: 0  IW: 0  POPULATION: 56082077
+    Number of infections: 5
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 2 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082068  A: 4  B1: 0  B2: 5  B3: 0  C: 0  IW: 4  POPULATION: 56082077
+    Number of infections: 9
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 3 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082064  A: 4  B1: 4  B2: 0  B3: 5  C: 0  IW: 3  POPULATION: 56082077
+    Number of infections: 13
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 4 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082061  A: 3  B1: 4  B2: 4  B3: 0  C: 5  IW: 3  POPULATION: 56082077
+    Number of infections: 16
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 5 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082056  A: 5  B1: 3  B2: 4  B3: 4  C: 5  IW: 4  POPULATION: 56082077
+    Number of infections: 21
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 6 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082046  A: 10  B1: 5  B2: 3  B3: 4  C: 9  IW: 9  POPULATION: 56082077
+    Number of infections: 31
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 7 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082044  A: 2  B1: 10  B2: 5  B3: 3  C: 13  IW: 2  POPULATION: 56082077
+    Number of infections: 33
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 8 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082036  A: 8  B1: 2  B2: 10  B3: 5  C: 16  IW: 8  POPULATION: 56082077
+    Number of infections: 41
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 9 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082018  A: 18  B1: 8  B2: 2  B3: 10  C: 21  IW: 14  POPULATION: 56082077
+    Number of infections: 59
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 10 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082010  A: 8  B1: 18  B2: 8  B3: 2  C: 31  IW: 8  POPULATION: 56082077
+    Number of infections: 67
+
+Alternatively, you can map your named stages to standard named accumulators,
+e.g.
+
+::
+
+    {
+        "stage"            : [ "A", "B1", "B2", "B3", "C" ],
+        "mapping"          : [ "E", "I",  "I",  "I",  "R" ],
+        "beta"             : [ 0.0, 0.2,  0.8,  0.1,  0.0 ],
+        "progress"         : [ 1.0, 1.0,  1.0,  1.0,  0.0 ],
+        "too_ill_to_move"  : [ 0.0, 0.0,  0.2,  0.8,  0.0 ],
+        "contrib_foi"      : [ 1.0, 1.0,  1.0,  1.0,  0.0 ],
+        "start_symptom"    : 1
+    }
+
+would count ``A`` as a latent ``E`` stage, ``B1`` to ``B3`` would be
+infected ``I`` stages, and ``C`` would be accumulated as a ``R`` stage.
+
+Running with this file would give;
+
+::
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 0 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Loading additional seeds from /Users/chris/GitHub/MetaWardsData/extra_seeds/ExtraSeedsLondon.dat
+    (1, 255, 5, None)
+    S: 56082077  E: 0  I: 0  R: 0  IW: 0  POPULATION: 56082077
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    seeding play_infections[0][255] += 5
+    S: 56082072  E: 0  I: 5  R: 0  IW: 0  POPULATION: 56082077
+    Number of infections: 5
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 2 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082072  E: 0  I: 5  R: 0  IW: 0  POPULATION: 56082077
+    Number of infections: 5
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 3 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082068  E: 4  I: 5  R: 0  IW: 4  POPULATION: 56082077
+    Number of infections: 9
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 4 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082068  E: 0  I: 4  R: 5  IW: 0  POPULATION: 56082077
+    Number of infections: 4
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 5 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082068  E: 0  I: 4  R: 5  IW: 0  POPULATION: 56082077
+    Number of infections: 4
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 6 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082064  E: 4  I: 4  R: 5  IW: 4  POPULATION: 56082077
+    Number of infections: 8
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 7 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082064  E: 0  I: 4  R: 9  IW: 0  POPULATION: 56082077
+    Number of infections: 4
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 8 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082064  E: 0  I: 4  R: 9  IW: 0  POPULATION: 56082077
+    Number of infections: 4
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 9 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082062  E: 2  I: 4  R: 9  IW: 2  POPULATION: 56082077
+    Number of infections: 6
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Day 10 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    S: 56082061  E: 1  I: 2  R: 13  IW: 1  POPULATION: 56082077
+    Number of infections: 3
+
+while the original stage names are still accessible in the
+``output/total_infections.csv.bz2``, ``output/number_wards_infected.csv.bz2``
+files etc.
+
+One advantage of doing this is that now, ``C`` is correctly interpreted
+as an ``R`` state, and so ``metawards`` will exit correctly once the
+outbreak has died out and all individuals are left in ``S`` or ``C``.
