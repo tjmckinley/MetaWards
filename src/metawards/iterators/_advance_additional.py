@@ -38,8 +38,29 @@ def _load_additional_seeds(filename: str):
     table.add_column("Ward")
     table.add_column("Number seeded")
 
-    for line in lines:
-        words = line.strip().split()
+    import csv
+
+    try:
+        dialect = csv.Sniffer().sniff(lines[0], delimiters=[" ", ","])
+    except Exception:
+        Console.warning(
+            f"Could not identify what sort of separator to use to "
+            f"read the additional seeds, so will assume commas. If this is "
+            f"wrong then could you add commas to separate the "
+            f"fields?")
+        dialect = csv.excel  #  default comma-separated file
+
+    for line in csv.reader(lines, dialect=dialect,
+                           quoting=csv.QUOTE_ALL,
+                           skipinitialspace=True):
+
+        words = []
+
+        # yes, the original files really do mix tabe and spaces... need
+        # to extract these separately!
+        for l in line:
+            for p in l.split("\t"):
+                words.append(p)
 
         if len(words) == 0:
             continue
