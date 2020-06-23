@@ -244,3 +244,6 @@ These files are very useful if you want to see, e.g. how many workers
 are infected at each different stage on each day, or how many wards
 have a population infected in the ``B1`` state on each day.
 
+Scanning named stage parameters
+-------------------------------
+
