@@ -983,6 +983,9 @@ def cli():
     else:
         params.set_disease("ncov")
 
+    Console.rule("Adjustable parameters to scan")
+    Console.print("\n".join([f"* {x}" for x in variables]), markdown=True)
+
     Console.rule("Model data")
     if args.model:
         params.set_input_files(args.model)

@@ -3,26 +3,32 @@ from typing import List as _List
 from typing import Dict as _Dict
 from typing import Union as _Union
 
+from ._disease import Disease
+
 __all__ = ["VariableSets", "VariableSet"]
 
 
-def _set_beta(params, name: str, index: int, value: float):
+def _set_beta(params, name: str, index: _Union[int, str], value: float):
     """Adjust the Disease.beta parameter"""
+    index = params.disease_params.get_index(index)
     params.disease_params.beta[index] = float(value)
 
 
 def _set_progress(params, name: str, index: int, value: float):
     """Adjust the Disease.progress parameter"""
+    index = params.disease_params.get_index(index)
     params.disease_params.progress[index] = float(value)
 
 
 def _set_too_ill_to_move(params, name: str, index: int, value: float):
     """Adjust the Disease.too_ill_to_move parameter"""
+    index = params.disease_params.get_index(index)
     params.disease_params.too_ill_to_move[index] = float(value)
 
 
 def _set_contrib_foi(params, name: str, index: int, value: float):
     """Adjust the Disease.contrib_foi parameter"""
+    index = params.disease_params.get_index(index)
     params.disease_params.contrib_foi[index] = float(value)
 
 
@@ -72,14 +78,6 @@ def _set_dyn_play_at_home(params, name: str, index: int, value: float):
         raise IndexError("You cannot index the dyn_play_at_home parameter")
 
     params.dyn_play_at_home = float(value)
-
-
-def _set_data_dist_cutoff(params, name: str, index: int, value: float):
-    """Adjust the Parameters.data_dist_cutoff parameter"""
-    if index is not None:
-        raise IndexError("You cannot index the data_dist_cutoff parameter")
-
-    params.data_dist_cutoff = float(value)
 
 
 def _set_dyn_dist_cutoff(params, name: str, index: int, value: float):
@@ -191,7 +189,6 @@ _adjustable["UV"] = _set_uv
 _adjustable["initial_inf"] = _set_initial_inf
 _adjustable["static_play_at_home"] = _set_static_play_at_home
 _adjustable["dyn_play_at_home"] = _set_dyn_play_at_home
-_adjustable["data_dist_cutoff"] = _set_data_dist_cutoff
 _adjustable["dyn_dist_cutoff"] = _set_dyn_dist_cutoff
 _adjustable["play_to_work"] = _set_play_to_work
 _adjustable["work_to_play"] = _set_work_to_play
@@ -471,12 +468,21 @@ class VariableSet:
             self._output = value
             return
 
-        # look for 'variable[index]'
-        m = re.search(r"([\s:\.\w]+)\[(\d+)\]", name)
+        # look for 'variable[index]', demographic:variable[index],
+        # .variable[index], user.variable[index],
+        # variable["key"], variable['key'] and all combinations of above
+        m = re.search(r"([\s:\.\w]+)\[\s*([\d+]|\".+\"|'.+')\s*\]", name)
 
         if m:
             varname = m.group(1)
-            index = int(m.group(2))
+
+            index = m.group(2)
+
+            if index.startswith('"') or index.startswith("'"):
+                index = index[1:-1]
+            else:
+                index = int(index)
+
             value = value
         else:
             varname = name
@@ -500,12 +506,16 @@ class VariableSet:
 
         if not (varname.startswith("user.") or varname.startswith(".") or
                 varname in _adjustable):
-            raise KeyError(f"It is not possible to adjust the variable "
-                           f"{name} to equal {value}. Available variables "
-                           f"are {list(_adjustable.keys())}, or to set "
-                           f"a user parameter 'user.parameter' or "
-                           f"'.parameter'. To set an index use "
-                           f"'parameter[index]', e.g. 'beta[2]'")
+            from .utils._console import Console
+            Console.error(f"It is not possible to adjust the variable "
+                          f"{name} to equal {value}. Available variables "
+                          f"are {list(_adjustable.keys())}, or to set "
+                          f"a user parameter 'user.parameter' or "
+                          f"'.parameter'. To set an index use "
+                          f"'parameter[index]', e.g. 'beta[2]', "
+                          f"'parameter[\"key\"]', e.g. 'beta[\"I1\"]'")
+            raise KeyError(f"It is not possible to adjust {name} to "
+                           f"equal {value}.")
 
         if varname.startswith("user."):
             # strip off 'user' so that it just starts with a dot

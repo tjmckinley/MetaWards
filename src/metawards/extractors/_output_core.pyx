@@ -441,7 +441,7 @@ def output_core_omp(network: Network, population: Population,
                     ward_inf_tot_i[j] += play_infections_i[j]
                     X_in_wards[j] += play_infections_i[j]
 
-                if (i < N_INF_CLASSES-1) and total_inf_ward[j] > 0:
+                if ward_inf_tot_i[j] > 0:
                     # n_inf_wards[i] += 1
                     redvar[0].n_inf_wards += 1
             # end of loop over nodes
@@ -744,7 +744,7 @@ def output_core_serial(network: Network, population: Population,
                     ward_inf_tot_i[j] += play_infections_i[j]
                     X_in_wards[j] += play_infections_i[j]
 
-                if (i < N_INF_CLASSES_MINUS_ONE) and total_inf_ward[j] > 0:
+                if ward_inf_tot_i[j] > 0:
                     # n_inf_wards[i] += 1
                     n_inf_wards_i += 1
             # end of loop over nodes

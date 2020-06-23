@@ -7,6 +7,25 @@ __all__ = ["Disease"]
 _default_folder_name = "diseases"
 
 
+def _infer_mapping(stages):
+    """Get the computed mapping names for each stage. This is the
+       letter part of the name, e.g. A1 maps to A, I3 maps to I etc.
+    """
+    import re as _re
+
+    mapping = []
+
+    for stage in stages:
+        m = _re.search(r"(.*[^\d^\b^\s])[\b\s]*([\d]*)", stage)
+
+        if m is None:
+            raise AssertionError(f"Invalid stage name {stage}")
+
+        mapping.append(str(m.groups()[0]))
+
+    return mapping
+
+
 @_dataclass
 class Disease:
     """This class holds the parameters about a single disease
@@ -207,6 +226,20 @@ class Disease:
                 Console.error("\n".join(errors))
                 raise AssertionError("Invalid disease parameters!\n" +
                                      "\n".join(errors))
+
+            # set the default names - these are '*', "E", "I?", "R"
+            self.stage = ["R"] * self.N_INF_CLASSES()
+
+            self.stage[0] = "*"
+            self.stage[1] = "E"
+
+            if len(self.stage) == 4:
+                self.stage[2] = "I"
+            else:
+                j = 1
+                for i in range(2, self.N_INF_CLASSES() - 1):
+                    self.stage[i] = f"I{j}"
+                    j += 1
         else:
             if len(self.stage) != n:
                 raise AssertionError(
@@ -226,16 +259,7 @@ class Disease:
             else:
                 # the mapping is the character part of the stage name, e.g.
                 # "H1" maps to "H", "ICU2" maps to ICU etc.
-                self.mapping = []
-                import re as _re
-
-                for stage in self.stage:
-                    m = _re.search(r"(.*[^\d^\b^\s])[\b\s]*([\d]*)", stage)
-
-                    if m is None:
-                        raise AssertionError(f"Invalid stage name {stage}")
-
-                    self.mapping.append(str(m.groups()[0]))
+                self.mapping = _infer_mapping(self.stage)
 
         elif len(self.mapping) != self.N_INF_CLASSES():
             raise AssertionError(
@@ -243,39 +267,19 @@ class Disease:
                 f"{self.N_INF_CLASSES()} but got {len(self.mapping)}.")
 
         else:
+            mapping = _infer_mapping(self.stage)
+
+            for i, v in enumerate(self.mapping):
+                if v is None:
+                    self.mapping[i] = mapping[i]
+
+            valid = set(mapping + self.stage + ["E", "I", "R", "*"])
+
             for v in self.mapping:
-                if v not in ["*", "E", "I", "R"]:
+                if v not in valid:
                     raise AssertionError(
                         f"Invalid mapping value '{v}'. Valid values "
-                        f"are only '*', 'E', 'I' or 'R'")
-
-            # must start with '*' and 'E' and end with 'R'
-            if self.mapping[0] != '*' or self.mapping[1] != 'E' or \
-                    self.mapping[-1] != 'R':
-                raise AssertionError(
-                    f"The mapping must start with '*', 'E' and end "
-                    f"with 'R'. You cannot have '{self.mapping}'")
-
-            # must have at least 1 I stage
-            if "I" not in self.mapping:
-                raise AssertionError(
-                    f"The mapping must contain at least one 'I' stage. "
-                    f"You cannot have '{self.mapping}'")
-
-        if self.stage is None:
-            # set the default names - these are '*', "E", "I?", "R"
-            self.stage = ["R"] * self.N_INF_CLASSES()
-
-            self.stage[0] = "*"
-            self.stage[1] = "E"
-
-            if len(self.stage) == 4:
-                self.stage[2] = "I"
-            else:
-                j = 1
-                for i in range(2, self.N_INF_CLASSES() - 1):
-                    self.stage[i] = f"I{j}"
-                    j += 1
+                        f"are only {valid}")
 
     def get_index(self, idx):
         """Return the index of disease stage 'idx' in this disease"""

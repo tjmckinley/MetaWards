@@ -46,6 +46,9 @@ look at statistics across all runs using e.g. R or pandas""",
         extra_stages = list(t0.totals.keys())
         extra_str = ",".join(extra_stages) + ","
 
+    def _int(val):
+        return val if val is not None else 0
+
     RESULTS.write(f"fingerprint,repeat,{varnames}"
                   f"day,{datestring}S,E,I,{extra_str}R,IW,UV\n")
     for varset, trajectory in results:
@@ -77,7 +80,7 @@ look at statistics across all runs using e.g. R or pandas""",
             else:
                 extra_str = ""
 
-            RESULTS.write(f"{start}{pop.day},{d}{pop.susceptibles},"
-                          f"{pop.latent},{pop.total},{extra_str}"
-                          f"{pop.recovereds},{pop.n_inf_wards},"
-                          f"{pop.scale_uv}\n")
+            RESULTS.write(f"{start}{pop.day},{d}{_int(pop.susceptibles)},"
+                          f"{_int(pop.latent)},{_int(pop.total)},{extra_str}"
+                          f"{_int(pop.recovereds)},{_int(pop.n_inf_wards)},"
+                          f"{_int(pop.scale_uv)}\n")

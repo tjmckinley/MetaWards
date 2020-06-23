@@ -202,6 +202,32 @@ class Population:
             Console.error(errors)
             raise AssertionError(f"Disagreement in population sums!")
 
+    def headers(self):
+        """Return a list of the headers that should be used to report
+           data from this population. This returns a list of headers,
+           e.g. ["S", "E", "I", "R"]
+        """
+        headers = []
+
+        if self.susceptibles is not None:
+            headers.append("S")
+
+        if self.latent is not None:
+            headers.append(f"E")
+
+        if self.total is not None:
+            headers.append(f"I")
+
+        if self.totals is not None:
+            # use items as need to be same order as items below
+            for key, _ in self.totals.items():
+                headers.append(key)
+
+        if self.recovereds is not None:
+            headers.append("R")
+
+        return headers
+
     def summary(self, demographics=None):
         """Return a short summary string that is suitable to be printed
            out during a model run
