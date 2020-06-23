@@ -20,3 +20,4 @@ In this seventh part of the tutorial you will;
    part07/03_conditional
    part07/04_icu
    part07/05_named_stages
+   part07/06_hospital
