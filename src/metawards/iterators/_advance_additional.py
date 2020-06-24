@@ -235,7 +235,7 @@ def advance_additional(network: _Union[Network, Networks],
 
     p = profiler.start("additional_seeds")
     for seed in additional_seeds:
-        if seed[0] == population.day:
+        if seed[0] == population.day or seed[0] == population.date:
             ward = seed[1]
             num = seed[2]
 
@@ -259,20 +259,27 @@ def advance_additional(network: _Union[Network, Networks],
             try:
                 ward = network.get_node_index(ward)
 
-                if wards.play_suscept[ward] < num:
+                if wards.play_suscept[ward] == 0:
                     Console.warning(
-                        f"Not enough susceptibles in ward for seeding")
-                else:
-                    wards.play_suscept[ward] -= num
-                    if demographic is not None:
-                        Console.print(
-                            f"seeding demographic {demographic} "
-                            f"play_infections[0][{ward}] += {num}")
-                    else:
-                        Console.print(
-                            f"seeding play_infections[0][{ward}] += {num}")
+                        f"Cannot seed {num} infection(s) in ward {ward} "
+                        f"as there are no susceptibles remaining")
+                    continue
 
-                    play_infections[0][ward] += num
+                elif wards.play_suscept[ward] < num:
+                    Console.warning(
+                        f"Not enough susceptibles in ward to see all {num}")
+                    num = wards.play_suscept[ward]
+
+                wards.play_suscept[ward] -= num
+                if demographic is not None:
+                    Console.print(
+                        f"seeding demographic {demographic} "
+                        f"play_infections[0][{ward}] += {num}")
+                else:
+                    Console.print(
+                        f"seeding play_infections[0][{ward}] += {num}")
+
+                play_infections[0][ward] += num
 
             except Exception as e:
                 Console.error(
