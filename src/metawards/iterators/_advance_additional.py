@@ -10,6 +10,7 @@ from .._infections import Infections
 __all__ = ["advance_additional"]
 
 
+
 def _get_day(s, network, row, rng):
     if s is None:
         row.append("1")
@@ -22,15 +23,52 @@ def _get_day(s, network, row, rng):
     except Exception:
         pass
 
+    try:
+        day = _get_random(s, rng)
+        row.append(f"{s} : {day}")
+        return day
+    except Exception:
+        pass
+
     # read the day from a string
-    row.append(f"{s} : {s}")
-    return s
+    try:
+        from datetime import date
+        d = date.fromisoformat(s)
+    except Exception:
+        d = None
+
+    if d is None:
+        try:
+            from dateparser import parse
+            d = parse(s).date()
+        except Exception:
+            d = None
+
+    if d is None:
+        raise ValueError(f"Could not interpret a day or date from '{s}'")
+
+    row.append(f"{s} : {d.isoformat()}")
+    return d
 
 
 def _get_ward(s, network, row, rng):
     if s is None:
         row.append("1")
         return 1
+
+    if isinstance(network, Networks):
+        raise TypeError("This should be a Network object...")
+
+    try:
+        index = _get_random(s, rng, 1, network.nnodes)
+        try:
+            row.append(f"{s} : {index} : {network.info[index]}")
+        except Exception:
+            row.append(f"{s} : {index}")
+
+        return index
+    except Exception:
+        pass
 
     index = network.get_node_index(s)
 
@@ -47,22 +85,33 @@ def _get_number_to_seed(s, network, row, rng):
         row.append("0")
         return 0
 
-    n = int(s)
-
-    if str(n) == s:
+    try:
+        n = int(s)
         row.append(s)
-    else:
-        row.append(f"{s} : {n}")
+        return n
+    except Exception:
+        pass
 
-    return n
+    try:
+        n = _get_random(s, rng)
+        row.append(f"{s} : {n}")
+        return n
+    except Exception as e:
+        from ..utils._console import Console
+        Console.error(f"{e.__class__}: {e}")
+        pass
+
+    raise ValueError(f"Could not interpret the number to seed from {s}")
 
 
 def _get_demographic(s, network, row, rng):
     if s is None:
         row.append(None)
         return s
-
-    if isinstance(network, Network):
+    elif isinstance(network, Network):
+        row.append(None)
+        return None
+    elif s == "overall":
         row.append(None)
         return None
 
@@ -141,6 +190,10 @@ def _load_additional_seeds(network: _Union[Network, Networks],
 
         if len(words) == 4:
             demographic = _get_demographic(words[3], network, row, rng)
+
+            if demographic is not None:
+                # we need the right network to get the ward below
+                network = network.subnets[demographic]
         else:
             demographic = None
             row.append(None)

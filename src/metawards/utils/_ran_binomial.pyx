@@ -35,10 +35,28 @@ def seed_ran_binomial(seed: int = None):
     return rng
 
 
+_global_rng = None
+
+
+def get_global_rng():
+    global _global_rng
+
+    if _global_rng is None:
+        from ._console import Console
+        Console.print(
+            "Creating the global (anonymous) random number generator")
+        _global_rng = seed_ran_binomial()
+
+    return _global_rng
+
+
 def ran_binomial(rng, p: float, n: int):
     """Return a random number drawn from the binomial distribution
        [p,n] (see gsl_ran_binomial for documentation)
     """
+    if rng is None:
+        rng = get_global_rng()
+
     cdef binomial_rng *r = _get_binomial_ptr(rng)
     return _ran_binomial(r, p, n)
 
@@ -47,12 +65,18 @@ def ran_uniform(rng):
     """Return a random double drawn from a uniform distribution between
        zero and one
     """
+    if rng is None:
+        rng = get_global_rng()
+
     cdef binomial_rng *r = _get_binomial_ptr(rng)
     return _ran_uniform(r)
 
 
 def ran_int(rng, lower=0, upper=(2**32)-1):
     """Draw a random integer from [0,upper] inclusive"""
+    if rng is None:
+        rng = get_global_rng()
+
     return lower + int(ran_uniform(rng) * (upper-lower))
 
 
