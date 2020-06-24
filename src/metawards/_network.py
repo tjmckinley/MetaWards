@@ -283,6 +283,14 @@ class Network:
                 Console.error(f"Cannot find a ward that matches {index}")
                 raise KeyError(f"Cannot find a ward that matches {index}")
             elif len(matches) > 1:
+                # do we have a perfect single match?
+                name = index.split("/")[0].strip()
+
+                for match in matches:
+                    if self.info[match].name == name:
+                        # perfect match
+                        return match
+
                 from .utils._console import Console
                 err = [f"Too many wards match {index}"]
 
@@ -292,6 +300,9 @@ class Network:
                 err.append("Please narrow down your search to match one.")
 
                 Console.error("\n".join(err), markdown=True)
+
+                raise KeyError(
+                    f"Cannot find a single ward that matches {index}")
             else:
                 return matches[0]
 

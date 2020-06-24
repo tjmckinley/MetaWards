@@ -10,119 +10,32 @@ from .._infections import Infections
 __all__ = ["advance_additional"]
 
 
-
-def _get_day(s, network, row, rng):
+def _get_ward(s, network, rng):
     if s is None:
-        row.append("1")
-        return 1
-
-    try:
-        day = int(s)
-        row.append(s)
-        return day
-    except Exception:
-        pass
-
-    try:
-        day = _get_random(s, rng)
-        row.append(f"{s} : {day}")
-        return day
-    except Exception:
-        pass
-
-    # read the day from a string
-    try:
-        from datetime import date
-        d = date.fromisoformat(s)
-    except Exception:
-        d = None
-
-    if d is None:
-        try:
-            from dateparser import parse
-            d = parse(s).date()
-        except Exception:
-            d = None
-
-    if d is None:
-        raise ValueError(f"Could not interpret a day or date from '{s}'")
-
-    row.append(f"{s} : {d.isoformat()}")
-    return d
-
-
-def _get_ward(s, network, row, rng):
-    if s is None:
-        row.append("1")
         return 1
 
     if isinstance(network, Networks):
         raise TypeError("This should be a Network object...")
 
     try:
-        index = _get_random(s, rng, 1, network.nnodes)
-        try:
-            row.append(f"{s} : {index} : {network.info[index]}")
-        except Exception:
-            row.append(f"{s} : {index}")
-
-        return index
+        from .._interpret import Interpret
+        index = Interpret.integer(s, rng=rng, minval=1, maxval=network.nnodes)
+        return network.get_node_index(index)
     except Exception:
         pass
 
-    index = network.get_node_index(s)
-
-    try:
-        row.append(f"{s} : {network.info[index]}")
-    except Exception:
-        row.append(s)
-
-    return index
+    return network.get_node_index(s)
 
 
-def _get_number_to_seed(s, network, row, rng):
+def _get_demographic(s, network):
     if s is None:
-        row.append("0")
-        return 0
-
-    try:
-        n = int(s)
-        row.append(s)
-        return n
-    except Exception:
-        pass
-
-    try:
-        n = _get_random(s, rng)
-        row.append(f"{s} : {n}")
-        return n
-    except Exception as e:
-        from ..utils._console import Console
-        Console.error(f"{e.__class__}: {e}")
-        pass
-
-    raise ValueError(f"Could not interpret the number to seed from {s}")
-
-
-def _get_demographic(s, network, row, rng):
-    if s is None:
-        row.append(None)
         return s
     elif isinstance(network, Network):
-        row.append(None)
         return None
     elif s == "overall":
-        row.append(None)
         return None
 
-    index = network.demographics.get_index(s)
-
-    if str(index) != s:
-        row.append(f"{s} : {index}")
-    else:
-        row.append(s)
-
-    return index
+    return network.demographics.get_index(s)
 
 
 def _load_additional_seeds(network: _Union[Network, Networks],
@@ -184,24 +97,37 @@ def _load_additional_seeds(network: _Union[Network, Networks],
 
         row = []
 
+        from .._interpret import Interpret
+
         # yes, this is really the order of the seeds - "t num loc"
         # is in the file as "t loc num"
-        day = _get_day(words[0], network, row, rng)
+        day = Interpret.day_or_date(words[0], rng=rng)
+
+        row.append(str(day))
 
         if len(words) == 4:
-            demographic = _get_demographic(words[3], network, row, rng)
+            demographic = _get_demographic(words[3], network=network)
 
             if demographic is not None:
                 # we need the right network to get the ward below
                 network = network.subnets[demographic]
         else:
             demographic = None
-            row.append(None)
 
-        ward = _get_ward(words[2], network, row, rng)
-        seed = _get_number_to_seed(words[1], network, row, rng)
-        seeds.append((day, ward, seed, demographic))
+        row.append(str(demographic))
+
+        ward = _get_ward(words[2], network=network, rng=rng)
+
+        try:
+            row.append(f"{ward} : {network.info[ward]}")
+        except Exception:
+            row.append(str(ward))
+
+        seed = Interpret.integer(words[1], rng=rng, minval=0)
+        row.append(str(seed))
         table.add_row(row)
+
+        seeds.append((day, ward, seed, demographic))
 
     Console.print(table.to_string())
 
