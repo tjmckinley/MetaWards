@@ -76,6 +76,8 @@ def _load_additional_seeds(network: _Union[Network, Networks],
             f"fields?")
         dialect = csv.excel  #  default comma-separated file
 
+    titles = None
+
     for line in csv.reader(lines, dialect=dialect,
                            quoting=csv.QUOTE_ALL,
                            skipinitialspace=True):
@@ -85,28 +87,54 @@ def _load_additional_seeds(network: _Union[Network, Networks],
         # yes, the original files really do mix tabe and spaces... need
         # to extract these separately!
         for l in line:
+            rest_commented = False
+
             for p in l.split("\t"):
+                p = p.strip()
+                if p.startswith("#"):
+                    rest_commented = True
+                    break
+
                 words.append(p)
+
+            if rest_commented:
+                break
 
         if len(words) == 0:
             continue
 
         if len(words) < 3:
-            raise ValueError(
-                f"Can not interpret additional seeds from the line '{line}'")
+            continue
+
+        if titles is None:
+            if "day" in words and "number" in words and "ward" in words:
+                titles = {}
+                titles["day"] = words.index("day")
+                titles["number"] = words.index("number")
+                titles["ward"] = words.index("ward")
+
+                try:
+                    titles["demographic"] = words.index("demographic")
+                except Exception:
+                    titles["demographic"] = 3
+
+                continue
+            else:
+                # yes, this is really the order of the seeds - "t num loc"
+                titles = {"day": 0, "number": 1, "ward": 2, "demographic": 3}
 
         row = []
 
         from .._interpret import Interpret
 
-        # yes, this is really the order of the seeds - "t num loc"
         # is in the file as "t loc num"
-        day = Interpret.day_or_date(words[0], rng=rng)
+        day = Interpret.day_or_date(words[titles["day"]], rng=rng)
 
         row.append(str(day))
 
         if len(words) == 4:
-            demographic = _get_demographic(words[3], network=network)
+            demographic = _get_demographic(words[titles["demographic"]],
+                                           network=network)
 
             if demographic is not None:
                 # we need the right network to get the ward below
@@ -116,14 +144,14 @@ def _load_additional_seeds(network: _Union[Network, Networks],
 
         row.append(str(demographic))
 
-        ward = _get_ward(words[2], network=network, rng=rng)
+        ward = _get_ward(words[titles["ward"]], network=network, rng=rng)
 
         try:
             row.append(f"{ward} : {network.info[ward]}")
         except Exception:
             row.append(str(ward))
 
-        seed = Interpret.integer(words[1], rng=rng, minval=0)
+        seed = Interpret.integer(words[titles["number"]], rng=rng, minval=0)
         row.append(str(seed))
         table.add_row(row)
 
