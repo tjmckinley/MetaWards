@@ -868,8 +868,8 @@ def cli():
 
     if args.start_date:
         try:
-            from dateparser import parse
-            start_date = parse(args.start_date).date()
+            from .._interpret import Interpret
+            start_date = Interpret.date(args.start_date)
         except Exception:
             pass
 

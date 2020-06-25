@@ -94,7 +94,7 @@ class Interpret:
 
         from .utils._ran_binomial import ran_int
         # we want to be from 'min' to 'max' inclusive
-        return ran_int(rng, rmin, rmax + 1)
+        return ran_int(rng, rmin, rmax)
 
     @staticmethod
     def random_number(s: str = None, rng=None, minval: float = None,
@@ -237,6 +237,33 @@ class Interpret:
             return _clamp_range(d, minval=minval, maxval=maxval)
         else:
             raise ValueError(f"Cannot interpret a number from {s}")
+
+    @staticmethod
+    def boolean(s: any, rng=None) -> bool:
+        """Interpret and return a boolean (True or False) using
+           the passed random number generator if this is a request
+           for a random boolean
+        """
+        if s is None:
+            return False
+        elif isinstance(s, bool):
+            return s
+        else:
+            s = Interpret.string(s)
+
+            s = s.strip().lower()
+
+            if s in ["true", "yes", "on"]:
+                return True
+            elif s in ["false", "no", "off"]:
+                return False
+
+            d = Interpret.integer(s, rng=rng, minval=0, maxval=1)
+
+            if d == 0:
+                return False
+            else:
+                return True
 
     @staticmethod
     def date(s: any, allow_fuzzy: bool = True):

@@ -24,6 +24,8 @@ def test_interpret_integer(s, expect):
     ("5", 5),
     (10, 10),
     (3.4, 3.4),
+    ("50%", 0.5),
+    ("(10 + 20)%", 0.3),
     ("10 * 5", 50),
     ("-3", -3),
     ("(-6 * 10) + 30", -30),
@@ -33,6 +35,21 @@ def test_interpret_integer(s, expect):
 ])
 def test_interpret_number(s, expect):
     v = Interpret.number(s)
+    assert v == expect
+
+
+@pytest.mark.parametrize("s, expect", [
+    ("true", True),
+    ("tRuE  ", True),
+    ("fAlsE", False),
+    ("  no  ", False),
+    (1, True),
+    (0, False),
+    (True, True),
+    (False, False)
+])
+def test_interpret_bool(s, expect):
+    v = Interpret.boolean(s)
     assert v == expect
 
 
@@ -58,6 +75,34 @@ def test_interpret_ranint(s, expect_min, expect_max):
         v = Interpret.integer(s)
         assert v >= expect_min
         assert v <= expect_max
+
+
+def test_interpret_ranbool():
+    ntrue = 0
+    nfalse = 0
+
+    from metawards.utils import seed_ran_binomial, ran_bool
+
+    # I've double-checked and this random number seed will
+    # generate exactly 500 true and 500 false values
+    rng = seed_ran_binomial(45748111)
+
+    rng2 = seed_ran_binomial(45748111)
+
+    for i in range(0, 1000):
+        v = Interpret.boolean("rand()", rng=rng)
+
+        expect = ran_bool(rng2)
+
+        if v:
+            assert expect
+            ntrue += 1
+        else:
+            assert not expect
+            nfalse += 1
+
+    # choice of seed means 500 each
+    assert ntrue == nfalse
 
 
 @pytest.mark.parametrize("s, expect_min, expect_max", [

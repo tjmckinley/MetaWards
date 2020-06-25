@@ -5,7 +5,7 @@ from ._ran_binomial cimport _construct_binomial_rng, _ran_binomial, \
                             _get_binomial_ptr, _ran_uniform
 
 
-__all__ = ["ran_binomial", "ran_uniform", "ran_int",
+__all__ = ["ran_binomial", "ran_uniform", "ran_int", "ran_bool",
            "seed_ran_binomial", "delete_ran_binomial"]
 
 
@@ -77,7 +77,12 @@ def ran_int(rng, lower=0, upper=(2**32)-1):
     if rng is None:
         rng = get_global_rng()
 
-    return lower + int(ran_uniform(rng) * (upper-lower))
+    return lower + int(ran_uniform(rng) * (1+upper-lower))
+
+
+def ran_bool(rng):
+    """Draw a random boolean"""
+    return True if ran_int(rng=rng, lower=0, upper=1) else False
 
 
 def delete_ran_binomial(rng):
