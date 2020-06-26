@@ -172,7 +172,9 @@ class WardInfos:
            Parameters
            ----------
            name: str or regexp
-             Name or code of the ward to search
+             Name or code of the ward to search. You can also include
+             the authority adn region by separating usign "/", e.g.
+             "Clifton/Bristol".
            authority: str or regexp
              Name or code of the authority to search
            region: str or regexp

@@ -66,6 +66,14 @@ def _load_additional_seeds(network: _Union[Network, Networks],
 
     import csv
 
+    # remove any initial comment lines (breaks sniffing below)
+    while lines[0].strip().startswith("#"):
+        lines.pop(0)
+
+    # remove any empty initial lines (breaks sniffing below)
+    while len(lines[0].strip()) == 0:
+        lines.pop(0)
+
     try:
         dialect = csv.Sniffer().sniff(lines[0], delimiters=[" ", ","])
     except Exception:
@@ -132,22 +140,29 @@ def _load_additional_seeds(network: _Union[Network, Networks],
 
         row.append(str(day))
 
+        this_network = network
+
         if len(words) == 4:
             demographic = _get_demographic(words[titles["demographic"]],
                                            network=network)
 
             if demographic is not None:
                 # we need the right network to get the ward below
-                network = network.subnets[demographic]
+                this_network = network.subnets[demographic]
         else:
             demographic = None
 
+        if isinstance(this_network, Networks):
+            # The demographic has not been specified, so this must be
+            # the first demographic
+            this_network = network.subnets[0]
+
         row.append(str(demographic))
 
-        ward = _get_ward(words[titles["ward"]], network=network, rng=rng)
+        ward = _get_ward(words[titles["ward"]], network=this_network, rng=rng)
 
         try:
-            row.append(f"{ward} : {network.info[ward]}")
+            row.append(f"{ward} : {this_network.info[ward]}")
         except Exception:
             row.append(str(ward))
 

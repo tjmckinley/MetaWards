@@ -304,13 +304,20 @@ class Interpret:
         """Convenience function that matches a day or a date from the
            passed 's'
         """
+        # Try a simple integer first, to prevent date weirdness
         try:
-            return Interpret.day(s=s, rng=rng, minval=minval, maxval=maxval)
+            return int(s)
+        except Exception:
+            pass
+
+        # Do date first so that we can parse POSIX dates
+        try:
+            return Interpret.date(s=s, allow_fuzzy=allow_fuzzy)
         except Exception:
             pass
 
         try:
-            return Interpret.date(s=s, allow_fuzzy=allow_fuzzy)
+            return Interpret.day(s=s, rng=rng, minval=minval, maxval=maxval)
         except Exception:
             pass
 

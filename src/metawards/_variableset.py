@@ -251,6 +251,10 @@ def _interpret(value):
         # this is a string
         return Interpret.string(value[2:-1])
 
+    elif canonical.startswith("b'"):
+        # this is a boolean
+        return Interpret.boolean(value[2:-1])
+
     # now we have to guess...
     try:
         v = float(value)
@@ -270,6 +274,12 @@ def _interpret(value):
     try:
         from ._interpret import Interpret
         return Interpret.number(value)
+    except Exception:
+        pass
+
+    try:
+        from ._interpret import Interpret
+        return Interpret.boolean(value)
     except Exception:
         pass
 

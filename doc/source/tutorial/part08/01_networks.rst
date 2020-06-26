@@ -141,5 +141,9 @@ and then 10 individuals on day 2, via;
 The contents of the string is interpreted identically to if it had been
 read from a file, with ``\n`` representing a newline character.
 
-You can...
+.. note::
 
+   The extra seeds file has a flexible and powerful format, e.g. supporting
+   seeding by date, seeding random wards or by random amounts etc.
+   More information on the format of this file can
+   be :doc:`found here <../../fileformats/extraseeds>`.
