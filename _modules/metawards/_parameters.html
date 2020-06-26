@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,6 +11,11 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   
@@ -19,7 +23,9 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -32,11 +38,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -95,6 +97,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../fileformats/index.html">Input files and formats</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
@@ -124,6 +129,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -162,7 +168,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -346,7 +352,6 @@
     <span class="n">static_play_at_home</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">dyn_play_at_home</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-    <span class="n">data_dist_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10000000.0</span>
     <span class="n">dyn_dist_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10000000.0</span>
 
     <span class="n">play_to_work</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -398,7 +403,6 @@
 <span class="s2">* initial_inf: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_inf</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">* static_play_at_home: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">static_play_at_home</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">* dyn_play_at_home: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dyn_play_at_home</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">* data_dist_cutoff: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dist_cutoff</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">* dyn_dist_cutoff: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dyn_dist_cutoff</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">* play_to_work: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">play_to_work</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">* work_to_play: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">work_to_play</span><span class="si">}</span><span class="s2"></span>
@@ -503,7 +507,6 @@
             <span class="n">initial_inf</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;initial_inf&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">static_play_at_home</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;static_play_at_home&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
             <span class="n">dyn_play_at_home</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dyn_play_at_home&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
-            <span class="n">data_dist_cutoff</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_dist_cutoff&quot;</span><span class="p">,</span> <span class="mf">10000000.0</span><span class="p">),</span>
             <span class="n">dyn_dist_cutoff</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dyn_dist_cutoff&quot;</span><span class="p">,</span> <span class="mf">10000000.0</span><span class="p">),</span>
             <span class="n">play_to_work</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;play_to_work&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
             <span class="n">work_to_play</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;work_to_play&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
@@ -593,10 +596,6 @@
 
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
                 <span class="n">filename</span> <span class="o">=</span> <span class="n">f</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Unable to find extra seeds file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> in &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;the current directory or in </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">additional_seeds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
@@ -699,7 +698,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 11, 2020.
+        Last updated on Jun 26, 2020.
       </span>
 
     </p>
@@ -714,7 +713,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -2,8 +2,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -13,6 +12,11 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
@@ -20,7 +24,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -33,11 +39,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -96,6 +98,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="fileformats/index.html">Input files and formats</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
@@ -125,6 +130,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -163,7 +169,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Index</li>
     
@@ -251,6 +257,8 @@
         <li><a href="api/generated/metawards.Infections.html#metawards.Infections.__init__">(metawards.Infections method)</a>
 </li>
         <li><a href="api/generated/metawards.InputFiles.html#metawards.InputFiles.__init__">(metawards.InputFiles method)</a>
+</li>
+        <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.__init__">(metawards.Interpret method)</a>
 </li>
         <li><a href="api/generated/metawards.Link.html#metawards.Link.__init__">(metawards.Link method)</a>
 </li>
@@ -369,8 +377,6 @@
 </li>
       <li><a href="api/generated/metawards.iterators.advance_additional.html#metawards.iterators.advance_additional">advance_additional() (in module metawards.iterators)</a>
 </li>
-      <li><a href="api/generated/metawards.iterators.advance_additional_omp.html#metawards.iterators.advance_additional_omp">advance_additional_omp() (in module metawards.iterators)</a>
-</li>
       <li><a href="api/generated/metawards.iterators.advance_fixed.html#metawards.iterators.advance_fixed">advance_fixed() (in module metawards.iterators)</a>
 </li>
       <li><a href="api/generated/metawards.iterators.advance_fixed_omp.html#metawards.iterators.advance_fixed_omp">advance_fixed_omp() (in module metawards.iterators)</a>
@@ -404,8 +410,6 @@
 </li>
       </ul></li>
       <li><a href="api/generated/metawards.utils.aggregate_networks.html#metawards.utils.aggregate_networks">aggregate_networks() (in module metawards.utils)</a>
-</li>
-      <li><a href="api/generated/metawards.utils.align_strings.html#metawards.utils.align_strings">align_strings() (in module metawards.utils)</a>
 </li>
       <li><a href="api/generated/metawards.utils.allocate_vaccination.html#metawards.utils.allocate_vaccination">allocate_vaccination() (in module metawards.utils)</a>
 </li>
@@ -460,6 +464,8 @@
       <li><a href="api/generated/metawards.Node.html#metawards.Node.begin_to">begin_to (metawards.Node attribute)</a>
 </li>
       <li><a href="api/generated/metawards.Disease.html#metawards.Disease.beta">beta (metawards.Disease attribute)</a>
+</li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.boolean">boolean() (metawards.Interpret static method)</a>
 </li>
       <li><a href="api/generated/metawards.Infections.html#metawards.Infections.build">build() (metawards.Infections static method)</a>
 
@@ -545,7 +551,13 @@
 </li>
       <li><a href="api/generated/metawards.Population.html#metawards.Population.date">date (metawards.Population attribute)</a>
 </li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.date">date() (metawards.Interpret static method)</a>
+</li>
       <li><a href="api/generated/metawards.Population.html#metawards.Population.day">day (metawards.Population attribute)</a>
+</li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.day">day() (metawards.Interpret static method)</a>
+</li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.day_or_date">day_or_date() (metawards.Interpret static method)</a>
 </li>
       <li><a href="api/generated/metawards.utils.Console.html#metawards.utils.Console.debug">debug() (metawards.utils.Console static method)</a>
 </li>
@@ -553,12 +565,12 @@
 </li>
       <li><a href="api/generated/metawards.utils.delete_ran_binomial.html#metawards.utils.delete_ran_binomial">delete_ran_binomial() (in module metawards.utils)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/metawards.Demographic.html#metawards.Demographic">Demographic (class in metawards)</a>
 </li>
       <li><a href="api/generated/metawards.Demographics.html#metawards.Demographics">Demographics (class in metawards)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/metawards.Demographics.html#metawards.Demographics.demographics">demographics (metawards.Demographics attribute)</a>
 
       <ul>
@@ -646,7 +658,13 @@
       <li><a href="api/generated/metawards.app.get_hostfile.html#metawards.app.get_hostfile">get_hostfile() (in module metawards.app)</a>
 </li>
       <li><a href="api/generated/metawards.Demographics.html#metawards.Demographics.get_index">get_index() (metawards.Demographics method)</a>
+
+      <ul>
+        <li><a href="api/generated/metawards.Disease.html#metawards.Disease.get_index">(metawards.Disease method)</a>
 </li>
+        <li><a href="api/generated/metawards.Nodes.html#metawards.Nodes.get_index">(metawards.Nodes method)</a>
+</li>
+      </ul></li>
       <li><a href="api/generated/metawards.utils.get_initialise_functions.html#metawards.utils.get_initialise_functions">get_initialise_functions() (in module metawards.utils)</a>
 </li>
       <li><a href="api/generated/metawards.Disease.html#metawards.Disease.get_mapping_to">get_mapping_to() (metawards.Disease method)</a>
@@ -662,6 +680,8 @@
       <li><a href="api/generated/metawards.utils.get_model_loop_functions.html#metawards.utils.get_model_loop_functions">get_model_loop_functions() (in module metawards.utils)</a>
 </li>
       <li><a href="api/generated/metawards.Demographics.html#metawards.Demographics.get_name">get_name() (metawards.Demographics method)</a>
+</li>
+      <li><a href="api/generated/metawards.Network.html#metawards.Network.get_node_index">get_node_index() (metawards.Network method)</a>
 </li>
       <li><a href="api/generated/metawards.utils.get_number_of_processes.html#metawards.utils.get_number_of_processes">get_number_of_processes() (in module metawards.utils)</a>
 </li>
@@ -706,6 +726,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/metawards.Population.html#metawards.Population.has_equal_SEIR">has_equal_SEIR() (metawards.Population method)</a>
+</li>
+      <li><a href="api/generated/metawards.Population.html#metawards.Population.headers">headers() (metawards.Population method)</a>
 </li>
       <li><a href="api/generated/metawards.utils.how_many_vaccinated.html#metawards.utils.how_many_vaccinated">how_many_vaccinated() (in module metawards.utils)</a>
 </li>
@@ -763,9 +785,13 @@
 </li>
       <li><a href="api/generated/metawards.InputFiles.html#metawards.InputFiles">InputFiles (class in metawards)</a>
 </li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.integer">integer() (metawards.Interpret static method)</a>
+</li>
       <li><a href="api/generated/metawards.Demographics.html#metawards.Demographics.interaction_matrix">interaction_matrix (metawards.Demographics attribute)</a>
 </li>
       <li><a href="api/generated/metawards.mixers.InteractionMatrix.html#metawards.mixers.InteractionMatrix">InteractionMatrix (class in metawards.mixers)</a>
+</li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret">Interpret (class in metawards)</a>
 </li>
       <li><a href="api/generated/metawards.OutputFiles.html#metawards.OutputFiles.is_closed">is_closed() (metawards.OutputFiles method)</a>
 </li>
@@ -921,14 +947,14 @@
 </li>
       <li><a href="api/generated/metawards.Networks.html#metawards.Networks">Networks (class in metawards)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/metawards.Infections.html#metawards.Infections.nlinks">nlinks (metawards.Infections attribute)</a>
 
       <ul>
         <li><a href="api/generated/metawards.Network.html#metawards.Network.nlinks">(metawards.Network attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/metawards.Infections.html#metawards.Infections.nnodes">nnodes (metawards.Infections attribute)</a>
 
       <ul>
@@ -950,6 +976,8 @@
       <li><a href="api/generated/metawards.Infections.html#metawards.Infections.nsubnets">nsubnets (metawards.Infections attribute)</a>
 </li>
       <li><a href="api/generated/metawards.utils.NullProfiler.html#metawards.utils.NullProfiler">NullProfiler (class in metawards.utils)</a>
+</li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.number">number() (metawards.Interpret static method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1029,10 +1057,10 @@
 </li>
       <li><a href="api/generated/metawards.InputFiles.html#metawards.InputFiles.play_size">play_size (metawards.InputFiles attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/metawards.Node.html#metawards.Node.play_suscept">play_suscept (metawards.Node attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.plength_day">plength_day (metawards.Parameters attribute)</a>
 </li>
       <li><a href="api/generated/metawards.Population.html#metawards.Population">Population (class in metawards)</a>
@@ -1057,6 +1085,8 @@
 </li>
       <li><a href="api/generated/metawards.utils.Console.html#metawards.utils.Console.print">print() (metawards.utils.Console static method)</a>
 </li>
+      <li><a href="api/generated/metawards.utils.Console.html#metawards.utils.Console.print_exception">print_exception() (metawards.utils.Console static method)</a>
+</li>
       <li><a href="api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler">Profiler (class in metawards.utils)</a>
 </li>
       <li><a href="api/generated/metawards.Disease.html#metawards.Disease.progress">progress (metawards.Disease attribute)</a>
@@ -1074,6 +1104,10 @@
       <li><a href="api/generated/metawards.utils.ran_int.html#metawards.utils.ran_int">ran_int() (in module metawards.utils)</a>
 </li>
       <li><a href="api/generated/metawards.utils.ran_uniform.html#metawards.utils.ran_uniform">ran_uniform() (in module metawards.utils)</a>
+</li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.random_integer">random_integer() (metawards.Interpret static method)</a>
+</li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.random_number">random_number() (metawards.Interpret static method)</a>
 </li>
       <li><a href="api/generated/metawards.Demographics.html#metawards.Demographics.random_seed">random_seed (metawards.Demographics attribute)</a>
 </li>
@@ -1105,10 +1139,10 @@
 </li>
       <li><a href="api/generated/metawards.VariableSets.html#metawards.VariableSets.repeat">repeat() (metawards.VariableSets method)</a>
 </li>
-      <li><a href="api/generated/metawards.VariableSet.html#metawards.VariableSet.repeat_index">repeat_index() (metawards.VariableSet method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/metawards.VariableSet.html#metawards.VariableSet.repeat_index">repeat_index() (metawards.VariableSet method)</a>
+</li>
       <li><a href="api/generated/metawards.utils.rescale_play_matrix.html#metawards.utils.rescale_play_matrix">rescale_play_matrix() (in module metawards.utils)</a>
 
       <ul>
@@ -1199,20 +1233,18 @@
 </li>
       <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.set_variables">set_variables() (metawards.Parameters method)</a>
 </li>
-      <li><a href="api/generated/metawards.iterators.setup_additional_seeds.html#metawards.iterators.setup_additional_seeds">setup_additional_seeds() (in module metawards.iterators)</a>
-</li>
       <li><a href="api/generated/metawards.extractors.setup_core.html#metawards.extractors.setup_core">setup_core() (in module metawards.extractors)</a>
 </li>
       <li><a href="api/generated/metawards.iterators.setup_seed_all_wards.html#metawards.iterators.setup_seed_all_wards">setup_seed_all_wards() (in module metawards.iterators)</a>
 </li>
       <li><a href="api/generated/metawards.iterators.setup_seed_specified_ward.html#metawards.iterators.setup_seed_specified_ward">setup_seed_specified_ward() (in module metawards.iterators)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/metawards.iterators.setup_seed_wards.html#metawards.iterators.setup_seed_wards">setup_seed_wards() (in module metawards.iterators)</a>
 </li>
       <li><a href="api/generated/metawards.themes.Simple.html#metawards.themes.Simple">Simple (class in metawards.themes)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/metawards.Network.html#metawards.Network.single">single() (metawards.Network static method)</a>
 </li>
       <li><a href="api/generated/metawards.Demographic.html#metawards.Demographic.specialise">specialise() (metawards.Demographic method)</a>
@@ -1229,6 +1261,8 @@
 </li>
       <li><a href="api/generated/metawards.themes.SpringFlowers.html#metawards.themes.SpringFlowers">SpringFlowers (class in metawards.themes)</a>
 </li>
+      <li><a href="api/generated/metawards.Disease.html#metawards.Disease.stage">stage (metawards.Disease attribute)</a>
+</li>
       <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.stage_0">stage_0 (metawards.Parameters attribute)</a>
 </li>
       <li><a href="api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.start">start() (metawards.utils.Profiler method)</a>
@@ -1236,6 +1270,8 @@
       <li><a href="api/generated/metawards.Disease.html#metawards.Disease.start_symptom">start_symptom (metawards.Disease attribute)</a>
 </li>
       <li><a href="api/generated/metawards.utils.Profiler.html#metawards.utils.Profiler.stop">stop() (metawards.utils.Profiler method)</a>
+</li>
+      <li><a href="api/generated/metawards.Interpret.html#metawards.Interpret.string">string() (metawards.Interpret static method)</a>
 </li>
       <li><a href="api/generated/metawards.utils.string_to_ints.html#metawards.utils.string_to_ints">string_to_ints() (in module metawards.utils)</a>
 </li>
@@ -1276,6 +1312,8 @@
       <li><a href="api/generated/metawards.Workspace.html#metawards.Workspace.total_inf_ward">total_inf_ward (metawards.Workspace attribute)</a>
 </li>
       <li><a href="api/generated/metawards.Workspace.html#metawards.Workspace.total_new_inf_ward">total_new_inf_ward (metawards.Workspace attribute)</a>
+</li>
+      <li><a href="api/generated/metawards.Population.html#metawards.Population.totals">totals (metawards.Population attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1364,6 +1402,10 @@
       <li><a href="api/generated/metawards.Node.html#metawards.Node.x">x (metawards.Node attribute)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/metawards.Workspace.html#metawards.Workspace.X_in_wards">X_in_wards (metawards.Workspace attribute)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="Y">Y</h2>
@@ -1401,7 +1443,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 11, 2020.
+        Last updated on Jun 26, 2020.
       </span>
 
     </p>
@@ -1416,7 +1458,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
