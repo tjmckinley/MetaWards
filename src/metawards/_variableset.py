@@ -227,11 +227,12 @@ def _interpret(value):
 
     canonical = value.lower().replace('"', "'")
 
+    from ._interpret import Interpret
+
     if canonical.startswith("d'"):
         # this is a date
         try:
-            from dateparser import parse
-            return parse(value[2: -1]).date()
+            return Interpret.date(value[2: -1])
         except Exception:
             pass
 
@@ -240,15 +241,19 @@ def _interpret(value):
 
     elif canonical.startswith("f'"):
         # this is a floating point number
-        return float(value[2: -1])
+        return float(Interpret.number(value[2: -1]))
 
     elif canonical.startswith("i'"):
         # this is an integer
-        return int(value[2:-1])
+        return Interpret.integer(value[2:-1])
 
     elif canonical.startswith("s'"):
         # this is a string
-        return value[2:-1]
+        return Interpret.string(value[2:-1])
+
+    elif canonical.startswith("b'"):
+        # this is a boolean
+        return Interpret.boolean(value[2:-1])
 
     # now we have to guess...
     try:
@@ -267,20 +272,23 @@ def _interpret(value):
         pass
 
     try:
-        from .utils._safe_eval import safe_eval_number
-        return safe_eval_number(value)
+        from ._interpret import Interpret
+        return Interpret.number(value)
     except Exception:
         pass
 
-    # do this last as it is quite slow...
     try:
-        from dateparser import parse
-        return parse(value).date()
+        from ._interpret import Interpret
+        return Interpret.boolean(value)
     except Exception:
         pass
+
+    # don't try to interpret complex dates from strings as this
+    # leads to weird errors when the string is definitely not a date,
+    # but dateparser thinks it is, e.g. "a" is a date!
 
     # this can only be a string...
-    return value
+    return Interpret.string(value)
 
 
 def _wrap(text, width=70):

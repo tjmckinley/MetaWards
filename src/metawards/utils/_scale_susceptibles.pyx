@@ -218,13 +218,13 @@ cdef double redistribute(double target, double *values,
 
     if diff > 0:
         while diff > 0:
-            i = _ran_integer(rng, 0, nvalues)
+            i = _ran_integer(rng, 0, nvalues-1)
             if allow_extras[i]:
                 values[i] += 1
                 diff -= 1
     elif diff < 0:
         while diff < 0:
-            i = _ran_integer(rng, 0, nvalues)
+            i = _ran_integer(rng, 0, nvalues-1)
             if allow_extras[i]:
                 values[i] -= 1
                 diff += 1

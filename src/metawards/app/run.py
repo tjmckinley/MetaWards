@@ -868,8 +868,8 @@ def cli():
 
     if args.start_date:
         try:
-            from dateparser import parse
-            start_date = parse(args.start_date).date()
+            from .._interpret import Interpret
+            start_date = Interpret.date(args.start_date)
         except Exception:
             pass
 
@@ -983,8 +983,10 @@ def cli():
     else:
         params.set_disease("ncov")
 
-    Console.rule("Adjustable parameters to scan")
-    Console.print("\n".join([f"* {x}" for x in variables]), markdown=True)
+    # Commenting out for 1.2 release - will work out how to re-enable
+    # this in 1.3
+    #Console.rule("Adjustable parameters to scan")
+    #Console.print("\n".join([f"* {x}" for x in variables]), markdown=True)
 
     Console.rule("Model data")
     if args.model:
