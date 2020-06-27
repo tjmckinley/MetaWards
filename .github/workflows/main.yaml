@@ -86,7 +86,7 @@ jobs:
           METAWARDSDATA: ./MetaWardsData
         if: matrix.python-version == 3.8 && matrix.config.os == 'ubuntu-latest' && github.event_name == 'push'
       - name: Push changes
-        uses: ad-m/github-push-action@main
+        uses: ad-m/github-push-action@0.6.0
         with:
           branch: 'gh-pages'
           directory: 'gh-pages'
