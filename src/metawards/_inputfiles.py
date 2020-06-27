@@ -23,7 +23,7 @@ class InputFiles:
        >>> print(infiles)
        Model 2011Data version March 29 2020
        repository: https://github.com/metawards/MetaWardsData
-       repository_branch: master
+       repository_branch: main
        repository_version: 0.2.0
        etc.
     """

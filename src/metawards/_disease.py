@@ -41,7 +41,7 @@ class Disease:
        >>> print(disease)
        Disease ncov
        repository: https://github.com/metawards/MetaWardsData
-       repository_branch: master
+       repository_branch: main
        repository_version: 0.2.0
        beta = [0.0, 0.0, 0.95, 0.95, 0.0]
        progress = [1.0, 0.1923, 0.909091, 0.909091, 0.0]
