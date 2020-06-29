@@ -234,12 +234,17 @@ def run_models(network: _Union[Network, Networks],
                 with Console.redirect_output(subdir.get_path(),
                                              auto_bzip=output_dir.auto_bzip()):
                     Console.print(f"Running variable set {i+1}")
-                    Console.print(f"Variables: {variable}")
                     Console.print(f"Random seed: {seed}")
                     Console.print(f"nthreads: {nthreads}")
 
                     # no need to do anything complex - just a single run
                     params = network.params.set_variables(variable)
+
+                    Console.rule("Adjustable parameters to scan")
+                    Console.print("\n".join(
+                        [f"* {x}" for x in params.adjustments]),
+                        markdown=True)
+                    Console.rule()
 
                     network.update(params, profiler=profiler)
 
