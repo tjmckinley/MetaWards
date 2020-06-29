@@ -184,6 +184,10 @@ class Parameters:
     #: User parameters
     user_params: _Dict[str, float] = None
 
+    #: All of the VariableSet adjustments that have been applied
+    #: to these parameters
+    adjustments: _List[VariableSet] = None
+
     _name: str = None
     _version: str = None
     _authors: str = None

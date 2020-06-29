@@ -59,6 +59,14 @@ def prepare_worker(params: Parameters, demographics: Demographics,
 
     # always work in a copy
     network = global_network.copy()
+
+    if params.adjustments is not None:
+        from ._console import Console
+        Console.rule("Adjustable parameters to scan")
+        Console.print("\n".join([f"* {x}" for x in params.adjustments]),
+                      markdown=True)
+        Console.rule()
+
     network.update(params=params, demographics=demographics,
                    nthreads=nthreads, profiler=profiler)
 

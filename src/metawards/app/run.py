@@ -226,6 +226,13 @@ def parse_args():
     parser.add_argument("--debug-level", type=int, default=None,
                         help="Limit debug output to the specified level.")
 
+    parser.add_argument("--outdir-scheme", type=str, default="fingerprint",
+                        help="Set the naming scheme for output directory "
+                             "names for multiple model runs. Options are "
+                             "either 'fingerprint' to use the model "
+                             "fingerprint, 'sequential' for sequential "
+                             "numbering, or 'uid' to generate a unique ID.")
+
     parser.add_argument('--nthreads', type=int, default=None,
                         help="Number of threads over which parallelise an "
                              "individual model run. The total number of "
@@ -821,6 +828,29 @@ def cli():
 
     variables = variables.repeat(nrepeats)
 
+    outdir_scheme = args.outdir_scheme.lower().strip()
+
+    if outdir_scheme == "fingerprint":
+        Console.print(
+            "* Naming output subdirectories using a run's fingerprint",
+            markdown=True
+        )
+    elif outdir_scheme == "sequential":
+        Console.print(
+            "* Naming output subdirectories using a sequential scheme",
+            markdown=True
+        )
+        variables.set_outdir_from_number()
+    elif outdir_scheme == "uid":
+        Console.print(
+            "* Nameing output subdirectories using a unique ID",
+            markdown=True
+        )
+        variables.set_outdir_from_uid()
+    else:
+        Console.error(f"Unrecognised outdir naming scheme '{outdir_scheme}'")
+        raise ValueError(f"Unrecognised scheme '{outdir_scheme}'")
+
     # working out the number of processes and threads...
     from metawards.utils import guess_num_threads_and_procs
     (nthreads, nprocs) = guess_num_threads_and_procs(
@@ -982,11 +1012,6 @@ def cli():
         params.set_disease(args.disease)
     else:
         params.set_disease("ncov")
-
-    # Commenting out for 1.2 release - will work out how to re-enable
-    # this in 1.3
-    #Console.rule("Adjustable parameters to scan")
-    #Console.print("\n".join([f"* {x}" for x in variables]), markdown=True)
 
     Console.rule("Model data")
     if args.model:
