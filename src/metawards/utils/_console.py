@@ -3,6 +3,8 @@ from typing import Union as _Union
 from typing import List as _List
 from typing import IO as _IO
 
+from datetime import datetime as _datetime
+
 from contextlib import contextmanager as _contextmanager
 
 
@@ -16,8 +18,54 @@ _console = None
 _theme = None
 
 
+class _NullProgress:
+    """Null progress to use if user disables progress"""
+
+    def __init__(self):
+        pass
+
+    def __enter__(self, *args, **kwargs):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        return self
+
+    def add_task(self, *args, **kwargs):
+        return 0
+
+    def update(self, *args, **kwargs):
+        return
+
+
+class _Progress:
+    def __init__(self):
+        from rich.progress import Progress
+        self._progress = Progress(auto_refresh=False)
+        self._last_update = _datetime.now()
+
+    def __enter__(self, *args, **kwargs):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        self._progress.refresh()
+        return self
+
+    def add_task(self, *args, **kwargs):
+        return self._progress.add_task(*args, **kwargs)
+
+    def update(self, *args, **kwargs):
+        self._progress.update(*args, **kwargs)
+
+        now = _datetime.now()
+
+        if (now - self._last_update).total_seconds() > 0.1:
+            self._progress.refresh()
+            self._last_update = now
+
+
 class _NullSpinner:
-    """Null spinner to use if yaspin isn't available"""
+    """Null spinner to use if yaspin is not available
+       disables spinners"""
 
     def __init__(self):
         pass
@@ -135,6 +183,7 @@ class Console:
                                 emoji=Console.supports_emojis())
 
             _console._use_spinner = True
+            _console._use_progress = True
             _console._debugging_enabled = False
             _console._debugging_level = None
 
@@ -170,6 +219,7 @@ class Console:
         new_out = _Console(file=OUTFILE, record=False, log_time=True,
                            log_path=True, emoji=Console.supports_emojis())
         new_out._use_spinner = False
+        new_out._use_progress = False
         new_out._debugging_enabled = console._debugging_enabled
         new_out._debugging_level = console._debugging_level
         old_out = console
@@ -385,6 +435,20 @@ class Console:
     def set_use_spinner(use_spinner: bool = True):
         console = Console._get_console()
         console._use_spinner = use_spinner
+
+    @staticmethod
+    def set_use_progress(use_progress: bool = True):
+        console = Console._get_console()
+        console._use_progress = use_progress
+
+    @staticmethod
+    def progress():
+        console = Console._get_console()
+
+        if console._use_progress:
+            return _Progress()
+        else:
+            return _NullProgress()
 
     @staticmethod
     def spinner(text: str = ""):
