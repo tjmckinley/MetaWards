@@ -48,6 +48,7 @@ class _Progress:
 
     def __exit__(self, *args, **kwargs):
         self._progress.refresh()
+        Console.print("")
         return self
 
     def add_task(self, *args, **kwargs):

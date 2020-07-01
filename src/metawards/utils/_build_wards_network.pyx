@@ -70,7 +70,9 @@ def _read_network(filename: str, max_nodes: int, max_links: int):
         for parts in csv.reader(lines, dialect=dialect):
             linenum += 1
 
-            if len(parts) != 3:
+            if len(parts) == 0:
+                continue
+            elif len(parts) != 3:
                 Console.error(
                     f"Read invalid line from {filename} line {linenum}\n"
                     f"{parts}")

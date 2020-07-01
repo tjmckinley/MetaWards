@@ -91,7 +91,9 @@ def build_play_matrix(network: Network,
             for parts in csv.reader(lines, dialect=dialect):
                 linenum += 1
 
-                if len(parts) != 3:
+                if len(parts) == 0:
+                    continue
+                elif len(parts) != 3:
                     Console.error(
                         f"Read invalid line from {filename} line {linenum}\n"
                         f"{parts}")
@@ -192,7 +194,9 @@ def build_play_matrix(network: Network,
             for parts in csv.reader(lines, dialect=dialect):
                 linenum += 1
 
-                if len(parts) != 2:
+                if len(parts) == 0:
+                    continue
+                elif len(parts) != 2:
                     Console.error(
                         f"Read invalid line from {filename} line {linenum}\n"
                         f"{parts}")

@@ -55,4 +55,4 @@ work
 
 The ``work`` file contains the list of all work connections between nodes,
 giving the number of individuals who commute from the source node to the
-destination node. This is a space-separated
+destination node. This is a column-based file with three
