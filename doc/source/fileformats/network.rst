@@ -55,4 +55,26 @@ work
 
 The ``work`` file contains the list of all work connections between nodes,
 giving the number of individuals who commute from the source node to the
-destination node. This is a column-based file with three
+destination node. This is a column-based file with three columns of numbers
+that can be space or comma separated. For example;
+
+::
+
+    1 1 290
+    1 2 3
+    1 5 139
+    1 6 59
+    1 7 17
+    1 8 119
+    1 9 37
+    1 10 121
+
+The first number is the (1-indexed) index of the source node, while the
+second number is the (1-indexed) index of the destination node. The
+third number is the number of individuals who commute from the source
+to the destination node.
+
+In this example, this lists workers who commute from ward 1 to wards
+1 to 10. 290 workers commute from ward 1 to ward 1 (so work in the same
+ward in which they live). 3 workers commute from ward 1 to ward 2,
+139 commute from ward 1 to ward 5 etc.
