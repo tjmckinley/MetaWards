@@ -14,3 +14,26 @@ e.g.
   region, and then model the motion of staff, patients and the general
   population between these different environments.
 
+Network file formats
+--------------------
+
+A lot of data needs to be loaded to define the network. There are two
+file formats for specifying this data;
+
+1. :doc:`A set of fixed-format files <../../fileformats/network>` that
+   contain the data in a set of files that are contained in a single
+   directory. This is an older format that is used predominantly for
+   older model networks.
+
+2. :doc:`A JSON-format file <../../fileformats/network_json>` that contains
+   all of the data needed to describe the network in a single file.
+
+While you can edit these files directly, this can be error-prone. We thus
+recommend that you create and edit files using a Python script, as described
+below.
+
+Creating and editing Networks in Python
+---------------------------------------
+
+Ward.
+

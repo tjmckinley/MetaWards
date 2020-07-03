@@ -34,6 +34,61 @@ class WardInfo:
     #: The ID of the region it is in
     region_code: str = ""
 
+    def to_data(self):
+        """Return a dictionary that contains all of this data, in
+           a format that can be serialised to JSON
+        """
+        data = {}
+
+        if self.name is not None and len(self.name) > 0:
+            data["name"] = str(self.name)
+
+        if self.alternate_names is not None and len(self.alternate_names) > 0:
+            data["alternate_names"] = [str(x) for x in self.alternate_names]
+
+        if self.code is not None and len(self.code) > 0:
+            data["code"] = str(self.code)
+
+        if self.alternate_codes is not None and len(self.alternate_codes) > 0:
+            data["alternate_codes"] = [str(x) for x in self.alternate_codes]
+
+        if self.authority is not None and len(self.authority) > 0:
+            data["authority"] = str(self.authority)
+
+        if self.authority_code is not None and len(self.authority_code) > 0:
+            data["authority_code"] = str(self.authority_code)
+
+        if self.region is not None and len(self.region) > 0:
+            data["region"] = str(self.region)
+
+        if self.region_code is not None and len(self.region_code) > 0:
+            data["region_code"] = str(self.region_code)
+
+        return data
+
+    @staticmethod
+    def from_data(data):
+        """Construct from the passed dictionary, which has, e.g. been
+           deserialised from JSON
+        """
+        if data is None or len(data) == 0:
+            return WardInfo()
+
+        info = WardInfo()
+
+        info.name = str(data.get("name", ""))
+        info.alternate_names = [str(x) for x in
+                                data.get("alternate_names", [])]
+        info.code = str(data.get("code", ""))
+        info.alternate_codes = [str(x) for x in
+                                data.get("alternate_codes", [])]
+        info.authority = str(data.get("authority", ""))
+        info.authority_code = str(data.get("authority_code", ""))
+        info.region = str(data.get("region", ""))
+        info.region_code = str(data.get("region_code", ""))
+
+        return info
+
 
 @_dataclass
 class WardInfos:
