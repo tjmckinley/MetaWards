@@ -170,7 +170,10 @@ class Ward:
             raise ValueError(
                 f"The passed ID {id} must be greater or equal to 1")
 
-        self._info.id = id
+        self._id = id
+
+        if id not in self._players:
+            self._players[id] = 0.0
 
     def set_code(self, code: str):
         """Set the code of this ward"""
@@ -420,6 +423,18 @@ class Ward:
         """
         from copy import deepcopy
         return deepcopy(self._pos)
+
+    def work_connections(self):
+        """Return the full list of work connections for this ward"""
+        c = list(self._workers.keys())
+        c.sort()
+        return c
+
+    def play_connections(self):
+        """Return the full list of play connections for this ward"""
+        c = list(self._players.keys())
+        c.sort()
+        return c
 
     def to_data(self):
         """Return a dictionary that can be serialised to JSON"""
