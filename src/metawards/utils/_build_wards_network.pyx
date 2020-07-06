@@ -209,6 +209,8 @@ def build_wards_network(params: Parameters,
     network.nodes = nodes
     network.links = links
 
+    network.nodes.coordinates = params.input_files.coordinates
+
     Console.print(f"Number of nodes equals {nnodes}")
     Console.print(f"Number of links equals {nlinks}")
 

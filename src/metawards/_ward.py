@@ -4,14 +4,17 @@ from ._wardinfo import WardInfo
 __all__ = ["Ward"]
 
 
-def _as_positive_integer(number: int):
+def _as_positive_integer(number: int, zero_allowed: bool = True):
     try:
         number = int(number)
     except Exception:
         raise ValueError(f"{number} is not an integer")
 
-    if number < 1:
-        raise ValueError(f"{number} is not greater than 0")
+    if number < 0:
+        raise ValueError(f"{number} is negative - it must be positive")
+
+    if number == 0 and not zero_allowed:
+        raise ValueError("This value cannot be equal to zero")
 
     return number
 
@@ -151,9 +154,16 @@ class Ward:
         """Assert that the data in this ward is sane"""
         assert self._id is not None and self._id > 0
 
-        assert sum(self._players.values()) == 1.0
+        t = sum(self._players.values())
 
-        assert sum(self._workers.values()) == self._num_workers
+        if abs(t - 1.0) > 1e-6:
+            raise AssertionError(f"Player sum should equal 1.0, not {t}")
+
+        t = sum(self._workers.values())
+
+        if abs(t - self._num_workers) > 1e-6:
+            raise AssertionError(
+                f"Worker sum should be {self._num_workers}, not {t}")
 
     def set_name(self, name: str):
         """Set the name of this ward"""
@@ -203,7 +213,7 @@ class Ward:
             destination = self._id
 
         number = _as_positive_integer(number)
-        destination = _as_positive_integer(destination)
+        destination = _as_positive_integer(destination, zero_allowed=False)
 
         if destination not in self._workers:
             self._workers[destination] = 0
@@ -242,7 +252,7 @@ class Ward:
             destination = self._id
 
         weight = _as_positive_float(weight)
-        destination = _as_positive_integer(destination)
+        destination = _as_positive_integer(destination, zero_allowed=False)
 
         if destination == self._id:
             raise ValueError(
@@ -412,7 +422,10 @@ class Ward:
                          "long": float(long)}
 
         else:
-            raise ValueError(f"You must set either x/y or lat/long")
+            # nothing is being set - ignore
+            if y is not None or long is not None:
+                raise ValueError(
+                    "Confused inputs. Either set x and y, or lat and long")
 
     def position(self):
         """Return the position of the center of this ward. This will
@@ -476,23 +489,30 @@ class Ward:
         ward.set_position(x=pos.get("x", None), y=pos.get("y", None),
                           lat=pos.get("lat", None), long=pos.get("long", None),
                           units="km")
-        ward.set_num_workers(data.get("num_workers", 0))
         ward.set_num_players(data.get("num_players", 0))
 
         workers = data.get("workers", {})
 
         for d, p in zip(workers.get("destination", []),
                         workers.get("population", [])):
-            d = _as_positive_integer(d)
+            d = _as_positive_integer(d, zero_allowed=False)
             p = _as_positive_integer(p)
 
             ward._workers[d] = p
+
+        ward._num_workers = sum(ward._workers.values())
+
+        if data.get("num_workers", 0) > 0:
+            if ward.num_workers() != data["num_workers"]:
+                raise AssertionError(
+                    f"Disagreement in number of workers: {ward.num_workers()} "
+                    f"versus {data['num_workers']}")
 
         players = data.get("players", {})
 
         for d, w in zip(players.get("destination", []),
                         players.get("weights", [])):
-            d = _as_positive_integer(d)
+            d = _as_positive_integer(d, zero_allowed=False)
             w = _as_positive_float(w)
 
             ward._players[d] = w

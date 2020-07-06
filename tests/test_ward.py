@@ -1,5 +1,6 @@
 
 from metawards import WardInfo, Ward, Wards, Parameters, Network
+from metawards.utils import Profiler, Console
 import json
 import pytest
 
@@ -85,13 +86,37 @@ def test_ward_conversion():
     print("Building the network...")
     network = Network.build(params=params)
 
-    wards = network.to_wards()
+    profiler = Profiler()
+
+    profiler = profiler.start("to_json")
+    wards = network.to_wards(profiler=profiler)
 
     print("Converting to data...")
-    data = wards.to_data()
+    data = wards.to_data(profiler=profiler)
 
     print("Converting to json...")
+    profiler = profiler.start("Convert to JSON")
     s = json.dumps(data)
+    profiler = profiler.stop()
+
+    profiler = profiler.stop()  #  end to_json
+
+    print(f"Done: {s[0:250]}...")
+
+    print(f"Converting from json...")
+    profiler = profiler.start("Convert from JSON")
+
+    profiler = profiler.start("from_json")
+    data = json.loads(s)
+    profiler = profiler.stop()
+
+    wards2 = Wards.from_data(data, profiler=profiler)
+
+    network2 = Network.from_wards(wards2, profiler=profiler)
+
+    profiler = profiler.stop()
+
+    Console.print(profiler)
 
 
 if __name__ == "__main__":

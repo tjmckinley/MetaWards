@@ -1,6 +1,8 @@
 
 from typing import List as _List
 
+from .utils._profiler import Profiler, NullProfiler
+
 from ._ward import Ward
 
 __all__ = ["Wards"]
@@ -71,6 +73,36 @@ class Wards:
     def __len__(self):
         return len(self._wards)
 
+    def num_players(self):
+        """Return the total number of players in this network"""
+        num = 0
+
+        for ward in self._wards:
+            if ward is not None:
+                num += ward.num_players()
+
+        return num
+
+    def num_workers(self):
+        """Return the total number of workers in this network"""
+        num = 0
+
+        for ward in self._wards:
+            if ward is not None:
+                num += ward.num_workers()
+
+        return num
+
+    def population(self):
+        """Return the total population in this network"""
+        num = 0
+
+        for ward in self._wards:
+            if ward is not None:
+                num += ward.population()
+
+        return num
+
     def assert_sane(self):
         """Make sure that we don't refer to any non-existent wards"""
         if len(self._wards) == 0:
@@ -105,27 +137,89 @@ class Wards:
                         f"{ward} has a play connection to a null "
                         f"ward ID {c}. This ward is null")
 
-    def to_data(self):
+    def to_data(self, profiler: Profiler = None):
         """Return a data representation of these wards that can
            be serialised to JSON
         """
         if len(self) > 0:
+            if profiler is None:
+                profiler = NullProfiler()
+
+            p = profiler.start("to_data")
+            p = p.start("assert_sane")
             self.assert_sane()
-            return [x if x is None else x.to_data() for x in self._wards]
+            p = p.stop()
+
+            p = p.start("convert_wards")
+
+            nwards = len(self._wards)
+
+            from .utils._console import Console
+            with Console.progress(visible=(nwards > 250)) as progress:
+                data = []
+                task = progress.add_task("Converting to data", total=nwards)
+
+                for i, ward in enumerate(self._wards):
+                    if ward is None:
+                        data.append(None)
+                    else:
+                        data.append(ward.to_data())
+
+                    if i % 250 == 0:
+                        progress.update(task, completed=i+1)
+
+                progress.update(task, completed=nwards, force_update=True)
+
+            p = p.stop()
+            p = p.stop()
+
+            return data
+
         else:
             return None
 
     @staticmethod
-    def from_data(data):
+    def from_data(data, profiler: Profiler = None):
         """Return the Wards constructed from a data represnetation,
            which may have come from deserialised JSON
         """
         if data is None or len(data) == 0:
             return Wards()
 
-        wards = Wards()
-        wards._wards = [x if x is None else Ward.from_data(x) for x in data]
+        if profiler is None:
+            profiler = NullProfiler()
 
+        p = profiler.start("from_data")
+
+        p = p.start("convert_wards")
+        wards = Wards()
+
+        nwards = len(data)
+
+        from .utils._console import Console
+        with Console.progress(visible=(nwards > 250)) as progress:
+            task = progress.add_task("Converting from data", total=nwards)
+
+            w = []
+
+            for i, x in enumerate(data):
+                if x is None:
+                    w.append(None)
+                else:
+                    w.append(Ward.from_data(x))
+
+                if i % 250 == 0:
+                    progress.update(task, completed=i+1)
+
+            progress.update(task, completed=nwards, force_update=True)
+
+            wards._wards = w
+        p = p.stop()
+
+        p = p.start("assert_sane")
         wards.assert_sane()
+        p = p.stop()
+
+        p = p.stop()
 
         return wards

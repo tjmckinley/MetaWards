@@ -28,7 +28,7 @@ class _NullProgress:
         return self
 
     def __exit__(self, *args, **kwargs):
-        return self
+        return False
 
     def add_task(self, *args, **kwargs):
         return 0
@@ -49,12 +49,12 @@ class _Progress:
     def __exit__(self, *args, **kwargs):
         self._progress.refresh()
         Console.print("")
-        return self
+        return False
 
     def add_task(self, *args, **kwargs):
         return self._progress.add_task(*args, **kwargs)
 
-    def update(self, force_update: bool = False, *args, **kwargs):
+    def update(self, *args, force_update: bool = False, **kwargs):
         self._progress.update(*args, **kwargs)
 
         now = _datetime.now()
@@ -75,7 +75,7 @@ class _NullSpinner:
         return self
 
     def __exit__(self, *args, **kwargs):
-        return self
+        return False
 
     def success(self):
         pass
@@ -443,10 +443,10 @@ class Console:
         console._use_progress = use_progress
 
     @staticmethod
-    def progress():
+    def progress(visible: bool = True):
         console = Console._get_console()
 
-        if console._use_progress:
+        if visible and console._use_progress:
             return _Progress()
         else:
             return _NullProgress()

@@ -512,16 +512,16 @@ class Network:
         self.nodes.scale_susceptibles(work_ratio=work_ratio,
                                       play_ratio=play_ratio)
 
-    def to_wards(self):
+    def to_wards(self, profiler=None):
         """Return the ward-level data in this network converted to
            a Wards object. This supports editing and save/restore
            to JSON
         """
         from .utils._network_wards import save_to_wards
-        return save_to_wards(self)
+        return save_to_wards(self, profiler=profiler)
 
     @staticmethod
-    def from_wards(wards):
+    def from_wards(wards, profiler=None):
         """Construct a Network from the passed Wards object (e.g. after
            editing, or restoring from JSON
         """
