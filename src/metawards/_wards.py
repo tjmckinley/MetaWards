@@ -39,6 +39,8 @@ class Wards:
         for ward in wards:
             if isinstance(ward, Wards):
                 self.insert(ward._wards)
+            elif ward is None:
+                continue
             elif not isinstance(ward, Ward):
                 raise TypeError(
                     f"You cannot append a {ward} to a list of Ward objects!")

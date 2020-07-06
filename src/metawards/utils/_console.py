@@ -54,12 +54,12 @@ class _Progress:
     def add_task(self, *args, **kwargs):
         return self._progress.add_task(*args, **kwargs)
 
-    def update(self, *args, **kwargs):
+    def update(self, force_update: bool = False, *args, **kwargs):
         self._progress.update(*args, **kwargs)
 
         now = _datetime.now()
 
-        if (now - self._last_update).total_seconds() > 0.1:
+        if force_update or (now - self._last_update).total_seconds() > 0.1:
             self._progress.refresh()
             self._last_update = now
 

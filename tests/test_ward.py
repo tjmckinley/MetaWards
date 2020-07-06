@@ -1,6 +1,7 @@
 
-from metawards import WardInfo, Ward, Wards
+from metawards import WardInfo, Ward, Wards, Parameters, Network
 import json
+import pytest
 
 
 def test_ward_json():
@@ -66,5 +67,33 @@ def test_ward_json():
     assert wards != wards2
 
 
+@pytest.mark.slow
+def test_ward_conversion():
+    # load all of the parameters
+    try:
+        params = Parameters.load(parameters="march29")
+    except Exception as e:
+        print(f"Unable to load parameter files. Make sure that you have "
+              f"cloned the MetaWardsData repository and have set the "
+              f"environment variable METAWARDSDATA to point to the "
+              f"local directory containing the repository, e.g. the "
+              f"default is $HOME/GitHub/MetaWardsData")
+        raise e
+
+    params.set_input_files("2011Data")
+
+    print("Building the network...")
+    network = Network.build(params=params)
+
+    wards = network.to_wards()
+
+    print("Converting to data...")
+    data = wards.to_data()
+
+    print("Converting to json...")
+    s = json.dumps(data)
+
+
 if __name__ == "__main__":
     test_ward_json()
+    test_ward_conversion()
