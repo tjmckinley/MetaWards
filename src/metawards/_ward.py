@@ -293,6 +293,14 @@ class Ward:
         else:
             return self._players.get(_as_positive_integer(destination), 0.0)
 
+    def num_work_links(self):
+        """Return the total number of work links"""
+        return len(self._workers)
+
+    def num_play_links(self):
+        """Return the total number of play links"""
+        return len(self._players)
+
     def num_workers(self):
         """Return the total number of workers who make their home
            in this ward

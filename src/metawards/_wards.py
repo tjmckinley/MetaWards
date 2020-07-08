@@ -73,6 +73,26 @@ class Wards:
     def __len__(self):
         return len(self._wards)
 
+    def num_work_links(self):
+        """Return the total number of work links"""
+        n = 0
+
+        for ward in self._wards:
+            if ward is not None:
+                n += ward.num_work_links()
+
+        return n
+
+    def num_play_links(self):
+        """Return the total number of play links"""
+        n = 0
+
+        for ward in self._wards:
+            if ward is not None:
+                n += ward.num_play_links()
+
+        return n
+
     def num_players(self):
         """Return the total number of players in this network"""
         num = 0
