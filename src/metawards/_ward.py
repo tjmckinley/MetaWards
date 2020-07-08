@@ -354,12 +354,12 @@ class Ward:
         """Return a pair of arrays, containing the destination wards
            and player weights for this ward
         """
-        from .utils._array import create_double_array
+        from .utils._array import create_double_array, create_int_array
 
         keys = list(self._players.keys())
         keys.sort()
 
-        wards = create_double_array(len(keys))
+        wards = create_int_array(len(keys))
         weights = create_double_array(len(keys))
 
         for i, key in enumerate(keys):

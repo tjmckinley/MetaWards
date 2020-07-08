@@ -5,6 +5,12 @@ import json
 import pytest
 
 
+def _assert_equal(x, y):
+    if x != y:
+        print(f"{x} != {y}")
+        assert x == y
+
+
 def test_ward_json():
     w = WardInfo(name="something", alternate_names=["one", "two"],
                  code="123", alternate_codes=["1", "2", "cat"],
@@ -50,9 +56,9 @@ def test_ward_json():
 
     print(wards)
 
-    assert wards[ward.id()] == ward
-    assert wards[ward2.id()] == ward2
-    assert wards[ward3.id()] == ward3
+    _assert_equal(wards[ward.id()], ward)
+    _assert_equal(wards[ward2.id()], ward2)
+    _assert_equal(wards[ward3.id()], ward3)
 
     s = json.dumps(wards.to_data())
 
@@ -112,11 +118,48 @@ def test_ward_conversion():
 
     wards2 = Wards.from_data(data, profiler=profiler)
 
+    assert wards2 == wards
+
     network2 = Network.from_wards(wards2, profiler=profiler)
 
     profiler = profiler.stop()
 
     Console.print(profiler)
+
+    _assert_equal(network2.nnodes, network.nnodes)
+    _assert_equal(network2.nlinks, network.nlinks)
+    _assert_equal(network2.nplay, network.nplay)
+
+    if network.info is None:
+        assert network2.info is None
+
+    _assert_equal(len(network.info), len(network2.info))
+
+    for i in range(0, len(network.info)):
+        _assert_equal(network.info[i], network2.info[i])
+
+    for i in range(1, network.nnodes + 1):
+        _assert_equal(network.nodes.label[i], network2.nodes.label[i])
+        _assert_equal(network.nodes.begin_to[i], network2.nodes.begin_to[i])
+        _assert_equal(network.nodes.end_to[i], network2.nodes.end_to[i])
+        _assert_equal(network.nodes.self_w[i], network2.nodes.self_w[i])
+        _assert_equal(network.nodes.begin_p[i], network2.nodes.begin_p[i])
+        _assert_equal(network.nodes.end_p[i], network2.nodes.end_p[i])
+        _assert_equal(network.nodes.self_p[i], network2.nodes.self_p[i])
+        _assert_equal(network.nodes.x[i], network2.nodes.x[i])
+        _assert_equal(network.nodes.y[i], network2.nodes.y[i])
+
+    for i in range(1, network.nlinks + 1):
+        _assert_equal(network.links.ifrom[i], network2.links.ifrom[i])
+        _assert_equal(network.links.ito[i], network2.links.ito[i])
+        _assert_equal(network.links.weight[i], network2.links.weight[i])
+        _assert_equal(network.links.suscept[i], network2.links.suscept[i])
+
+    for i in range(1, network.nplay + 1):
+        _assert_equal(network.play.ifrom[i], network2.play.ifrom[i])
+        _assert_equal(network.play.ito[i], network2.play.ito[i])
+        _assert_equal(network.play.weight[i], network2.play.weight[i])
+        _assert_equal(network.play.suscept[i], network2.play.suscept[i])
 
 
 if __name__ == "__main__":
