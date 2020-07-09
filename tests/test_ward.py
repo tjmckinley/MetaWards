@@ -97,9 +97,6 @@ def test_ward_conversion():
     profiler = profiler.start("to_json")
     wards = network.to_wards(profiler=profiler)
 
-    print("Converting to data...")
-    data = wards.to_data(profiler=profiler)
-
     print(f"{wards.num_workers()} / {wards.num_players()}")
 
     _assert_equal(wards.num_workers(), network.work_population)
@@ -109,6 +106,9 @@ def test_ward_conversion():
 
     _assert_equal(wards.num_work_links(), network.nlinks)
     _assert_equal(wards.num_play_links(), network.nplay)
+
+    print("Converting to data...")
+    data = wards.to_data(profiler=profiler)
 
     print("Converting to json...")
     profiler = profiler.start("Convert to JSON")

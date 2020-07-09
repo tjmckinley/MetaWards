@@ -406,6 +406,7 @@ def save_to_wards(network: Network, profiler: Profiler = None,
             weight = wards[i].get_players(destination=i)
 
             if self_weight[i] is None:
+                Console.print(f"not seen {i} weight {weight}")
                 # the weight should either be zero or one
                 if weight > 0.5:
                     self_weight[i] = 1.0
@@ -418,6 +419,10 @@ def save_to_wards(network: Network, profiler: Profiler = None,
                 errors.append(
                     f"Ward {i} weight disagreement? {self_weight[i]} "
                     f"versus {weight}")
+
+                if len(errors) > 10:
+                    Console.error("Lots of errors! Exiting early!")
+                    break
 
         if len(errors) > 0:
             Console.error("\n".join(errors))

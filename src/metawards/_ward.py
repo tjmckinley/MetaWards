@@ -98,7 +98,9 @@ class Ward:
         self._id = id
 
         self._workers = {}
-        self._players = {id: 1.0}
+        self._players = {}
+
+        self._player_total = 1.0
 
         self._num_workers = 0
         self._num_players = 0
@@ -154,7 +156,7 @@ class Ward:
         """Assert that the data in this ward is sane"""
         assert self._id is not None and self._id > 0
 
-        t = sum(self._players.values())
+        t = sum(self._players.values()) + self._player_total
 
         if abs(t - 1.0) > 1e-6:
             raise AssertionError(f"Player sum should equal 1.0, not {t}")
@@ -181,9 +183,6 @@ class Ward:
                 f"The passed ID {id} must be greater or equal to 1")
 
         self._id = id
-
-        if id not in self._players:
-            self._players[id] = 0.0
 
     def set_code(self, code: str):
         """Set the code of this ward"""
@@ -244,34 +243,62 @@ class Ward:
         """Add the weight for players who will randomly move to
            the specified destination to play (or to play in the home
            ward if destination is not set). Note that the sum of
-           player weights must be 1.0. Adding a weight to a non-home
-           ward will subtract that weight from the home ward. Note that
-           you cannot add a weight such that this is more than one
+           player weights cannot be greater than 1.0.
         """
         if destination is None:
             destination = self._id
 
+        tiny = 1e-10
+
         weight = _as_positive_float(weight)
         destination = _as_positive_integer(destination, zero_allowed=False)
 
-        if destination == self._id:
-            raise ValueError(
-                f"You cannot set the player weight of the home ward "
-                f"{self._id} as this is derived from the weights of "
-                f"players moving to other wards")
+        if weight < tiny:
+            return
 
-        if weight > self._players[self._id]:
+        if weight > self._player_total:
             raise ValueError(
-                f"You cannot add {weight} to {destination} as this is greater "
-                f"than the remaining weight of the home {self._id} ward "
-                f"{self._players[self._id]}. You can only add a weight that "
-                f"is less than this value")
+                f"You cannot add {weight} to {destination} as the sum of "
+                f"weights must be <= 1.0, and this is greater "
+                f"than the remaining weight available {self._player_total}. "
+                f"You can only add a weight that is less than this value")
 
         if destination not in self._players:
             self._players[destination] = 0
 
         self._players[destination] += weight
-        self._players[self._id] -= weight
+        self._player_total -= weight
+
+        if self._player_total < tiny:
+            self._player_total = 0
+
+    def subtract_player_weight(self, weight: float, destination: int = None):
+        """Subtract the weight for players who will randomly move to
+           the specified destination to play (or to play in the home
+           ward if destination is not set).
+        """
+        if destination is None:
+            destination = self._id
+
+        tiny = 1e-10
+
+        weight = _as_positive_float(weight)
+        destination = _as_positive_integer(destination, zero_allowed=False)
+
+        if weight < tiny:
+            return
+
+        if destination not in self._players:
+            return
+
+        if weight > self._players[destination]:
+            weight = self._players[destination]
+
+        self._player_total += weight
+        del self._players[destination]
+
+        if abs(self._player_total - 1.0) < tiny:
+            self._player_total = 1.0
 
     def get_workers(self, destination: int = None):
         """Return the number of workers who commute to the specified
@@ -524,6 +551,15 @@ class Ward:
             w = _as_positive_float(w)
 
             ward._players[d] = w
+
+        ward._player_total = 1.0 - sum(ward._players.values())
+
+        if ward._player_total < 0:
+            raise AssertionError(
+                f"The sum of player weights cannot be greater than zero")
+
+        elif ward._player_total < 1e-10:
+            ward._player_total = 0
 
         ward.assert_sane()
 
