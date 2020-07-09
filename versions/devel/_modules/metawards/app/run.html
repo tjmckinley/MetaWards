@@ -410,6 +410,9 @@
                         <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Disable the spinner that spins when little &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;output is being printed to the screen.&quot;</span><span class="p">)</span>
 
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--no-progress&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Disable the progress bars that show progress.&quot;</span><span class="p">)</span>
+
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--debug&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Enable debugging output. This is useful &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;for MetaWards developers or if you are &quot;</span>
@@ -512,6 +515,10 @@
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">no_spinner</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">..utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
         <span class="n">Console</span><span class="o">.</span><span class="n">set_use_spinner</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">no_progress</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">set_use_progress</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">..utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
@@ -1418,7 +1425,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 29, 2020.
+        Last updated on Jul 09, 2020.
       </span>
 
     </p>

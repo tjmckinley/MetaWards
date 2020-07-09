@@ -221,9 +221,10 @@
                  [-P POPULATION] [-n NSTEPS] [-u USER_VARIABLES]
                  [--iterator ITERATOR] [--extractor EXTRACTOR] [--mixer MIXER]
                  [--mover MOVER] [--star-is-E] [--star-is-R] [--disable-star]
-                 [--UV UV] [--theme THEME] [--no-spinner] [--debug]
-                 [--debug-level DEBUG_LEVEL] [--outdir-scheme OUTDIR_SCHEME]
-                 [--nthreads NTHREADS] [--nprocs NPROCS] [--hostfile HOSTFILE]
+                 [--UV UV] [--theme THEME] [--no-spinner] [--no-progress]
+                 [--debug] [--debug-level DEBUG_LEVEL]
+                 [--outdir-scheme OUTDIR_SCHEME] [--nthreads NTHREADS]
+                 [--nprocs NPROCS] [--hostfile HOSTFILE]
                  [--cores-per-node CORES_PER_NODE] [--auto-bzip]
                  [--no-auto-bzip] [--force-overwrite-output]
                  [--max-nodes MAX_NODES] [--max-links MAX_LINKS] [--profile]
@@ -359,6 +360,8 @@ optional arguments:
                         (default: None)
   --no-spinner          Disable the spinner that spins when little output is
                         being printed to the screen. (default: None)
+  --no-progress         Disable the progress bars that show progress.
+                        (default: None)
   --debug               Enable debugging output. This is useful for MetaWards
                         developers or if you are writing your own iterators,
                         extractors etc. (default: None)
@@ -442,7 +445,7 @@ optional arguments:
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 29, 2020.
+        Last updated on Jul 09, 2020.
       </span>
 
     </p>

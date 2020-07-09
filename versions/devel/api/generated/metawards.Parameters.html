@@ -270,7 +270,7 @@ e.g.</p>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.read_variables" title="metawards.Parameters.read_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_variables</span></code></a>(filename,&nbsp;line_numbers)</td>
 <td>Read in extra variable parameters from the specified line number(s) of the specified file, returning the list of the dictionaries of variables that have been read.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.set_disease" title="metawards.Parameters.set_disease"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_disease</span></code></a>(disease)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.set_disease" title="metawards.Parameters.set_disease"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_disease</span></code></a>(disease,&nbsp;silent)</td>
 <td>“Set the disease that will be modelled</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.set_input_files" title="metawards.Parameters.set_input_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_input_files</span></code></a>(input_files)</td>
@@ -540,7 +540,7 @@ None then all lines will be read.</li>
 
 <dl class="method">
 <dt id="metawards.Parameters.set_disease">
-<code class="descname">set_disease</code><span class="sig-paren">(</span><em>disease: metawards._disease.Disease</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_parameters.html#Parameters.set_disease"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Parameters.set_disease" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_disease</code><span class="sig-paren">(</span><em>disease: metawards._disease.Disease</em>, <em>silent: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_parameters.html#Parameters.set_disease"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Parameters.set_disease" title="Permalink to this definition">¶</a></dt>
 <dd><p>“Set the disease that will be modelled</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -549,6 +549,7 @@ None then all lines will be read.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>disease</strong> – The disease to be modelled. If a string is passed</li>
 <li><strong>the disease will be loaded using that string</strong> (<em>then</em>) – </li>
+<li><strong>silent</strong> – Whether or not to suppress printing out the disease</li>
 </ul>
 </td>
 </tr>
@@ -647,7 +648,7 @@ supported</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 29, 2020.
+        Last updated on Jul 09, 2020.
       </span>
 
     </p>

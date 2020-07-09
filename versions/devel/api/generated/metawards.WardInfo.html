@@ -245,6 +245,12 @@ authority it is in etc.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.WardInfo.__init__" title="metawards.WardInfo.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(name,&nbsp;alternate_names,&nbsp;code,&nbsp;…)</td>
 <td></td>
 </tr>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.WardInfo.from_data" title="metawards.WardInfo.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a>(data)</td>
+<td>Construct from the passed dictionary, which has, e.g.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.WardInfo.to_data" title="metawards.WardInfo.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a>()</td>
+<td>Return a dictionary that contains all of this data, in a format that can be serialised to JSON</td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
@@ -304,6 +310,13 @@ authority it is in etc.</p>
 <dd><p>Official ID code of the ward</p>
 </dd></dl>
 
+<dl class="staticmethod">
+<dt id="metawards.WardInfo.from_data">
+<em class="property">static </em><code class="descname">from_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_wardinfo.html#WardInfo.from_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardInfo.from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct from the passed dictionary, which has, e.g. been
+deserialised from JSON</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="metawards.WardInfo.name">
 <code class="descname">name</code><em class="property"> = ''</em><a class="headerlink" href="#metawards.WardInfo.name" title="Permalink to this definition">¶</a></dt>
@@ -320,6 +333,13 @@ authority it is in etc.</p>
 <dt id="metawards.WardInfo.region_code">
 <code class="descname">region_code</code><em class="property"> = ''</em><a class="headerlink" href="#metawards.WardInfo.region_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>The ID of the region it is in</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.WardInfo.to_data">
+<code class="descname">to_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_wardinfo.html#WardInfo.to_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardInfo.to_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dictionary that contains all of this data, in
+a format that can be serialised to JSON</p>
 </dd></dl>
 
 </dd></dl>
@@ -347,7 +367,7 @@ authority it is in etc.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 29, 2020.
+        Last updated on Jul 09, 2020.
       </span>
 
     </p>
