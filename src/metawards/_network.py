@@ -146,7 +146,10 @@ class Network:
 
         p = profiler.start("Network.build")
 
-        if params.input_files.is_single:
+        if isinstance(params.input_files, str):
+            raise AssertionError("Need to write code to load from JSON")
+
+        elif params.input_files.is_single:
             if population is None:
                 population = Population(initial=1000)
 
