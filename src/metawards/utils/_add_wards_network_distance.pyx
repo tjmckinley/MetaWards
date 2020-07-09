@@ -62,6 +62,28 @@ cdef double distance_x_y(double x1, double y1,
     return sqrt(dx + dy)
 
 
+def zero_distances(network, Network, nthreads: int = 1):
+    """Zero the link and play link distances"""
+    links = network.links
+    play = network.play
+
+    cdef double * links_distance = get_double_array_ptr(links.distance)
+    cdef double * play_distance = get_double_array_ptr(play.distance)
+
+    cdef int nlinks_plus_one = network.nlinks + 1
+    cdef int nplay_plus_one = network.nplay + 1
+
+    cdef int i = 0
+    cdef int num_threads = nthreads
+
+    with nogil, parallel(num_threads=num_threads):
+        for i in prange(1, nlinks_plus_one, schedule="static"):
+            links_distance[i] = 0.0
+
+        for i in prange(1, nplay_plus_one, schedule="static"):
+            play_distance[i] = 0.0
+
+
 def calc_network_distance(network: Network, nthreads: int = 1):
     """Recalculate and save all of the distances for the
        work and play links between wards
@@ -74,6 +96,9 @@ def calc_network_distance(network: Network, nthreads: int = 1):
         calc_distance = distance_x_y
     elif network.nodes.coordinates == "lat/long":
         calc_distance = distance_lat_long
+    elif network.nodes.coordinates is None:
+        zero_distances(network, nthreads)
+        return
     else:
         raise ValueError(f"Unrecognised coordinate system "
                          f"{network.nodes.coordinates}")

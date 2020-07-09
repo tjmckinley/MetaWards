@@ -29,7 +29,7 @@ def load_from_wards(wards: Wards, params: Parameters = None,
         if disease is None:
             disease = Disease.load()
 
-        params.set_disease(disease)
+        params.set_disease(disease, silent=True)
     else:
         if not isinstance(params, Parameters):
             raise TypeError(f"The parameters must be Parameters!")
@@ -38,7 +38,7 @@ def load_from_wards(wards: Wards, params: Parameters = None,
         params = deepcopy(params)
 
         if disease is not None:
-            params.set_disease(disease)
+            params.set_disease(disease, silent=True)
 
     from .._inputfiles import InputFiles
     params.input_files = InputFiles()
@@ -65,6 +65,10 @@ def load_from_wards(wards: Wards, params: Parameters = None,
     cdef int * nodes_begin_to = get_int_array_ptr(nodes.begin_to)
     cdef int * nodes_end_to = get_int_array_ptr(nodes.end_to)
     cdef int * nodes_self_w = get_int_array_ptr(nodes.self_w)
+
+    cdef double * nodes_play_suscept = get_double_array_ptr(nodes.play_suscept)
+    cdef double * nodes_save_play_suscept = get_double_array_ptr(
+                                                nodes.save_play_suscept)
 
     cdef int * nodes_begin_p = get_int_array_ptr(nodes.begin_p)
     cdef int * nodes_end_p = get_int_array_ptr(nodes.end_p)
@@ -111,6 +115,9 @@ def load_from_wards(wards: Wards, params: Parameters = None,
                 nodes_y[node_id] = pos.get("long", 0.0)
 
             nodes_label[node_id] = ward.id()
+
+            nodes_play_suscept[node_id] = <double>(ward.num_players())
+            nodes_save_play_suscept[node_id] = nodes_play_suscept[node_id]
 
             info[node_id] = ward.info()
 
@@ -249,8 +256,9 @@ def load_from_wards(wards: Wards, params: Parameters = None,
 
     network.info = info
 
-    network.work_population = wards.num_workers()
-    network.play_population = wards.num_players()
+    p = p.start("move_from_play_to_work")
+    network.move_from_play_to_work(nthreads=nthreads, profiler=p)
+    p = p.stop()
 
     from ._add_wards_network_distance import calc_network_distance
     calc_network_distance(network=network, nthreads=nthreads)
@@ -271,14 +279,20 @@ def load_from_wards(wards: Wards, params: Parameters = None,
     network.rescale_play_matrix(nthreads=nthreads, profiler=p)
     p = p.stop()
 
-    p = p.start("move_from_play_to_work")
-    network.move_from_play_to_work(nthreads=nthreads, profiler=p)
-    p = p.stop()
-
     Console.print(f"**Network loaded. Population: {network.population}, "
                     f"Workers: {network.work_population}, Players: "
                     f"{network.play_population}**",
                     markdown=True)
+
+    if network.work_population != wards.num_workers() or \
+       network.play_population != wards.num_players():
+        Console.error(
+            f"Program bug: Disagreement between the number of "
+            f"workers ({network.work_population} vs {wards.num_workers()}) "
+            f"or players ({network.play_population} vs {wards.num_players()}) "
+            f"which means that there is a data corruption somewhere...")
+
+        raise AssertionError("Disagreement in population sizes")
 
     p = p.stop()
 
@@ -320,6 +334,7 @@ def save_to_wards(network: Network, profiler: Profiler = None,
     cdef int nplay = len(play)
 
     cdef int have_info = 1 if (len(info) > 1) else 0
+    cdef int have_coords = 0 if nodes.coordinates is None else 1
     cdef int xy_coords = 1 if nodes.coordinates == "x/y" else 0
 
     wards = [None]
@@ -342,10 +357,11 @@ def save_to_wards(network: Network, profiler: Profiler = None,
             if have_info:
                 ward.set_info(info[i])
 
-            if xy_coords:
-                ward.set_position(x=nodes_x[i], y=nodes_y[i], units="km")
-            else:
-                ward.set_position(lat=nodes_x[i], long=nodes_y[i])
+            if have_coords:
+                if xy_coords:
+                    ward.set_position(x=nodes_x[i], y=nodes_y[i], units="km")
+                else:
+                    ward.set_position(lat=nodes_x[i], long=nodes_y[i])
 
             ward.set_num_players(nodes_save_play_suscept[i])
 

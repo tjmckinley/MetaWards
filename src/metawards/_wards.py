@@ -22,9 +22,9 @@ class Wards:
         if len(self) == 0:
             return "Wards::null"
         elif len(self) < 10:
-            return f"[ {', '.join([str(x) for x in self._wards])} ]"
+            return f"[ {', '.join([str(x) for x in self._wards[1:]])} ]"
         else:
-            s = f"[ {', '.join([str(x) for x in self._wards[0:6]])}, ... "
+            s = f"[ {', '.join([str(x) for x in self._wards[1:7]])}, ... "
             s += f"{', '.join([str(x) for x in self._wards[-3:]])} ]"
 
             return s
@@ -55,7 +55,7 @@ class Wards:
                 if ward.id() > largest_id:
                     largest_id = ward.id()
 
-        if largest_id > len(self._wards):
+        if largest_id >= len(self._wards):
             self._wards += [None] * (largest_id - len(self._wards) + 1)
 
         for ward in wards:

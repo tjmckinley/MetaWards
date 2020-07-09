@@ -38,28 +38,37 @@ class _NullProgress:
 
 
 class _Progress:
-    def __init__(self):
+    def __init__(self, show_limit: int = 50):
         from rich.progress import Progress
         self._progress = Progress(auto_refresh=False)
         self._last_update = _datetime.now()
+        self._show_limit = show_limit
         self._completed = {}
 
     def __enter__(self, *args, **kwargs):
         return self
 
     def __exit__(self, *args, **kwargs):
-        self._progress.refresh()
-        Console.print("")
+        if len(self._completed) > 0:
+            self._progress.refresh()
+            Console.print("")
+
         return False
 
-    def add_task(self, *args, **kwargs):
-        task_id = self._progress.add_task(*args, **kwargs)
-        self._completed[task_id] = 0
-        return task_id
+    def add_task(self, description: str, total: int):
+        if total > self._show_limit:
+            task_id = self._progress.add_task(description=description,
+                                              total=total)
+            self._completed[task_id] = 0
+            return task_id
+        else:
+            return None
 
     def update(self, task_id: int, completed: float = None,
                advance: float = None, force_update: bool = False):
-        if completed is not None:
+        if task_id is None:
+            return
+        elif completed is not None:
             self._completed[task_id] = completed
         elif advance is not None:
             self._completed[task_id] += advance
@@ -454,11 +463,11 @@ class Console:
         console._use_progress = use_progress
 
     @staticmethod
-    def progress(visible: bool = True):
+    def progress(visible: bool = True, show_limit: int = 50):
         console = Console._get_console()
 
         if visible and console._use_progress:
-            return _Progress()
+            return _Progress(show_limit=show_limit)
         else:
             return _NullProgress()
 
