@@ -136,7 +136,7 @@ def build_play_matrix(network: Network,
                 if linenum % update_freq == 0:
                     progress.update(task, completed=linenum)
 
-            progress.update(task, completed=nlines)
+            progress.update(task, completed=nlines, force_update=True)
 
         if nlinks >= MAX_LINKS:
             raise MemoryError(f"There are too many links (>{nlinks}) to fit "
@@ -215,7 +215,7 @@ def build_play_matrix(network: Network,
                 if linenum % update_freq == 0:
                     progress.update(task, completed=linenum)
 
-            progress.update(task, completed=nlines)
+            progress.update(task, completed=nlines, force_update=True)
 
         # we now need to fill in the missing nodes that are defined
         # in the play_size file, but were not linked to in the node

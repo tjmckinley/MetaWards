@@ -125,7 +125,7 @@ def _read_network(filename: str, max_nodes: int, max_links: int):
             if linenum % update_freq == 0:
                 progress.update(task, completed=linenum)
 
-        progress.update(task, completed=nlines)
+        progress.update(task, completed=nlines, force_update=True)
 
     if nlinks >= MAX_LINKS or nnodes >= MAX_NODES:
         raise MemoryError(

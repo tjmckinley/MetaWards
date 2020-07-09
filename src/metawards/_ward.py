@@ -256,6 +256,9 @@ class Ward:
         if weight < tiny:
             return
 
+        if abs(weight - self._player_total) < tiny:
+            weight = self._player_total
+
         if weight > self._player_total:
             raise ValueError(
                 f"You cannot add {weight} to {destination} as the sum of "
@@ -554,12 +557,12 @@ class Ward:
 
         ward._player_total = 1.0 - sum(ward._players.values())
 
-        if ward._player_total < 0:
+        if abs(ward._player_total) < 1e-10:
+            ward._player_total = 0
+
+        elif ward._player_total < 0:
             raise AssertionError(
                 f"The sum of player weights cannot be greater than zero")
-
-        elif ward._player_total < 1e-10:
-            ward._player_total = 0
 
         ward.assert_sane()
 

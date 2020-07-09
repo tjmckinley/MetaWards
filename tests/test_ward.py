@@ -5,10 +5,11 @@ import json
 import pytest
 
 
-def _assert_equal(x, y):
+def _assert_equal(x, y, delta=1e-10):
     if x != y:
-        print(f"{x} != {y}")
-        assert x == y
+        if abs(x - y) > delta:
+            print(f"{x} != {y}")
+            assert x == y
 
 
 def test_ward_json():
@@ -136,6 +137,8 @@ def test_ward_conversion():
 
     Console.print(profiler)
 
+    Console.print("Validating equality - may take some time...")
+
     _assert_equal(network2.nnodes, network.nnodes)
     _assert_equal(network2.nlinks, network.nlinks)
     _assert_equal(network2.nplay, network.nplay)
@@ -145,31 +148,52 @@ def test_ward_conversion():
 
     _assert_equal(len(network.info), len(network2.info))
 
-    for i in range(0, len(network.info)):
-        _assert_equal(network.info[i], network2.info[i])
+    Console.print(f"{len(network.info)}, {network.nnodes}")
 
-    for i in range(1, network.nnodes + 1):
-        _assert_equal(network.nodes.label[i], network2.nodes.label[i])
-        _assert_equal(network.nodes.begin_to[i], network2.nodes.begin_to[i])
-        _assert_equal(network.nodes.end_to[i], network2.nodes.end_to[i])
-        _assert_equal(network.nodes.self_w[i], network2.nodes.self_w[i])
-        _assert_equal(network.nodes.begin_p[i], network2.nodes.begin_p[i])
-        _assert_equal(network.nodes.end_p[i], network2.nodes.end_p[i])
-        _assert_equal(network.nodes.self_p[i], network2.nodes.self_p[i])
-        _assert_equal(network.nodes.x[i], network2.nodes.x[i])
-        _assert_equal(network.nodes.y[i], network2.nodes.y[i])
+    with Console.progress() as progress:
+        task1 = progress.add_task("Validating info", total=len(network.info))
+        task2 = progress.add_task("Validating nodes", total=network.nnodes)
+        task3 = progress.add_task("Validating work", total=network.nlinks)
+        task4 = progress.add_task("Validating play", total=network.nplay)
 
-    for i in range(1, network.nlinks + 1):
-        _assert_equal(network.links.ifrom[i], network2.links.ifrom[i])
-        _assert_equal(network.links.ito[i], network2.links.ito[i])
-        _assert_equal(network.links.weight[i], network2.links.weight[i])
-        _assert_equal(network.links.suscept[i], network2.links.suscept[i])
+        for i in range(0, len(network.info)):
+            assert network.info[i] == network2.info[i]
+            progress.update(task1, advance=1)
 
-    for i in range(1, network.nplay + 1):
-        _assert_equal(network.play.ifrom[i], network2.play.ifrom[i])
-        _assert_equal(network.play.ito[i], network2.play.ito[i])
-        _assert_equal(network.play.weight[i], network2.play.weight[i])
-        _assert_equal(network.play.suscept[i], network2.play.suscept[i])
+        progress.update(task1, completed=len(network.info), force_update=True)
+
+        for i in range(1, network.nnodes + 1):
+            _assert_equal(network.nodes.label[i], network2.nodes.label[i])
+            _assert_equal(
+                network.nodes.begin_to[i], network2.nodes.begin_to[i])
+            _assert_equal(network.nodes.end_to[i], network2.nodes.end_to[i])
+            _assert_equal(network.nodes.self_w[i], network2.nodes.self_w[i])
+            _assert_equal(network.nodes.begin_p[i], network2.nodes.begin_p[i])
+            _assert_equal(network.nodes.end_p[i], network2.nodes.end_p[i])
+            _assert_equal(network.nodes.self_p[i], network2.nodes.self_p[i])
+            _assert_equal(network.nodes.x[i], network2.nodes.x[i])
+            _assert_equal(network.nodes.y[i], network2.nodes.y[i])
+            progress.update(task2, advance=1)
+
+        progress.update(task2, completed=network.nnodes, force_update=True)
+
+        for i in range(1, network.nlinks + 1):
+            _assert_equal(network.links.ifrom[i], network2.links.ifrom[i])
+            _assert_equal(network.links.ito[i], network2.links.ito[i])
+            _assert_equal(network.links.weight[i], network2.links.weight[i])
+            _assert_equal(network.links.suscept[i], network2.links.suscept[i])
+            progress.update(task3, advance=1)
+
+        progress.update(task3, completed=network.nlinks, force_update=True)
+
+        for i in range(1, network.nplay + 1):
+            _assert_equal(network.play.ifrom[i], network2.play.ifrom[i])
+            _assert_equal(network.play.ito[i], network2.play.ito[i])
+            _assert_equal(network.play.weight[i], network2.play.weight[i])
+            _assert_equal(network.play.suscept[i], network2.play.suscept[i])
+            progress.update(task4, advance=1)
+
+        progress.update(task4, completed=network.nplay, force_update=True)
 
 
 if __name__ == "__main__":

@@ -156,7 +156,7 @@ def load_from_wards(wards: Wards, params: Parameters = None,
                 continue
 
             nodes_begin_to[i] = ilink + 1
-            nodes_end_to[i] = nodes_begin_to[i] + len(worker_list[0]) - 1
+            nodes_end_to[i] = nodes_begin_to[i] + len(worker_list[0])
 
             dest = get_int_array_ptr(worker_list[0])
             pop = get_int_array_ptr(worker_list[1])
@@ -167,6 +167,10 @@ def load_from_wards(wards: Wards, params: Parameters = None,
                 links_ito[ilink] = dest[j]
                 links_weight[ilink] = <double>(pop[j])
                 links_suscept[ilink] = links_weight[ilink]
+
+                if i == dest[j]:
+                    # this is the self-link
+                    nodes_self_w[i] = ilink
 
             if i % 250 == 0:
                 progress.update(task, completed=i)
@@ -198,7 +202,7 @@ def load_from_wards(wards: Wards, params: Parameters = None,
                 continue
 
             nodes_begin_p[i] = ilink + 1
-            nodes_end_p[i] = nodes_begin_p[i] + len(player_list[0]) - 1
+            nodes_end_p[i] = nodes_begin_p[i] + len(player_list[0])
 
             dest = get_int_array_ptr(player_list[0])
             weight = get_double_array_ptr(player_list[1])
@@ -209,6 +213,10 @@ def load_from_wards(wards: Wards, params: Parameters = None,
                 play_ito[ilink] = dest[j]
                 play_weight[ilink] = weight[j]
                 play_suscept[ilink] = play_weight[ilink]
+
+                if i == dest[j]:
+                    # this is the self-link
+                    nodes_self_p[i] = ilink
 
             if i % 250 == 0:
                 progress.update(task, completed=i)
@@ -394,8 +402,8 @@ def save_to_wards(network: Network, profiler: Profiler = None,
 
             if ifrom == ito:
                 self_weight[ifrom] = weight
-            else:
-                wards[ifrom].add_player_weight(destination=ito, weight=weight)
+
+            wards[ifrom].add_player_weight(destination=ito, weight=weight)
 
             if i % update_freq == 0:
                 progress.update(task, completed=i+1)
@@ -406,7 +414,6 @@ def save_to_wards(network: Network, profiler: Profiler = None,
             weight = wards[i].get_players(destination=i)
 
             if self_weight[i] is None:
-                Console.print(f"not seen {i} weight {weight}")
                 # the weight should either be zero or one
                 if weight > 0.5:
                     self_weight[i] = 1.0

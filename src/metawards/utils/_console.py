@@ -42,6 +42,7 @@ class _Progress:
         from rich.progress import Progress
         self._progress = Progress(auto_refresh=False)
         self._last_update = _datetime.now()
+        self._completed = {}
 
     def __enter__(self, *args, **kwargs):
         return self
@@ -52,14 +53,24 @@ class _Progress:
         return False
 
     def add_task(self, *args, **kwargs):
-        return self._progress.add_task(*args, **kwargs)
+        task_id = self._progress.add_task(*args, **kwargs)
+        self._completed[task_id] = 0
+        return task_id
 
-    def update(self, *args, force_update: bool = False, **kwargs):
-        self._progress.update(*args, **kwargs)
+    def update(self, task_id: int, completed: float = None,
+               advance: float = None, force_update: bool = False):
+        if completed is not None:
+            self._completed[task_id] = completed
+        elif advance is not None:
+            self._completed[task_id] += advance
+        else:
+            return
 
         now = _datetime.now()
 
         if force_update or (now - self._last_update).total_seconds() > 0.1:
+            self._progress.update(task_id=task_id,
+                                  completed=self._completed[task_id])
             self._progress.refresh()
             self._last_update = now
 
