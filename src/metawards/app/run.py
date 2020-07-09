@@ -218,6 +218,9 @@ def parse_args():
                         help=f"Disable the spinner that spins when little "
                              f"output is being printed to the screen.")
 
+    parser.add_argument('--no-progress', action="store_true", default=None,
+                        help=f"Disable the progress bars that show progress.")
+
     parser.add_argument("--debug", action="store_true", default=None,
                         help=f"Enable debugging output. This is useful "
                              f"for MetaWards developers or if you are "
@@ -320,6 +323,10 @@ def parse_args():
     if args.no_spinner:
         from ..utils._console import Console
         Console.set_use_spinner(False)
+
+    if args.no_progress:
+        from ..utils._console import Console
+        Console.set_use_progress(False)
 
     if args.debug:
         from ..utils._console import Console

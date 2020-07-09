@@ -4,7 +4,6 @@
 [![PyPI version](https://badge.fury.io/py/metawards.svg)](https://pypi.python.org/pypi/metawards)
 [![PyPI](https://img.shields.io/pypi/pyversions/metawards.svg)](https://pypi.org/project/metawards/)
 [![Downloads](https://pepy.tech/badge/metawards)](https://pepy.tech/project/metawards)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/metawards/metawards)](https://github.com/metawards/MetaWards)
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 For the most accurate and up to date information please

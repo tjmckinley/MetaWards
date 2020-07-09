@@ -432,19 +432,21 @@ set the model data.""")
         from copy import deepcopy
         self.input_files = deepcopy(input_files)
 
-    def set_disease(self, disease: Disease):
+    def set_disease(self, disease: Disease, silent: bool = False):
         """"Set the disease that will be modelled
 
             Parameters:
               disease: The disease to be modelled. If a string is passed
               then the disease will be loaded using that string
+              silent: Whether or not to suppress printing out the disease
         """
         if isinstance(disease, str):
             disease = Disease.load(disease,
                                    repository=self._repository_dir)
 
-        from .utils._console import Console
-        Console.print(disease, markdown=True)
+        if not silent:
+            from .utils._console import Console
+            Console.print(disease, markdown=True)
 
         from copy import deepcopy
         self.disease_params = deepcopy(disease)

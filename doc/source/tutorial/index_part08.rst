@@ -14,3 +14,4 @@ In this eighth part of the tutorial you will;
    :maxdepth: 2
 
    part08/01_networks
+   part08/02_custom_network

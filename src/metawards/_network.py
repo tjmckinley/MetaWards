@@ -4,6 +4,7 @@ from typing import List as _List
 from typing import Union as _Union
 
 from ._parameters import Parameters
+from ._disease import Disease
 from ._nodes import Nodes
 from ._links import Links
 from ._population import Population
@@ -511,6 +512,26 @@ class Network:
 
         self.nodes.scale_susceptibles(work_ratio=work_ratio,
                                       play_ratio=play_ratio)
+
+    def to_wards(self, profiler=None, nthreads: int = 1):
+        """Return the ward-level data in this network converted to
+           a Wards object. This supports editing and save/restore
+           to JSON
+        """
+        from .utils._network_wards import save_to_wards
+        return save_to_wards(self, profiler=profiler, nthreads=nthreads)
+
+    @staticmethod
+    def from_wards(wards, params: Parameters = None,
+                   disease: Disease = None,
+                   profiler=None,
+                   nthreads: int = 1):
+        """Construct a Network from the passed Wards object (e.g. after
+           editing, or restoring from JSON
+        """
+        from .utils._network_wards import load_from_wards
+        return load_from_wards(wards, params=params, disease=disease,
+                               profiler=profiler, nthreads=nthreads)
 
     def run(self, population: Population,
             output_dir: OutputFiles,
