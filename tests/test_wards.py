@@ -27,7 +27,12 @@ def test_wards():
 
     data = wards.to_data()
 
+    print(data)
+
     wards2 = Wards.from_data(data)
+
+    print(wards2)
+
     assert wards == wards2
 
     try:
@@ -72,12 +77,23 @@ def test_wards():
         assert w1.get_player_lists() == w2.get_player_lists()
         assert w1.get_worker_lists() == w2.get_worker_lists()
         assert w1.position() == w2.position()
-        assert w1 == w2
 
-    assert wards == wards2
+    s = wards.to_json()
+    wards2 = Wards.from_json(s)
 
-    assert wards.to_data() == wards2.to_data()
-    assert json.dumps(wards.to_data()) == json.dumps(wards2.to_data())
+    assert wards2 == wards
+
+    filename = wards.to_json("_test_wards_data.json", indent=4)
+
+    print(filename)
+
+    try:
+        wards2 = Wards.from_json(filename)
+    finally:
+        import os
+        os.unlink(filename)
+
+    assert wards2 == wards
 
 
 if __name__ == "__main__":

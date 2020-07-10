@@ -118,7 +118,7 @@ def test_ward_conversion():
 
     profiler = profiler.stop()  #  end to_json
 
-    print(f"Done: {s[0:250]}...")
+    print(f"Done - {len(s)/(1024*1024.0)} MB : {s[0:1024]}...")
 
     print(f"Converting from json...")
     profiler = profiler.start("Convert from JSON")

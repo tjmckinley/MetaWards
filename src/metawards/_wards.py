@@ -181,7 +181,7 @@ class Wards:
 
                 for i, ward in enumerate(self._wards):
                     if ward is None:
-                        data.append(None)
+                        continue
                     else:
                         data.append(ward.to_data())
 
@@ -220,20 +220,15 @@ class Wards:
         with Console.progress(visible=(nwards > 250)) as progress:
             task = progress.add_task("Converting from data", total=nwards)
 
-            w = []
-
             for i, x in enumerate(data):
-                if x is None:
-                    w.append(None)
-                else:
-                    w.append(Ward.from_data(x))
+                if x is not None:
+                    wards.insert(Ward.from_data(x))
 
                 if i % 250 == 0:
                     progress.update(task, completed=i+1)
 
             progress.update(task, completed=nwards, force_update=True)
 
-            wards._wards = w
         p = p.stop()
 
         p = p.start("assert_sane")
@@ -243,3 +238,84 @@ class Wards:
         p = p.stop()
 
         return wards
+
+    def to_json(self, filename: str = None, indent: int = None,
+                auto_bzip: bool = True) -> str:
+        """Serialise the wards to JSON. This will write to a file
+           if filename is set, otherwise it will return a JSON string.
+
+           Parameters
+           ==========
+           filename: str
+             The name of the file to write the JSON to. The absolute
+             path to the written file will be returned. If filename is None
+             then this will serialise to a JSON string which will be
+             returned.
+           indent: int
+             The number of spaces of indent to use when writing the json
+           auto_bzip: bool
+             Whether or not to automatically bzip2 the written json file
+
+           Returns
+           =======
+           str
+             Returns either the absolute path to the written file, or
+             the json-serialised string
+        """
+        import json
+
+        if filename is None:
+            return json.dumps(self.to_data(), indent=indent)
+        else:
+            from pathlib import Path
+            filename = str(Path(filename).expanduser().resolve().absolute())
+
+            if auto_bzip:
+                if not filename.endswith(".bz2"):
+                    filename += ".bz2"
+
+                import bz2
+                with bz2.open(filename, "wt") as FILE:
+                    try:
+                        json.dump(self.to_data(), FILE, indent=indent)
+                    except Exception:
+                        import os
+                        FILE.close()
+                        os.unlink(filename)
+                        raise
+            else:
+                with open(filename, "w") as FILE:
+                    try:
+                        json.dump(self.to_data(), FILE, indent=indent)
+                    except Exception:
+                        import os
+                        FILE.close()
+                        os.unlink(filename)
+                        raise
+
+            return filename
+
+    @staticmethod
+    def from_json(s: str):
+        """Return the Wards constructed from the passed json. This will
+           either load from a passed json string, or from json loaded
+           from the passed file
+        """
+        import os
+        import json
+
+        if os.path.exists(s):
+            try:
+                import bz2
+                with bz2.open(s, "rt") as FILE:
+                    data = json.load(FILE)
+            except Exception:
+                data = None
+
+            if data is None:
+                with open(s, "rt") as FILE:
+                    data = json.load(FILE)
+        else:
+            data = json.loads(s)
+
+        return Wards.from_data(data)

@@ -352,7 +352,7 @@ def save_to_wards(network: Network, profiler: Profiler = None,
         task = progress.add_task("Extracting wards", total=nnodes_plus_one)
 
         for i in range(1, nnodes_plus_one):
-            ward = Ward(id=nodes_label[i])
+            ward = Ward(id=nodes_label[i], auto_assign_players=False)
 
             if have_info:
                 ward.set_info(info[i])

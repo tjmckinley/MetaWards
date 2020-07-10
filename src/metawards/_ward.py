@@ -38,7 +38,8 @@ class Ward:
 
     def __init__(self, id: int = None, name: str = None, code: str = None,
                  authority: str = None, region: str = None,
-                 info: WardInfo = None):
+                 info: WardInfo = None,
+                 auto_assign_players: bool = True):
         """Construct a new Ward, optionally supplying information about
            the ward
 
@@ -60,6 +61,10 @@ class Ward:
              The name of the region containing this ward
            info: WardInfo
              The complete WardInfo used to identify this ward.
+           auto_assign_players: bool
+             Whether or not to automatically ensure that all remaining
+             player weight is assigned to players who play in their home
+             ward
         """
         if id is None:
             self._id = None
@@ -107,6 +112,9 @@ class Ward:
 
         self._pos = {}
 
+        # use this nomenclature to ensure this is a True/False data type
+        self._auto_assign_players = True if auto_assign_players else False
+
     def __str__(self):
         if self.is_null():
             return "Ward::null"
@@ -128,6 +136,19 @@ class Ward:
     def id(self):
         """Return the ID of this ward"""
         return self._id
+
+    def auto_assign_players(self) -> bool:
+        """Return whether or not the remaining player weight is automatically
+           added to the home-ward player weight
+        """
+        return self._auto_assign_players
+
+    def set_auto_assign_players(self, auto_assign_players: bool = True):
+        """Return whether or not the remaining player weight is automatically
+           assigned to the home-ward player weight
+        """
+        # use this syntax to ensure True or False type
+        self._auto_assign_players = True if auto_assign_players else False
 
     def name(self):
         """Return the name of this ward"""
@@ -319,9 +340,16 @@ class Ward:
            ward if destination is not set)
         """
         if destination is None:
-            return self._players.get(self._id, 0.0)
+            destination = self._id
         else:
-            return self._players.get(_as_positive_integer(destination), 0.0)
+            destination = _as_positive_integer(destination)
+
+        p = self._players.get(destination, 0.0)
+
+        if self._auto_assign_players and destination == self._id:
+            p += self._player_total
+
+        return p
 
     def num_work_links(self):
         """Return the total number of work links"""
@@ -388,13 +416,23 @@ class Ward:
 
         return (wards, pops)
 
-    def get_player_lists(self):
+    def get_player_lists(self, no_auto_assign: bool = False):
         """Return a pair of arrays, containing the destination wards
-           and player weights for this ward
+           and player weights for this ward.
+
+           If 'no_auto_assign' is set then do not include any
+           auto-assigned weights. This normally should be false,
+           as it is only used when serialising
         """
         from .utils._array import create_double_array, create_int_array
 
         keys = list(self._players.keys())
+
+        auto_assign = (not no_auto_assign) and self._auto_assign_players
+
+        if auto_assign and self._id not in keys:
+            keys.append(self._id)
+
         keys.sort()
 
         wards = create_int_array(len(keys))
@@ -402,7 +440,10 @@ class Ward:
 
         for i, key in enumerate(keys):
             wards[i] = key
-            weights[i] = self._players[key]
+            weights[i] = self._players.get(key, 0.0)
+
+            if auto_assign and key == self._id:
+                weights[i] += self._player_total
 
         return (wards, weights)
 
@@ -492,21 +533,29 @@ class Ward:
         data = {}
 
         data["id"] = self._id
-        data["position"] = self.position()
-        data["info"] = self.info().to_data()
 
-        workers = self.get_worker_lists()
+        if len(self._pos) > 0:
+            data["position"] = self.position()
+
+        data["info"] = self._info.to_data()
+
+        if not self._auto_assign_players:
+            data["auto_assign_players"] = False
 
         data["num_workers"] = self.num_workers()
         data["num_players"] = self.num_players()
 
-        data["workers"] = {"destination": workers[0].tolist(),
-                           "population": workers[1].tolist()}
+        workers = self.get_worker_lists()
 
-        players = self.get_player_lists()
+        if len(workers[0]) > 0:
+            data["workers"] = {"destination": workers[0].tolist(),
+                               "population": workers[1].tolist()}
 
-        data["players"] = {"destination": players[0].tolist(),
-                           "weights": players[1].tolist()}
+        players = self.get_player_lists(no_auto_assign=True)
+
+        if len(players[0]) > 0:
+            data["players"] = {"destination": players[0].tolist(),
+                               "weights": players[1].tolist()}
 
         return data
 
@@ -520,13 +569,17 @@ class Ward:
             return Ward()
 
         ward = Ward(id=data.get("id", None),
-                    info=WardInfo.from_data(data.get("info", {})))
+                    info=WardInfo.from_data(data.get("info", {})),
+                    auto_assign_players=True)
 
         pos = data.get("position", {})
 
         ward.set_position(x=pos.get("x", None), y=pos.get("y", None),
                           lat=pos.get("lat", None), long=pos.get("long", None),
                           units="km")
+
+        ward.set_auto_assign_players(data.get("auto_assign_players", True))
+
         ward.set_num_players(data.get("num_players", 0))
 
         workers = data.get("workers", {})
