@@ -25,6 +25,8 @@ Classes
     Populations
     VariableSet
     VariableSets
+    Ward
+    Wards
     WardInfo
     WardInfos
     Workspace

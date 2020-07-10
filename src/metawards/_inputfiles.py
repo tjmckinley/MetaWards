@@ -205,12 +205,11 @@ class InputFiles:
         except Exception as e:
             from .utils._console import Console
             Console.error(f"""
-
-
-Could not find the model file {json_file}. Either it does not exist of was
-corrupted. Error was {e.__class__} {e}. Please see
-https: // metawards.org/model_data for instructions on how to download
-and set the model data.""")
+Could not find the model file {json_file}.
+Either it does not exist or was corrupted.
+Error was {e.__class__} {e}.
+Please see https://metawards.org/model_data for instructions on how
+to download and set the model data.""")
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 

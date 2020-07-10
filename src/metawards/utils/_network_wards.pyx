@@ -254,7 +254,8 @@ def load_from_wards(wards: Wards, params: Parameters = None,
     if network.nplay >= network.max_links:
         network.max_links = network.nplay + 1
 
-    network.info = info
+    from .._wardinfo import WardInfos
+    network.info = WardInfos(info)
 
     p = p.start("move_from_play_to_work")
     network.move_from_play_to_work(nthreads=nthreads, profiler=p)
@@ -352,7 +353,7 @@ def save_to_wards(network: Network, profiler: Profiler = None,
         task = progress.add_task("Extracting wards", total=nnodes_plus_one)
 
         for i in range(1, nnodes_plus_one):
-            ward = Ward(id=nodes_label[i])
+            ward = Ward(id=nodes_label[i], auto_assign_players=False)
 
             if have_info:
                 ward.set_info(info[i])
