@@ -264,6 +264,9 @@ class Wards:
         """
         import json
 
+        if indent is not None:
+            indent = int(indent)
+
         if filename is None:
             return json.dumps(self.to_data(), indent=indent)
         else:
