@@ -40,7 +40,7 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Input files and formats" href="../../fileformats/index.html" />
+    <link rel="next" title="Using a Custom Network" href="03_using_custom.html" />
     <link rel="prev" title="Understanding the Model Network" href="01_networks.html" /> 
 </head>
 
@@ -113,6 +113,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#creating-and-editing-networks-in-python">Creating and editing Networks in Python</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="03_using_custom.html">Using a Custom Network</a></li>
 </ul>
 </li>
 </ul>
@@ -208,7 +209,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../../fileformats/index.html" class="btn btn-neutral float-right" title="Input files and formats" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="03_using_custom.html" class="btn btn-neutral float-right" title="Using a Custom Network" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="01_networks.html" class="btn btn-neutral float-left" title="Understanding the Model Network" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -252,21 +253,21 @@ edited using the Python API described below.</li>
 <h2>Creating and editing Networks in Python<a class="headerlink" href="#creating-and-editing-networks-in-python" title="Permalink to this headline">¶</a></h2>
 <p>The best way to create a new network is to use the Python API. A
 <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> is edited or created via the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code> class. This represents an editable collection
-of individual <code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code> objects, each of which
-represents a ward. The <code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code> provides functions
+<a class="reference internal" href="../../api/generated/metawards.Wards.html#metawards.Wards" title="metawards.Wards"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code></a> class. This represents an editable collection
+of individual <a class="reference internal" href="../../api/generated/metawards.Ward.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> objects, each of which
+represents a ward. The <a class="reference internal" href="../../api/generated/metawards.Ward.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> provides functions
 for setting the name and metadata for a ward, plus adding work and
 play connections to other wards.</p>
 <p>For example, we can interactively create a new <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>
-using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code> classes
+using the <a class="reference internal" href="../../api/generated/metawards.Ward.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> and <a class="reference internal" href="../../api/generated/metawards.Wards.html#metawards.Wards" title="metawards.Wards"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code></a> classes
 in, e.g. ipython or a jupyter notebook;</p>
 <p>First, we will import the necessary classes and create our
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code> object, which we will call <code class="docutils literal notranslate"><span class="pre">wards</span></code>;</p>
+<a class="reference internal" href="../../api/generated/metawards.Wards.html#metawards.Wards" title="metawards.Wards"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code></a> object, which we will call <code class="docutils literal notranslate"><span class="pre">wards</span></code>;</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">Ward</span><span class="p">,</span> <span class="n">Wards</span><span class="p">,</span> <span class="n">Network</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wards</span> <span class="o">=</span> <span class="n">Wards</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Next, we will create a <code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code> object to represent
+<p>Next, we will create a <a class="reference internal" href="../../api/generated/metawards.Ward.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> object to represent
 Bristol (which we will call <code class="docutils literal notranslate"><span class="pre">bristol</span></code>). We will give this the ID
 number of <code class="docutils literal notranslate"><span class="pre">1</span></code>, and will add <em class="xref py py-obj">500</em>
 workers who will work in Bristol, and <code class="docutils literal notranslate"><span class="pre">750</span></code> players.</p>
@@ -275,12 +276,12 @@ workers who will work in Bristol, and <code class="docutils literal notranslate"
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bristol</span><span class="o">.</span><span class="n">set_num_players</span><span class="p">(</span><span class="mi">750</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Next, we will create a <code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code> object to represent
+<p>Next, we will create a <a class="reference internal" href="../../api/generated/metawards.Ward.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> object to represent
 London (which we will call <code class="docutils literal notranslate"><span class="pre">london</span></code>). We will give this the ID
 number of <code class="docutils literal notranslate"><span class="pre">2</span></code>, and will add <code class="docutils literal notranslate"><span class="pre">8600</span></code>
 workers and <code class="docutils literal notranslate"><span class="pre">10000</span></code> players.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">london</span> <span class="o">=</span> <span class="n">Ward</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;London&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">london</span><span class="o">.</span><span class="n">add_workers</span><span class="p">(</span><span class="mi">8600</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">london</span><span class="o">.</span><span class="n">add_workers</span><span class="p">(</span><span class="mi">8500</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">london</span><span class="o">.</span><span class="n">set_num_players</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -305,72 +306,58 @@ will commute each day to Bristol (<code class="docutils literal notranslate"><sp
 <span class="go">Ward( id=2, name=London, num_workers=8600, num_players=10000 )</span>
 </pre></div>
 </div>
-<p>Next, we add the two <code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code> objects to our
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code> object that represents the entire model.</p>
+<p>Next, we add the two <a class="reference internal" href="../../api/generated/metawards.Ward.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> objects to our
+<a class="reference internal" href="../../api/generated/metawards.Wards.html#metawards.Wards" title="metawards.Wards"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code></a> object that represents the entire model.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bristol</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">london</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">wards</span><span class="p">)</span>
 <span class="go">[ Ward( id=1, name=Bristol, num_workers=1000, num_players=750 ), Ward( id=2, name=London, num_workers=8600, num_players=10000 ) ]</span>
 </pre></div>
 </div>
-<p>We can now save this set of <code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code> to a file by converting
+<p>We can now save this set of <a class="reference internal" href="../../api/generated/metawards.Wards.html#metawards.Wards" title="metawards.Wards"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code></a> to a file by converting
 this to a data dictionary, and then serialising that dictionary to JSON,
-which we will stream to the file <code class="docutils literal notranslate"><span class="pre">custom_network.json</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">json</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">wards</span><span class="o">.</span><span class="n">to_data</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;custom_network.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">FILE</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+which we will stream to the file <code class="docutils literal notranslate"><span class="pre">custom_network.json.bz2</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wards</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="s2">&quot;custom_network.json&quot;</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The resulting JSON file will look something like this;</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-    <span class="n">null</span><span class="p">,</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bristol&quot;</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-        <span class="s2">&quot;num_players&quot;</span><span class="p">:</span> <span class="mi">750</span><span class="p">,</span>
-        <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="mi">1</span><span class="p">,</span>
-            <span class="mi">2</span>
-        <span class="p">],</span>
-        <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="mi">500</span><span class="p">,</span>
-            <span class="mi">500</span>
-        <span class="p">]</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;players&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="p">[]</span>
-        <span class="p">}</span>
+  <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bristol&quot;</span>
     <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;London&quot;</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span> <span class="mi">8600</span><span class="p">,</span>
-        <span class="s2">&quot;num_players&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
-        <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="mi">1</span><span class="p">,</span>
-            <span class="mi">2</span>
-        <span class="p">],</span>
-        <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="mi">100</span><span class="p">,</span>
-            <span class="mi">8500</span>
-        <span class="p">]</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;players&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="p">[],</span>
-        <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="p">[]</span>
-        <span class="p">}</span>
+    <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;num_players&quot;</span><span class="p">:</span> <span class="mi">750</span><span class="p">,</span>
+    <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">2</span>
+      <span class="p">],</span>
+      <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">500</span><span class="p">,</span>
+        <span class="mi">500</span>
+      <span class="p">]</span>
     <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;London&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span> <span class="mi">8600</span><span class="p">,</span>
+    <span class="s2">&quot;num_players&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+    <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;destination&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">2</span>
+      <span class="p">],</span>
+      <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">100</span><span class="p">,</span>
+        <span class="mi">8500</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
 </div>
@@ -380,14 +367,14 @@ which we will stream to the file <code class="docutils literal notranslate"><spa
 evolves. We will retain backwards compatibility, meaning that newer
 versions of <code class="docutils literal notranslate"><span class="pre">metawards</span></code> will be able to read old files, but older
 versions may not be able to read new files.</p>
+<p>Note that the file will be automatically compressed using bzip2. You
+can disable this by setting <code class="docutils literal notranslate"><span class="pre">auto_bzip=False</span></code>.</p>
 <p class="last">Note also that <code class="docutils literal notranslate"><span class="pre">indent=2</span></code> just sets the indentation used for printing.
 You can set whatever indentation you want, including not setting any.
 It won’t affect the included information - just its human-readability.</p>
 </div>
 <p>You can load this JSON file into a Wards object using;</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;custom_network.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">FILE</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">FILE</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">wards</span> <span class="o">=</span> <span class="n">Wards</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wards</span> <span class="o">=</span> <span class="n">Wards</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s2">&quot;custom_network.json.bz2&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">wards</span><span class="p">)</span>
 <span class="go">[ Ward( id=1, name=Bristol, num_workers=1000, num_players=750 ), Ward( id=2, name=London, num_workers=8600, num_players=10000 ) ]</span>
 </pre></div>
@@ -403,7 +390,7 @@ It won’t affect the included information - just its human-readability.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../fileformats/index.html" class="btn btn-neutral float-right" title="Input files and formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="03_using_custom.html" class="btn btn-neutral float-right" title="Using a Custom Network" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="01_networks.html" class="btn btn-neutral float-left" title="Understanding the Model Network" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -416,7 +403,7 @@ It won’t affect the included information - just its human-readability.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 09, 2020.
+        Last updated on Jul 10, 2020.
       </span>
 
     </p>

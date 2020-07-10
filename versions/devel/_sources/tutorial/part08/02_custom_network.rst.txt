@@ -69,7 +69,7 @@ number of ``2``, and will add ``8600``
 workers and ``10000`` players.
 
    >>> london = Ward(id=2, name="London")
-   >>> london.add_workers(8600)
+   >>> london.add_workers(8500)
    >>> london.set_num_players(10000)
 
 .. note::
@@ -109,68 +109,54 @@ Next, we add the two :class:`~metawards.Ward` objects to our
 
 We can now save this set of :class:`~metawards.Wards` to a file by converting
 this to a data dictionary, and then serialising that dictionary to JSON,
-which we will stream to the file ``custom_network.json``.
+which we will stream to the file ``custom_network.json.bz2``.
 
 .. code-block:: python
 
-   >>> import json
-   >>> data = wards.to_data()
-   >>> with open("custom_network.json", "w") as FILE:
-   ...     json.dump(data, FILE, indent=2)
+   >>> wards.to_json("custom_network.json", indent=2)
 
 The resulting JSON file will look something like this;
 
 ::
 
-    [
-        null,
-        {
-            "id": 1,
-            "position": {},
-            "info": {
-            "name": "Bristol"
-            },
-            "num_workers": 1000,
-            "num_players": 750,
-            "workers": {
-            "destination": [
-                1,
-                2
-            ],
-            "population": [
-                500,
-                500
-            ]
-            },
-            "players": {
-            "destination": [],
-            "weights": []
-            }
-        },
-        {
-            "id": 2,
-            "position": {},
-            "info": {
-            "name": "London"
-            },
-            "num_workers": 8600,
-            "num_players": 10000,
-            "workers": {
-            "destination": [
-                1,
-                2
-            ],
-            "population": [
-                100,
-                8500
-            ]
-            },
-            "players": {
-            "destination": [],
-            "weights": []
-            }
-        }
-    ]
+  [
+    {
+      "id": 1,
+      "info": {
+        "name": "Bristol"
+      },
+      "num_workers": 1000,
+      "num_players": 750,
+      "workers": {
+        "destination": [
+          1,
+          2
+        ],
+        "population": [
+          500,
+          500
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "info": {
+        "name": "London"
+      },
+      "num_workers": 8600,
+      "num_players": 10000,
+      "workers": {
+        "destination": [
+          1,
+          2
+        ],
+        "population": [
+          100,
+          8500
+        ]
+      }
+    }
+  ]
 
 .. note::
 
@@ -178,6 +164,9 @@ The resulting JSON file will look something like this;
    evolves. We will retain backwards compatibility, meaning that newer
    versions of ``metawards`` will be able to read old files, but older
    versions may not be able to read new files.
+
+   Note that the file will be automatically compressed using bzip2. You
+   can disable this by setting ``auto_bzip=False``.
 
    Note also that ``indent=2`` just sets the indentation used for printing.
    You can set whatever indentation you want, including not setting any.
@@ -187,8 +176,6 @@ You can load this JSON file into a Wards object using;
 
 .. code-block:: python
 
-   >>> with open("custom_network.json") as FILE:
-   ...     data = json.load(FILE)
-   >>> wards = Wards.from_data(data)
+   >>> wards = Wards.from_json("custom_network.json.bz2")
    >>> print(wards)
    [ Ward( id=1, name=Bristol, num_workers=1000, num_players=750 ), Ward( id=2, name=London, num_workers=8600, num_players=10000 ) ]
