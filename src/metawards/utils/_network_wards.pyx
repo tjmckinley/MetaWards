@@ -254,7 +254,8 @@ def load_from_wards(wards: Wards, params: Parameters = None,
     if network.nplay >= network.max_links:
         network.max_links = network.nplay + 1
 
-    network.info = info
+    from .._wardinfo import WardInfos
+    network.info = WardInfos(info)
 
     p = p.start("move_from_play_to_work")
     network.move_from_play_to_work(nthreads=nthreads, profiler=p)

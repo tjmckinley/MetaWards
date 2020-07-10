@@ -147,7 +147,13 @@ class Network:
         p = profiler.start("Network.build")
 
         if isinstance(params.input_files, str):
-            raise AssertionError("Need to write code to load from JSON")
+            from ._wards import Wards
+            wards = Wards.from_json(params.input_files)
+            network = Network.from_wards(wards, params=params,
+                                         profiler=p, nthreads=nthreads)
+
+            p.stop()
+            return network
 
         elif params.input_files.is_single:
             if population is None:
