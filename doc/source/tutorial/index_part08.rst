@@ -15,4 +15,6 @@ In this eighth part of the tutorial you will;
 
    part08/01_networks
    part08/02_custom_network
-   part08/03_using_custom
+   part08/03_reticulate
+   part08/04_using_custom
+

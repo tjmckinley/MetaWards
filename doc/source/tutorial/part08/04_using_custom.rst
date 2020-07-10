@@ -54,4 +54,3 @@ to;
     S: 2895  E: 0  I: 0  R: 17455  IW: 0  POPULATION: 20350
     Number of infections: 0
     Ending on day 132
-
