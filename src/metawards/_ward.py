@@ -1,6 +1,8 @@
 
 from ._wardinfo import WardInfo
 
+from typing import Union as _Union
+
 __all__ = ["Ward"]
 
 
@@ -68,7 +70,8 @@ class Ward:
         """
         if id is None:
             self._id = None
-            return
+        else:
+            self._id = _as_positive_integer(id, zero_allowed=False)
 
         if info is not None:
             if not isinstance(info, WardInfo):
@@ -91,16 +94,8 @@ class Ward:
         if region is not None:
             self._info.region = str(region)
 
-        try:
-            id = int(id)
-        except Exception:
-            raise TypeError(f"The passed ID {id} must be an integer")
-
-        if id < 1:
-            raise ValueError(
-                f"The passed ID {id} must be greater or equal to 1")
-
-        self._id = id
+        if self._id is None and self._info.is_null():
+            return
 
         self._workers = {}
         self._players = {}
@@ -119,7 +114,17 @@ class Ward:
         if self.is_null():
             return "Ward::null"
         else:
-            return f"Ward( id={self._id}, name={self.name()}, " \
+            idstr = []
+
+            if not self._info.is_null():
+                idstr.append("info=" + self._info.summary())
+
+            if self._id is not None:
+                idstr.append("id=" + str(self._id))
+
+            idstr = ", ".join(idstr)
+
+            return f"Ward( {idstr}, " \
                 f"num_workers={self.num_workers()}, " \
                 f"num_players={self.num_players()} )"
 
@@ -131,7 +136,7 @@ class Ward:
             self.__dict__ == other.__dict__
 
     def is_null(self):
-        return self._id is None
+        return self._id is None and self._info.is_null()
 
     def id(self):
         """Return the ID of this ward"""
@@ -203,7 +208,41 @@ class Ward:
             raise ValueError(
                 f"The passed ID {id} must be greater or equal to 1")
 
+        if id == self._id:
+            # nothing to do
+            return
+
+        if id in self._workers or id in self._players:
+            raise ValueError(
+                f"You cannot change the ID {id} to match an ID of an "
+                f"existing link!")
+
+        old_id = self._id
+
         self._id = id
+
+        if old_id is not None:
+            for key in list(self._workers.keys()):
+                if key == old_id:
+                    self._workers[id] = self._workers[old_id]
+                    del self._workers[old_id]
+
+            for key in list(self._players.keys()):
+                if key == old_id:
+                    self._players[id] = self._players[old_id]
+                    del self._players[old_id]
+
+        if id not in self._workers:
+            for key in list(self._workers.keys()):
+                if key == self._info:
+                    self._workers[id] = self._workers[self._info]
+                    del self._workers[self._info]
+
+        if id not in self._players:
+            for key in list(self._players.keys()):
+                if key == self._info:
+                    self._players[id] = self._players[self._info]
+                    del self._players[self._info]
 
     def set_code(self, code: str):
         """Set the code of this ward"""
@@ -225,15 +264,96 @@ class Ward:
         from copy import deepcopy
         self._info = deepcopy(info)
 
-    def add_workers(self, number: int, destination: int = None):
+    def _resolve_destination(self, destination: _Union[int, WardInfo] = None):
+        """Resolve the passed destination into either an ID or a
+           WardInfo object
+        """
+        if destination is None:
+            if self._id is None:
+                if self._info.is_null():
+                    raise ValueError("You cannot add to a null destination")
+
+                destination = self._info
+            else:
+                destination = self._id
+
+        elif isinstance(destination, Ward):
+            if destination.id() is None:
+                destination = destination._info
+
+                if self._id is not None and destination == self._info:
+                    # this is this ward
+                    destination = self._id
+            else:
+                if destination.id() == self._id:
+                    if self._info != destination._info:
+                        raise ValueError(
+                            f"Disagreement in info for Ward {self}: "
+                            f"{self._info} versus {destination._info}.")
+
+                destination = destination.id()
+
+        if not isinstance(destination, WardInfo):
+            destination = _as_positive_integer(destination, zero_allowed=False)
+
+        return destination
+
+    def resolve(self, wards) -> None:
+        """Resolve any unresolved links using the passed Wards object
+           'wards'
+        """
+        from ._wards import Wards
+
+        if not isinstance(wards, Wards):
+            raise TypeError(
+                f"You can only resolve links using a valid Wards object!")
+
+        for key in list(self._workers.keys()):
+            if not isinstance(key, int):
+                if key in wards:
+                    idx = wards.index(key)
+
+                    if idx in self._workers:
+                        raise KeyError(f"Duplicate keys? {idx} and {key}")
+
+                    self._workers[idx] = self._workers[key]
+                    del self._workers[key]
+
+        for key in list(self._players.keys()):
+            if not isinstance(key, int):
+                if key in wards:
+                    idx = wards.index(key)
+
+                    if idx in self._players:
+                        raise KeyError(f"Duplicate keys? {idx} and {key}")
+
+                    self._players[idx] = self._players[key]
+                    del self._players[key]
+
+    def is_resolved(self):
+        """Return whether or not any of the worker or player links in
+           this ward are unresolved, or whether the ID of this ward is None
+        """
+        if self._id is None:
+            return False
+
+        for key in self._workers.keys():
+            if not isinstance(key, int):
+                return False
+
+        for key in self._players.keys():
+            if not isinstance(key, int):
+                return False
+
+        return True
+
+    def add_workers(self, number: int,
+                    destination: _Union[int, WardInfo] = None):
         """Add some workers to this ward, specifying their destination
            if they work out of ward
         """
-        if destination is None:
-            destination = self._id
-
+        destination = self._resolve_destination(destination)
         number = _as_positive_integer(number)
-        destination = _as_positive_integer(destination, zero_allowed=False)
 
         if destination not in self._workers:
             self._workers[destination] = 0
@@ -245,9 +365,7 @@ class Ward:
         """Remove some workers from this ward, specifying their destination
            if they work out of ward
         """
-        if destination is None:
-            destination = self._id
-
+        destination = self._resolve_destination(destination)
         number = _as_positive_integer(number)
 
         if destination not in self._workers:
@@ -262,17 +380,14 @@ class Ward:
 
     def add_player_weight(self, weight: float, destination: int = None):
         """Add the weight for players who will randomly move to
-           the specified destination to play (or to play in the home
+           the specified destination to play(or to play in the home
            ward if destination is not set). Note that the sum of
            player weights cannot be greater than 1.0.
         """
-        if destination is None:
-            destination = self._id
-
         tiny = 1e-10
 
         weight = _as_positive_float(weight)
-        destination = _as_positive_integer(destination, zero_allowed=False)
+        destination = self._resolve_destination(destination)
 
         if weight < tiny:
             return
@@ -301,13 +416,10 @@ class Ward:
            the specified destination to play (or to play in the home
            ward if destination is not set).
         """
-        if destination is None:
-            destination = self._id
-
         tiny = 1e-10
 
         weight = _as_positive_float(weight)
-        destination = _as_positive_integer(destination, zero_allowed=False)
+        destination = self._resolve_destination(destination)
 
         if weight < tiny:
             return
@@ -329,20 +441,15 @@ class Ward:
            destination ward (or who commute to their home ward if
            destination is not set)
         """
-        if destination is None:
-            return self._workers.get(self._id, 0)
-        else:
-            return self._workers.get(_as_positive_integer(destination), 0)
+        destination = self._resolve_destination(destination)
+        return self._workers.get(destination, 0)
 
     def get_players(self, destination: int = None):
         """Return the fraction of players who will play in the
            specified destination ward (or who play in their home
            ward if destination is not set)
         """
-        if destination is None:
-            destination = self._id
-        else:
-            destination = _as_positive_integer(destination)
+        destination = self._resolve_destination(destination)
 
         p = self._players.get(destination, 0.0)
 
@@ -411,6 +518,11 @@ class Ward:
         pops = create_int_array(len(keys))
 
         for i, key in enumerate(keys):
+            if not isinstance(key, int):
+                raise KeyError(
+                    f"Cannot create worker list as link to {key} is "
+                    f"unresolved")
+
             wards[i] = key
             pops[i] = self._workers[key]
 
@@ -439,6 +551,11 @@ class Ward:
         weights = create_double_array(len(keys))
 
         for i, key in enumerate(keys):
+            if not isinstance(key, int):
+                raise KeyError(
+                    f"Cannot create worker list as link to {key} is "
+                    f"unresolved")
+
             wards[i] = key
             weights[i] = self._players.get(key, 0.0)
 
@@ -519,13 +636,23 @@ class Ward:
     def work_connections(self):
         """Return the full list of work connections for this ward"""
         c = list(self._workers.keys())
-        c.sort()
+
+        try:
+            c.sort()
+        except Exception:
+            pass
+
         return c
 
     def play_connections(self):
         """Return the full list of play connections for this ward"""
         c = list(self._players.keys())
-        c.sort()
+
+        try:
+            c.sort()
+        except Exception:
+            pass
+
         return c
 
     def to_data(self):

@@ -1,9 +1,11 @@
 
 from typing import List as _List
+from typing import Union as _Union
 
 from .utils._profiler import Profiler, NullProfiler
 
 from ._ward import Ward
+from ._wardinfo import WardInfos, WardInfo
 
 __all__ = ["Wards"]
 
@@ -14,6 +16,9 @@ class Wards:
     def __init__(self, wards: _List[Ward] = None):
         """Construct, optionally from a list of Ward objects"""
         self._wards = []
+        self._info = WardInfos()
+
+        self._unresolved = []
 
         if wards is not None:
             self.insert(wards)
@@ -33,7 +38,7 @@ class Wards:
         return self.__class__ == other.__class__ and \
             self.__dict__ == other.__dict__
 
-    def insert(self, wards: _List[Ward]):
+    def insert(self, wards: _List[Ward]) -> None:
         """Append the passed wards onto this list"""
         if not isinstance(wards, list):
             wards = [wards]
@@ -52,23 +57,131 @@ class Wards:
 
         for ward in wards:
             if isinstance(ward, Ward):
-                if ward.id() > largest_id:
+                if ward.id() is not None and ward.id() > largest_id:
                     largest_id = ward.id()
 
         if largest_id >= len(self._wards):
             self._wards += [None] * (largest_id - len(self._wards) + 1)
 
+        add_later = []
+
         for ward in wards:
             if isinstance(ward, Ward):
-                self._wards[ward.id()] = ward
+                # make sure that this is not a duplicate...
+                info = ward._info
 
-    def add(self, ward: Ward):
+                if info in self._info:
+                    idx = self._info.index(info)
+                    if idx != ward.id():
+                        raise KeyError(
+                            f"You cannot have two different wards that have "
+                            f"the same info: {self._wards[idx]} : {ward}")
+                    # otherwise the IDs are the same, so this is an
+                    # update to an existing ward
+
+                if ward.id() is None:
+                    add_later.append(ward)
+                else:
+                    self._wards[ward.id()] = ward
+                    self._info[ward.id()] = info
+                    self._unresolved.append(ward.id())
+
+        for ward in add_later:
+            # append this onto the end of the list
+            idx = len(self._wards)
+            ward.set_id(idx)
+            self._wards.append(ward)
+            self._info[ward.id()] = ward._info
+            self._unresolved.append(ward.id())
+
+        self._resolve()
+
+    def add(self, ward: Ward) -> None:
         """Synonym for insert"""
         self.insert(ward)
 
-    def __getitem__(self, id):
-        """Return the ward with specified id"""
-        return self._wards[id]
+    def is_resolved(self) -> bool:
+        """Return whether or not this is a fully resolved set of Wards
+           (i.e. each ward only links to other wards in this set)
+        """
+        return len(self._unresolved) == 0
+
+    def unresolved_wards(self) -> _List[int]:
+        """Return the list of IDs of unresolved wards"""
+        from copy import deepcopy
+        return deepcopy(self._unresolved)
+
+    def _resolve(self) -> None:
+        """Try to resolve all of the links. Note that this will only resolve
+           as many wards as it can. Any unresolved wards will be available
+           as 'unresolvd_wards'
+        """
+        still_unresolved = []
+
+        for unresolved in self._unresolved:
+            self._wards[unresolved].resolve(self)
+
+            if not self._wards[unresolved].is_resolved():
+                still_unresolved.append(unresolved)
+
+        self._unresolved = still_unresolved
+
+    def __getitem__(self, id: _Union[int, WardInfo]) -> Ward:
+        """Return the ward with specified id - this can be the integer
+           ID of the ward, or the WardInfo of the ward
+        """
+        if isinstance(id, WardInfo):
+            return self._wards[self._info.index(id)]
+        else:
+            return self._wards[id]
+
+    def index(self, id: _Union[int, WardInfo]) -> int:
+        """Return the index of the ward that matches the passed
+           id - which can be the integer ID or WardInfo - in this
+           Wards object. This raises a ValueError if the
+           ward doens't exist
+        """
+        if isinstance(id, WardInfo):
+            return self._info.index(id)
+        else:
+            try:
+                id = int(id)
+            except Exception:
+                raise ValueError(f"No ward matching {id}")
+
+            if id < 0:
+                id = len(self._wards) + id
+
+            if id < 0 or id >= len(self._wards):
+                raise ValueError(f"No ward matching {id}")
+
+            if self._wards[id] is None:
+                raise ValueError(f"No ward matching {id}")
+
+            return id
+
+    def __contains__(self, id: _Union[int, WardInfo]) -> bool:
+        """Return whether or not the passed id - which can be an integer
+           ID or WardInfo - is in this Wards object
+        """
+        if isinstance(id, WardInfo):
+            return id in self._info
+        else:
+            id = int(id)
+
+            if id < 0:
+                id = len(self._wards) + id
+
+            if id < 0 or id >= len(self._wards):
+                return False
+            else:
+                return self._wards[id] is not None
+
+    def contains(self, id: _Union[int, WardInfo]) -> bool:
+        """Return whether or not the passed id - which can be an integer
+           ID or WardInfo - is in this Wards object
+        """
+        return self.__contains__(id)
 
     def __len__(self):
         return len(self._wards)
@@ -128,6 +241,8 @@ class Wards:
         if len(self._wards) == 0:
             return
 
+        self._resolve()
+
         nwards = len(self._wards) - 1
 
         for i, ward in enumerate(self._wards):
@@ -138,7 +253,9 @@ class Wards:
                 raise AssertionError(f"{ward} should have index {i}")
 
             for c in ward.work_connections():
-                if c < 1 or c > nwards:
+                if not isinstance(c, int):
+                    raise AssertionError(f"Unresolved connection {c}")
+                elif c < 1 or c > nwards:
                     raise AssertionError(
                         f"{ward} has a work connection to an invalid "
                         f"ward ID {c}. Range should be 1 <= n <= {nwards}")
@@ -148,7 +265,9 @@ class Wards:
                         f"ward ID {c}. This ward is null")
 
             for c in ward.play_connections():
-                if c < 1 or c > nwards:
+                if not isinstance(c, int):
+                    raise AssertionError(f"Unresolved connection {c}")
+                elif c < 1 or c > nwards:
                     raise AssertionError(
                         f"{ward} has a play connection to an invalid "
                         f"ward ID {c}. Range should be 1 <= n <= {nwards}")
@@ -245,7 +364,7 @@ class Wards:
            if filename is set, otherwise it will return a JSON string.
 
            Parameters
-           ==========
+           == == == == ==
            filename: str
              The name of the file to write the JSON to. The absolute
              path to the written file will be returned. If filename is None
@@ -257,7 +376,7 @@ class Wards:
              Whether or not to automatically bzip2 the written json file
 
            Returns
-           =======
+           == == == =
            str
              Returns either the absolute path to the written file, or
              the json-serialised string

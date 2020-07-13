@@ -48,10 +48,9 @@ def test_ward_json():
     assert json.dumps(ward.to_data()) == json.dumps(ward2.to_data())
     assert ward == ward2
 
-    ward2.set_id(30)
+    ward2 = Ward(id=1, name="something else")
 
-    ward3 = Ward.from_data(json.loads(s))
-    ward3.set_id(1)
+    ward3 = Ward(id=30, name="another name")
 
     wards = Wards([ward, ward2, ward3])
 
@@ -69,7 +68,7 @@ def test_ward_json():
 
     assert wards == wards2
 
-    ward3.set_id(4)
+    ward3 = Ward(id=50, name="another ward")
     wards2.insert(ward3)
 
     assert wards != wards2
