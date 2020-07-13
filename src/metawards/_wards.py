@@ -118,13 +118,8 @@ class Wards:
         """
         still_unresolved = []
 
-        print(self._unresolved)
-
         for unresolved in self._unresolved:
             self._wards[unresolved].resolve(self)
-
-            print(self._wards[unresolved],
-                  self._wards[unresolved].is_resolved())
 
             if not self._wards[unresolved].is_resolved():
                 still_unresolved.append(unresolved)
@@ -139,6 +134,54 @@ class Wards:
             return self._wards[self._info.index(id)]
         else:
             return self._wards[id]
+
+    def index(self, id: _Union[int, WardInfo]) -> int:
+        """Return the index of the ward that matches the passed
+           id - which can be the integer ID or WardInfo - in this
+           Wards object. This raises a ValueError if the
+           ward doens't exist
+        """
+        if isinstance(id, WardInfo):
+            return self._info.index(id)
+        else:
+            try:
+                id = int(id)
+            except Exception:
+                raise ValueError(f"No ward matching {id}")
+
+            if id < 0:
+                id = len(self._wards) + id
+
+            if id < 0 or id >= len(self._wards):
+                raise ValueError(f"No ward matching {id}")
+
+            if self._wards[id] is None:
+                raise ValueError(f"No ward matching {id}")
+
+            return id
+
+    def __contains__(self, id: _Union[int, WardInfo]) -> bool:
+        """Return whether or not the passed id - which can be an integer
+           ID or WardInfo - is in this Wards object
+        """
+        if isinstance(id, WardInfo):
+            return id in self._info
+        else:
+            id = int(id)
+
+            if id < 0:
+                id = len(self._wards) + id
+
+            if id < 0 or id >= len(self._wards):
+                return False
+            else:
+                return self._wards[id] is not None
+
+    def contains(self, id: _Union[int, WardInfo]) -> bool:
+        """Return whether or not the passed id - which can be an integer
+           ID or WardInfo - is in this Wards object
+        """
+        return self.__contains__(id)
 
     def __len__(self):
         return len(self._wards)

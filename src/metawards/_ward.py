@@ -258,8 +258,6 @@ class Ward:
         """Resolve the passed destination into either an ID or a
            WardInfo object
         """
-        print(self, destination)
-
         if destination is None:
             if self._id is None:
                 if self._info.is_null():
@@ -310,8 +308,6 @@ class Ward:
 
                     self._workers[idx] = self._workers[key]
                     del self._workers[key]
-                else:
-                    print(f"Still unresolved {key}")
 
         for key in list(self._players.keys()):
             if not isinstance(key, int):
@@ -323,8 +319,6 @@ class Ward:
 
                     self._players[idx] = self._players[key]
                     del self._players[key]
-                else:
-                    print(f"Still unresolved {key}")
 
     def is_resolved(self):
         """Return whether or not any of the worker or player links in
@@ -335,12 +329,10 @@ class Ward:
 
         for key in self._workers.keys():
             if not isinstance(key, int):
-                print(self._id, key)
                 return False
 
         for key in self._players.keys():
             if not isinstance(key, int):
-                print(self._id, key)
                 return False
 
         return True
