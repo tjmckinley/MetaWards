@@ -114,7 +114,17 @@ class Ward:
         if self.is_null():
             return "Ward::null"
         else:
-            return f"Ward( info={self.info().summary()}, id={self.id()}, " \
+            idstr = []
+
+            if not self._info.is_null():
+                idstr.append("info=" + self._info.summary())
+
+            if self._id is not None:
+                idstr.append("id=" + str(self._id))
+
+            idstr = ", ".join(idstr)
+
+            return f"Ward( {idstr}, " \
                 f"num_workers={self.num_workers()}, " \
                 f"num_players={self.num_players()} )"
 
