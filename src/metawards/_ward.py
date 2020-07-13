@@ -70,6 +70,15 @@ class Ward:
         """
         if id is None:
             self._id = None
+        elif isinstance(id, str):
+            try:
+                self._id = _as_positive_integer(str(id), zero_allowed=False)
+            except Exception:
+                if name is None:
+                    name = id
+                    self._id = None
+                else:
+                    raise TypeError(f"The ID must be an integer - not {id}")
         else:
             self._id = _as_positive_integer(id, zero_allowed=False)
 
@@ -134,6 +143,16 @@ class Ward:
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
             self.__dict__ == other.__dict__
+
+    def __add__(self, other):
+        if isinstance(other, Ward):
+            from ._wards import Wards
+            w = Wards()
+            w.add(self)
+            w.add(other)
+            return w
+        else:
+            raise NotImplementedError()
 
     def is_null(self):
         return self._id is None and self._info.is_null()
@@ -298,37 +317,99 @@ class Ward:
 
         return destination
 
+    def dereference(self, wards) -> None:
+        """Dereference the IDs and convert those back to WardInfo objects.
+           This is the opposite of self.resolve(wards)
+        """
+        from ._wards import Wards
+
+        if not isinstance(wards, Wards):
+            raise TypeError(
+                f"You can only dereference links using a valid Wards object!")
+
+        workers = {}
+        players = {}
+
+        for key, value in self._workers.items():
+            info = wards.getinfo(key)
+
+            if info in workers:
+                raise AssertionError(f"Duplicate worker info {key} = {info}")
+
+            workers[info] = value
+
+        for key, value in self._players.items():
+            info = wards.getinfo(key)
+
+            if info in players:
+                raise AssertionError(f"Duplicate player info {key} = {info}")
+
+            players[info] = value
+
+        self._id = None
+        self._workers = workers
+        self._players = players
+
     def resolve(self, wards) -> None:
         """Resolve any unresolved links using the passed Wards object
            'wards'
         """
         from ._wards import Wards
 
+        if self.is_resolved():
+            return
+
         if not isinstance(wards, Wards):
             raise TypeError(
                 f"You can only resolve links using a valid Wards object!")
 
-        for key in list(self._workers.keys()):
-            if not isinstance(key, int):
+        workers = {}
+        players = {}
+
+        duplicate_workers = []
+        duplicate_players = []
+
+        for key, value in self._workers.items():
+            if isinstance(key, int):
+                workers[key] = value
+            else:
                 if key in wards:
                     idx = wards.index(key)
 
                     if idx in self._workers:
-                        raise KeyError(f"Duplicate keys? {idx} and {key}")
+                        duplicate_workers.append((idx, value))
+                    else:
+                        workers[idx] = value
+                else:
+                    workers[key] = value
 
-                    self._workers[idx] = self._workers[key]
-                    del self._workers[key]
-
-        for key in list(self._players.keys()):
-            if not isinstance(key, int):
+        for key, value in self._players.items():
+            if isinstance(key, int):
+                players[key] = value
+            else:
                 if key in wards:
                     idx = wards.index(key)
 
                     if idx in self._players:
-                        raise KeyError(f"Duplicate keys? {idx} and {key}")
+                        duplicate_players.append((idx, value))
+                    else:
+                        players[idx] = value
+                else:
+                    players[key] = value
 
-                    self._players[idx] = self._players[key]
-                    del self._players[key]
+        if len(duplicate_workers) > 0 or len(duplicate_players) > 0:
+            raise NotImplementedError("Need to implement duplicate support!")
+
+        if self._info is not None and self._info in wards:
+            idx = wards.index(self._info)
+
+            if self._id is not None and idx != self._id:
+                raise KeyError(f"Wrong ID for {self}? {idx}")
+
+            self._id = idx
+
+        self._players = players
+        self._workers = workers
 
     def is_resolved(self):
         """Return whether or not any of the worker or player links in

@@ -96,5 +96,109 @@ def test_wards():
     assert wards2 == wards
 
 
+def test_add_wards():
+
+    bristol = Ward("Bristol")
+    london = Ward("London")
+    glasgow = Ward("Glasgow")
+
+    wards = Wards()
+
+    assert bristol not in wards
+    assert london not in wards
+    assert glasgow not in wards
+
+    bristol.add_workers(5, london)
+    bristol.add_workers(10, bristol)
+    bristol.add_workers(15, glasgow)
+
+    assert not bristol.is_resolved()
+
+    print(bristol._workers, bristol._players)
+
+    bristol.add_player_weight(0.2, london)
+    bristol.add_player_weight(0.5, glasgow)
+
+    wards.add(bristol)
+
+    assert bristol in wards
+    assert london not in wards
+    assert glasgow not in wards
+
+    wards.add(london)
+
+    assert london in wards
+    assert glasgow not in wards
+
+    assert bristol + london == wards
+
+    wards2 = wards + glasgow
+
+    assert glasgow in wards2
+
+    wards += glasgow
+
+    assert wards == wards2
+
+    assert bristol + london + glasgow == wards
+
+    print(wards)
+
+    print(bristol._workers, bristol._players)
+
+    assert not bristol.is_resolved()
+
+    from copy import deepcopy
+
+    bristol2 = deepcopy(bristol)
+
+    bristol2.resolve(wards)
+
+    print(bristol2)
+    print(bristol2._workers, bristol2._players)
+
+    assert bristol2.is_resolved()
+    assert bristol != bristol2
+
+    bristol2.dereference(wards)
+
+    assert not bristol2.is_resolved()
+    assert bristol == bristol2
+
+    assert wards == wards2
+
+    sheffield = Ward("Sheffield")
+    norwich = Ward("Norwich")
+
+    wards2 = sheffield + norwich
+
+    wards3 = wards + wards2
+
+    print(wards3)
+
+    assert bristol in wards3
+    assert london in wards3
+    assert glasgow in wards3
+    assert sheffield in wards3
+    assert norwich in wards3
+
+    wards3 = wards2 + wards
+
+    bristol2 = wards3["Bristol"]
+
+    assert bristol2.is_resolved()
+
+    print(bristol2._workers, bristol2._players)
+
+    bristol2.dereference(wards3)
+
+    assert not bristol2.is_resolved()
+
+    print(bristol2._workers, bristol2._players)
+
+    assert bristol == bristol2
+
+
 if __name__ == "__main__":
+    test_add_wards()
     test_wards()

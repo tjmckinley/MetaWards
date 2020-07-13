@@ -45,7 +45,10 @@ class Wards:
 
         for ward in wards:
             if isinstance(ward, Wards):
-                self.insert(ward._wards)
+                for w in ward:
+                    if w is not None:
+                        w.dereference(ward)
+                        self.insert(w)
             elif ward is None:
                 continue
             elif not isinstance(ward, Ward):
@@ -65,6 +68,8 @@ class Wards:
 
         add_later = []
 
+        from copy import deepcopy
+
         for ward in wards:
             if isinstance(ward, Ward):
                 # make sure that this is not a duplicate...
@@ -82,13 +87,15 @@ class Wards:
                 if ward.id() is None:
                     add_later.append(ward)
                 else:
+                    ward = deepcopy(ward)
                     self._wards[ward.id()] = ward
-                    self._info[ward.id()] = info
+                    self._info[ward.id()] = ward._info
                     self._unresolved.append(ward.id())
 
         for ward in add_later:
             # append this onto the end of the list
             idx = len(self._wards)
+            ward = deepcopy(ward)
             ward.set_id(idx)
             self._wards.append(ward)
             self._info[ward.id()] = ward._info
@@ -99,6 +106,19 @@ class Wards:
     def add(self, ward: Ward) -> None:
         """Synonym for insert"""
         self.insert(ward)
+
+    def __add__(self, other):
+        from copy import deepcopy
+        c = deepcopy(self)
+        c.add(other)
+        return c
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __iadd__(self, other):
+        self.add(other)
+        return self
 
     def is_resolved(self) -> bool:
         """Return whether or not this is a fully resolved set of Wards
@@ -126,23 +146,71 @@ class Wards:
 
         self._unresolved = still_unresolved
 
-    def __getitem__(self, id: _Union[int, WardInfo]) -> Ward:
-        """Return the ward with specified id - this can be the integer
-           ID of the ward, or the WardInfo of the ward
+    def get(self, id: _Union[int, WardInfo], dereference: bool = True) -> Ward:
+        """Return the ward with the specified id - this can eb the integer
+           ID of the ward or the WardInfo of the ward. If 'dereference'
+           is True then this will dereference all of the IDs into
+           WardInfo objects. This is useful if you want to use the
+           resulting Ward with other Wards collections
         """
-        if isinstance(id, WardInfo):
-            return self._wards[self._info.index(id)]
-        else:
-            return self._wards[id]
+        ward = self[id]
 
-    def index(self, id: _Union[int, WardInfo]) -> int:
+        if dereference:
+            ward.dereference(self)
+
+        return ward
+
+    def getinfo(self, id: _Union[int, str, WardInfo]) -> WardInfo:
+        """Return the WardInfo matching the ward with the passed ID"""
+        idx = self.index(id)
+        return self._info.wards[idx]
+
+    def __getitem__(self, id: _Union[int, str, WardInfo]) -> Ward:
+        """Return the ward with specified id - this can be the integer
+           ID of the ward, or the WardInfo of the ward. Note that
+           this returns a copy of the Ward
+        """
+        if isinstance(id, Ward):
+            idx = self._info.index(id._info)
+
+            if id._id is not None:
+                if idx != id._id:
+                    return ValueError(f"No ward matching {id}")
+
+            w = self._wards[idx]
+        elif isinstance(id, WardInfo):
+            w = self._wards[self._info.index(id)]
+        elif isinstance(id, str):
+            try:
+                return self[int(id)]
+            except Exception:
+                pass
+
+            return self[WardInfo(name=id)]
+        else:
+            w = self._wards[id]
+
+        # must deepcopy this or else it can be changed behind our back
+        from copy import deepcopy
+        return deepcopy(w)
+
+    def index(self, id: _Union[int, str, WardInfo, Ward]) -> int:
         """Return the index of the ward that matches the passed
            id - which can be the integer ID or WardInfo - in this
            Wards object. This raises a ValueError if the
            ward doens't exist
         """
-        if isinstance(id, WardInfo):
+        if isinstance(id, Ward):
+            return self._info.index(id._info)
+        elif isinstance(id, WardInfo):
             return self._info.index(id)
+        elif isinstance(id, str):
+            try:
+                return self.index(int(id))
+            except Exception:
+                pass
+
+            return self.index(WardInfo(name=id))
         else:
             try:
                 id = int(id)
@@ -160,12 +228,22 @@ class Wards:
 
             return id
 
-    def __contains__(self, id: _Union[int, WardInfo]) -> bool:
+    def __contains__(self, id: _Union[int, str, WardInfo, Ward]) -> bool:
         """Return whether or not the passed id - which can be an integer
            ID or WardInfo - is in this Wards object
         """
-        if isinstance(id, WardInfo):
+        if isinstance(id, Ward):
+            return id._info in self._info
+        elif isinstance(id, WardInfo):
             return id in self._info
+        elif isinstance(id, str):
+            try:
+                if self.__contains__(int(id)):
+                    return True
+            except Exception:
+                pass
+
+            return self.__contains__(WardInfo(name=id))
         else:
             id = int(id)
 
@@ -177,7 +255,7 @@ class Wards:
             else:
                 return self._wards[id] is not None
 
-    def contains(self, id: _Union[int, WardInfo]) -> bool:
+    def contains(self, id: _Union[int, str, WardInfo]) -> bool:
         """Return whether or not the passed id - which can be an integer
            ID or WardInfo - is in this Wards object
         """
