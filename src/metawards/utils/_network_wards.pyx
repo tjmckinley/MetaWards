@@ -83,7 +83,7 @@ def load_from_wards(wards: Wards, params: Parameters = None,
     with Console.progress() as progress:
         task = progress.add_task("Constructing nodes", total=nnodes_plus_one)
 
-        for i, ward in enumerate(wards):
+        for i, ward in enumerate(wards._wards):
             if ward is None or ward.is_null():
                 continue
 
@@ -456,7 +456,10 @@ def save_to_wards(network: Network, profiler: Profiler = None,
     p = p.stop()
 
     p = p.start("Create Wards")
-    wards = Wards(wards)
+    w = Wards()
+    w.insert(wards, _need_deep_copy = False)
+    wards = w
+
     p = p.stop()
 
     p = p.start("Assert sane")

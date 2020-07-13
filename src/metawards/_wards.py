@@ -38,7 +38,7 @@ class Wards:
         return self.__class__ == other.__class__ and \
             self.__dict__ == other.__dict__
 
-    def insert(self, wards: _List[Ward]) -> None:
+    def insert(self, wards: _List[Ward], _need_deep_copy=True) -> None:
         """Append the passed wards onto this list"""
         if not isinstance(wards, list):
             wards = [wards]
@@ -87,7 +87,9 @@ class Wards:
                 if ward.id() is None:
                     add_later.append(ward)
                 else:
-                    ward = deepcopy(ward)
+                    if _need_deep_copy:
+                        ward = deepcopy(ward)
+
                     self._wards[ward.id()] = ward
                     self._info[ward.id()] = ward._info
                     self._unresolved.append(ward.id())
@@ -95,7 +97,10 @@ class Wards:
         for ward in add_later:
             # append this onto the end of the list
             idx = len(self._wards)
-            ward = deepcopy(ward)
+
+            if _need_deep_copy:
+                ward = deepcopy(ward)
+
             ward.set_id(idx)
             self._wards.append(ward)
             self._info[ward.id()] = ward._info
@@ -419,7 +424,7 @@ class Wards:
 
             for i, x in enumerate(data):
                 if x is not None:
-                    wards.insert(Ward.from_data(x))
+                    wards.insert(Ward.from_data(x), _need_deep_copy=False)
 
                 if i % 250 == 0:
                     progress.update(task, completed=i+1)
