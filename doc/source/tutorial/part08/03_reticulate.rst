@@ -36,7 +36,7 @@ Next, you can import the :mod:`metawards` module by typing;
 
 .. code-block:: R
 
-   metawards <- import("metawards")
+   > metawards <- import("metawards")
 
 This loads all of the :mod:`metawards` Python objects into the
 ``metawards`` namespace in R. You can then call those objects directly
@@ -48,18 +48,18 @@ and London in R as we did in Python via;
 .. code-block:: R
 
    > wards <- metawards$Wards()
-   > bristol <- Ward(id=1, name="Bristol")
-   > bristol$add_workers(500)
+   > bristol <- metawards$Ward(name="Bristol")
+   > bristol$add_workers(500, destination=bristol)
    > bristol$set_num_players(750)
    > print(bristol)
    Ward( id=1, name=Bristol, num_workers=500, num_players=750 )
-   > london <- metawards$Ward(id=2, name="London")
-   > london$add_workers(8500)
+   > london <- metawards$Ward(name="London")
+   > london$add_workers(8500, destination=london)
    > london$set_num_players(10000)
    > print(london)
    Ward( id=2, name=London, num_workers=8500, num_players=10000 )
-   > bristol$add_workers(500, destination=2)
-   > london$add_workers(100, destination=1)
+   > bristol$add_workers(500, destination=london)
+   > london$add_workers(100, destination=bristol)
    > wards$add(bristol)
    > wards$add(london)
    > print(wards)
