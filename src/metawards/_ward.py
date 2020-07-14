@@ -1,7 +1,12 @@
+from __future__ import annotations
 
 from ._wardinfo import WardInfo
 
 from typing import Union as _Union
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ._wards import Wards
 
 __all__ = ["Ward"]
 
@@ -161,6 +166,50 @@ class Ward:
         """Return the ID of this ward"""
         return self._id
 
+    def merge(self, other) -> None:
+        """Merge in the data from 'other' into this Ward. The 'info'
+           and the ID numbers must match (or be None).
+
+           This will add the workers from 'other' to this ward,
+           plus will average the player weights between the two
+        """
+        if self._info != other._info:
+            raise ValueError(
+                f"Cannot merge as infos are different: {self._info} versus "
+                f"{other._info}")
+
+        if self._id is None:
+            self._id = other._id
+
+        if other._id is not None and self._id != other._id:
+            raise ValueError(
+                f"Cannot merge as ID numbers are different: {self._id} versus "
+                f"{other._id}")
+
+        if self._pos is None:
+            self._pos = other._pos
+
+        self._num_workers += other._num_workers
+        self._num_players += other._num_players
+
+        for key, value in other._workers.items():
+            if key in self._workers:
+                self._workers[key] += value
+            else:
+                self._workers[key] = value
+
+        assert sum(self._workers.values()) == self._num_workers
+
+        for key, value in self._players.items():
+            self._players[key] = 0.5 * self._players[key]
+
+        for key, value in other._players.items():
+            self._players[key] = self._players.get(key, 0.0) + (0.5 * value)
+
+        self._player_total = 1.0 - sum(self._players.values())
+
+        assert self._player_total >= 0.0
+
     def auto_assign_players(self) -> bool:
         """Return whether or not the remaining player weight is automatically
            added to the home-ward player weight
@@ -317,9 +366,10 @@ class Ward:
 
         return destination
 
-    def dereference(self, wards) -> None:
+    def dereference(self, wards: Wards, _inplace: bool = False) -> Ward:
         """Dereference the IDs and convert those back to WardInfo objects.
-           This is the opposite of self.resolve(wards)
+           This is the opposite of self.resolve(wards). This will
+           return the dereferenced ward.
         """
         from ._wards import Wards
 
@@ -346,11 +396,19 @@ class Ward:
 
             players[info] = value
 
-        self._id = None
-        self._workers = workers
-        self._players = players
+        if _inplace:
+            ward = self
+        else:
+            from copy import deepcopy
+            ward = deepcopy(self)
 
-    def resolve(self, wards) -> None:
+        ward._id = None
+        ward._workers = workers
+        ward._players = players
+
+        return ward
+
+    def resolve(self, wards: Wards, _inplace: bool = None) -> Ward:
         """Resolve any unresolved links using the passed Wards object
            'wards'
         """
@@ -366,50 +424,38 @@ class Ward:
         workers = {}
         players = {}
 
-        duplicate_workers = []
-        duplicate_players = []
-
         for key, value in self._workers.items():
-            if isinstance(key, int):
-                workers[key] = value
+            if isinstance(key, int) or key not in wards:
+                workers[key] = workers.get(key, 0) + value
             else:
-                if key in wards:
-                    idx = wards.index(key)
-
-                    if idx in self._workers:
-                        duplicate_workers.append((idx, value))
-                    else:
-                        workers[idx] = value
-                else:
-                    workers[key] = value
+                idx = wards.index(key)
+                workers[idx] = workers.get(idx, 0) + value
 
         for key, value in self._players.items():
-            if isinstance(key, int):
-                players[key] = value
+            if isinstance(key, int) or key not in wards:
+                players[key] = players.get(key, 0.0) + value
             else:
-                if key in wards:
-                    idx = wards.index(key)
+                idx = wards.index(key)
+                players[idx] = players.get(idx, 0.0) + value
 
-                    if idx in self._players:
-                        duplicate_players.append((idx, value))
-                    else:
-                        players[idx] = value
-                else:
-                    players[key] = value
+        if _inplace:
+            ward = self
+        else:
+            from copy import deepcopy
+            ward = deepcopy(self)
 
-        if len(duplicate_workers) > 0 or len(duplicate_players) > 0:
-            raise NotImplementedError("Need to implement duplicate support!")
+        if ward._info is not None and ward._info in wards:
+            idx = wards.index(ward._info)
 
-        if self._info is not None and self._info in wards:
-            idx = wards.index(self._info)
+            if ward._id is not None and idx != self._id:
+                raise KeyError(f"Wrong ID for {ward}? {idx}")
 
-            if self._id is not None and idx != self._id:
-                raise KeyError(f"Wrong ID for {self}? {idx}")
+            ward._id = idx
 
-            self._id = idx
+        ward._players = players
+        ward._workers = workers
 
-        self._players = players
-        self._workers = workers
+        return ward
 
     def is_resolved(self):
         """Return whether or not any of the worker or player links in

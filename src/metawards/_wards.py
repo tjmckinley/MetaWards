@@ -1,6 +1,7 @@
 
 from typing import List as _List
 from typing import Union as _Union
+from typing import Tuple as _Tuple
 
 from .utils._profiler import Profiler, NullProfiler
 
@@ -34,21 +35,29 @@ class Wards:
 
             return s
 
+    def __repr__(self):
+        return self.__str__()
+
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
             self.__dict__ == other.__dict__
 
-    def insert(self, wards: _List[Ward], _need_deep_copy=True) -> None:
-        """Append the passed wards onto this list"""
+    def insert(self, wards: _List[Ward], overwrite: bool = True,
+               _need_deep_copy: bool = True) -> None:
+        """Insert the passed wards onto this list. This will overwrite
+           the existing ward if 'overwrite' is true, otherwise it will
+           add the ward's data to the existing ward
+        """
         if not isinstance(wards, list):
             wards = [wards]
 
         for ward in wards:
             if isinstance(ward, Wards):
-                for w in ward:
+                for w in ward._wards:
                     if w is not None:
-                        w.dereference(ward)
-                        self.insert(w)
+                        w = w.dereference(ward)
+                        self.insert(w, overwrite=overwrite,
+                                    _need_deep_copy=False)
             elif ward is None:
                 continue
             elif not isinstance(ward, Ward):
@@ -77,6 +86,11 @@ class Wards:
 
                 if info in self._info:
                     idx = self._info.index(info)
+
+                    if ward.id() is None:
+                        ward = deepcopy(ward)
+                        ward.set_id(idx)
+
                     if idx != ward.id():
                         raise KeyError(
                             f"You cannot have two different wards that have "
@@ -90,7 +104,11 @@ class Wards:
                     if _need_deep_copy:
                         ward = deepcopy(ward)
 
-                    self._wards[ward.id()] = ward
+                    if overwrite or self._wards[ward.id()] is None:
+                        self._wards[ward.id()] = ward
+                    else:
+                        self._wards[ward.id()].merge(ward)
+
                     self._info[ward.id()] = ward._info
                     self._unresolved.append(ward.id())
 
@@ -110,7 +128,7 @@ class Wards:
 
     def add(self, ward: Ward) -> None:
         """Synonym for insert"""
-        self.insert(ward)
+        self.insert(ward, overwrite=False)
 
     def __add__(self, other):
         from copy import deepcopy
@@ -144,7 +162,7 @@ class Wards:
         still_unresolved = []
 
         for unresolved in self._unresolved:
-            self._wards[unresolved].resolve(self)
+            self._wards[unresolved].resolve(self, _inplace=True)
 
             if not self._wards[unresolved].is_resolved():
                 still_unresolved.append(unresolved)
@@ -161,7 +179,7 @@ class Wards:
         ward = self[id]
 
         if dereference:
-            ward.dereference(self)
+            ward.dereference(self, _inplace=True)
 
         return ward
 
@@ -318,6 +336,40 @@ class Wards:
                 num += ward.population()
 
         return num
+
+    @staticmethod
+    def harmonise(wardss: _List['Wards']) -> _Tuple['Wards', _List['Wards']]:
+        """Harmonise the passed list of wards, returning a tuple that
+           contains the overall sum of all of these wards, plus a new list
+           where all Wards use IDs that are correct and valid
+           across the entire group
+        """
+        harmonised = []
+
+        for wards in wardss:
+            if wards is not None and not isinstance(wards, Wards):
+                raise TypeError(f"Cannot harmonise non-Wards objects")
+
+        # create the overall Wards that will provide the IDs for all
+        overall = Wards()
+
+        for wards in wardss:
+            if wards is None:
+                continue
+
+            hwards = Wards()
+
+            for ward in wards._wards:
+                if ward is not None:
+                    ward = ward.dereference(wards)
+                    overall.insert(ward, overwrite=False)
+                    ward.resolve(overall, _inplace=True)
+                    hwards.insert(ward, overwrite=False,
+                                  _need_deep_copy=False)
+
+            harmonised.append(hwards)
+
+        return (overall, harmonised)
 
     def assert_sane(self):
         """Make sure that we don't refer to any non-existent wards"""

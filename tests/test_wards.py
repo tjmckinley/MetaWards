@@ -148,11 +148,7 @@ def test_add_wards():
 
     assert not bristol.is_resolved()
 
-    from copy import deepcopy
-
-    bristol2 = deepcopy(bristol)
-
-    bristol2.resolve(wards)
+    bristol2 = bristol.resolve(wards)
 
     print(bristol2)
     print(bristol2._workers, bristol2._players)
@@ -160,7 +156,7 @@ def test_add_wards():
     assert bristol2.is_resolved()
     assert bristol != bristol2
 
-    bristol2.dereference(wards)
+    bristol2 = bristol2.dereference(wards)
 
     assert not bristol2.is_resolved()
     assert bristol == bristol2
@@ -171,6 +167,9 @@ def test_add_wards():
     norwich = Ward("Norwich")
 
     wards2 = sheffield + norwich
+
+    print(wards)
+    print(wards2)
 
     wards3 = wards + wards2
 
@@ -190,7 +189,7 @@ def test_add_wards():
 
     print(bristol2._workers, bristol2._players)
 
-    bristol2.dereference(wards3)
+    bristol2 = bristol2.dereference(wards3)
 
     assert not bristol2.is_resolved()
 
@@ -199,6 +198,144 @@ def test_add_wards():
     assert bristol == bristol2
 
 
+def test_duplicate_wards():
+    bristol = Ward("Bristol")
+    bristol.set_num_players(100)
+
+    london = Ward("London")
+    london.set_num_players(200)
+
+    bristol.add_workers(50, london)
+    bristol.add_player_weight(0.5, london)
+
+    wards = bristol + london
+
+    print(wards)
+
+    assert bristol in wards
+    assert london in wards
+
+    assert wards.num_workers() == bristol.num_workers() + london.num_workers()
+    assert wards.num_players() == bristol.num_players() + london.num_players()
+
+    print(wards.to_json())
+
+    wlist1 = wards[bristol].get_worker_lists()
+    plist1 = wards[bristol].get_player_lists()
+
+    wards += bristol
+
+    print(wards)
+
+    print(wards.to_json())
+
+    assert wards[bristol].num_players() == 2 * bristol.num_players()
+    assert wards[bristol].num_workers() == 2 * bristol.num_workers()
+
+    wlist2 = wards[bristol].get_worker_lists()
+    plist2 = wards[bristol].get_player_lists()
+
+    print(wlist1)
+    print(wlist2)
+
+    assert wlist1[0][0] == wlist2[0][0]
+    assert 2 * wlist1[1][0] == wlist2[1][0]
+
+    print(plist1)
+    print(plist2)
+
+    assert plist1 == plist2
+
+
+def test_harmonise_wards():
+    bristol = Ward("Bristol")
+    london = Ward("London")
+    oxford = Ward("Oxford")
+
+    bristol.set_num_players(1000)
+    london.set_num_players(5000)
+    oxford.set_num_players(800)
+
+    bristol.add_workers(500, destination=bristol)
+    bristol.add_workers(200, destination=oxford)
+    bristol.add_workers(900, destination=london)
+
+    oxford.add_workers(100, destination=bristol)
+    oxford.add_workers(1000, destination=oxford)
+    oxford.add_workers(2000, destination=london)
+
+    london.add_workers(100, destination=bristol)
+    london.add_workers(400, destination=oxford)
+    london.add_workers(10000, destination=london)
+
+    bristol.add_player_weight(0.1, destination=oxford)
+    oxford.add_player_weight(0.2, destination=bristol)
+    oxford.add_player_weight(0.15, destination=london)
+    london.add_player_weight(0.3, destination=oxford)
+
+    home_wards = bristol + london + oxford
+    print(home_wards)
+
+    holiday = Ward("holiday")
+    bristol = Ward("Bristol")
+    oxford = Ward("Oxford")
+    holiday.add_player_weight(0.5, destination=bristol)
+    holiday.add_player_weight(0.5, destination=oxford)
+
+    holiday_wards = bristol + oxford + holiday
+    print(holiday_wards)
+
+    hospital = Ward("hospital")
+    london = Ward("London")
+    london.add_workers(50, destination=hospital)
+    hospital.set_num_players(150)
+
+    hospital_wards = london + hospital
+    print(hospital_wards)
+
+    overall, harmonised = Wards.harmonise([home_wards, holiday_wards,
+                                           hospital_wards])
+
+    print(overall)
+    print(harmonised)
+
+    assert overall.num_workers() == home_wards.num_workers() + \
+        holiday_wards.num_workers() + \
+        hospital_wards.num_workers()
+
+    assert overall.num_players() == home_wards.num_players() + \
+        holiday_wards.num_players() + \
+        hospital_wards.num_players()
+
+    assert harmonised[0].num_workers() == home_wards.num_workers()
+    assert harmonised[0].num_players() == home_wards.num_players()
+    assert harmonised[1].num_workers() == holiday_wards.num_workers()
+    assert harmonised[1].num_players() == holiday_wards.num_players()
+    assert harmonised[2].num_workers() == hospital_wards.num_workers()
+    assert harmonised[2].num_players() == hospital_wards.num_players()
+
+    assert harmonised[0][bristol].dereference(harmonised[0]) == \
+        home_wards[bristol].dereference(home_wards)
+    assert harmonised[0][london].dereference(harmonised[0]) == \
+        home_wards[london].dereference(home_wards)
+    assert harmonised[0][oxford].dereference(harmonised[0]) == \
+        home_wards[oxford].dereference(home_wards)
+    assert harmonised[1][bristol].dereference(harmonised[1]) == \
+        holiday_wards[bristol].dereference(holiday_wards)
+    assert harmonised[1][oxford].dereference(harmonised[1]) == \
+        holiday_wards[oxford].dereference(holiday_wards)
+    assert harmonised[1][holiday].dereference(harmonised[1]) == \
+        holiday_wards[holiday].dereference(holiday_wards)
+    assert harmonised[2][london].dereference(harmonised[2]) == \
+        hospital_wards[london].dereference(hospital_wards)
+    assert harmonised[2][hospital].dereference(harmonised[2]) == \
+        hospital_wards[hospital].dereference(hospital_wards)
+
+    print(overall.to_json())
+
+
 if __name__ == "__main__":
     test_add_wards()
     test_wards()
+    test_duplicate_wards()
+    test_harmonise_wards()
