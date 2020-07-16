@@ -77,11 +77,15 @@ def _load_additional_seeds(network: _Union[Network, Networks],
     try:
         dialect = csv.Sniffer().sniff(lines[0], delimiters=[" ", ","])
     except Exception:
-        Console.warning(
-            f"Could not identify what sort of separator to use to "
-            f"read the additional seeds, so will assume commas. If this is "
-            f"wrong then could you add commas to separate the "
-            f"fields?")
+        words = csvlines[0].strip().split(" ")
+
+        if len(words) > 1:
+            Console.warning(
+                f"Could not identify what sort of separator to use to "
+                f"read the additional seeds, so will assume commas. If this "
+                f"is wrong then could you add commas to separate the "
+                f"fields?")
+
         dialect = csv.excel  #  default comma-separated file
 
     titles = None
