@@ -45,6 +45,11 @@ class Demographic:
     #: this demographic will follow this Disease
     disease: Disease = None
 
+    #: The network that describes the workers and player that are part
+    #: of this demographic. If this is None then the entire population
+    #: network will be used (scaled by "work_ratio" and "play_ratio")
+    network: str = None
+
     def specialise(self, network: Network, profiler=None,
                    nthreads: int = 1):
         """Return a copy of the passed network that has been specialised

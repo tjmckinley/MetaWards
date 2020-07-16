@@ -272,6 +272,7 @@ follow the instructions at
         play_ratios = data.get("play_ratios", [])
         random_seed = data.get("random_seed", None)
         diseases = data.get("diseases", None)
+        networks = data.get("networks", None)
 
         if diseases is None:
             diseases = len(demographics) * [None]
@@ -280,15 +281,20 @@ follow the instructions at
             diseases = [Disease.load(x, folder=json_dir) if x is not None
                         else None for x in diseases]
 
+        if networks is None:
+            networks = len(demographics) * [None]
+
         if (len(demographics) != len(work_ratios) or
                 len(demographics) != len(play_ratios) or
-                len(demographics) != len(diseases)):
+                len(demographics) != len(diseases) or
+                len(demographics) != len(networks)):
             raise ValueError(
                 f"The number of work_ratios ({len(work_ratios)}) must "
                 f"equal to number of play_ratios "
                 f"({len(play_ratios)}) which must equal the number "
                 f"of diseases ({len(diseases)}) which must equal "
-                f"the number of demographics ({len(demographics)})")
+                f"the number of demographics ({len(demographics)}), "
+                f"which must equal the number of networks ({len(networks)}).")
 
         demos = Demographics(random_seed=random_seed,
                              _name=name,
@@ -304,7 +310,8 @@ follow the instructions at
             demographic = Demographic(name=demographics[i],
                                       work_ratio=_get_value(work_ratios[i]),
                                       play_ratio=_get_value(play_ratios[i]),
-                                      disease=diseases[i])
+                                      disease=diseases[i],
+                                      network=networks[i])
             demos.add(demographic)
 
         return demos
