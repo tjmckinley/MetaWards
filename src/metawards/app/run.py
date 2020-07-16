@@ -891,8 +891,6 @@ def cli():
         # for production code
         Console.warning("Using special mode to fix all random number"
                         "seeds to 15324. DO NOT USE IN PRODUCTION!!!")
-    else:
-        Console.print(f"* Using random number seed {seed}", markdown=True)
 
     # get the starting day and date
     start_day = args.start_day
@@ -1094,7 +1092,6 @@ def cli():
                                      profiler=profiler,
                                      nthreads=nthreads)
 
-    Console.rule("Preparing to run")
     from metawards import OutputFiles
     from metawards.utils import run_models
 
@@ -1136,11 +1133,13 @@ def cli():
     else:
         mover = None
 
+    Console.rule("Preparing the output directory")
+
     with OutputFiles(outdir, force_empty=args.force_overwrite_output,
                      auto_bzip=auto_bzip, prompt=prompt) as output_dir:
         # write the config file for this job to output/config.yaml
-        Console.rule("Running the model")
         CONSOLE = output_dir.open("console.log")
+        Console.rule("Preparing to run")
         Console.save(CONSOLE)
 
         lines = []

@@ -101,28 +101,19 @@ class Network:
             f"Creating a single ward Network with a population "
             f"of {int(pop)}")
 
-        network = Network()
-        network.nnodes = 1
-        network.nlinks = 0
-        network.nplay = 0
+        from ._wards import Wards
+        from ._ward import Ward
 
-        # Everything is 1-indexed, so need to create space for the
-        # null 0-index objects...
-        network.params = params
-        network.play = Links(1)
-        network.links = Links(1)
+        ward = Ward(name="single")
+        ward.set_num_players(pop)
 
-        nodes = Nodes(2)
-        from ._node import Node
-        # 1-indexed node
-        nodes[1] = Node(label=1, play_suscept=pop,
-                        save_play_suscept=pop)
+        wards = Wards()
+        wards.add(ward)
 
-        network.nodes = nodes
+        assert wards.population() == pop
 
-        network.reset_everything(profiler=profiler)
-        network.rescale_play_matrix(profiler=profiler)
-        network.move_from_play_to_work(profiler=profiler)
+        network = Network.from_wards(wards, params=params)
+        network.params.input_files = params.input_files
 
         return network
 
@@ -604,7 +595,8 @@ class Network:
             from .utils._console import Console
             Console.warning("Using special mode to fix all random number "
                             "seeds to 15324. DO NOT USE IN PRODUCTION!!!")
-            rng = seed_ran_binomial(seed=15324)
+            seed = 15324
+            rng = seed_ran_binomial(seed=seed)
         else:
             rng = seed_ran_binomial(seed=seed)
 
@@ -617,21 +609,28 @@ class Network:
 
         from .utils._console import Console
 
-        Console.print(f"First five random numbers equal {', '.join(randnums)}")
+        Console.print(
+            f"* Using random number seed {seed}\n"
+            f"* First five random numbers equal **{'**, **'.join(randnums)}**",
+            markdown=True)
         randnums = None
 
         if nthreads is None:
             from .utils._parallel import get_available_num_threads
             nthreads = get_available_num_threads()
 
-        Console.print(f"Number of threads used equals {nthreads}")
-
         from .utils._parallel import create_thread_generators
         rngs = create_thread_generators(rng, nthreads)
 
         # Create space to hold the results of the simulation
-        Console.print("Initialise infections...")
         infections = self.initialise_infections()
+
+        if nthreads == 1:
+            s = ""
+        else:
+            s = "s"
+
+        Console.rule(f"Running the model using {nthreads} thread{s}")
 
         from .utils import run_model
         population = run_model(network=self,
