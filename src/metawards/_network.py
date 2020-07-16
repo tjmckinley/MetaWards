@@ -101,28 +101,19 @@ class Network:
             f"Creating a single ward Network with a population "
             f"of {int(pop)}")
 
-        network = Network()
-        network.nnodes = 1
-        network.nlinks = 0
-        network.nplay = 0
+        from ._wards import Wards
+        from ._ward import Ward
 
-        # Everything is 1-indexed, so need to create space for the
-        # null 0-index objects...
-        network.params = params
-        network.play = Links(1)
-        network.links = Links(1)
+        ward = Ward(name="single")
+        ward.set_num_players(pop)
 
-        nodes = Nodes(2)
-        from ._node import Node
-        # 1-indexed node
-        nodes[1] = Node(label=1, play_suscept=pop,
-                        save_play_suscept=pop)
+        wards = Wards()
+        wards.add(ward)
 
-        network.nodes = nodes
+        assert wards.population() == pop
 
-        network.reset_everything(profiler=profiler)
-        network.rescale_play_matrix(profiler=profiler)
-        network.move_from_play_to_work(profiler=profiler)
+        network = Network.from_wards(wards, params=params)
+        network.params.input_files = params.input_files
 
         return network
 
