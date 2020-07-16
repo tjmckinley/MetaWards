@@ -1074,23 +1074,25 @@ def cli():
                             date=start_day_date,
                             day=start_day)
 
-    Console.rule("Building the network")
-    network = Network.build(params=params,
-                            population=population,
-                            max_nodes=args.max_nodes,
-                            max_links=args.max_links,
-                            profiler=profiler,
-                            nthreads=nthreads)
-
     if args.demographics:
         from metawards import Demographics
-        Console.rule("Specialising into demographics")
+        Console.rule("Building the demographic networks")
         demographics = Demographics.load(args.demographics)
         Console.print(demographics)
-
-        network = network.specialise(demographics,
+        network = demographics.build(params=params,
+                                     population=population,
+                                     max_nodes=args.max_nodes,
+                                     max_links=args.max_links,
                                      profiler=profiler,
                                      nthreads=nthreads)
+    else:
+        Console.rule("Building the network")
+        network = Network.build(params=params,
+                                population=population,
+                                max_nodes=args.max_nodes,
+                                max_links=args.max_links,
+                                profiler=profiler,
+                                nthreads=nthreads)
 
     from metawards import OutputFiles
     from metawards.utils import run_models

@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 from dataclasses import dataclass as _dataclass
 from dataclasses import field as _field
@@ -9,6 +10,14 @@ import pathlib as _pathlib
 
 from ._demographic import Demographic
 from ._network import Network
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .utils._profiler import Profiler
+    from .utils._profiler import Networks
+    from ._population import Population
+    from ._parameters import Parameters
 
 __all__ = ["Demographics", "DemographicID", "DemographicIDs"]
 
@@ -185,6 +194,31 @@ class Demographics:
                        f"{self._names}. Available indexes are "
                        f"0 -> {len(self._names)}")
 
+    def uses_named_network(self):
+        """Return whether or not at least one of these demographics
+           specifies the use of a named network model
+        """
+        for demographic in self.demographics:
+            if demographic.network is not None:
+                return True
+
+        return False
+
+    def is_multi_network(self):
+        """Return whether or not these demographics need to use multiple
+           custom networks (e.g. refer to different network models)
+        """
+        if len(self) <= 1:
+            return False
+        else:
+            first_network = self.demographics[0].network
+
+            for demographic in self.demographics[1:]:
+                if first_network != demographic.network:
+                    return True
+
+            return False
+
     @staticmethod
     def load(name: str = None,
              repository: str = None,
@@ -316,7 +350,47 @@ follow the instructions at
 
         return demos
 
-    def specialise(self, network: Network, profiler=None,
+    def build(self, params: Parameters, population: Population = None,
+              max_nodes: int = 16384,
+              max_links: int = 4194304,
+              nthreads: int = 1,
+              profiler: Profiler = None) -> _Union[Network, Networks]:
+        """Build the set of networks described by these demographics
+           and the passed parameters
+
+           Parameters
+           ----------
+           params: Parameters
+             Parameters used to help build the model networks
+           max_nodes: int
+             Initial guess for the maximum number of nodes(wards)
+           max_links: int
+             Initial guess for the maximum number of links between wards
+           profiler: Profiler
+             Profiler used to profile the specialisation
+           nthreads: int
+             Number of threads over which to parallelise the work
+
+           Returns
+           -------
+           Network or Networks
+             The set of Networks that represent the model run over the
+             full set of different demographics (or Network if there is
+             just a single demographic)
+        """
+        from .utils._console import Console
+
+        if len(self) == 0:
+            return Network.build(params=params, population=population,
+                                 max_nodes=max_nodes, max_links=max_links,
+                                 nthreads=nthreads, profiler=profiler)
+
+        Console.rule("Specialising into demographics")
+        network = network.specialise(demographics,
+                                     profiler=profiler,
+                                     nthreads=nthreads)
+
+    def specialise(self, network: Network, profiler: Profiler = None,
                    nthreads: int = 1):
         """Build the set of networks that will model this set
            of demographics applied to the passed Network.
