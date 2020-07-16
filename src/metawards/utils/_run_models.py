@@ -120,9 +120,13 @@ def run_models(network: _Union[Network, Networks],
          The set of adjustable variables and final population at the
          end of each run
     """
+    from ._console import Console
 
     if len(variables) == 1:
         # no need to do anything complex - just a single run
+        if not variables[0].is_empty():
+            Console.print(f"* Adjusting {variables[0]}", markdown=True)
+
         params = network.params.set_variables(variables[0])
 
         network.update(params, profiler=profiler)
@@ -163,8 +167,6 @@ def run_models(network: _Union[Network, Networks],
     # (for testing, we will use the same seed so that I can check
     #  that they are all working)
     seeds = []
-
-    from ._console import Console
 
     if seed == 0:
         # this is a special mode that a developer can use to force
@@ -220,6 +222,8 @@ def run_models(network: _Union[Network, Networks],
         # no need to use a pool, as we will repeat this calculation
         # several times
         save_network = network.copy()
+
+        Console.rule("Running models in serial")
 
         for i, variable in enumerate(variables):
             seed = seeds[i]
@@ -336,7 +340,7 @@ def run_models(network: _Union[Network, Networks],
 
         if parallel_scheme == "multiprocessing":
             # run jobs using a multiprocessing pool
-            Console.rule("MULTIPROCESSING")
+            Console.rule("Running models in parallel using multiprocessing")
             from multiprocessing import Pool
 
             results = []
@@ -374,8 +378,7 @@ def run_models(network: _Union[Network, Networks],
 
         elif parallel_scheme == "mpi4py":
             # run jobs using a mpi4py pool
-            Console.rule("MPI")
-            Console.print("Running jobs in parallel using a mpi4py pool")
+            Console.rule("Running models in parallel using MPI")
             from mpi4py import futures
             with futures.MPIPoolExecutor(max_workers=nprocs) as pool:
                 results = pool.map(run_worker, arguments)
@@ -407,8 +410,7 @@ def run_models(network: _Union[Network, Networks],
 
         elif parallel_scheme == "scoop":
             # run jobs using a scoop pool
-            Console.rule("SCOOP")
-            Console.print("Running jobs in parallel using a scoop pool")
+            Console.rule("Running models in parallel using scoop")
             from scoop import futures
 
             results = []

@@ -427,6 +427,10 @@ class VariableSet:
         else:
             return len(self._vals)
 
+    def is_empty(self):
+        """Return whether or not there is nothing to change"""
+        return len(self) == 0
+
     def __getitem__(self, key):
         if self._vals is None:
             raise KeyError(f"No adjustable parameter {key} in an empty set")
@@ -1211,12 +1215,16 @@ class VariableSets:
         try:
             dialect = csv.Sniffer().sniff(csvlines[0], delimiters=[" ", ","])
         except Exception:
-            from .utils._console import Console
-            Console.warning(
-                f"Could not identify what sort of separator to use to "
-                f"read {filename}, so will assume commas. If this is wrong, "
-                f"then could you add commas to separate the "
-                f"fields?")
+            words = csvlines[0].strip().split(" ")
+
+            if len(words) > 1:
+                from .utils._console import Console
+                Console.warning(
+                    f"Could not identify what sort of separator to use to "
+                    f"read {filename}, so will assume commas. If this is "
+                    f"wrong, then could you add commas to separate the "
+                    f"fields?")
+
             dialect = csv.excel  #  default comma-separated file
 
         for line in csv.reader(csvlines, dialect=dialect,

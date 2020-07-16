@@ -46,6 +46,7 @@ def prepare_worker(params: Parameters, demographics: Demographics,
 
     if global_network is None:
         network = Network.build(params=params,
+                                population=options.get("population", None),
                                 profiler=profiler,
                                 max_nodes=max_nodes,
                                 max_links=max_links)

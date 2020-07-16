@@ -604,7 +604,8 @@ class Network:
             from .utils._console import Console
             Console.warning("Using special mode to fix all random number "
                             "seeds to 15324. DO NOT USE IN PRODUCTION!!!")
-            rng = seed_ran_binomial(seed=15324)
+            seed = 15324
+            rng = seed_ran_binomial(seed=seed)
         else:
             rng = seed_ran_binomial(seed=seed)
 
@@ -617,21 +618,28 @@ class Network:
 
         from .utils._console import Console
 
-        Console.print(f"First five random numbers equal {', '.join(randnums)}")
+        Console.print(
+            f"* Using random number seed {seed}\n"
+            f"* First five random numbers equal **{'**, **'.join(randnums)}**",
+            markdown=True)
         randnums = None
 
         if nthreads is None:
             from .utils._parallel import get_available_num_threads
             nthreads = get_available_num_threads()
 
-        Console.print(f"Number of threads used equals {nthreads}")
-
         from .utils._parallel import create_thread_generators
         rngs = create_thread_generators(rng, nthreads)
 
         # Create space to hold the results of the simulation
-        Console.print("Initialise infections...")
         infections = self.initialise_infections()
+
+        if nthreads == 1:
+            s = ""
+        else:
+            s = "s"
+
+        Console.rule(f"Running the model using {nthreads} thread{s}")
 
         from .utils import run_model
         population = run_model(network=self,
