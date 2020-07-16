@@ -360,7 +360,7 @@ class Network:
         from .utils import reset_everything
         reset_everything(network=self, nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters, demographics=None,
+    def update(self, params: Parameters, demographics=None, population=None,
                nthreads: int = 1, profiler=None):
         """Update this network with a new set of parameters
            (and optionally demographics).
@@ -406,9 +406,18 @@ class Network:
         p = p.stop()
 
         if demographics:
-            network = demographics.specialise(network=self,
-                                              profiler=profiler,
-                                              nthreads=nthreads)
+            from .utils._worker import must_rebuild_network
+
+            if must_rebuild_network(network=self, params=self.params,
+                                    demographics=demographics):
+                network = demographics.build(params=self.params,
+                                             population=population,
+                                             nthreads=nthreads,
+                                             profiler=p)
+            else:
+                network = demographics.specialise(network=self,
+                                                  profiler=p,
+                                                  nthreads=nthreads)
         else:
             network = self
 

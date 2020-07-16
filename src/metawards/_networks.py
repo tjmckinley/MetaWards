@@ -114,6 +114,12 @@ class Networks:
                              f"with a valid Demographics that contains "
                              f"more than one demographic")
 
+        if demographics.uses_named_network():
+            raise ValueError(
+                f"You cannot specialise an existing network with demographics "
+                f"that specify named networks - instead you need to call "
+                f"demographics.build(...)")
+
         if profiler is None:
             from .utils._profiler import NullProfiler
             profiler = NullProfiler()
@@ -330,7 +336,7 @@ class Networks:
         for subnet in self.subnets:
             subnet.reset_everything(nthreads=nthreads, profiler=profiler)
 
-    def update(self, params: Parameters, demographics=None,
+    def update(self, params: Parameters, demographics=None, population=None,
                nthreads: int = 1, profiler=None):
         """Update this network with a new set of parameters
            (and optionally demographics).
@@ -369,19 +375,25 @@ class Networks:
 
         if demographics is not None:
             if demographics != self.demographics:
-                # we have a change in demographics, so need to re-specialise
-                networks = demographics.specialise(network=self.overall,
-                                                   profiler=p,
-                                                   nthreads=nthreads)
+                from .utils._worker import must_rebuild_network
+
+                if must_rebuild_network(network=self, params=self.params,
+                                        demographics=demographics):
+                    networks = demographics.build(
+                        params=self.params,
+                        population=population,
+                        nthreads=nthreads,
+                        profiler=p)
+                else:
+                    # we have a change in demographics, so need to re-specialise
+                    networks = demographics.specialise(network=self.overall,
+                                                       profiler=p,
+                                                       nthreads=nthreads)
                 p.stop()
                 return networks
 
         for i in range(0, len(self.demographics)):
             demographic = self.demographics[i]
-
-            # TODO::: RESET THE SUSCEPTIBLE POPULATIONS BACK TO
-            #         WHERE THEY SHOULD BE AT THE START OF THE RUN
-
             p = p.start(f"{demographic.name}.update")
             if demographic.name in params.specialised_demographics():
                 subnet_params = params[demographic.name]

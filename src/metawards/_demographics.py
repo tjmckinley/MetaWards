@@ -385,10 +385,35 @@ follow the instructions at
                                  max_nodes=max_nodes, max_links=max_links,
                                  nthreads=nthreads, profiler=profiler)
 
-        Console.rule("Specialising into demographics")
-        network = network.specialise(demographics,
-                                     profiler=profiler,
-                                     nthreads=nthreads)
+        if len(self) == 1:
+            demographic = self[0]
+            demographic.adjustment.adjust(params)
+
+            if demographic.disease is not None:
+                params.disease_params = demographic.disease
+
+            if demographic.network is not None:
+                params.input_files = demographic.network
+
+            network = Network.build(params=params, population=population,
+                                    max_nodes=max_nodes, max_links=max_links,
+                                    nthreads=nthreads, profiler=profiler)
+
+            network.name = demographic.name
+            return network
+
+        if not self.uses_named_network():
+            # build a single network that is then specialised
+            network = Network.build(params=params, population=population,
+                                    max_nodes=max_nodes, max_links=max_links,
+                                    nthreads=nthreads, profiler=profiler)
+
+            Console.rule("Specialising into demographics")
+            return self.specialise(network=network, profiler=profiler,
+                                   nthreads=nthreads)
+
+        # need to load each network separately, and then merge
+        raise NotImplementedError()
 
     def specialise(self, network: Network, profiler: Profiler = None,
                    nthreads: int = 1):
