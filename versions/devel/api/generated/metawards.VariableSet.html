@@ -298,25 +298,28 @@ VariableSet from one another</li>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.fingerprint" title="metawards.VariableSet.fingerprint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fingerprint</span></code></a>(include_index)</td>
 <td>Return a fingerprint for this VariableSet.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.make_compatible_with" title="metawards.VariableSet.make_compatible_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_compatible_with</span></code></a>(other)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.is_empty" title="metawards.VariableSet.is_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></a>()</td>
+<td>Return whether or not there is nothing to change</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.make_compatible_with" title="metawards.VariableSet.make_compatible_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_compatible_with</span></code></a>(other)</td>
 <td>Return a copy of this VariableSet which has been made compatible with ‘other’.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.output_dir" title="metawards.VariableSet.output_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_dir</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.output_dir" title="metawards.VariableSet.output_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_dir</span></code></a>()</td>
 <td>Return the output directory in which runs using this variable set should be placed.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.read" title="metawards.VariableSet.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filename)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.read" title="metawards.VariableSet.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filename)</td>
 <td>Read a single set of adjustable variables from the passed file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.repeat_index" title="metawards.VariableSet.repeat_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_index</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.repeat_index" title="metawards.VariableSet.repeat_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_index</span></code></a>()</td>
 <td>Return the repeat index of this set.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.variable_names" title="metawards.VariableSet.variable_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_names</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.variable_names" title="metawards.VariableSet.variable_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_names</span></code></a>()</td>
 <td>Return the names of the variables that will be adjusted by this VariableSet</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.variable_values" title="metawards.VariableSet.variable_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_values</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.variable_values" title="metawards.VariableSet.variable_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_values</span></code></a>()</td>
 <td>Return the values that the variables will be adjusted to.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet.variables" title="metawards.VariableSet.variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variables</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet.variables" title="metawards.VariableSet.variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variables</span></code></a>()</td>
 <td>Return the variables (name and values) to be adjusted</td>
 </tr>
 </tbody>
@@ -459,6 +462,12 @@ but different parameters</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.VariableSet.is_empty">
+<code class="descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.is_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not there is nothing to change</p>
 </dd></dl>
 
 <dl class="method">
@@ -624,7 +633,7 @@ with be adjusted to their desired values</td>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 13, 2020.
+        Last updated on Jul 16, 2020.
       </span>
 
     </p>

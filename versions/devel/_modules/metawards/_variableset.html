@@ -619,6 +619,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">)</span>
 
+<div class="viewcode-block" id="VariableSet.is_empty"><a class="viewcode-back" href="../../api/generated/metawards.VariableSet.html#metawards.VariableSet.is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return whether or not there is nothing to change&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
+
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No adjustable parameter </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> in an empty set&quot;</span><span class="p">)</span>
@@ -1403,12 +1407,16 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">csvlines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delimiters</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
-            <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Could not identify what sort of separator to use to &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;read </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">, so will assume commas. If this is wrong, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;then could you add commas to separate the &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;fields?&quot;</span><span class="p">)</span>
+            <span class="n">words</span> <span class="o">=</span> <span class="n">csvlines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+                <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Could not identify what sort of separator to use to &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;read </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">, so will assume commas. If this is &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;wrong, then could you add commas to separate the &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;fields?&quot;</span><span class="p">)</span>
+
             <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">excel</span>  <span class="c1">#  default comma-separated file</span>
 
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvlines</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span>
@@ -1569,7 +1577,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 13, 2020.
+        Last updated on Jul 16, 2020.
       </span>
 
     </p>

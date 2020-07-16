@@ -1083,8 +1083,6 @@
         <span class="c1"># for production code</span>
         <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using special mode to fix all random number&quot;</span>
                         <span class="s2">&quot;seeds to 15324. DO NOT USE IN PRODUCTION!!!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;* Using random number seed </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># get the starting day and date</span>
     <span class="n">start_day</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">start_day</span>
@@ -1286,7 +1284,6 @@
                                      <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">,</span>
                                      <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
 
-    <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;Preparing to run&quot;</span><span class="p">)</span>
     <span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">OutputFiles</span>
     <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">run_models</span>
 
@@ -1328,11 +1325,13 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mover</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;Preparing the output directory&quot;</span><span class="p">)</span>
+
     <span class="k">with</span> <span class="n">OutputFiles</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">force_empty</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">force_overwrite_output</span><span class="p">,</span>
                      <span class="n">auto_bzip</span><span class="o">=</span><span class="n">auto_bzip</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_dir</span><span class="p">:</span>
         <span class="c1"># write the config file for this job to output/config.yaml</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;Running the model&quot;</span><span class="p">)</span>
         <span class="n">CONSOLE</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;console.log&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="s2">&quot;Preparing to run&quot;</span><span class="p">)</span>
         <span class="n">Console</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">CONSOLE</span><span class="p">)</span>
 
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1425,7 +1424,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 13, 2020.
+        Last updated on Jul 16, 2020.
       </span>
 
     </p>

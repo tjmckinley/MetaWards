@@ -269,11 +269,15 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delimiters</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">])</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Could not identify what sort of separator to use to &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;read the additional seeds, so will assume commas. If this is &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;wrong then could you add commas to separate the &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;fields?&quot;</span><span class="p">)</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">csvlines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Could not identify what sort of separator to use to &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;read the additional seeds, so will assume commas. If this &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;is wrong then could you add commas to separate the &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;fields?&quot;</span><span class="p">)</span>
+
         <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">excel</span>  <span class="c1">#  default comma-separated file</span>
 
     <span class="n">titles</span> <span class="o">=</span> <span class="kc">None</span>
@@ -510,7 +514,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 13, 2020.
+        Last updated on Jul 16, 2020.
       </span>
 
     </p>

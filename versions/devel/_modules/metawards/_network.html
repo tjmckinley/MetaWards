@@ -293,28 +293,19 @@
             <span class="sa">f</span><span class="s2">&quot;Creating a single ward Network with a population &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;of </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="p">()</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">nnodes</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">nlinks</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">nplay</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="kn">from</span> <span class="nn">._wards</span> <span class="kn">import</span> <span class="n">Wards</span>
+        <span class="kn">from</span> <span class="nn">._ward</span> <span class="kn">import</span> <span class="n">Ward</span>
 
-        <span class="c1"># Everything is 1-indexed, so need to create space for the</span>
-        <span class="c1"># null 0-index objects...</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">play</span> <span class="o">=</span> <span class="n">Links</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="n">Links</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ward</span> <span class="o">=</span> <span class="n">Ward</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="p">)</span>
+        <span class="n">ward</span><span class="o">.</span><span class="n">set_num_players</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
 
-        <span class="n">nodes</span> <span class="o">=</span> <span class="n">Nodes</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">._node</span> <span class="kn">import</span> <span class="n">Node</span>
-        <span class="c1"># 1-indexed node</span>
-        <span class="n">nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">play_suscept</span><span class="o">=</span><span class="n">pop</span><span class="p">,</span>
-                        <span class="n">save_play_suscept</span><span class="o">=</span><span class="n">pop</span><span class="p">)</span>
+        <span class="n">wards</span> <span class="o">=</span> <span class="n">Wards</span><span class="p">()</span>
+        <span class="n">wards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ward</span><span class="p">)</span>
 
-        <span class="n">network</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="n">nodes</span>
+        <span class="k">assert</span> <span class="n">wards</span><span class="o">.</span><span class="n">population</span><span class="p">()</span> <span class="o">==</span> <span class="n">pop</span>
 
-        <span class="n">network</span><span class="o">.</span><span class="n">reset_everything</span><span class="p">(</span><span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">rescale_play_matrix</span><span class="p">(</span><span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
-        <span class="n">network</span><span class="o">.</span><span class="n">move_from_play_to_work</span><span class="p">(</span><span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_wards</span><span class="p">(</span><span class="n">wards</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">network</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">input_files</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">input_files</span>
 
         <span class="k">return</span> <span class="n">network</span></div>
 
@@ -796,7 +787,8 @@
             <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
             <span class="n">Console</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using special mode to fix all random number &quot;</span>
                             <span class="s2">&quot;seeds to 15324. DO NOT USE IN PRODUCTION!!!&quot;</span><span class="p">)</span>
-            <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">15324</span><span class="p">)</span>
+            <span class="n">seed</span> <span class="o">=</span> <span class="mi">15324</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rng</span> <span class="o">=</span> <span class="n">seed_ran_binomial</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
 
@@ -809,21 +801,28 @@
 
         <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
 
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First five random numbers equal </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">randnums</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;* Using random number seed </span><span class="si">{</span><span class="n">seed</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;* First five random numbers equal **</span><span class="si">{</span><span class="s1">&#39;**, **&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">randnums</span><span class="p">)</span><span class="si">}</span><span class="s2">**&quot;</span><span class="p">,</span>
+            <span class="n">markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">randnums</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">nthreads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.utils._parallel</span> <span class="kn">import</span> <span class="n">get_available_num_threads</span>
             <span class="n">nthreads</span> <span class="o">=</span> <span class="n">get_available_num_threads</span><span class="p">()</span>
 
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of threads used equals </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
         <span class="kn">from</span> <span class="nn">.utils._parallel</span> <span class="kn">import</span> <span class="n">create_thread_generators</span>
         <span class="n">rngs</span> <span class="o">=</span> <span class="n">create_thread_generators</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">nthreads</span><span class="p">)</span>
 
         <span class="c1"># Create space to hold the results of the simulation</span>
-        <span class="n">Console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Initialise infections...&quot;</span><span class="p">)</span>
         <span class="n">infections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialise_infections</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">nthreads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;s&quot;</span>
+
+        <span class="n">Console</span><span class="o">.</span><span class="n">rule</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running the model using </span><span class="si">{</span><span class="n">nthreads</span><span class="si">}</span><span class="s2"> thread</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">run_model</span>
         <span class="n">population</span> <span class="o">=</span> <span class="n">run_model</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
@@ -850,7 +849,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 13, 2020.
+        Last updated on Jul 16, 2020.
       </span>
 
     </p>
