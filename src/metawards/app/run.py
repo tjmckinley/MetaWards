@@ -1031,6 +1031,8 @@ def cli():
     else:
         params.set_input_files("2011Data")
 
+    Console.rule("Parameters")
+
     # load the user-defined custom parameters
     if args.user_variables:
         Console.rule("Custom parameters and seeds")
@@ -1071,7 +1073,6 @@ def cli():
     params.work_to_play = 0
     params.daily_imports = 0.0
 
-    Console.rule("Parameters")
     Console.print(params, markdown=True)
 
     # the size of the starting population

@@ -486,6 +486,67 @@ class Ward:
 
         return True
 
+    def depopulate(self, zero_player_weights: bool = False) -> Ward:
+        """Return a copy of this Ward with exact same details, but with
+           zero population. If 'zero_player_weights' is True, then
+           this will also zero the player weights for all connected
+           wards
+        """
+        from copy import deepcopy
+        result = deepcopy(self)
+
+        result._num_workers = 0
+        result._num_players = 0
+
+        for key in self._workers.keys():
+            result._workers[key] = 0
+
+        if zero_player_weights:
+            for key in self._players.keys():
+                result._players[key] = 0.0
+
+            result._player_total = 1.0
+
+        return result
+
+    def _harmonise_links(self, other: Ward) -> None:
+        """Make sure that this ward has exactly the same links as 'other'.
+           This is used as part of the Wards.harmonise function, and
+           ensures that all subnet wards have identical ward and link
+           indexes. This is always performed in-place
+        """
+        errors = []
+
+        if self._id != other._id:
+            errors.append(f"Disagreement in Ward ID number: {self._id} versus "
+                          f"{other._id}")
+
+        if self._info != other._info:
+            errors.append(f"Disagreement in Ward info: {self._info} versus "
+                          f"{other._info}")
+
+        for key in self._workers.keys():
+            if key not in other._workers:
+                errors.append(f"Missing work link to {key}")
+
+        for key in self._players.keys():
+            if key not in other._players:
+                errors.append(f"Missing play link to {key}")
+
+        if len(errors) > 0:
+            from .utils._console import Console
+            Console.error("\n".join(errors))
+            raise ValueError(
+                f"Cannot harmonise links of incompatible wards: {self._id}")
+
+        for key in other._workers.keys():
+            if key not in self._workers:
+                self._workers[key] = 0
+
+        for key in other._players.keys():
+            if key not in self._players:
+                self._players[key] = 0.0
+
     def add_workers(self, number: int,
                     destination: _Union[int, WardInfo] = None):
         """Add some workers to this ward, specifying their destination

@@ -381,6 +381,63 @@ class Wards:
 
         return wards
 
+    def _harmonise_nodes(self, other: Wards) -> None:
+        """Make sure that this set of Wards contains all of the wards
+           in 'other', and that all have the same ID and info. If
+           there are any missing nodes, then zero-populated
+           copies will be added
+        """
+        errors = []
+
+        for ward in self._wards:
+            if ward is None:
+                pass
+            elif ward not in other:
+                errors.append(f"Missing ward {ward} from the overall network")
+            else:
+                other_ward = other[ward]
+
+                if ward._id != other_ward._id or \
+                        ward._info != other_ward._info or \
+                        ward._pos != other_ward._pos:
+                    errors.append(f"Ward exists, but is different: {ward} "
+                                  f"versus {other_ward}.")
+
+        if len(errors) > 0:
+            from .utils._console import Console
+            Console.error("\n".join(errors))
+            raise ValueError("Cannot harmonise incompatible Wards")
+
+        for ward in other._wards:
+            if ward is not None and ward not in self:
+                self.insert(ward.depopulate(zero_player_weights=True),
+                            _need_deep_copy=False)
+
+    def _harmonise_links(self, other: Wards) -> None:
+        """Make sure that the wards in this object  has exactly the same
+           links as the wards in 'other'.
+
+           This is used as part of the Wards.harmonise function, and
+           ensures that all subnet wards have identical ward and link
+           indexes. This is always performed in-place
+        """
+        if len(self) != len(other):
+            from .utils._console import Console
+            Console.error(f"Cannot harmonise links of incompatible wards. "
+                          f"Sizes do not match: {len(self)} versus "
+                          f"{len(other)}.\n"
+                          f"{self}\n"
+                          f"{other}")
+            raise ValueError("Cannot harmonise incompatible Wards")
+
+        for self_ward, other_ward in zip(self._wards, other._wards):
+            if self_ward is None:
+                assert other_ward is None
+            elif other_ward is None:
+                assert self_ward is None
+            else:
+                self_ward._harmonise_links(other_ward)
+
     @staticmethod
     def harmonise(wardss: _List['Wards']) -> _Tuple['Wards', _List['Wards']]:
         """Harmonise the passed list of wards, returning a tuple that
@@ -412,6 +469,10 @@ class Wards:
                                   _need_deep_copy=False)
 
             harmonised.append(hwards)
+
+        for wards in harmonised:
+            wards._harmonise_nodes(overall)
+            wards._harmonise_links(overall)
 
         return (overall, harmonised)
 

@@ -232,6 +232,20 @@ class Parameters:
     @staticmethod
     def default():
         """Return the default set of parameters"""
+        try:
+            (repository, v) = Parameters.get_repository()
+            repository_dir = repository
+            repository = v["repository"]
+            repository_branch = v["branch"]
+            repository_version = v["version"]
+
+            return Parameters(_repository=repository,
+                              _repository_dir=repository_dir,
+                              _repository_branch=repository_branch,
+                              _repository_version=repository_version)
+        except Exception:
+            pass
+
         return Parameters()
 
     @staticmethod
@@ -411,10 +425,11 @@ set the model data.""")
         import os
 
         if not os.path.exists(filename):
-            f = os.path.join(self._repository_dir, "extra_seeds", filename)
+            if self._repository_dir is not None:
+                f = os.path.join(self._repository_dir, "extra_seeds", filename)
 
-            if os.path.exists(f):
-                filename = f
+                if os.path.exists(f):
+                    filename = f
 
         self.additional_seeds.append(filename)
 

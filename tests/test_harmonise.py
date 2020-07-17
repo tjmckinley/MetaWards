@@ -33,6 +33,31 @@ def test_harmonise():
     assert overall.num_workers() == total_workers
     assert overall.num_players() == total_players
 
+    print(overall.to_json())
+
+    # must have the same wards and same links in all
+    for subnet in subnets:
+        assert len(subnet) == len(overall)
+        for overall_ward, other_ward in zip(overall, subnet):
+            if overall_ward is None:
+                assert other_ward is None
+            elif other_ward is None:
+                assert overall_ward is None
+            else:
+                assert overall_ward.id() == other_ward.id()
+                assert overall_ward.info() == other_ward.info()
+
+                assert len(overall_ward._workers) == len(other_ward._workers)
+                assert len(overall_ward._players) == len(other_ward._players)
+
+                for key in overall_ward._workers.keys():
+                    assert key in other_ward._workers
+
+                for key in overall_ward._players.keys():
+                    assert key in other_ward._players
+
+        print(subnet.to_json())
+
 
 if __name__ == "__main__":
     test_harmonise()
