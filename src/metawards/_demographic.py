@@ -4,6 +4,7 @@ from dataclasses import dataclass as _dataclass
 from ._variableset import VariableSet
 from ._network import Network
 from ._disease import Disease
+from ._inputfiles import InputFiles
 
 __all__ = ["Demographic"]
 
@@ -48,7 +49,7 @@ class Demographic:
     #: The network that describes the workers and player that are part
     #: of this demographic. If this is None then the entire population
     #: network will be used (scaled by "work_ratio" and "play_ratio")
-    network: str = None
+    network: InputFiles = None
 
     def specialise(self, network: Network, profiler=None,
                    nthreads: int = 1):

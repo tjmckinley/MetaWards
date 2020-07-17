@@ -317,6 +317,10 @@ follow the instructions at
 
         if networks is None:
             networks = len(demographics) * [None]
+        else:
+            from ._inputfiles import InputFiles
+            networks = [InputFiles.load(x, folder=json_dir) if x is not None
+                        else None for x in networks]
 
         if (len(demographics) != len(work_ratios) or
                 len(demographics) != len(play_ratios) or
@@ -387,7 +391,9 @@ follow the instructions at
 
         if len(self) == 1:
             demographic = self[0]
-            demographic.adjustment.adjust(params)
+
+            if demographic.adjustment is not None:
+                demographic.adjustment.adjust(params)
 
             if demographic.disease is not None:
                 params.disease_params = demographic.disease
@@ -398,6 +404,10 @@ follow the instructions at
             network = Network.build(params=params, population=population,
                                     max_nodes=max_nodes, max_links=max_links,
                                     nthreads=nthreads, profiler=profiler)
+
+            if demographic.work_ratio != 1.0 or demographic.play_ratio != 1.0:
+                network.scale_susceptibles(work_ratio=demographic.work_ratio,
+                                           play_ratio=demographic.play_ratio)
 
             network.name = demographic.name
             return network
@@ -413,7 +423,91 @@ follow the instructions at
                                    nthreads=nthreads)
 
         # need to load each network separately, and then merge
-        raise NotImplementedError()
+        networks = {}
+        wards = {}
+        shared_networks = {}
+
+        from ._wards import Wards
+        from copy import deepcopy
+
+        for i, demographic in enumerate(self.demographics):
+            if demographic.network is None:
+                input_files = params.input_files
+            else:
+                input_files = demographic.network
+
+            if input_files not in networks:
+                if input_files.is_wards_data:
+                    wards[input_files] = Wards.from_json(
+                        input_files.wards_data)
+                    network = None
+                else:
+                    network_params = deepcopy(params)
+                    network_params.input_files = input_files
+                    network = Network.build(params=network_params,
+                                            population=population,
+                                            max_nodes=max_nodes,
+                                            max_links=max_links,
+                                            nthreads=nthreads,
+                                            profiler=profiler)
+                    networks[input_files] = network
+                    wards[input_files] = network.to_wards()
+
+                shared_networks[input_files] = [i]
+            else:
+                shared_networks[input_files].append(i)
+
+        wardss = [None] * len(self)
+        input_files = [None] * len(self)
+
+        for key in networks.keys():
+            if len(shared_networks[key]) > 1:
+                # this is a combined network - need to divide the population
+                # between multiple demographics
+                raise NotImplementedError()
+            else:
+                i = shared_networks[key][0]
+                demographic = self.demographics[i]
+                w = wards[key]
+
+                if demographic.work_ratio != 1.0 or \
+                        demographic.play_ratio != 1.0:
+                    w = w.scale(work_ratio=demographic.work_ratio,
+                                play_ratio=demographic.play_ratio)
+
+                wardss[i] = w
+                input_files[i] = key
+
+        overall, wardss = Wards.harmonise(wardss)
+
+        overall = Network.from_wards(overall, params=params, nthreads=nthreads)
+
+        subnets = [None] * len(self)
+
+        print(len(self), len(wardss))
+
+        for i, demographic in enumerate(self.demographics):
+            subparams = deepcopy(params)
+            subparams.input_files = input_files[i]
+
+            if demographic.adjustment is not None:
+                demographic.adjustment.adjust(subparams)
+
+            print(i)
+
+            subnets[i] = Network.from_wards(wardss[i],
+                                            params=subparams,
+                                            nthreads=nthreads)
+            subnets[i].name = demographic.name
+
+        from ._networks import Networks
+
+        networks = Networks()
+        networks.overall = overall
+        networks.subnets = subnets
+        networks.demographics = deepcopy(self)
+
+        return networks
 
     def specialise(self, network: Network, profiler: Profiler = None,
                    nthreads: int = 1):

@@ -617,6 +617,16 @@ class Wards:
                 with open(s, "rt") as FILE:
                     data = json.load(FILE)
         else:
-            data = json.loads(s)
+            try:
+                data = json.loads(s)
+            except Exception:
+                data = None
+
+        if data is None:
+            from .utils._console import Console
+            Console.error(f"Unable to load a network from '{s}'. Check that "
+                          f"this is valid JSON or that the file exists.")
+
+            raise IOError(f"Cannot load Wards from '{s}'")
 
         return Wards.from_data(data)

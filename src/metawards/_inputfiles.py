@@ -168,6 +168,17 @@ class InputFiles:
 * seed: {self.seed}
 * nodes_to_track: {self.nodes_to_track}"""
 
+    def __repr__(self):
+        if self.is_single:
+            return f"InputFiles::single"
+        elif self.is_wards_data:
+            return f"InputFiles(wards_data='{self.wards_data}')"
+        else:
+            return f"InputFiles(model='{self._model_name}')"
+
+    def __hash__(self):
+        return self._filename.__hash__()
+
     def _localise(self):
         """Localise the filenames in this input files set. This will
            prepend model_path/model to every filename and will also
