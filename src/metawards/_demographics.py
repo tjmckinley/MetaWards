@@ -92,16 +92,24 @@ class Demographics:
     def __str__(self):
         d = "\n  ".join([str(x) for x in self.demographics])
 
-        return f"Demographics {self._name}\n" \
-               f"loaded from {self._filename}\n" \
-               f"version: {self._version}\n" \
-               f"author(s): {self._authors}\n" \
-               f"contact(s): {self._contacts}\n" \
-               f"references(s): {self._references}\n" \
-               f"repository: {self._repository}\n" \
-               f"repository_branch: {self._repository_branch}\n" \
-               f"repository_version: {self._repository_version}\n" \
-               f"demographics = [\n  {d}\n]"
+        lines = []
+
+        lines.append(f"Demographics {self._name}")
+
+        if self._filename != self._name:
+            lines.append(f"Loaded from {self._filename}")
+
+        for name, val in [("version", self._version),
+                          ("author(s)", self._authors),
+                          ("contact(s)", self._contacts),
+                          ("referneces(s)", self._references),
+                          ("repository", self._repository),
+                          ("repository_branch", self._repository_branch),
+                          ("repository_version", self._repository_version)]:
+            if val is not None:
+                lines.append(f"{name}: {val}")
+
+        return "\n".join(lines) + f"\ndemographics = [\n  {d}\n]"
 
     def __len__(self):
         return len(self.demographics)
@@ -336,9 +344,9 @@ follow the instructions at
 
         demos = Demographics(random_seed=random_seed,
                              _name=name,
-                             _authors=data.get("author(s)", "unknown"),
-                             _contacts=data.get("contact(s)", "unknown"),
-                             _references=data.get("reference(s)", "none"),
+                             _authors=data.get("author(s)", None),
+                             _contacts=data.get("contact(s)", None),
+                             _references=data.get("reference(s)", None),
                              _filename=json_file,
                              _repository=repository,
                              _repository_branch=repository_branch,
@@ -423,9 +431,8 @@ follow the instructions at
                                    nthreads=nthreads)
 
         # need to load each network separately, and then merge
-        networks = {}
         wards = {}
-        shared_networks = {}
+        shared_wards = {}
 
         from ._wards import Wards
         from copy import deepcopy
@@ -436,11 +443,10 @@ follow the instructions at
             else:
                 input_files = demographic.network
 
-            if input_files not in networks:
+            if input_files not in shared_wards:
                 if input_files.is_wards_data:
                     wards[input_files] = Wards.from_json(
                         input_files.wards_data)
-                    network = None
                 else:
                     network_params = deepcopy(params)
                     network_params.input_files = input_files
@@ -450,23 +456,22 @@ follow the instructions at
                                             max_links=max_links,
                                             nthreads=nthreads,
                                             profiler=profiler)
-                    networks[input_files] = network
                     wards[input_files] = network.to_wards()
 
-                shared_networks[input_files] = [i]
+                shared_wards[input_files] = [i]
             else:
-                shared_networks[input_files].append(i)
+                shared_wards[input_files].append(i)
 
         wardss = [None] * len(self)
         input_files = [None] * len(self)
 
-        for key in networks.keys():
-            if len(shared_networks[key]) > 1:
+        for key, value in shared_wards.items():
+            if len(value) > 1:
                 # this is a combined network - need to divide the population
                 # between multiple demographics
                 raise NotImplementedError()
             else:
-                i = shared_networks[key][0]
+                i = value[0]
                 demographic = self.demographics[i]
                 w = wards[key]
 
@@ -480,11 +485,12 @@ follow the instructions at
 
         overall, wardss = Wards.harmonise(wardss)
 
-        overall = Network.from_wards(overall, params=params, nthreads=nthreads)
+        overall = Network.from_wards(overall, params=params,
+                                     nthreads=nthreads)
 
         subnets = [None] * len(self)
 
-        print(len(self), len(wardss))
+        total_pop = worker_pop = player_pop = 0
 
         for i, demographic in enumerate(self.demographics):
             subparams = deepcopy(params)
@@ -493,12 +499,17 @@ follow the instructions at
             if demographic.adjustment is not None:
                 demographic.adjustment.adjust(subparams)
 
-            print(i)
-
             subnets[i] = Network.from_wards(wardss[i],
                                             params=subparams,
                                             nthreads=nthreads)
             subnets[i].name = demographic.name
+            total_pop += subnets[i].population
+            worker_pop += subnets[i].work_population
+            player_pop += subnets[i].play_population
+
+        assert total_pop == overall.population
+        assert worker_pop == overall.work_population
+        assert player_pop == overall.play_population
 
         from ._networks import Networks
 

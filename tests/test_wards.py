@@ -412,4 +412,4 @@ if __name__ == "__main__":
     test_wards()
     test_duplicate_wards()
     test_harmonise_wards()
-    test_scale_wards()
+    test_scale_wards(2.0)

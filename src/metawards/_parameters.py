@@ -204,28 +204,35 @@ class Parameters:
     _subparams = None
 
     def __str__(self):
-        return f"""
-* Parameters: {self._name}
-* loaded from: {self._filename}
-* repository: {self._repository}
-* repository_branch: {self._repository_branch}
-* repository_version: {self._repository_version}
-* length_day: {self.length_day}
-* plength_day: {self.plength_day}
-* initial_inf: {self.initial_inf}
-* static_play_at_home: {self.static_play_at_home}
-* dyn_play_at_home: {self.dyn_play_at_home}
-* dyn_dist_cutoff: {self.dyn_dist_cutoff}
-* play_to_work: {self.play_to_work}
-* work_to_play: {self.work_to_play}
-* local_vaccination_thresh: {self.local_vaccination_thresh}
-* global_detection_thresh: {self.global_detection_thresh}
-* daily_ward_vaccination_capacity: {self.daily_ward_vaccination_capacity}
-* neighbour_weight_threshold: {self.neighbour_weight_threshold}
-* daily_imports: {self.daily_imports}
-* UV: {self.UV}
-* stage_0: {self.stage_0}
-* additional_seeds: {self.additional_seeds}"""
+        parts = []
+
+        for key, value in [("Parameters", self._name),
+                           ("loaded_from", self._filename),
+                           ("repository", self._repository),
+                           ("repository_branch", self._repository_branch),
+                           ("repository_version", self._repository_version),
+                           ("length_day", self.length_day),
+                           ("plength_day", self.plength_day),
+                           ("initial_inf", self.initial_inf),
+                           ("static_play_at_home", self.static_play_at_home),
+                           ("dyn_play_at_home", self.dyn_play_at_home),
+                           ("dyn_dist_cutoff", self.dyn_play_at_home),
+                           ("play_to_work", self.play_to_work),
+                           ("work_to_play", self.work_to_play),
+                           ("neighbour_weight_threshold",
+                            self.neighbour_weight_threshold),
+                           ("daily_imports", self.daily_imports),
+                           ("UV", self.UV),
+                           ("stage_0", self.stage_0)]:
+            if value is not None:
+                parts.append(f"* {key}: {value}")
+
+        return "\n".join(parts)
+
+    @staticmethod
+    def default():
+        """Return the default set of parameters"""
+        return Parameters()
 
     @staticmethod
     def get_repository(repository: str = None):
@@ -436,12 +443,10 @@ set the model data.""")
             input_files = InputFiles.load(input_files,
                                           repository=self._repository_dir)
 
-        Console.print(input_files, markdown=True)
-
         from copy import deepcopy
         self.input_files = deepcopy(input_files)
 
-    def set_disease(self, disease: Disease, silent: bool = False):
+    def set_disease(self, disease: Disease, silent: bool = True):
         """"Set the disease that will be modelled
 
             Parameters:

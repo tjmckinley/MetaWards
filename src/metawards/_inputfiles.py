@@ -147,7 +147,9 @@ class InputFiles:
         if self.is_single:
             return "Model: single ward"
         elif self.is_wards_data:
-            return f"Model: Custom network {self._filename}"
+            import os
+            filename = os.path.basename(self.wards_data)
+            return f"Model: {filename}"
         else:
             return f"""* Model: {self._model_name}
 * loaded from: {self._filename}
@@ -172,7 +174,9 @@ class InputFiles:
         if self.is_single:
             return f"InputFiles::single"
         elif self.is_wards_data:
-            return f"InputFiles(wards_data='{self.wards_data}')"
+            import os
+            filename = os.path.basename(self.wards_data)
+            return f"InputFiles(wards_data='{filename}')"
         else:
             return f"InputFiles(model='{self._model_name}')"
 
