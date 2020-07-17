@@ -302,8 +302,8 @@ follow the instructions at
         json_dir = os.path.split(os.path.abspath(json_file))[0]
 
         demographics = data.get("demographics", [])
-        work_ratios = data.get("work_ratios", [])
-        play_ratios = data.get("play_ratios", [])
+        work_ratios = data.get("work_ratios", [1.0] * len(demographics))
+        play_ratios = data.get("play_ratios", [1.0] * len(demographics))
         random_seed = data.get("random_seed", None)
         diseases = data.get("diseases", None)
         networks = data.get("networks", None)

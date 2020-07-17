@@ -159,6 +159,18 @@ class Ward:
         else:
             raise NotImplementedError()
 
+    def __mul__(self, scale: float) -> Ward:
+        """Scale the number of workers and players by 'scale'"""
+        return self.scale(work_ratio=scale, play_ratio=scale)
+
+    def __rmul__(self, scale: float) -> Ward:
+        """Scale the number of workers and players by 'scale'"""
+        return self.scale(work_ratio=scale, play_ratio=scale)
+
+    def __imul__(self, scale: float) -> Ward:
+        """In-place multiply the number of workers and players by 'scale'"""
+        return self.scale(work_ratio=scale, play_ratio=scale, _inplace=True)
+
     def is_null(self):
         return self._id is None and self._info.is_null()
 
@@ -781,6 +793,56 @@ class Ward:
             pass
 
         return c
+
+    def scale(self, work_ratio: float = 1.0,
+              play_ratio: float = 1.0, _inplace: bool = False) -> Ward:
+        """Return a copy of these wards where the number of workers
+           and players have been scaled by 'work_ratios' and 'play_ratios'
+           respectively. These can be greater than 1.0, e.g. if you want
+           to scale up the number of workers and players
+
+           Parameters
+           ----------
+           work_ratio: float
+             The scaling ratio for workers
+           play_ratio: float
+             The scaling ratio for players
+
+           Returns
+           -------
+           Wards: A copy of this Wards scaled by the requested amount
+        """
+        work_ratio = float(work_ratio)
+        play_ratio = float(play_ratio)
+
+        if _inplace:
+            ward = self
+        else:
+            from copy import deepcopy
+            ward = deepcopy(self)
+
+        def scale_and_round(value, scale):
+            import math
+
+            if scale > 0.5:
+                # round up for large scales, as smaller scales will always
+                # round down
+                return int(math.floor((value * scale) + 0.5))
+            else:
+                # rounding down - hopefully this will minimise the number
+                # of values that need to be redistributed
+                return int(math.floor(value * scale))
+
+        if play_ratio != 1.0:
+            ward._num_players = scale_and_round(ward._num_players, play_ratio)
+
+        if work_ratio != 1.0:
+            for key, value in ward._workers.items():
+                ward._workers[key] = scale_and_round(value, work_ratio)
+
+            ward._num_workers = ward._num_workers = sum(ward._workers.values())
+
+        return ward
 
     def to_data(self):
         """Return a dictionary that can be serialised to JSON"""

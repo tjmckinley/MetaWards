@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 from typing import List as _List
 from typing import Union as _Union
@@ -142,6 +143,18 @@ class Wards:
     def __iadd__(self, other):
         self.add(other)
         return self
+
+    def __mul__(self, scale: float) -> Wards:
+        """Scale the number of workers and players by 'scale'"""
+        return self.scale(work_ratio=scale, play_ratio=scale)
+
+    def __rmul__(self, scale: float) -> Wards:
+        """Scale the number of workers and players by 'scale'"""
+        return self.scale(work_ratio=scale, play_ratio=scale)
+
+    def __imul__(self, scale: float) -> Wards:
+        """In-place multiply the number of workers and players by 'scale'"""
+        return self.scale(work_ratio=scale, play_ratio=scale, _inplace=True)
 
     def is_resolved(self) -> bool:
         """Return whether or not this is a fully resolved set of Wards
@@ -336,6 +349,37 @@ class Wards:
                 num += ward.population()
 
         return num
+
+    def scale(self, work_ratio: float = 1.0,
+              play_ratio: float = 1.0, _inplace: bool = False) -> Wards:
+        """Return a copy of these wards where the number of workers
+           and players have been scaled by 'work_ratios' and 'play_ratios'
+           respectively. These can be greater than 1.0, e.g. if you want
+           to scale up the number of workers and players
+
+           Parameters
+           ----------
+           work_ratio: float
+             The scaling ratio for workers
+           play_ratio: float
+             The scaling ratio for players
+
+           Returns
+           -------
+           Wards: A copy of this Wards scaled by the requested amount
+        """
+        if _inplace:
+            wards = self
+        else:
+            from copy import deepcopy
+            wards = deepcopy(self)
+
+        for ward in wards._wards:
+            if ward is not None:
+                ward.scale(work_ratio=work_ratio, play_ratio=play_ratio,
+                           _inplace=True)
+
+        return wards
 
     @staticmethod
     def harmonise(wardss: _List['Wards']) -> _Tuple['Wards', _List['Wards']]:

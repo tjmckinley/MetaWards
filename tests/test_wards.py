@@ -1,6 +1,12 @@
 
 from metawards import Ward, Wards, Network
 import json
+import os
+import pytest
+
+script_dir = os.path.dirname(__file__)
+
+simple_network = os.path.join(script_dir, "data", "simple_network.json.bz2")
 
 
 def test_wards():
@@ -334,8 +340,76 @@ def test_harmonise_wards():
     print(overall.to_json())
 
 
+@pytest.mark.parametrize("scl", [1.0, 2.0, 0.5, 0.1, 0.0])
+def test_scale_wards(scl):
+    wards = Wards.from_json(simple_network)
+
+    def scale_and_round(value, scale):
+        import math
+
+        if scale > 0.5:
+            # round up for large scales, as smaller scales will always
+            # round down
+            return int(math.floor((value * scale) + 0.5))
+        else:
+            # rounding down - hopefully this will minimise the number
+            # of values that need to be redistributed
+            return int(math.floor(value * scale))
+
+    wards2 = scl * wards
+
+    if int(scl) == scl:
+        assert scale_and_round(wards.num_players(),
+                               scl) == wards2.num_players()
+        assert scale_and_round(wards.num_workers(),
+                               scl) == wards2.num_workers()
+
+    for w1, w2 in zip(wards._wards, wards2._wards):
+        if w1 is None:
+            assert w2 is None
+            continue
+
+        assert scale_and_round(w1.num_players(), scl) == w2.num_players()
+
+        for key, value in w1._workers.items():
+            assert scale_and_round(value, scl) == w2._workers[key]
+
+    wards2 = wards.scale(work_ratio=scl)
+
+    assert wards.num_players() == wards2.num_players()
+
+    if int(scl) == scl:
+        assert scale_and_round(wards.num_workers(),
+                               scl) == wards2.num_workers()
+
+    for w1, w2 in zip(wards._wards, wards2._wards):
+        if w1 is None:
+            assert w2 is None
+            continue
+
+        assert w1.num_players() == w2.num_players()
+
+        for key, value in w1._workers.items():
+            assert scale_and_round(value, scl) == w2._workers[key]
+
+    wards2 = wards.scale(play_ratio=scl)
+
+    if int(scl) == scl:
+        assert scale_and_round(wards.num_players(),
+                               scl) == wards2.num_players()
+        assert wards.num_workers() == wards2.num_workers()
+
+    for w1, w2 in zip(wards._wards, wards2._wards):
+        if w1 is None:
+            assert w2 is None
+            continue
+
+        assert scale_and_round(w1.num_players(), scl) == w2.num_players()
+
+
 if __name__ == "__main__":
     test_add_wards()
     test_wards()
     test_duplicate_wards()
     test_harmonise_wards()
+    test_scale_wards()
