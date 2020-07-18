@@ -175,10 +175,6 @@ class Network:
         add_wards_network_distance(network, nthreads=nthreads)
 
         from .utils._console import Console
-        Console.print("Get min/max distances...")
-        (_mindist, maxdist) = network.get_min_max_distances(nthreads=nthreads)
-
-        network.params.dyn_dist_cutoff = maxdist + 1
         p = p.stop()
 
         # add metadata about the wards

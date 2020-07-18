@@ -12,9 +12,12 @@ Features
     `Analysis of a simulation <https://uq4covid.github.io/vignettes/metawards_plot>`__
     run that used MetaWards to chart disease spread across England and Wales.
 
-MetaWards is a geographic SIR-based epidemic modelling program. The
-software models individuals who reside in a home ward (e.g. as in
-an electoral ward in the UK) and who, optionally commute to a work ward.
+MetaWards is a SIR-based metapopulation disease modelling program. The
+software models individuals who move as metapopulations between
+home wards and work (or play) wards. This is a highly flexible program,
+that can model custom geographies, networks, diseases and demographics.
+For more information, take a look at the
+:doc:`quick start guide <quickstart/index>`.
 
 The program is designed to enable researchers to model how an infection
 may spread, and what impact different control measures or individual
@@ -92,8 +95,11 @@ To this end, MetaWards features;
   are design goals.
 
 * :doc:`flexible input files <model_data>` that would enable modelling of any
-  region or country to be undertaken (subject to good input data). Currently
-  models of the UK and England and Wales have been created.
+  region or country to be undertaken (subject to good input data).
+  Models of the UK and England and Wales have been created, and a
+  Python and R API are provided to make it easy to create custom networks.
+  These can model everything from individual wards or local geographies,
+  up to full national- or international-scale metapopulation models.
 
 * a colourful, modern and informative console output, with full unicode
   support and progress indicators. All outputs are duplicated to
@@ -110,7 +116,7 @@ To this end, MetaWards features;
     jobs finish
 
 * both command-line and API interfaces. Feel free to run MetaWards as
-  a standalone program, or to use the Python API to embed it as part
+  a standalone program, or to use the Python or R API to embed it as part
   of a larger framework. A modular, robust design has been used, so
   feel free to take and re-use the parts of MetaWards that are most
   of use to you.
@@ -124,8 +130,12 @@ lots of documentation, copious run-time and unit tests, and following
 a "tutorial-driven" development philosophy.
 
 The software is mostly Python, with C used (via cython) to accelerate
-key parts. This is parallelised using OpenMP, with multiple model runs
-parallelised using multiprocessing, scoop or MPI.
+key parts. An :doc:`R interface <tutorial/part08/03_reticulate>`
+is provided via `reticulate <https://rstudio.github.io/reticulate/>`__.
+The code is parallelised using `OpenMP <https://openmp.org>`__,
+with multiple model runs parallelised using multiprocessing,
+`scoop <https://scoop.readthedocs.io>`__ or
+`MPI, via mpi4py <https://mpi4py.readthedocs.io>`__.
 
 We take testing very seriously, and have lots of unit, integration and
 run-time tests. These are run as part of our CI/CD system deployed
