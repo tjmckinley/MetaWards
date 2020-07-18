@@ -190,10 +190,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for metawards._ward</h1><div class="highlight"><pre>
-<span></span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">from</span> <span class="nn">._wardinfo</span> <span class="kn">import</span> <span class="n">WardInfo</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span> <span class="k">as</span> <span class="n">_Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">._wards</span> <span class="kn">import</span> <span class="n">Wards</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ward&quot;</span><span class="p">]</span>
 
@@ -262,6 +267,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">_as_positive_integer</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="n">zero_allowed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="nb">id</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The ID must be an integer - not </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">_as_positive_integer</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">zero_allowed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -327,12 +341,78 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">and</span> \
             <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span></div>
 
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Ward</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">._wards</span> <span class="kn">import</span> <span class="n">Wards</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">Wards</span><span class="p">()</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">w</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Ward.__mul__"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ward</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Scale the number of workers and players by &#39;scale&#39;&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">work_ratio</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">play_ratio</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Ward.__rmul__"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.__rmul__">[docs]</a>    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ward</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Scale the number of workers and players by &#39;scale&#39;&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">work_ratio</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">play_ratio</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Ward.__imul__"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.__imul__">[docs]</a>    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ward</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;In-place multiply the number of workers and players by &#39;scale&#39;&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">work_ratio</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">play_ratio</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">_inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">is_null</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Ward.id"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the ID of this ward&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span></div>
+
+<div class="viewcode-block" id="Ward.merge"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Merge in the data from &#39;other&#39; into this Ward. The &#39;info&#39;</span>
+<span class="sd">           and the ID numbers must match (or be None).</span>
+
+<span class="sd">           This will add the workers from &#39;other&#39; to this ward,</span>
+<span class="sd">           plus will average the player weights between the two</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_info</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot merge as infos are different: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="si">}</span><span class="s2"> versus &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_id</span>
+
+        <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot merge as ID numbers are different: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2"> versus &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_pos</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">_num_workers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_players</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">_num_players</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">assert</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_player_total</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_player_total</span> <span class="o">&gt;=</span> <span class="mf">0.0</span></div>
 
 <div class="viewcode-block" id="Ward.auto_assign_players"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.auto_assign_players">[docs]</a>    <span class="k">def</span> <span class="nf">auto_assign_players</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return whether or not the remaining player weight is automatically</span>
@@ -490,37 +570,96 @@
 
         <span class="k">return</span> <span class="n">destination</span>
 
-<div class="viewcode-block" id="Ward.resolve"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.resolve">[docs]</a>    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wards</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Resolve any unresolved links using the passed Wards object</span>
-<span class="sd">           &#39;wards&#39;</span>
+<div class="viewcode-block" id="Ward.dereference"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.dereference">[docs]</a>    <span class="k">def</span> <span class="nf">dereference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wards</span><span class="p">:</span> <span class="n">Wards</span><span class="p">,</span> <span class="n">_inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ward</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Dereference the IDs and convert those back to WardInfo objects.</span>
+<span class="sd">           This is the opposite of self.resolve(wards). This will</span>
+<span class="sd">           return the dereferenced ward.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">._wards</span> <span class="kn">import</span> <span class="n">Wards</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wards</span><span class="p">,</span> <span class="n">Wards</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;You can only dereference links using a valid Wards object!&quot;</span><span class="p">)</span>
+
+        <span class="n">workers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">players</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">wards</span><span class="o">.</span><span class="n">getinfo</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate worker info </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">workers</span><span class="p">[</span><span class="n">info</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">wards</span><span class="o">.</span><span class="n">getinfo</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">players</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate player info </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">players</span><span class="p">[</span><span class="n">info</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">if</span> <span class="n">_inplace</span><span class="p">:</span>
+            <span class="n">ward</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+            <span class="n">ward</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">ward</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">ward</span><span class="o">.</span><span class="n">_workers</span> <span class="o">=</span> <span class="n">workers</span>
+        <span class="n">ward</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="n">players</span>
+
+        <span class="k">return</span> <span class="n">ward</span></div>
+
+<div class="viewcode-block" id="Ward.resolve"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.resolve">[docs]</a>    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wards</span><span class="p">:</span> <span class="n">Wards</span><span class="p">,</span> <span class="n">_inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ward</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Resolve any unresolved links using the passed Wards object</span>
+<span class="sd">           &#39;wards&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">._wards</span> <span class="kn">import</span> <span class="n">Wards</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_resolved</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wards</span><span class="p">,</span> <span class="n">Wards</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;You can only resolve links using a valid Wards object!&quot;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">wards</span><span class="p">:</span>
-                    <span class="n">idx</span> <span class="o">=</span> <span class="n">wards</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">players</span> <span class="o">=</span> <span class="p">{}</span>
 
-                    <span class="k">if</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate keys? </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wards</span><span class="p">:</span>
+                <span class="n">workers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">workers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">wards</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">workers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">workers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">value</span>
 
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wards</span><span class="p">:</span>
+                <span class="n">players</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">players</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">wards</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">players</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">players</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">value</span>
 
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">wards</span><span class="p">:</span>
-                    <span class="n">idx</span> <span class="o">=</span> <span class="n">wards</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_inplace</span><span class="p">:</span>
+            <span class="n">ward</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+            <span class="n">ward</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-                    <span class="k">if</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate keys? </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ward</span><span class="o">.</span><span class="n">_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ward</span><span class="o">.</span><span class="n">_info</span> <span class="ow">in</span> <span class="n">wards</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">wards</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ward</span><span class="o">.</span><span class="n">_info</span><span class="p">)</span>
 
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+            <span class="k">if</span> <span class="n">ward</span><span class="o">.</span><span class="n">_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong ID for </span><span class="si">{</span><span class="n">ward</span><span class="si">}</span><span class="s2">? </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">ward</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">idx</span>
+
+        <span class="n">ward</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="n">players</span>
+        <span class="n">ward</span><span class="o">.</span><span class="n">_workers</span> <span class="o">=</span> <span class="n">workers</span>
+
+        <span class="k">return</span> <span class="n">ward</span></div>
 
 <div class="viewcode-block" id="Ward.is_resolved"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.is_resolved">[docs]</a>    <span class="k">def</span> <span class="nf">is_resolved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return whether or not any of the worker or player links in</span>
@@ -538,6 +677,67 @@
                 <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Ward.depopulate"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.depopulate">[docs]</a>    <span class="k">def</span> <span class="nf">depopulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zero_player_weights</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ward</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a copy of this Ward with exact same details, but with</span>
+<span class="sd">           zero population. If &#39;zero_player_weights&#39; is True, then</span>
+<span class="sd">           this will also zero the player weights for all connected</span>
+<span class="sd">           wards</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_num_players</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">_workers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">zero_player_weights</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+            <span class="n">result</span><span class="o">.</span><span class="n">_player_total</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+    <span class="k">def</span> <span class="nf">_harmonise_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Ward</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Make sure that this ward has exactly the same links as &#39;other&#39;.</span>
+<span class="sd">           This is used as part of the Wards.harmonise function, and</span>
+<span class="sd">           ensures that all subnet wards have identical ward and link</span>
+<span class="sd">           indexes. This is always performed in-place</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Disagreement in Ward ID number: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2"> versus &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_info</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Disagreement in Ward info: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="si">}</span><span class="s2"> versus &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_workers</span><span class="p">:</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing work link to </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_players</span><span class="p">:</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing play link to </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.utils._console</span> <span class="kn">import</span> <span class="n">Console</span>
+            <span class="n">Console</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot harmonise links of incompatible wards: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
 <div class="viewcode-block" id="Ward.add_workers"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.add_workers">[docs]</a>    <span class="k">def</span> <span class="nf">add_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                     <span class="n">destination</span><span class="p">:</span> <span class="n">_Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">WardInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -847,6 +1047,56 @@
 
         <span class="k">return</span> <span class="n">c</span></div>
 
+<div class="viewcode-block" id="Ward.scale"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+              <span class="n">play_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">_inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ward</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a copy of these wards where the number of workers</span>
+<span class="sd">           and players have been scaled by &#39;work_ratios&#39; and &#39;play_ratios&#39;</span>
+<span class="sd">           respectively. These can be greater than 1.0, e.g. if you want</span>
+<span class="sd">           to scale up the number of workers and players</span>
+
+<span class="sd">           Parameters</span>
+<span class="sd">           ----------</span>
+<span class="sd">           work_ratio: float</span>
+<span class="sd">             The scaling ratio for workers</span>
+<span class="sd">           play_ratio: float</span>
+<span class="sd">             The scaling ratio for players</span>
+
+<span class="sd">           Returns</span>
+<span class="sd">           -------</span>
+<span class="sd">           Wards: A copy of this Wards scaled by the requested amount</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">work_ratio</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">work_ratio</span><span class="p">)</span>
+        <span class="n">play_ratio</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">play_ratio</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_inplace</span><span class="p">:</span>
+            <span class="n">ward</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+            <span class="n">ward</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">scale_and_round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
+            <span class="kn">import</span> <span class="nn">math</span>
+
+            <span class="k">if</span> <span class="n">scale</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+                <span class="c1"># round up for large scales, as smaller scales will always</span>
+                <span class="c1"># round down</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">value</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># rounding down - hopefully this will minimise the number</span>
+                <span class="c1"># of values that need to be redistributed</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">value</span> <span class="o">*</span> <span class="n">scale</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">play_ratio</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">ward</span><span class="o">.</span><span class="n">_num_players</span> <span class="o">=</span> <span class="n">scale_and_round</span><span class="p">(</span><span class="n">ward</span><span class="o">.</span><span class="n">_num_players</span><span class="p">,</span> <span class="n">play_ratio</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">work_ratio</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ward</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">ward</span><span class="o">.</span><span class="n">_workers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_and_round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">work_ratio</span><span class="p">)</span>
+
+            <span class="n">ward</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">=</span> <span class="n">ward</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ward</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">ward</span></div>
+
 <div class="viewcode-block" id="Ward.to_data"><a class="viewcode-back" href="../../api/generated/metawards.Ward.html#metawards.Ward.to_data">[docs]</a>    <span class="k">def</span> <span class="nf">to_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a dictionary that can be serialised to JSON&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
@@ -952,7 +1202,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 16, 2020.
+        Last updated on Jul 18, 2020.
       </span>
 
     </p>

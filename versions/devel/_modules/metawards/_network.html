@@ -552,7 +552,7 @@
         <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">reset_everything</span>
         <span class="n">reset_everything</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Network.update"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">demographics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="Network.update"><a class="viewcode-back" href="../../api/generated/metawards.Network.html#metawards.Network.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">demographics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update this network with a new set of parameters</span>
 <span class="sd">           (and optionally demographics).</span>
@@ -598,9 +598,18 @@
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">demographics</span><span class="p">:</span>
-            <span class="n">network</span> <span class="o">=</span> <span class="n">demographics</span><span class="o">.</span><span class="n">specialise</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                                              <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">,</span>
-                                              <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">.utils._worker</span> <span class="kn">import</span> <span class="n">must_rebuild_network</span>
+
+            <span class="k">if</span> <span class="n">must_rebuild_network</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                                    <span class="n">demographics</span><span class="o">=</span><span class="n">demographics</span><span class="p">):</span>
+                <span class="n">network</span> <span class="o">=</span> <span class="n">demographics</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                                             <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
+                                             <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
+                                             <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">network</span> <span class="o">=</span> <span class="n">demographics</span><span class="o">.</span><span class="n">specialise</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                                  <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">,</span>
+                                                  <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">network</span> <span class="o">=</span> <span class="bp">self</span>
 
@@ -698,9 +707,6 @@
 
         <span class="k">if</span> <span class="n">work_ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">scale_susceptibles</span><span class="p">(</span><span class="n">work_ratio</span><span class="p">)</span>
-
-        <span class="c1"># if play_ratio is not None:</span>
-        <span class="c1">#    self.play.scale_susceptibles(play_ratio)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">scale_susceptibles</span><span class="p">(</span><span class="n">work_ratio</span><span class="o">=</span><span class="n">work_ratio</span><span class="p">,</span>
                                       <span class="n">play_ratio</span><span class="o">=</span><span class="n">play_ratio</span><span class="p">)</span></div>
@@ -849,7 +855,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 16, 2020.
+        Last updated on Jul 18, 2020.
       </span>
 
     </p>

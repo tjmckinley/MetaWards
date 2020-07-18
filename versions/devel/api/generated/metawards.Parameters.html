@@ -261,25 +261,28 @@ e.g.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.copy" title="metawards.Parameters.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(include_subparams)</td>
 <td>Return a safe copy of these parameters, which does not include any subnetwork parameters if ‘include_subparams’ is False</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.get_repository" title="metawards.Parameters.get_repository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_repository</span></code></a>(repository)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.default" title="metawards.Parameters.default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default</span></code></a>()</td>
+<td>Return the default set of parameters</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.get_repository" title="metawards.Parameters.get_repository"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_repository</span></code></a>(repository)</td>
 <td>Return the repository location and version information for the passed repository</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.load" title="metawards.Parameters.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(parameters,&nbsp;repository,&nbsp;folder,&nbsp;filename)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.load" title="metawards.Parameters.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(parameters,&nbsp;repository,&nbsp;folder,&nbsp;filename)</td>
 <td>This will return a Parameters object containing all of the parameters loaded from the parameters found in file f”{repository}/{folder}/{parameters}.json”</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.read_variables" title="metawards.Parameters.read_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_variables</span></code></a>(filename,&nbsp;line_numbers)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.read_variables" title="metawards.Parameters.read_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_variables</span></code></a>(filename,&nbsp;line_numbers)</td>
 <td>Read in extra variable parameters from the specified line number(s) of the specified file, returning the list of the dictionaries of variables that have been read.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.set_disease" title="metawards.Parameters.set_disease"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_disease</span></code></a>(disease,&nbsp;silent)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.set_disease" title="metawards.Parameters.set_disease"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_disease</span></code></a>(disease,&nbsp;silent)</td>
 <td>“Set the disease that will be modelled</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.set_input_files" title="metawards.Parameters.set_input_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_input_files</span></code></a>(input_files)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.set_input_files" title="metawards.Parameters.set_input_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_input_files</span></code></a>(input_files)</td>
 <td>Set the input files that are used to initialise the simulation</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.set_variables" title="metawards.Parameters.set_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_variables</span></code></a>(variables)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.set_variables" title="metawards.Parameters.set_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_variables</span></code></a>(variables)</td>
 <td>This function sets the adjustable variable values to those specified in ‘variables’ in A COPY OF THIS PARAMETERS OBJECT.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters.specialised_demographics" title="metawards.Parameters.specialised_demographics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specialised_demographics</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Parameters.specialised_demographics" title="metawards.Parameters.specialised_demographics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specialised_demographics</span></code></a>()</td>
 <td>Return the names of demographics that have specialised parameters that are different to those of the overall network</td>
 </tr>
 </tbody>
@@ -420,6 +423,12 @@ include any subnetwork parameters if ‘include_subparams’ is False</p>
 <dd><p>proportion of daily imports</p>
 </dd></dl>
 
+<dl class="staticmethod">
+<dt id="metawards.Parameters.default">
+<em class="property">static </em><code class="descname">default</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_parameters.html#Parameters.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Parameters.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the default set of parameters</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="metawards.Parameters.disease_params">
 <code class="descname">disease_params</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Parameters.disease_params" title="Permalink to this definition">¶</a></dt>
@@ -540,7 +549,7 @@ None then all lines will be read.</li>
 
 <dl class="method">
 <dt id="metawards.Parameters.set_disease">
-<code class="descname">set_disease</code><span class="sig-paren">(</span><em>disease: metawards._disease.Disease</em>, <em>silent: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_parameters.html#Parameters.set_disease"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Parameters.set_disease" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_disease</code><span class="sig-paren">(</span><em>disease: metawards._disease.Disease</em>, <em>silent: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_parameters.html#Parameters.set_disease"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Parameters.set_disease" title="Permalink to this definition">¶</a></dt>
 <dd><p>“Set the disease that will be modelled</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -648,7 +657,7 @@ supported</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 16, 2020.
+        Last updated on Jul 18, 2020.
       </span>
 
     </p>

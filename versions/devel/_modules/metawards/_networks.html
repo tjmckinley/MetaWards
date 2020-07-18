@@ -306,6 +306,12 @@
                              <span class="sa">f</span><span class="s2">&quot;with a valid Demographics that contains &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;more than one demographic&quot;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">demographics</span><span class="o">.</span><span class="n">uses_named_network</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;You cannot specialise an existing network with demographics &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;that specify named networks - instead you need to call &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;demographics.build(...)&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">profiler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.utils._profiler</span> <span class="kn">import</span> <span class="n">NullProfiler</span>
             <span class="n">profiler</span> <span class="o">=</span> <span class="n">NullProfiler</span><span class="p">()</span>
@@ -522,7 +528,7 @@
         <span class="k">for</span> <span class="n">subnet</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subnets</span><span class="p">:</span>
             <span class="n">subnet</span><span class="o">.</span><span class="n">reset_everything</span><span class="p">(</span><span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="n">profiler</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Networks.update"><a class="viewcode-back" href="../../api/generated/metawards.Networks.html#metawards.Networks.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">demographics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="Networks.update"><a class="viewcode-back" href="../../api/generated/metawards.Networks.html#metawards.Networks.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">demographics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">nthreads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">profiler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update this network with a new set of parameters</span>
 <span class="sd">           (and optionally demographics).</span>
@@ -561,19 +567,25 @@
 
         <span class="k">if</span> <span class="n">demographics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">demographics</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">demographics</span><span class="p">:</span>
-                <span class="c1"># we have a change in demographics, so need to re-specialise</span>
-                <span class="n">networks</span> <span class="o">=</span> <span class="n">demographics</span><span class="o">.</span><span class="n">specialise</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">overall</span><span class="p">,</span>
-                                                   <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">,</span>
-                                                   <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
+                <span class="kn">from</span> <span class="nn">.utils._worker</span> <span class="kn">import</span> <span class="n">must_rebuild_network</span>
+
+                <span class="k">if</span> <span class="n">must_rebuild_network</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                                        <span class="n">demographics</span><span class="o">=</span><span class="n">demographics</span><span class="p">):</span>
+                    <span class="n">networks</span> <span class="o">=</span> <span class="n">demographics</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
+                        <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                        <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span>
+                        <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">,</span>
+                        <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># we have a change in demographics, so need to re-specialise</span>
+                    <span class="n">networks</span> <span class="o">=</span> <span class="n">demographics</span><span class="o">.</span><span class="n">specialise</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">overall</span><span class="p">,</span>
+                                                       <span class="n">profiler</span><span class="o">=</span><span class="n">p</span><span class="p">,</span>
+                                                       <span class="n">nthreads</span><span class="o">=</span><span class="n">nthreads</span><span class="p">)</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">networks</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">demographics</span><span class="p">)):</span>
             <span class="n">demographic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">demographics</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-            <span class="c1"># TODO::: RESET THE SUSCEPTIBLE POPULATIONS BACK TO</span>
-            <span class="c1">#         WHERE THEY SHOULD BE AT THE START OF THE RUN</span>
-
             <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">demographic</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.update&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">demographic</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">specialised_demographics</span><span class="p">():</span>
                 <span class="n">subnet_params</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">demographic</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
@@ -624,7 +636,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 16, 2020.
+        Last updated on Jul 18, 2020.
       </span>
 
     </p>

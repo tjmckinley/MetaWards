@@ -279,7 +279,7 @@ that each network will have the same nodes.</p>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Networks.run" title="metawards.Networks.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(population,&nbsp;output_dir,&nbsp;seed,&nbsp;nsteps,&nbsp;…)</td>
 <td>Run the model simulation for the passed population.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Networks.update" title="metawards.Networks.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(params[,&nbsp;demographics,&nbsp;profiler])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Networks.update" title="metawards.Networks.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(params[,&nbsp;demographics,&nbsp;population,&nbsp;…])</td>
 <td>Update this network with a new set of parameters (and optionally demographics).</td>
 </tr>
 </tbody>
@@ -466,7 +466,7 @@ only a single demographic is modelled</p>
 
 <dl class="method">
 <dt id="metawards.Networks.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>demographics=None</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_networks.html#Networks.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Networks.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>demographics=None</em>, <em>population=None</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_networks.html#Networks.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Networks.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update this network with a new set of parameters
 (and optionally demographics).</p>
 <p>This is used to update the parameters for the network
@@ -523,7 +523,7 @@ Demographics</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 16, 2020.
+        Last updated on Jul 18, 2020.
       </span>
 
     </p>
