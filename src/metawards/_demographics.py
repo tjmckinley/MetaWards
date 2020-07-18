@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 from dataclasses import dataclass as _dataclass
 from dataclasses import field as _field
@@ -9,6 +10,14 @@ import pathlib as _pathlib
 
 from ._demographic import Demographic
 from ._network import Network
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .utils._profiler import Profiler
+    from .utils._profiler import Networks
+    from ._population import Population
+    from ._parameters import Parameters
 
 __all__ = ["Demographics", "DemographicID", "DemographicIDs"]
 
@@ -83,16 +92,24 @@ class Demographics:
     def __str__(self):
         d = "\n  ".join([str(x) for x in self.demographics])
 
-        return f"Demographics {self._name}\n" \
-               f"loaded from {self._filename}\n" \
-               f"version: {self._version}\n" \
-               f"author(s): {self._authors}\n" \
-               f"contact(s): {self._contacts}\n" \
-               f"references(s): {self._references}\n" \
-               f"repository: {self._repository}\n" \
-               f"repository_branch: {self._repository_branch}\n" \
-               f"repository_version: {self._repository_version}\n" \
-               f"demographics = [\n  {d}\n]"
+        lines = []
+
+        lines.append(f"Demographics {self._name}")
+
+        if self._filename != self._name:
+            lines.append(f"Loaded from {self._filename}")
+
+        for name, val in [("version", self._version),
+                          ("author(s)", self._authors),
+                          ("contact(s)", self._contacts),
+                          ("referneces(s)", self._references),
+                          ("repository", self._repository),
+                          ("repository_branch", self._repository_branch),
+                          ("repository_version", self._repository_version)]:
+            if val is not None:
+                lines.append(f"{name}: {val}")
+
+        return "\n".join(lines) + f"\ndemographics = [\n  {d}\n]"
 
     def __len__(self):
         return len(self.demographics)
@@ -185,6 +202,31 @@ class Demographics:
                        f"{self._names}. Available indexes are "
                        f"0 -> {len(self._names)}")
 
+    def uses_named_network(self):
+        """Return whether or not at least one of these demographics
+           specifies the use of a named network model
+        """
+        for demographic in self.demographics:
+            if demographic.network is not None:
+                return True
+
+        return False
+
+    def is_multi_network(self):
+        """Return whether or not these demographics need to use multiple
+           custom networks (e.g. refer to different network models)
+        """
+        if len(self) <= 1:
+            return False
+        else:
+            first_network = self.demographics[0].network
+
+            for demographic in self.demographics[1:]:
+                if first_network != demographic.network:
+                    return True
+
+            return False
+
     @staticmethod
     def load(name: str = None,
              repository: str = None,
@@ -268,10 +310,11 @@ follow the instructions at
         json_dir = os.path.split(os.path.abspath(json_file))[0]
 
         demographics = data.get("demographics", [])
-        work_ratios = data.get("work_ratios", [])
-        play_ratios = data.get("play_ratios", [])
+        work_ratios = data.get("work_ratios", [1.0] * len(demographics))
+        play_ratios = data.get("play_ratios", [1.0] * len(demographics))
         random_seed = data.get("random_seed", None)
         diseases = data.get("diseases", None)
+        networks = data.get("networks", None)
 
         if diseases is None:
             diseases = len(demographics) * [None]
@@ -280,21 +323,30 @@ follow the instructions at
             diseases = [Disease.load(x, folder=json_dir) if x is not None
                         else None for x in diseases]
 
+        if networks is None:
+            networks = len(demographics) * [None]
+        else:
+            from ._inputfiles import InputFiles
+            networks = [InputFiles.load(x, folder=json_dir) if x is not None
+                        else None for x in networks]
+
         if (len(demographics) != len(work_ratios) or
                 len(demographics) != len(play_ratios) or
-                len(demographics) != len(diseases)):
+                len(demographics) != len(diseases) or
+                len(demographics) != len(networks)):
             raise ValueError(
                 f"The number of work_ratios ({len(work_ratios)}) must "
                 f"equal to number of play_ratios "
                 f"({len(play_ratios)}) which must equal the number "
                 f"of diseases ({len(diseases)}) which must equal "
-                f"the number of demographics ({len(demographics)})")
+                f"the number of demographics ({len(demographics)}), "
+                f"which must equal the number of networks ({len(networks)}).")
 
         demos = Demographics(random_seed=random_seed,
                              _name=name,
-                             _authors=data.get("author(s)", "unknown"),
-                             _contacts=data.get("contact(s)", "unknown"),
-                             _references=data.get("reference(s)", "none"),
+                             _authors=data.get("author(s)", None),
+                             _contacts=data.get("contact(s)", None),
+                             _references=data.get("reference(s)", None),
                              _filename=json_file,
                              _repository=repository,
                              _repository_branch=repository_branch,
@@ -304,12 +356,189 @@ follow the instructions at
             demographic = Demographic(name=demographics[i],
                                       work_ratio=_get_value(work_ratios[i]),
                                       play_ratio=_get_value(play_ratios[i]),
-                                      disease=diseases[i])
+                                      disease=diseases[i],
+                                      network=networks[i])
             demos.add(demographic)
 
         return demos
 
-    def specialise(self, network: Network, profiler=None,
+    def build(self, params: Parameters, population: Population = None,
+              max_nodes: int = 16384,
+              max_links: int = 4194304,
+              nthreads: int = 1,
+              profiler: Profiler = None) -> _Union[Network, Networks]:
+        """Build the set of networks described by these demographics
+           and the passed parameters
+
+           Parameters
+           ----------
+           params: Parameters
+             Parameters used to help build the model networks
+           max_nodes: int
+             Initial guess for the maximum number of nodes(wards)
+           max_links: int
+             Initial guess for the maximum number of links between wards
+           profiler: Profiler
+             Profiler used to profile the specialisation
+           nthreads: int
+             Number of threads over which to parallelise the work
+
+           Returns
+           -------
+           Network or Networks
+             The set of Networks that represent the model run over the
+             full set of different demographics (or Network if there is
+             just a single demographic)
+        """
+        from .utils._console import Console
+
+        if len(self) == 0:
+            return Network.build(params=params, population=population,
+                                 max_nodes=max_nodes, max_links=max_links,
+                                 nthreads=nthreads, profiler=profiler)
+
+        if len(self) == 1:
+            demographic = self[0]
+
+            if demographic.adjustment is not None:
+                demographic.adjustment.adjust(params)
+
+            if demographic.disease is not None:
+                params.disease_params = demographic.disease
+
+            if demographic.network is not None:
+                params.input_files = demographic.network
+
+            network = Network.build(params=params, population=population,
+                                    max_nodes=max_nodes, max_links=max_links,
+                                    nthreads=nthreads, profiler=profiler)
+
+            if demographic.work_ratio != 1.0 or demographic.play_ratio != 1.0:
+                network.scale_susceptibles(work_ratio=demographic.work_ratio,
+                                           play_ratio=demographic.play_ratio)
+
+            network.name = demographic.name
+            return network
+
+        if not self.uses_named_network():
+            # build a single network that is then specialised
+            network = Network.build(params=params, population=population,
+                                    max_nodes=max_nodes, max_links=max_links,
+                                    nthreads=nthreads, profiler=profiler)
+
+            Console.rule("Specialising into demographics")
+            return self.specialise(network=network, profiler=profiler,
+                                   nthreads=nthreads)
+
+        # need to load each network separately, and then merge
+        wards = {}
+        shared_wards = {}
+
+        from ._wards import Wards
+        from copy import deepcopy
+
+        for i, demographic in enumerate(self.demographics):
+            if demographic.network is None:
+                input_files = params.input_files
+            else:
+                input_files = demographic.network
+
+            if input_files not in shared_wards:
+                if input_files.is_wards_data:
+                    wards[input_files] = Wards.from_json(
+                        input_files.wards_data)
+                else:
+                    network_params = deepcopy(params)
+                    network_params.input_files = input_files
+                    network = Network.build(params=network_params,
+                                            population=population,
+                                            max_nodes=max_nodes,
+                                            max_links=max_links,
+                                            nthreads=nthreads,
+                                            profiler=profiler)
+                    wards[input_files] = network.to_wards()
+
+                shared_wards[input_files] = [i]
+            else:
+                shared_wards[input_files].append(i)
+
+        wardss = [None] * len(self)
+        input_files = [None] * len(self)
+
+        for key, value in shared_wards.items():
+            if len(value) > 1:
+                # this is a combined network - need to divide the population
+                # between multiple demographics. First create the network
+                # and then use specialise to divide the population
+                # between the demographics
+                w = wards[key]
+                network = Network.from_wards(w, params=params,
+                                             nthreads=nthreads)
+
+                ds = Demographics(
+                    demographics=[deepcopy(self.demographics[x])
+                                  for x in value])
+
+                for d in ds:
+                    d.network = None
+
+                network = ds.specialise(network=network, nthreads=nthreads)
+
+                for i, idx in enumerate(value):
+                    wardss[idx] = network.subnets[i].to_wards(
+                        nthreads=nthreads)
+                    input_files[idx] = key
+            else:
+                i = value[0]
+                demographic = self.demographics[i]
+                w = wards[key]
+
+                if demographic.work_ratio != 1.0 or \
+                        demographic.play_ratio != 1.0:
+                    w = w.scale(work_ratio=demographic.work_ratio,
+                                play_ratio=demographic.play_ratio)
+
+                wardss[i] = w
+                input_files[i] = key
+
+        overall, wardss = Wards.harmonise(wardss)
+
+        overall = Network.from_wards(overall, params=params,
+                                     nthreads=nthreads)
+
+        subnets = [None] * len(self)
+
+        total_pop = worker_pop = player_pop = 0
+
+        for i, demographic in enumerate(self.demographics):
+            subparams = deepcopy(params)
+            subparams.input_files = input_files[i]
+
+            if demographic.adjustment is not None:
+                demographic.adjustment.adjust(subparams)
+
+            subnets[i] = Network.from_wards(wardss[i],
+                                            params=subparams,
+                                            nthreads=nthreads)
+            subnets[i].name = demographic.name
+            total_pop += subnets[i].population
+            worker_pop += subnets[i].work_population
+            player_pop += subnets[i].play_population
+
+        assert total_pop == overall.population
+        assert worker_pop == overall.work_population
+        assert player_pop == overall.play_population
+
+        from ._networks import Networks
+
+        networks = Networks()
+        networks.overall = overall
+        networks.subnets = subnets
+        networks.demographics = deepcopy(self)
+
+        return networks
+
+    def specialise(self, network: Network, profiler: Profiler = None,
                    nthreads: int = 1):
         """Build the set of networks that will model this set
            of demographics applied to the passed Network.

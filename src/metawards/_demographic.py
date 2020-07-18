@@ -4,6 +4,7 @@ from dataclasses import dataclass as _dataclass
 from ._variableset import VariableSet
 from ._network import Network
 from ._disease import Disease
+from ._inputfiles import InputFiles
 
 __all__ = ["Demographic"]
 
@@ -44,6 +45,37 @@ class Demographic:
     #: is None, then the global Disease is used. Otherwise
     #: this demographic will follow this Disease
     disease: Disease = None
+
+    #: The network that describes the workers and player that are part
+    #: of this demographic. If this is None then the entire population
+    #: network will be used (scaled by "work_ratio" and "play_ratio")
+    network: InputFiles = None
+
+    def __str__(self):
+        parts = []
+
+        if self.name is not None:
+            parts.append(f"name='{self.name}'")
+
+        if self.work_ratio != 1.0:
+            parts.append(f"work_ratio={self.work_ratio}")
+
+        if self.play_ratio != 1.0:
+            parts.append(f"play_ratio={self.play_ratio}")
+
+        if self.adjustment is not None:
+            parts.append(f"adjustment={self.adjustment}")
+
+        if self.disease is not None:
+            parts.append(f"disease={self.disease}")
+
+        if self.network is not None:
+            parts.append(f"network='{self.network}'")
+
+        return f"Demographics({', '.join(parts)})"
+
+    def __repr__(self):
+        return str(self)
 
     def specialise(self, network: Network, profiler=None,
                    nthreads: int = 1):

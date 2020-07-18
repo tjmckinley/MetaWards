@@ -77,7 +77,7 @@ def _load_additional_seeds(network: _Union[Network, Networks],
     try:
         dialect = csv.Sniffer().sniff(lines[0], delimiters=[" ", ","])
     except Exception:
-        words = csvlines[0].strip().split(" ")
+        words = lines[0].strip().split(" ")
 
         if len(words) > 1:
             Console.warning(
@@ -267,29 +267,32 @@ def advance_additional(network: _Union[Network, Networks],
                 else:
                     demographic = network.demographics.get_index(demographic)
 
-                network = network.subnets[demographic]
-                wards = network.nodes
-                play_infections = infections.subinfs[demographic].play
+                seed_network = network.subnets[demographic]
+                seed_wards = seed_network.nodes
+                seed_infections = infections.subinfs[demographic].play
             else:
                 demographic = None
-                wards = network.nodes
-                play_infections = infections.play
+                seed_network = network
+                seed_wards = seed_network.nodes
+                seed_infections = infections.play
 
             try:
-                ward = network.get_node_index(ward)
+                ward = seed_network.get_node_index(ward)
 
-                if wards.play_suscept[ward] == 0:
+                print(f"INFECT {ward}")
+
+                if seed_wards.play_suscept[ward] == 0:
                     Console.warning(
                         f"Cannot seed {num} infection(s) in ward {ward} "
                         f"as there are no susceptibles remaining")
                     continue
 
-                elif wards.play_suscept[ward] < num:
+                elif seed_wards.play_suscept[ward] < num:
                     Console.warning(
                         f"Not enough susceptibles in ward to see all {num}")
-                    num = wards.play_suscept[ward]
+                    num = seed_wards.play_suscept[ward]
 
-                wards.play_suscept[ward] -= num
+                seed_wards.play_suscept[ward] -= num
                 if demographic is not None:
                     Console.print(
                         f"seeding demographic {demographic} "
@@ -298,7 +301,7 @@ def advance_additional(network: _Union[Network, Networks],
                     Console.print(
                         f"seeding play_infections[0][{ward}] += {num}")
 
-                play_infections[0][ward] += num
+                seed_infections[0][ward] += num
 
             except Exception as e:
                 Console.error(

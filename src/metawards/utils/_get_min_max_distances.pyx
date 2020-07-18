@@ -30,4 +30,10 @@ def get_min_max_distances(network: Network, nthreads: int = 1,
             elif dist < mindist:
                 mindist = dist
 
+    if mindist < 0:
+        mindist = 0.0
+
+    if maxdist < 0:
+        maxdist = 0.0
+
     return (mindist, maxdist)
