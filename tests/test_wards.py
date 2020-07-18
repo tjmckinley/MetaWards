@@ -320,23 +320,6 @@ def test_harmonise_wards():
     assert harmonised[2].num_workers() == hospital_wards.num_workers()
     assert harmonised[2].num_players() == hospital_wards.num_players()
 
-    assert harmonised[0][bristol].dereference(harmonised[0]) == \
-        home_wards[bristol].dereference(home_wards)
-    assert harmonised[0][london].dereference(harmonised[0]) == \
-        home_wards[london].dereference(home_wards)
-    assert harmonised[0][oxford].dereference(harmonised[0]) == \
-        home_wards[oxford].dereference(home_wards)
-    assert harmonised[1][bristol].dereference(harmonised[1]) == \
-        holiday_wards[bristol].dereference(holiday_wards)
-    assert harmonised[1][oxford].dereference(harmonised[1]) == \
-        holiday_wards[oxford].dereference(holiday_wards)
-    assert harmonised[1][holiday].dereference(harmonised[1]) == \
-        holiday_wards[holiday].dereference(holiday_wards)
-    assert harmonised[2][london].dereference(harmonised[2]) == \
-        hospital_wards[london].dereference(hospital_wards)
-    assert harmonised[2][hospital].dereference(harmonised[2]) == \
-        hospital_wards[hospital].dereference(hospital_wards)
-
     print(overall.to_json())
 
 
