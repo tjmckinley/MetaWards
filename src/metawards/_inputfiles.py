@@ -215,7 +215,7 @@ class InputFiles:
     @staticmethod
     def load(model: str = "2011Data",
              repository: str = None,
-             folder: str = _default_folder_name,
+             folder: str = None,
              description: str = "description.json",
              filename: str = None):
         """Load the parameters associated with the passed model.
@@ -263,12 +263,23 @@ class InputFiles:
             from ._parameters import get_repository
             import os
 
-            if os.path.exists(model) and os.path.isfile(model):
+            if folder is None or os.path.isabs(model):
                 filename = model
             else:
+                filename = os.path.join(folder, model)
+
+            if os.path.exists(filename) and os.path.isfile(filename):
+                filename = _expand_path(filename)
+            else:
                 repository, v = get_repository(repository)
+
+                if folder is None:
+                    folder = _default_folder_name
+
                 filename = os.path.join(repository, folder,
                                         model, description)
+
+                filename = _expand_path(filename)
 
                 repository = v["repository"]
                 repository_version = v["version"]
@@ -277,6 +288,12 @@ class InputFiles:
         json_file = filename
         import os
         model_path = os.path.dirname(filename)
+
+        if not (os.path.exists(json_file) and os.path.isfile(json_file)):
+            from .utils._console import Console
+            Console.error(f"Cannot read file {json_file} as it doesn't exist")
+            raise IOError(
+                f"Cannot load inputfiles as {json_file} doesn't exist")
 
         if not _is_description_json(json_file):
             # this must be wards data...

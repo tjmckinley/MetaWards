@@ -468,8 +468,26 @@ follow the instructions at
         for key, value in shared_wards.items():
             if len(value) > 1:
                 # this is a combined network - need to divide the population
-                # between multiple demographics
-                raise NotImplementedError()
+                # between multiple demographics. First create the network
+                # and then use specialise to divide the population
+                # between the demographics
+                w = wards[key]
+                network = Network.from_wards(w, params=params,
+                                             nthreads=nthreads)
+
+                ds = Demographics(
+                    demographics=[deepcopy(self.demographics[x])
+                                  for x in value])
+
+                for d in ds:
+                    d.network = None
+
+                network = ds.specialise(network=network, nthreads=nthreads)
+
+                for i, idx in enumerate(value):
+                    wardss[idx] = network.subnets[i].to_wards(
+                        nthreads=nthreads)
+                    input_files[idx] = key
             else:
                 i = value[0]
                 demographic = self.demographics[i]
