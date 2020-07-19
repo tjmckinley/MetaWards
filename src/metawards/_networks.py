@@ -1,13 +1,14 @@
 
+from ._outputfiles import OutputFiles
+from ._population import Population
+from ._demographics import Demographics
+from ._parameters import Parameters
+from ._network import Network
+
 from dataclasses import dataclass as _dataclass
 from dataclasses import field as _field
 from typing import List as _List
 
-from ._network import Network
-from ._parameters import Parameters
-from ._demographics import Demographics
-from ._population import Population
-from ._outputfiles import OutputFiles
 
 __all__ = ["Networks"]
 

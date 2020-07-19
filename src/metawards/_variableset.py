@@ -3,8 +3,6 @@ from typing import List as _List
 from typing import Dict as _Dict
 from typing import Union as _Union
 
-from ._disease import Disease
-
 __all__ = ["VariableSets", "VariableSet"]
 
 
