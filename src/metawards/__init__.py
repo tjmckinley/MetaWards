@@ -40,6 +40,7 @@ Functions
     get_version_string
     print_version_string
     input
+    run
 
 """
 
@@ -123,6 +124,7 @@ WardInfos = _lazy_import.lazy_class("._wardinfo.WardInfos")
 Wards = _lazy_import.lazy_class("._wards.Wards")
 Workspace = _lazy_import.lazy_class("._workspace.Workspace")
 
+run = _lazy_import.lazy_class("._run.run")
 
 if _sys.version_info < (3, 7):
     print("MetaWards requires Python version 3.7 or above.")

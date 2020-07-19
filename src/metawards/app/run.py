@@ -415,7 +415,6 @@ def scoop_supervisor(hostfile, args):
        form the scoop call to run a scoop version of the program
     """
     import os
-    import stat
     import sys
     from metawards.utils import Console
 
@@ -524,7 +523,6 @@ def mpi_supervisor(hostfile, args):
        form the mpiexec call to run an MPI version of the program
     """
     import os
-    import stat
     import sys
     from metawards.utils import Console
 
