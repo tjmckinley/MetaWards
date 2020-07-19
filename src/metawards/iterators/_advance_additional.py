@@ -315,8 +315,6 @@ def advance_additional(network: _Union[Network, Networks],
             try:
                 ward = seed_network.get_node_index(ward)
 
-                print(f"INFECT {ward}")
-
                 if seed_wards.play_suscept[ward] == 0:
                     Console.warning(
                         f"Cannot seed {num} infection(s) in ward {ward} "

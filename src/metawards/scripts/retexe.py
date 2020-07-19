@@ -10,26 +10,19 @@ except ImportError:
 
 
 def cli():
-    import re
     import sys
+    from pathlib import Path
 
-    try:
-        from IPython import start_ipython
-        have_ipython = True
-    except Exception:
-        have_ipython = False
+    exe = str(Path(sys.executable).expanduser().absolute())
 
-    if have_ipython:
-        sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
-        sys.exit(start_ipython())
-    else:
-        exe = sys.executable
-
-        if exe is None or len(exe) == 0:
-            print("Unable to find the Python executable!")
-            sys.exit(-1)
-
-        sys.argv[0] = exe
-
-        import subprocess
-        subprocess.run(sys.argv)
+    print("\nStart R or RStudio.\n")
+    print("If you haven't installed 'reticulate' then type at the prompt:")
+    print("> install.packages(\"reticulate\")\n")
+    print("Once this has been installed you should now import reticulate via;")
+    print("> library(\"reticulate\")\n")
+    print("Next, tell R where this Python executable is located via;")
+    print(f"> use_python(\"{exe}\", required = TRUE)\n")
+    print("Finally, import the metawards module using;")
+    print("> metawards <- import(\"metawards\")\n")
+    print("You can now use metawards, e.g. via;")
+    print("> metawards$run(model=\"single\", additional=5)\n")

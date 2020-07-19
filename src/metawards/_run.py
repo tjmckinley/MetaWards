@@ -105,9 +105,6 @@ def run(help: bool = None,
         star_as_R: bool = None,
         disable_star: bool = None,
         UV: float = None,
-        theme: str = None,
-        no_spinner: bool = None,
-        no_progress: bool = None,
         debug: bool = None,
         debug_level: int = None,
         outdir_scheme: str = None,
@@ -149,11 +146,40 @@ def run(help: bool = None,
 
     tmpdir = None
 
+    theme = "simple"
+    no_progress = True
+    no_spinner = True
+
     if help:
         args.append("--help")
     elif version:
         args.append("--version")
     else:
+
+        if force_overwrite_output:
+            args.append("--force-overwrite-output")
+        else:
+            if output is None:
+                output = "output"
+
+            while os.path.exists(output):
+                import metawards as _metawards
+                print(f"Output directory {output} exists.")
+                output = _metawards.input("Please choose a new directory: ",
+                                          default="error")
+
+                if output is None:
+                    return 0
+
+                output = output.strip()
+                if len(output) == 0:
+                    return 0
+
+                if output.lower() == "error":
+                    print("You need to delete the directory or set "
+                          "'force_overwrite_output' to TRUE")
+                    return -1
+
         try:
             if config is not None:
                 args.append(f"--config {config}")
@@ -169,17 +195,19 @@ def run(help: bool = None,
                 args.append(f"--input {input}")
 
             if line is not None:
-                args.append(f"--line {line}")
+                args.append(f"--line {int(line)}")
 
             if repeats is not None:
-                args.append(f"--repeats {repeats}")
+                args.append(f"--repeats {int(repeats)}")
 
             if seed is not None:
-                args.append(f"--seed {seed}")
+                args.append(f"--seed {int(seed)}")
 
             if additional is not None:
                 if isinstance(additional, list):
                     additional = "\\n".join(additional)
+                elif not isinstance(additional, str):
+                    additional = str(int(additional))
 
                 if "'" in additional:
                     args.append(f"--additional \"{additional}\"")
@@ -247,7 +275,7 @@ def run(help: bool = None,
                 args.append(f"--start-date {start_date}")
 
             if start_day is not None:
-                args.append(f"--start-day {start_day}")
+                args.append(f"--start-day {int(start_day)}")
 
             if parameters is not None:
                 if not isinstance(parameters, str):
@@ -264,10 +292,10 @@ def run(help: bool = None,
                 args.append(f"--repository {repository}")
 
             if population is not None:
-                args.append(f"--population {population}")
+                args.append(f"--population {int(population)}")
 
             if nsteps is not None:
-                args.append(f"--nsteps {nsteps}")
+                args.append(f"--nsteps {int(nsteps)}")
 
             if user_variables is not None:
                 if not isinstance(user_variables, str):
@@ -323,24 +351,21 @@ def run(help: bool = None,
                 args.append(f"--outdir-scheme {outdir_scheme}")
 
             if nthreads is not None:
-                args.append(f"--nthreads {nthreads}")
+                args.append(f"--nthreads {int(nthreads)}")
 
             if nprocs is not None:
-                args.append(f"--nprocs {nprocs}")
+                args.append(f"--nprocs {int(nprocs)}")
 
             if hostfile is not None:
                 args.append(f"--hostfile {hostfile}")
 
             if cores_per_node is not None:
-                args.append(f"--cores-per-node {cores_per_node}")
+                args.append(f"--cores-per-node {int(cores_per_node)}")
 
             if auto_bzip:
                 args.append("--auto-bzip")
             elif no_auto_bzip:
                 args.append("--no-auto-bzip")
-
-            if force_overwrite_output:
-                args.append("--force-overwrite-output")
 
             if profile:
                 args.append("--profile")
@@ -357,12 +382,14 @@ def run(help: bool = None,
             print(f"[ERROR] Error interpreting the arguments")
             print(f"[ERROR] {e}")
             _rmdir(tmpdir)
+            raise
             return -1
 
     cmd = f"{metawards} {' '.join(args)}"
 
     if dry_run:
         print(f"[DRY-RUN] {cmd}")
+        return_val = 0
     else:
         print(f"[EXECUTE] {cmd}")
 
@@ -370,10 +397,20 @@ def run(help: bool = None,
             import shlex
             import subprocess
             args = shlex.split(cmd)
-            subprocess.run(args).check_returncode()
-            return_val = 0
+            with subprocess.Popen(args, stdin=sys.stdin,
+                                  stdout=subprocess.PIPE, bufsize=1,
+                                  universal_newlines=True) as PROC:
+                while True:
+                    line = PROC.stdout.readline()
+                    if not line:
+                        break
+
+                    sys.stdout.write(line)
+                    sys.stdout.flush()
+
+                return_val = PROC.poll()
         except Exception as e:
-            print(f"[ERROR] {e}")
+            print(f"[ERROR] {e.__class__}: {e}")
             return_val = -1
 
     _rmdir(tmpdir)
