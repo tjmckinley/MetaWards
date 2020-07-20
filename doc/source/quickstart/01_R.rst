@@ -1,0 +1,102 @@
+===============
+Quick Start (R)
+===============
+
+Importing metawards
+-------------------
+
+First, you need to get the list of R commands you will need to type
+to import the :mod:`metawards` module into R. You can print these commands
+by opening the console (also called the terminal or command prompt)
+and typing;
+
+.. code-block:: bash
+
+   metawards-reticulate
+
+and then pressing return. This should print the commands to the screen,
+e.g. for me I see;
+
+::
+
+    Start R or RStudio.
+
+    If you haven't installed 'reticulate' then type at the prompt:
+    > install.packages("reticulate")
+
+    Once this has been installed you should now import reticulate via;
+    > library("reticulate")
+
+    Next, tell R where this Python executable is located via;
+    > use_python("/Users/chris/miniconda3/bin/python", required = TRUE)
+
+    Finally, import the metawards module using;
+    > metawards <- import("metawards")
+
+    You can now use metawards, e.g. via;
+    > metawards$run(model="single", additional=5)
+
+(note that your output will be different)
+
+Follow these instructions to start R or RStudio and import :mod:`metawards`.
+
+.. note::
+
+   We plan to create and upload a metawards R module to CRAN for the next
+   version of MetaWards (1.4). This will make it much easier to download
+   and import the :mod:`metawards` R module.
+
+Creating the disease
+--------------------
+
+You should now be in R (or RStudio) and have imported :mod:`metawards`.
+To run a simulation you need to define the :class:`~metawards.Disease`
+that you want to model. MetaWards implements a SEIR-style model, but
+you have complete control to define as many (or few) stages as you wish.
+
+First, we will create a disease, which we will call ``lurgy``, that
+will consist of four stages: S, E, I and R. To do this, let's create
+the disease;
+
+.. code-block:: R
+
+   > lurgy = metawards$Disease(name="lurgy")
+
+Next, we will add each stage. You don't define the "S" stage, as the model
+starts with a set of susceptible individuals by default. Instead, we need
+to add in the E, I and R stages.
+
+First, lets add the latent ("E") stage. Latent individuals are not
+infectious, and so we will set ``beta`` (the infectivity parameter) to 0.0.
+Individuals will progress slowly through this stage, so we will set
+``progress`` to 0.25, meaning that only 25% of individuals move to
+the next stage each day.
+
+.. code-block:: R
+
+   > lurgy$add("E", beta=0.0, progress=0.25)
+
+Next we will add the infectious ("I") stage. This will have a high ``beta``
+value (0.5), but a lower progress (0.5) as we will model this as a
+quick disease.
+
+.. code-block:: R
+
+   > lurgy$add("I", beta=0.5, progress=0.5)
+
+Finally, we need to add the recovered ("R") stage. We don't need to set the
+``beta`` or ``progress`` values, as MetaWards will automatically recognise
+this as the recovered state, and will set ``beta`` to 0 and ``progress``
+to 0 automatically.
+
+.. code-block:: R
+
+   > lurgy$add("R")
+
+You can should print this disease to the screen to confirm that everything
+has been correctly set.
+
+.. code-block:: R
+
+   > print(lurgy)
+
