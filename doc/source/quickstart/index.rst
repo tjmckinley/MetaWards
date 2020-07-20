@@ -36,16 +36,27 @@ Part 1: Getting Started
 * :doc:`Getting started in Python <01_python>`
 * :doc:`Getting started on the command line <01_console>`
 
-Part 2:
+Part 2: Extending the Model
+---------------------------
 
-Single ward (home)
-
-Simple disease (SEIR - disease)
+* :doc:`Extending the model in R <02_R>`
+* :doc:`Extending the model in Python <02_python>`
+* :doc:`Extending the model on the command line <02_console>`
 
 Extend disease (SEIIR)
 
 Extend network (home, work, school)
 
+Part 3: Multiple Pathways
+-------------------------
+
+* :doc:`Multiple pathways with R <03_R>`
+* :doc:`Multiple pathways with Python <03_python>`
+* :doc:`Multiple pathways on the command line <03_console>`
+
 Demographics (workers, teachers, students) with disease / mild_disease
+
+Next steps
+----------
 
 Go to tutorial to learn more

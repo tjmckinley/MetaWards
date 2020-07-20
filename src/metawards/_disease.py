@@ -146,6 +146,8 @@ class Disease:
         """Return the values of parameters of the stage as specified
            index
         """
+        index = int(index)
+
         if abs(index) >= len(self):
             raise IndexError(f"Invalid index {index}. Size = {len(self)}")
 
@@ -649,6 +651,8 @@ class Disease:
 
         import os
 
+        is_local_file = False
+
         if filename is None:
             if disease is None:
                 disease = "ncov"
@@ -657,14 +661,24 @@ class Disease:
                 d = os.path.join(folder, disease)
                 if os.path.exists(d):
                     filename = disease
+                    is_local_file = True
                 elif os.path.exists(f"{d}.json"):
                     filename = f"{d}.json"
+                    is_local_file = True
+                elif os.path.exists(f"{d}.json.bz2"):
+                    filename = f"{d}.json.bz2"
+                    is_local_file = True
 
             if filename is None:
                 if os.path.exists(disease):
                     filename = disease
+                    is_local_file = True
                 elif os.path.exists(f"{disease}.json"):
                     filename = f"{disease}.json"
+                    is_local_file = True
+                elif os.path.exists(f"{disease}.json.bz2"):
+                    filename = f"{disease}.json.bz2"
+                    is_local_file = True
 
         if filename is None:
             from ._parameters import get_repository
@@ -679,6 +693,9 @@ class Disease:
             repository = v["repository"]
             repository_version = v["version"]
             repository_branch = v["branch"]
+
+        if is_local_file:
+            return Disease.from_json(filename)
 
         json_file = os.path.abspath(filename)
 

@@ -80,6 +80,8 @@ def _rmdir(directory):
 def run(help: bool = None,
         version: bool = None,
         dry_run: bool = None,
+        silent: bool = False,
+        auto_load: bool = None,
         config: str = None,
         input: _Union[str, VariableSet, VariableSets] = None,
         line: int = None,
@@ -118,28 +120,58 @@ def run(help: bool = None,
         profile: bool = None,
         no_profile: bool = None,
         mpi: bool = None,
-        scoop: bool = None) -> int:
+        scoop: bool = None) -> _Union[str, 'pandas.DataFrame']:
     """Run a MetaWards simulation
 
        Parameters
        ----------
+       silent: bool
+         Run without printing the output to the screen
+       dry_run: bool
+         Don't run anything - just print what will be run
+       help: bool
+         Whether or not to print the full help
+       version: bool
+         Whether or not to print the metawards version info
+       output: str
+         The name of the directory in which to write the output. If this
+         is not set, then a new, random-named directory will be used.
+       force_overwrite_output: bool
+         Force overwriting the output directory - this will remove any
+         existing directory before running
+       auto_load: bool
+         Whether or not to automatically load and return a pandas dataframe
+         of the output/results.csv.bz2 file. If pandas is available then
+         this defaults to True, otherwise False
+       disease: Disease or str
+         The disease to model (or the filename of the json file containing
+         the disease, or name of the disease)
+       model: Ward, Wards or str
+         The network wards to run (of the filename of the json file
+         containing the network, or name of the network))
+
+       There are many more parameters, based on the arguments to
+       metawards --help.
+
        Please set "help" to True to print out a full list of
        help for all of the arguments
 
         Returns
         -------
-        exit_val: int
-          The return value of the metawards process. This should
-          be zero if everything worked correctly
+        results: str or pandas.DataFrame
+          The file containing the output results (output/results.csv.bz2),
+          or, if auto_load is True, the pandas.DataFrame containing
+          those results
     """
     import sys
     import os
     import tempfile
+    from .utils._console import Console
 
     metawards = os.path.join(os.path.dirname(sys.executable), "metawards")
 
     if not os.path.exists(metawards):
-        print(f"Cannot find the metawards executable: {metawards}")
+        Console.error(f"Cannot find the metawards executable: {metawards}")
         return -1
 
     args = []
@@ -155,6 +187,9 @@ def run(help: bool = None,
     elif version:
         args.append("--version")
     else:
+        if output is None and not dry_run:
+            output = tempfile.mkdtemp(prefix="output_", dir=".")
+            force_overwrite_output = True
 
         if force_overwrite_output:
             args.append("--force-overwrite-output")
@@ -176,8 +211,8 @@ def run(help: bool = None,
                     return 0
 
                 if output.lower() == "error":
-                    print("You need to delete the directory or set "
-                          "'force_overwrite_output' to TRUE")
+                    Console.error("You need to delete the directory or set "
+                                  "'force_overwrite_output' to TRUE")
                     return -1
 
         try:
@@ -379,8 +414,8 @@ def run(help: bool = None,
                 args.append("--scoop")
 
         except Exception as e:
-            print(f"[ERROR] Error interpreting the arguments")
-            print(f"[ERROR] {e}")
+            Console.error(f"[ERROR] Error interpreting the arguments"
+                          f"[ERROR] {e.__class__}: {e}")
             _rmdir(tmpdir)
             raise
             return -1
@@ -388,16 +423,17 @@ def run(help: bool = None,
     cmd = f"{metawards} {' '.join(args)}"
 
     if dry_run:
-        print(f"[DRY-RUN] {cmd}")
+        Console.info(f"[DRY-RUN] {cmd}")
         return_val = 0
     else:
-        print(f"[EXECUTE] {cmd}")
+        Console.info(f"Writing output to directory {output}")
 
         try:
             import shlex
             import subprocess
             args = shlex.split(cmd)
             with subprocess.Popen(args, stdin=sys.stdin,
+                                  stderr=subprocess.PIPE,
                                   stdout=subprocess.PIPE, bufsize=1,
                                   universal_newlines=True) as PROC:
                 while True:
@@ -405,14 +441,46 @@ def run(help: bool = None,
                     if not line:
                         break
 
-                    sys.stdout.write(line)
-                    sys.stdout.flush()
+                    if not silent:
+                        sys.stdout.write(line)
+                        sys.stdout.flush()
 
                 return_val = PROC.poll()
         except Exception as e:
-            print(f"[ERROR] {e.__class__}: {e}")
+            Console.error(f"[ERROR] {e.__class__}: {e}")
             return_val = -1
 
     _rmdir(tmpdir)
 
-    return return_val
+    if dry_run:
+        return
+
+    if return_val == 0:
+        results = os.path.join(output, "results.csv")
+
+        if not os.path.exists(results):
+            results += ".bz2"
+
+        if auto_load:
+            try:
+                import pandas
+            except ImportError:
+                Console.error("Cannot import pandas:\n{e}")
+                auto_load = False
+
+        if auto_load is None:
+            try:
+                import pandas
+                auto_load = True
+            except ImportError as e:
+                auto_load = False
+
+        if auto_load:
+            import pandas as pd
+            return pd.read_csv(results)
+        else:
+            return results
+    else:
+        Console.error(f"Something went wrong with the run. Please look "
+                      f"at {output}/console.log.bz2 for more information")
+        return None
