@@ -274,10 +274,7 @@ class Demographics:
         json_file = filename
 
         try:
-            with open(json_file, "r") as FILE:
-                import json
-                data = json.load(FILE)
-
+            demographics = Demographics.from_json(json_file)
         except Exception as e:
             from .utils._console import Console
             Console.error(f"""
@@ -289,8 +286,131 @@ follow the instructions at
             raise FileNotFoundError(f"Could not find or read {json_file}: "
                                     f"{e.__class__} {e}")
 
-        json_dir = os.path.split(os.path.abspath(json_file))[0]
+        demographics._name = name
+        demographics._filename = json_file
+        demographics._repository = repository
+        demographics._repository_branch = repository_branch
+        demographics._repository_version = repository_version
 
+        return demographics
+
+    def to_data(self):
+        """Return a data dictionary for this object that can
+           be serialised to json
+        """
+        data = {}
+
+        if self.demographics is None:
+            return data
+
+        default = [1.0] * len(self.demographics)
+        all_none = [None] * len(self.demographics)
+
+        def _get_filename(x):
+            if x is None:
+                return None
+            elif isinstance(x, str):
+                import os
+                if os.path.exists(x):
+                    from pathlib import Path
+                    return str(Path(x).expanduser().absolute())
+                else:
+                    return x
+            else:
+                if x._filename is None:
+                    raise IOError(f"Cannot locate file for {x}")
+
+                return _get_filename(x._filename)
+
+        demographics = [str(x.name) for x in self.demographics]
+        work_ratios = [float(x.work_ratio) for x in self.demographics]
+        play_ratios = [float(x.play_ratio) for x in self.demographics]
+        diseases = [_get_filename(x.disease) for x in self.demographics]
+        networks = [_get_filename(x.network) for x in self.demographics]
+
+        data["demographics"] = demographics
+
+        if work_ratios != default:
+            data["work_ratios"] = work_ratios
+
+        if play_ratios != default:
+            data["play_ratios"] = play_ratios
+
+        if self.random_seed is not None:
+            data["random_seed"] = int(self.random_seed)
+
+        if diseases != all_none:
+            data["diseases"] = diseases
+
+        if networks != all_none:
+            data["networks"] = networks
+
+        return data
+
+    def to_json(self, filename: str = None, indent: int = None,
+                auto_bzip: bool = True) -> str:
+        """Serialise the Demographics to JSON. This will write to a file
+           if filename is set, otherwise it will return a JSON string.
+
+           Parameters
+           ----------
+           filename: str
+             The name of the file to write the JSON to. The absolute
+             path to the written file will be returned. If filename is None
+             then this will serialise to a JSON string which will be
+             returned.
+           indent: int
+             The number of spaces of indent to use when writing the json
+           auto_bzip: bool
+             Whether or not to automatically bzip2 the written json file
+
+           Returns
+           -------
+           str
+             Returns either the absolute path to the written file, or
+             the json-serialised string
+        """
+        import json
+
+        if indent is not None:
+            indent = int(indent)
+
+        if filename is None:
+            return json.dumps(self.to_data(), indent=indent)
+        else:
+            from pathlib import Path
+            filename = str(Path(filename).expanduser().resolve().absolute())
+
+            if auto_bzip:
+                if not filename.endswith(".bz2"):
+                    filename += ".bz2"
+
+                import bz2
+                with bz2.open(filename, "wt") as FILE:
+                    try:
+                        json.dump(self.to_data(), FILE, indent=indent)
+                    except Exception:
+                        import os
+                        FILE.close()
+                        os.unlink(filename)
+                        raise
+            else:
+                with open(filename, "w") as FILE:
+                    try:
+                        json.dump(self.to_data(), FILE, indent=indent)
+                    except Exception:
+                        import os
+                        FILE.close()
+                        os.unlink(filename)
+                        raise
+
+            return filename
+
+    @staticmethod
+    def from_data(data, json_dir=None) -> Demographics:
+        """Construct and return a Demographics object constructed
+           from a (json-deserialised) data dictionary
+        """
         demographics = data.get("demographics", [])
         work_ratios = data.get("work_ratios", [1.0] * len(demographics))
         play_ratios = data.get("play_ratios", [1.0] * len(demographics))
@@ -325,14 +445,9 @@ follow the instructions at
                 f"which must equal the number of networks ({len(networks)}).")
 
         demos = Demographics(random_seed=random_seed,
-                             _name=name,
                              _authors=data.get("author(s)", None),
                              _contacts=data.get("contact(s)", None),
-                             _references=data.get("reference(s)", None),
-                             _filename=json_file,
-                             _repository=repository,
-                             _repository_branch=repository_branch,
-                             _repository_version=repository_version)
+                             _references=data.get("reference(s)", None))
 
         for i in range(0, len(demographics)):
             demographic = Demographic(name=demographics[i],
@@ -343,6 +458,44 @@ follow the instructions at
             demos.add(demographic)
 
         return demos
+
+    @staticmethod
+    def from_json(s: str):
+        """Construct and return Demographics loaded from the passed
+           json file
+        """
+        import os
+        import json
+
+        json_dir = None
+
+        if os.path.exists(s):
+            json_dir = os.path.split(os.path.abspath(s))[0]
+
+            try:
+                import bz2
+                with bz2.open(s, "rt") as FILE:
+                    data = json.load(FILE)
+            except Exception:
+                data = None
+
+            if data is None:
+                with open(s, "rt") as FILE:
+                    data = json.load(FILE)
+        else:
+            try:
+                data = json.loads(s)
+            except Exception:
+                data = None
+
+        if data is None:
+            from .utils._console import Console
+            Console.error(f"Unable to load Demographics from '{s}'. Check that "
+                          f"this is valid JSON or that the file exists.")
+
+            raise IOError(f"Cannot load Disease from '{s}'")
+
+        return Demographics.from_data(data, json_dir=json_dir)
 
     def build(self, params: Parameters, population: Population = None,
               max_nodes: int = 16384,
@@ -369,7 +522,7 @@ follow the instructions at
            -------
            Network or Networks
              The set of Networks that represent the model run over the
-             full set of different demographics (or Network if there is
+             full set of different demographics(or Network if there is
              just a single demographic)
         """
         from .utils._console import Console
@@ -483,7 +636,18 @@ follow the instructions at
                 wardss[i] = w
                 input_files[i] = key
 
+        total_pop = worker_pop = player_pop = 0
+
+        for wards in wardss:
+            total_pop += wards.population()
+            worker_pop += wards.num_workers()
+            player_pop += wards.num_players()
+
         overall, wardss = Wards.harmonise(wardss)
+
+        assert overall.population() == total_pop
+        assert overall.num_workers() == worker_pop
+        assert overall.num_players() == player_pop
 
         overall = Network.from_wards(overall, params=params,
                                      nthreads=nthreads)

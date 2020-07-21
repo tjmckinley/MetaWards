@@ -697,7 +697,9 @@ class Disease:
             repository_branch = v["branch"]
 
         if is_local_file:
-            return Disease.from_json(filename)
+            disease = Disease.from_json(filename)
+            disease._filename = filename
+            return disease
 
         json_file = os.path.abspath(filename)
 
