@@ -91,25 +91,7 @@ class Demographics:
 
     def __str__(self):
         d = "\n  ".join([str(x) for x in self.demographics])
-
-        lines = []
-
-        lines.append(f"Demographics {self._name}")
-
-        if self._filename != self._name:
-            lines.append(f"Loaded from {self._filename}")
-
-        for name, val in [("version", self._version),
-                          ("author(s)", self._authors),
-                          ("contact(s)", self._contacts),
-                          ("referneces(s)", self._references),
-                          ("repository", self._repository),
-                          ("repository_branch", self._repository_branch),
-                          ("repository_version", self._repository_version)]:
-            if val is not None:
-                lines.append(f"{name}: {val}")
-
-        return "\n".join(lines) + f"\ndemographics = [\n  {d}\n]"
+        return f"[\n  {d}\n]"
 
     def __len__(self):
         return len(self.demographics)

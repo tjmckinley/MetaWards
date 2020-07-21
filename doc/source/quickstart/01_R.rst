@@ -71,7 +71,7 @@ the disease;
 
 .. code-block:: R
 
-   > lurgy = metawards$Disease(name="lurgy")
+   > lurgy <- metawards$Disease(name="lurgy")
 
 Next, we will add each stage. You don't define the "S" stage, as the model
 starts with a set of susceptible individuals by default. Instead, we need
@@ -135,7 +135,7 @@ We will first start with a single ward, called home.
 
 .. code-block:: R
 
-   > home = metawards$Ward(name="home")
+   > home <- metawards$Ward(name="home")
 
 MetaWards works by assigning individuals as either `workers` or `players`.
 The difference is that `workers` make fixed (predictable) movements
@@ -164,7 +164,7 @@ we will use the :func:`metawards.run` function.
 
 .. code-block:: R
 
-   > results = metawards$run(model=home, disease=lurgy)
+   > results <- metawards$run(model=home, disease=lurgy)
 
 This will print a lot to the screen. The key lines are these;
 
@@ -209,7 +209,7 @@ ward. We will start with 100 initial infections;
 
 .. code-block:: R
 
-   > results = metawards$run(model=home, disease=lurgy, additional=100)
+   > results <- metawards$run(model=home, disease=lurgy, additional=100)
 
 Now you get a lot more output, e.g. for me the outbreak runs for 75 days.
 
@@ -250,7 +250,7 @@ using standard R commands, e.g.
 
 .. code-block:: R
 
-   > results = read.csv(results)
+   > results <- read.csv(results)
    > print(results)
        fingerprint repeat. day       date     S    E    I    R IW SCALE_UV
     1       REPEAT       1   0 2020-07-20 10000    0    0    0  0        1
@@ -269,7 +269,7 @@ To visualise the data we need to tidy it up so that we can group by S, E, I and 
 
 .. code-block:: R
 
-   > results = results %>%
+   > results <- results %>%
         pivot_longer(c("S", "E", "I", "R"),
         names_to = "stage", values_to = "count")
    > print(results)
@@ -316,21 +316,21 @@ re-copied below;
    metawards <- import("metawards")
 
    # Create the disease
-   lurgy = metawards$Disease(name="lurgy")
+   lurgy <- metawards$Disease(name="lurgy")
    lurgy$add("E", beta=0.0, progress=0.25)
    lurgy$add("I", beta=0.8, progress=0.25)
    lurgy$add("R")
 
    # Create the model network
-   home = metawards$Ward(name="home")
+   home <- metawards$Ward(name="home")
    home$set_num_players(10000)
 
    # Run the model
-   results = metawards$run(model=home, disease=lurgy, additional=100)
+   results <- metawards$run(model=home, disease=lurgy, additional=100)
 
    # Read the tidy the results
-   results = read.csv(results)
-   results = results %>%
+   results <- read.csv(results)
+   results <- results %>%
         pivot_longer(c("S", "E", "I", "R"),
         names_to = "stage", values_to = "count")
 

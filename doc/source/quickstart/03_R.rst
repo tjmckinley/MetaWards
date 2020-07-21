@@ -2,4 +2,123 @@
 Multiple pathways with R
 ========================
 
-Demographics (workers, teachers, students) with disease / mild_disease
+MetaWards uses :class:`metawards.Demographics` to model different groups
+of individuals in different ways. Individuals can move between
+different demographics, and different demographics can experience
+different disease models and move within different networks. This
+is very powerful, and enables MetaWards to model multiple pathways
+for different individuals.
+
+This is explored in more depth in the :doc:`tutorial <../tutorial/index>`.
+For this quick start guide, we will create three demographics;
+
+* ``students`` : experience a mild version of the lurgy and travel to school each day
+* ``teachers`` : experience the normal version of the lurgy, and also travel to school each day
+* ``default`` : experience the normal version of the lurgy and either travel to work each day or stay home and play
+
+Creating a mild disease
+-----------------------
+
+First, we need to save the current version of the lurgy to a file called
+``lurgy.json.bz2``.
+
+.. code-block:: R
+
+   > lurgy$to_json("lurgy.json.bz2")
+
+Next, we much create a milder version of the lurgy and save this to
+``mild_lurgy.json.bz2`` using;
+
+.. code-block:: R
+
+   > mild_lurgy <- metawards$Disease("mild_lurgy")
+   > mild_lurgy$add("E", progress=0.25, beta=0.0)
+   > mild_lurgy$add("I", progress=0.5, beta=0.2)
+   > mild_lurgy$add("R")
+   > mild_lurgy$to_json("mild_lurgy.json.bz2")
+
+Creating the networks
+---------------------
+
+We now need to create the three networks for the three demographics.
+We will start with the students, who will move between home and school.
+This will be saved to ``students.json.bz2``.
+
+.. code-block:: R
+
+   > home <- metawards$Ward("home")
+   > school <- metawards$Ward("school")
+   > home$add_workers(3000, destination=school)
+   > students <- metawards$Wards()
+   > students$add(home)
+   > students$add(school)
+   > students$to_json("students.json.bz2")
+
+We will next do the same for the teachers, who will also move between
+home and school (saving to ``teachers.json.bz2``).
+
+.. code-block:: R
+
+   > home <- metawards$Ward("home")
+   > school <- metawards$Ward("school")
+   > home$add_workers(200, destination=school)
+   > teachers <- metawards$Wards()
+   > teachers$add(home)
+   > teachers$add(school)
+   > teachers$to_json("teachers.json.bz2")
+
+Next, we will create the default network. This will consist of some players
+who stay at home, and workers who go to work.
+
+.. code-block:: R
+
+   > home <- metawards$Ward("home")
+   > work <- metawards$Ward("work")
+   > home$set_num_players(10000)
+   > home$add_workers(7000, destination=work)
+   > default <- metawards$Wards()
+   > default$add(home)
+   > default$add(work)
+   > default$to_json("default.json.bz2")
+
+Creating the demographics
+-------------------------
+
+Next, we create the demographics. We do this by creating
+:class:`~metawards.Demographic` objects for each demographic that
+specify the network and disease to use for each group. These are then
+combined into a single :class:`~metawards.Demographics` object.
+
+.. code-block:: R
+
+   > students <- metawards$Demographic("students",
+                                       disease="mild_lurgy.json.bz2",
+                                       network="students.json.bz2")
+   > teachers <- metawards$Demographic("teachers",
+                                       disease="lurgy.json.bz2",
+                                       network="teachers.json.bz2")
+   > default <- metawards$Demographic("default",
+                                      disease="lurgy.json.bz2",
+                                      network="default.json.bz2")
+   > demographics <- metawards$Demographics()
+   > demographics$add(default)
+   > demographics$add(teachers)
+   > demographics$add(students)
+   > print(demographics)
+
+   [
+     Demographics(name='default', work_ratio=0.0, play_ratio=0.0, disease=lurgy.json.bz2, network='default.json.bz2')
+     Demographics(name='teachers', work_ratio=0.0, play_ratio=0.0, disease=lurgy.json.bz2, network='teachers.json.bz2')
+     Demographics(name='students', work_ratio=0.0, play_ratio=0.0, disease=mild_lurgy.json.bz2, network='students.json.bz2')
+   ]
+
+Running the model
+-----------------
+
+We can run the model by passing in the demographics. Note that we don't
+need to specify the disease or model now as these are fully captured
+in the demographics object.
+
+.. code-block:: R
+
+   > results = metawards$run(demographics=demographics)
