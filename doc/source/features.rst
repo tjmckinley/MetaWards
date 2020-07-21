@@ -68,7 +68,7 @@ To this end, MetaWards features;
   enough data to make reproduction easy, with results designed to
   be the same given the same inputs, random number seed and number of threads.
 
-* a :doc:`complete tutorial <tutorial/tutorial>` that takes you from beginning to
+* a :doc:`complete tutorial <tutorial/index>` that takes you from beginning to
   learn how to run SIR simulations, to writing powerful plugins that let you
   model complex scenarios.
 

@@ -1,0 +1,5 @@
+========================
+Multiple pathways with R
+========================
+
+Demographics (workers, teachers, students) with disease / mild_disease

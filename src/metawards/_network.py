@@ -137,11 +137,12 @@ class Network:
 
         p = profiler.start("Network.build")
 
-        if isinstance(params.input_files, str):
+        if params.input_files.is_wards_data:
             from ._wards import Wards
-            wards = Wards.from_json(params.input_files)
+            wards = Wards.from_json(params.input_files.wards_data)
             network = Network.from_wards(wards, params=params,
                                          profiler=p, nthreads=nthreads)
+            network.params.input_files = params.input_files
 
             p.stop()
             return network

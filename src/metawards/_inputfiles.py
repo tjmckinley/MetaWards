@@ -98,8 +98,8 @@ class InputFiles:
     uv: str = None
     #: Whether or not this is the special "single" ward model
     is_single: bool = False
-    #: The wards data if this is a ward_json
-    wards_data: _List[any] = None
+    #: The json file containing the wards data if this is a ward_json
+    wards_data: str = None
 
     _filename: str = None            # Full path of the description.json file
     _model_name: str = None          # Name of the model

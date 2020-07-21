@@ -445,6 +445,8 @@ class Disease:
              normally doesn't need to be set as this will be worked
              out automatically by the code.
         """
+        index = int(index)
+
         if self.beta is None:
             if self.name is None:
                 self.name = "unnamed"

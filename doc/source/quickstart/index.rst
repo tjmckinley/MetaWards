@@ -27,36 +27,37 @@ the one (or many) that fit your needs.
 This quick start should take about 30 minutes to follow. It is a precursor
 to the :doc:`detailed tutorial <../tutorial/index>`. If you want to learn more,
 please follow that tutorial, or read the
-:doc:`detailed API documentation <../api/index>`.
+:doc:`detailed API documentation <../api/index>`. Please choose to follow
+either the R, Python and console versions.
 
-Part 1: Getting Started
------------------------
+R / RStudio
+-----------
+.. toctree::
+   :maxdepth: 2
 
-* :doc:`Getting started in R <01_R>`
-* :doc:`Getting started in Python <01_python>`
-* :doc:`Getting started on the command line <01_console>`
+   01_R
+   02_R
+   03_R
 
-Part 2: Extending the Model
----------------------------
+Python / Jupyter
+----------------
+.. toctree::
+   :maxdepth: 2
 
-* :doc:`Extending the model in R <02_R>`
-* :doc:`Extending the model in Python <02_python>`
-* :doc:`Extending the model on the command line <02_console>`
+   01_python
+   02_python
+   03_python
 
-Extend disease (SEIIR)
+Console / Command line
+----------------------
+.. toctree::
+   :maxdepth: 2
 
-Extend network (home, work, school)
-
-Part 3: Multiple Pathways
--------------------------
-
-* :doc:`Multiple pathways with R <03_R>`
-* :doc:`Multiple pathways with Python <03_python>`
-* :doc:`Multiple pathways on the command line <03_console>`
-
-Demographics (workers, teachers, students) with disease / mild_disease
+   01_console
+   02_console
+   03_console
 
 Next steps
 ----------
 
-Go to tutorial to learn more
+Go to the :doc:`tutorial <../tutorial/index>` to learn more.

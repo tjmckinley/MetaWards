@@ -1,0 +1,86 @@
+========================
+Extending the Model in R
+========================
+
+Continuing in R from the last session, we will now extend the disease
+to include an additional, less-infectious, semi-recovering stage, which
+will come after I, and be called IR. We do this by inserting a new
+stage, named "IR", at index 2, with ``beta`` value 0.2, and ``progress``
+value 0.1
+
+.. code-block:: R
+
+   > lurgy$insert(2, name="IR", beta=0.2, progress=0.1)
+   > print(lurgy)
+
+   * Disease: lurgy
+   * stage: ['E', 'I', 'IR', 'R']
+   * mapping: ['E', 'I', 'IR', 'R']
+   * beta: [0.0, 0.8, 0.2, 0.0]
+   * progress: [0.25, 0.25, 0.1, 0.0]
+   * too_ill_to_move: [0.0, 0.0, 0.0, 0.0]
+   * start_symptom: 2
+
+.. note::
+
+   MetaWards is a Python program, so the index is counted from 0.
+   Index 0 is E, index 1 is I and (before this call), index 2 was R.
+   Inserting at index 2 will insert IR between I and R
+
+We can now run the model using :func:`metawards.run`. This time we will
+set ``silent`` to ``TRUE`` so that it doesn't print so much output
+to the screen.
+
+.. code-block:: R
+
+   > results = metawards$run(model=home, disease=lurgy,
+                             additional=100, silent=TRUE)
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INFO ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Writing output to directory ./output_n81uzd7l
+
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+.. note::
+
+   All of the output is written to the (randomly) named output directory
+   indicated, e.g. for me to output_n81uzd7l. The full log of the run
+   is recorded in the file called ``console.log.bz2`` which is in
+   this directory.
+
+We can now process and plot the results identically to before, e.g.
+
+.. code-block:: R
+
+   > results = read.csv(results)
+   > results = results %>%
+        pivot_longer(c("S", "E", "I", "R"),
+        names_to = "stage", values_to = "count")
+   > ggplot(data = results,
+            mapping = aes(x=day, y=count, color=stage)) + geom_line()
+
+Repeating a run
+---------------
+
+MetaWards model runs are stochastic, meaning that they use random numbers.
+While each individual run is reproducible (given the same random number
+seed and number of processor threads), it is best to run multiple runs
+so that you can look at averages.
+
+You can perform multiple runs using the ``repeats`` argument, e.g.
+to perform four runs, you should type;
+
+.. code-block:: R
+
+   > results = metawards$run(model=home, disease=lurgy,
+                             additional=100, silent=TRUE, repeats=4)
+
+If you look at the results, you will see that each repeat is tagged
+with a *fingerprint* that identifies the run, e.g.
+
+.. code-block:: R
+
+   >
+
+
+Extend network (home, work, school)

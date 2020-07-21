@@ -1,6 +1,6 @@
-===============
-Quick Start (R)
-===============
+====================
+Getting Started in R
+====================
 
 Prerequisites
 -------------
@@ -299,3 +299,41 @@ The result should look something like this;
 
 .. image:: ../images/r01.jpg
    :alt: Plot of the initial outbreak
+
+Complete code
+-------------
+
+The complete R code for this part of the getting started guide is
+re-copied below;
+
+.. code-block:: R
+
+   # Load the dependencies / libraries
+   library(tidyverse)
+   library(reticulate)
+   # Remember to use your own path to python (from metawards-reticulate)
+   use_python("/path/to/your/python", required = TRUE)
+   metawards <- import("metawards")
+
+   # Create the disease
+   lurgy = metawards$Disease(name="lurgy")
+   lurgy$add("E", beta=0.0, progress=0.25)
+   lurgy$add("I", beta=0.8, progress=0.25)
+   lurgy$add("R")
+
+   # Create the model network
+   home = metawards$Ward(name="home")
+   home$set_num_players(10000)
+
+   # Run the model
+   results = metawards$run(model=home, disease=lurgy, additional=100)
+
+   # Read the tidy the results
+   results = read.csv(results)
+   results = results %>%
+        pivot_longer(c("S", "E", "I", "R"),
+        names_to = "stage", values_to = "count")
+
+   # Graph the results
+   ggplot(data = results,
+          mapping = aes(x=day, y=count, color=stage)) + geom_line()
