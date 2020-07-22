@@ -22,11 +22,10 @@ MetaWards
    :target: https://www.gnu.org/licenses/gpl-3.0.html
    :alt: License
 
-This is a Python port of the
-`MetaWards <https://github.com/ldanon/MetaWards>`__ package originally written
-by Leon Danon. This port has been performed with Leon's support by the
-`Bristol Research Software Engineering Group
-<https://www.bristol.ac.uk/acrc/research-software-engineering/>`__.
+Please take a look at the :doc:`features <features>` to see what
+MetaWards can do. Follow the :doc:`quick start guide <quickstart/index>` to
+see how to quickly get up and running using MetaWards to model your own custom
+disease or metapopulation model.
 
 Scientific Background
 =====================
@@ -35,9 +34,11 @@ MetaWards implements a stochastic metapopulation model of disease
 transmission. It can scale from modelling local transmission up to
 full national- or international-scale metapopulation models.
 
-Please follow the :doc:`quick start guide <quickstart/index>` to see how
-to quickly get up and running using MetaWards to model your own custom
-disease or metapopulation model.
+This is a Python port of the
+`MetaWards <https://github.com/ldanon/MetaWards>`__ package originally written
+by Leon Danon. This port has been performed with Leon's support by the
+`Bristol Research Software Engineering Group
+<https://www.bristol.ac.uk/acrc/research-software-engineering/>`__.
 
 It is was originally developed to support modelling of disease transmission
 in Great Britain. The complete model description and the

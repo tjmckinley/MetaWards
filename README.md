@@ -5,8 +5,6 @@
 * For the most accurate and up to date information please [visit the project website](https://metawards.org).
 * For an overview of features please [visit the features page](https://metawards.org/features).
 
-This is a Python port of the [MetaWards](https://github.com/ldanon/MetaWards) package originally written by Leon Danon. This port has been performed with Leon's support by the [Bristol Research Software Engineering Group](https://www.bristol.ac.uk/acrc/research-software-engineering).
-
 ## Scientific Background
 
 MetaWards implements a stochastic metapopulation model of disease transmission. It can scale from modelling local transmission up to full national- or international-scale metapopulation models.
@@ -115,3 +113,7 @@ This program supports parallel running of an ensemble of jobs using [multiproces
 Note that mpi4py and scoop are not installed by default, so you will need to install them before you run on a cluster (e.g. `pip install mpi4py` or `pip install scoop`).
 
 [Full instructions for running on a cluster are here](https://metawards.org/cluster_usage.html)
+
+## History
+
+This is a Python port of the [MetaWards](https://github.com/ldanon/MetaWards) package originally written by Leon Danon. This port has been performed with Leon's support by the [Bristol Research Software Engineering Group](https://www.bristol.ac.uk/acrc/research-software-engineering).

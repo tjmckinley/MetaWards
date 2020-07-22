@@ -16,22 +16,16 @@ MetaWards is a SIR-based metapopulation disease modelling program. The
 software models individuals who move as metapopulations between
 home wards and work (or play) wards. This is a highly flexible program,
 that can model custom geographies, networks, diseases and demographics.
-For more information, take a look at the
-:doc:`quick start guide <quickstart/index>`.
+You can use MetaWards directly from within Python (including Jupyter),
+R (including RStudio) or from the command line (terminal / console).
+
+**For more information, take a look at the** :doc:`quick start guide <quickstart/index>`.
 
 The program is designed to enable researchers to model how an infection
 may spread, and what impact different control measures or individual
 behaviours may make.
 
 To this end, MetaWards features;
-
-* a flexible plugin architecture that makes it easy to implement new
-  control measures. For example, the tutorial shows how this can be
-  used to
-  :doc:`model shielding <tutorial/part05/03_custom>`,
-  :doc:`different lockdown scenarios <tutorial/part03/06_scan_lockdown>`
-  and to
-  :doc:`investigate necessary durations of quarantine or self-isolation <tutorial/part06/02_duration>`.
 
 .. figure:: images/demographic_model.jpg
     :width: 100%
@@ -41,6 +35,14 @@ To this end, MetaWards features;
     :figclass: align-right
 
     Multiple connected networks enable complex scenarios to be modelled
+
+* a flexible plugin architecture that makes it easy to implement new
+  control measures. For example, the tutorial shows how this can be
+  used to
+  :doc:`model shielding <tutorial/part05/03_custom>`,
+  :doc:`different lockdown scenarios <tutorial/part03/06_scan_lockdown>`
+  and to
+  :doc:`investigate necessary durations of quarantine or self-isolation <tutorial/part06/02_duration>`.
 
 * multi-network demographic support. Multiple networks can be run as
   a single combined group, with custom plugins used to merge data
@@ -79,14 +81,15 @@ To this end, MetaWards features;
   and scaling multiple runs up to full supercomputers (if you are lucky
   enough to have access to one)...
 
-.. figure:: images/pandas_example.jpg
+.. figure:: images/rstudio.jpg
     :width: 100%
     :figwidth: 35%
     :align: right
-    :alt: Analysing data in pandas
+    :alt: RStudio screenshot
     :figclass: align-right
 
-    Easily load compressed data files into pandas, R or Excel for analysis
+    Run MetaWards and analyse results directly within RStudio via the
+    MetaWards R interface.
 
 * ...but - the individual code is optimised and can run happily on small
   laptops. Individual networks fit in approximately 80 MB of memory, and model
@@ -101,9 +104,24 @@ To this end, MetaWards features;
   These can model everything from individual wards or local geographies,
   up to full national- or international-scale metapopulation models.
 
+.. figure:: images/pandas_example.jpg
+    :width: 100%
+    :figwidth: 35%
+    :align: right
+    :alt: Analysing data in pandas
+    :figclass: align-right
+
+    Easily load compressed data files into pandas, R or Excel for analysis
+
 * a colourful, modern and informative console output, with full unicode
   support and progress indicators. All outputs are duplicated to
   text files to ensure that no data from a run is lost.
+
+* both command-line and API interfaces. Feel free to run MetaWards as
+  a standalone program, or to use the Python or R API to embed it as part
+  of a larger framework. A modular, robust design has been used, so
+  feel free to take and re-use the parts of MetaWards that are most
+  of use to you.
 
 .. figure:: images/parallel_output.jpg
     :width: 100%
@@ -115,12 +133,6 @@ To this end, MetaWards features;
     Perform multiple runs in parallel, with live summary updates as
     jobs finish
 
-* both command-line and API interfaces. Feel free to run MetaWards as
-  a standalone program, or to use the Python or R API to embed it as part
-  of a larger framework. A modular, robust design has been used, so
-  feel free to take and re-use the parts of MetaWards that are most
-  of use to you.
-
 Software design
 ---------------
 
@@ -130,7 +142,7 @@ lots of documentation, copious run-time and unit tests, and following
 a "tutorial-driven" development philosophy.
 
 The software is mostly Python, with C used (via cython) to accelerate
-key parts. An :doc:`R interface <tutorial/part08/03_reticulate>`
+key parts. An :doc:`R interface <quickstart/01_R>`
 is provided via `reticulate <https://rstudio.github.io/reticulate/>`__.
 The code is parallelised using `OpenMP <https://openmp.org>`__,
 with multiple model runs parallelised using multiprocessing,
