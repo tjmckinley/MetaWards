@@ -40,7 +40,7 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="metawards.Wards" href="metawards.Wards.html" />
+    <link rel="next" title="metawards.WardInfo" href="metawards.WardInfo.html" />
     <link rel="prev" title="metawards.VariableSets" href="metawards.VariableSets.html" /> 
 </head>
 
@@ -96,6 +96,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../model_data.html">Model data</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quick Start Guide</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorial</a></li>
@@ -210,7 +213,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="metawards.Wards.html" class="btn btn-neutral float-right" title="metawards.Wards" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards.WardInfo.html" class="btn btn-neutral float-right" title="metawards.WardInfo" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="metawards.VariableSets.html" class="btn btn-neutral float-left" title="metawards.VariableSets" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -248,7 +251,7 @@ ID is used as the index into the Network array</li>
 by codes, rather than names</li>
 <li><strong>authority</strong> (<em>str</em>) – The local authority name for this node</li>
 <li><strong>region</strong> (<em>str</em>) – The name of the region containing this ward</li>
-<li><strong>info</strong> (<a class="reference internal" href="metawards.WardInfo.html#metawards.WardInfo" title="metawards.WardInfo"><em>WardInfo</em></a>) – The complete WardInfo used to identify this ward.</li>
+<li><strong>info</strong> (<a class="reference internal" href="../index_api_MetaWards.html#metawards.WardInfo" title="metawards.WardInfo"><em>WardInfo</em></a>) – The complete WardInfo used to identify this ward.</li>
 <li><strong>auto_assign_players</strong> (<em>bool</em>) – Whether or not to automatically ensure that all remaining
 player weight is assigned to players who play in their home
 ward</li>
@@ -266,136 +269,142 @@ ward</li>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.__init__" title="metawards.Ward.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(id,&nbsp;name,&nbsp;code,&nbsp;authority,&nbsp;region,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.__init__" title="metawards.Ward.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(id,&nbsp;name,&nbsp;code,&nbsp;authority,&nbsp;region,&nbsp;…)</td>
 <td>Construct a new Ward, optionally supplying information about the ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.add_player_weight" title="metawards.Ward.add_player_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_player_weight</span></code></a>(weight,&nbsp;destination)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.add_player_weight" title="metawards.Ward.add_player_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_player_weight</span></code></a>(weight,&nbsp;destination)</td>
 <td>Add the weight for players who will randomly move to the specified destination to play(or to play in the home ward if destination is not set).</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.add_workers" title="metawards.Ward.add_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_workers</span></code></a>(number,&nbsp;destination,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.add_workers" title="metawards.Ward.add_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_workers</span></code></a>(number,&nbsp;destination,&nbsp;…)</td>
 <td>Add some workers to this ward, specifying their destination if they work out of ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.assert_sane" title="metawards.Ward.assert_sane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_sane</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.assert_sane" title="metawards.Ward.assert_sane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_sane</span></code></a>()</td>
 <td>Assert that the data in this ward is sane</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.authority" title="metawards.Ward.authority"><code class="xref py py-obj docutils literal notranslate"><span class="pre">authority</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.authority" title="metawards.Ward.authority"><code class="xref py py-obj docutils literal notranslate"><span class="pre">authority</span></code></a>()</td>
 <td>Return the local authority of this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.auto_assign_players" title="metawards.Ward.auto_assign_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_assign_players</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.auto_assign_players" title="metawards.Ward.auto_assign_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_assign_players</span></code></a>()</td>
 <td>Return whether or not the remaining player weight is automatically added to the home-ward player weight</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.code" title="metawards.Ward.code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">code</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.code" title="metawards.Ward.code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">code</span></code></a>()</td>
 <td>Return the code of this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.depopulate" title="metawards.Ward.depopulate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">depopulate</span></code></a>(zero_player_weights)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.depopulate" title="metawards.Ward.depopulate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">depopulate</span></code></a>(zero_player_weights)</td>
 <td>Return a copy of this Ward with exact same details, but with zero population.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.dereference" title="metawards.Ward.dereference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dereference</span></code></a>(wards,&nbsp;_inplace)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.dereference" title="metawards.Ward.dereference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dereference</span></code></a>(wards,&nbsp;_inplace)</td>
 <td>Dereference the IDs and convert those back to WardInfo objects.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.from_data" title="metawards.Ward.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a>(data)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.from_data" title="metawards.Ward.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a>(data)</td>
 <td>Return a Ward that has been created from the passed dictionary (e.g.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.get_player_lists" title="metawards.Ward.get_player_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_player_lists</span></code></a>(no_auto_assign)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.from_json" title="metawards.Ward.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a>(s)</td>
+<td>Return the Ward constructed from the passed json.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.get_player_lists" title="metawards.Ward.get_player_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_player_lists</span></code></a>(no_auto_assign)</td>
 <td>Return a pair of arrays, containing the destination wards and player weights for this ward.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.get_players" title="metawards.Ward.get_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_players</span></code></a>(destination)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.get_players" title="metawards.Ward.get_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_players</span></code></a>(destination)</td>
 <td>Return the fraction of players who will play in the specified destination ward (or who play in their home ward if destination is not set)</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.get_worker_lists" title="metawards.Ward.get_worker_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_worker_lists</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.get_worker_lists" title="metawards.Ward.get_worker_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_worker_lists</span></code></a>()</td>
 <td>Return a pair of arrays, containing the destination wards and worker populations for this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.get_workers" title="metawards.Ward.get_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_workers</span></code></a>(destination)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.get_workers" title="metawards.Ward.get_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_workers</span></code></a>(destination)</td>
 <td>Return the number of workers who commute to the specified destination ward (or who commute to their home ward if destination is not set)</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.id" title="metawards.Ward.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.id" title="metawards.Ward.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a>()</td>
 <td>Return the ID of this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.info" title="metawards.Ward.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.info" title="metawards.Ward.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a>()</td>
 <td>Return (a copy of) the WardInfo containing all ward identifying metadata</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_null</span></code>()</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_null</span></code>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.is_resolved" title="metawards.Ward.is_resolved"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_resolved</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.is_resolved" title="metawards.Ward.is_resolved"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_resolved</span></code></a>()</td>
 <td>Return whether or not any of the worker or player links in this ward are unresolved, or whether the ID of this ward is None</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.merge" title="metawards.Ward.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(other)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.merge" title="metawards.Ward.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(other)</td>
 <td>Merge in the data from ‘other’ into this Ward.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.name" title="metawards.Ward.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.name" title="metawards.Ward.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a>()</td>
 <td>Return the name of this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.num_play_links" title="metawards.Ward.num_play_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_play_links</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.num_play_links" title="metawards.Ward.num_play_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_play_links</span></code></a>()</td>
 <td>Return the total number of play links</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.num_players" title="metawards.Ward.num_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_players</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.num_players" title="metawards.Ward.num_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_players</span></code></a>()</td>
 <td>Return the total number of players who make their home in this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.num_work_links" title="metawards.Ward.num_work_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_work_links</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.num_work_links" title="metawards.Ward.num_work_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_work_links</span></code></a>()</td>
 <td>Return the total number of work links</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.num_workers" title="metawards.Ward.num_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_workers</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.num_workers" title="metawards.Ward.num_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_workers</span></code></a>()</td>
 <td>Return the total number of workers who make their home in this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.play_connections" title="metawards.Ward.play_connections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">play_connections</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.play_connections" title="metawards.Ward.play_connections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">play_connections</span></code></a>()</td>
 <td>Return the full list of play connections for this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.population" title="metawards.Ward.population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">population</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.population" title="metawards.Ward.population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">population</span></code></a>()</td>
 <td>Return the total population of this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.position" title="metawards.Ward.position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.position" title="metawards.Ward.position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></a>()</td>
 <td>Return the position of the center of this ward.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.region" title="metawards.Ward.region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.region" title="metawards.Ward.region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code></a>()</td>
 <td>Return the region containing this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.resolve" title="metawards.Ward.resolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve</span></code></a>(wards,&nbsp;_inplace)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.resolve" title="metawards.Ward.resolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve</span></code></a>(wards,&nbsp;_inplace)</td>
 <td>Resolve any unresolved links using the passed Wards object ‘wards’</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.scale" title="metawards.Ward.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(work_ratio,&nbsp;play_ratio,&nbsp;_inplace)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.scale" title="metawards.Ward.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(work_ratio,&nbsp;play_ratio,&nbsp;_inplace)</td>
 <td>Return a copy of these wards where the number of workers and players have been scaled by ‘work_ratios’ and ‘play_ratios’ respectively.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.set_authority" title="metawards.Ward.set_authority"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_authority</span></code></a>(authority)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_authority" title="metawards.Ward.set_authority"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_authority</span></code></a>(authority)</td>
 <td>Set the local authority of this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.set_auto_assign_players" title="metawards.Ward.set_auto_assign_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_auto_assign_players</span></code></a>(auto_assign_players)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_auto_assign_players" title="metawards.Ward.set_auto_assign_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_auto_assign_players</span></code></a>(auto_assign_players)</td>
 <td>Return whether or not the remaining player weight is automatically assigned to the home-ward player weight</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.set_code" title="metawards.Ward.set_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_code</span></code></a>(code)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_code" title="metawards.Ward.set_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_code</span></code></a>(code)</td>
 <td>Set the code of this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.set_id" title="metawards.Ward.set_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_id</span></code></a>(id)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_id" title="metawards.Ward.set_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_id</span></code></a>(id)</td>
 <td>Set the ID of this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.set_info" title="metawards.Ward.set_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_info</span></code></a>(info)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_info" title="metawards.Ward.set_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_info</span></code></a>(info)</td>
 <td>Set the info of this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.set_name" title="metawards.Ward.set_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_name</span></code></a>(name)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_name" title="metawards.Ward.set_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_name</span></code></a>(name)</td>
 <td>Set the name of this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.set_num_players" title="metawards.Ward.set_num_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_num_players</span></code></a>(number)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_num_players" title="metawards.Ward.set_num_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_num_players</span></code></a>(number)</td>
 <td>Set the number of players in this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.set_num_workers" title="metawards.Ward.set_num_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_num_workers</span></code></a>(number)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_num_workers" title="metawards.Ward.set_num_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_num_workers</span></code></a>(number)</td>
 <td>Set the number of workers in this ward.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.set_position" title="metawards.Ward.set_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_position</span></code></a>(x,&nbsp;y,&nbsp;lat,&nbsp;long,&nbsp;units)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_position" title="metawards.Ward.set_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_position</span></code></a>(x,&nbsp;y,&nbsp;lat,&nbsp;long,&nbsp;units)</td>
 <td>Set the position of the centre of this ward.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.set_region" title="metawards.Ward.set_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_region</span></code></a>(region)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_region" title="metawards.Ward.set_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_region</span></code></a>(region)</td>
 <td>Set the region of this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.subtract_player_weight" title="metawards.Ward.subtract_player_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subtract_player_weight</span></code></a>(weight,&nbsp;destination)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.subtract_player_weight" title="metawards.Ward.subtract_player_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subtract_player_weight</span></code></a>(weight,&nbsp;destination)</td>
 <td>Subtract the weight for players who will randomly move to the specified destination to play (or to play in the home ward if destination is not set).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.subtract_workers" title="metawards.Ward.subtract_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subtract_workers</span></code></a>(number,&nbsp;destination)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.subtract_workers" title="metawards.Ward.subtract_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subtract_workers</span></code></a>(number,&nbsp;destination)</td>
 <td>Remove some workers from this ward, specifying their destination if they work out of ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward.to_data" title="metawards.Ward.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.to_data" title="metawards.Ward.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a>()</td>
 <td>Return a dictionary that can be serialised to JSON</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward.work_connections" title="metawards.Ward.work_connections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">work_connections</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.to_json" title="metawards.Ward.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a>(filename,&nbsp;indent,&nbsp;auto_bzip)</td>
+<td>Serialise the ward to JSON.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.work_connections" title="metawards.Ward.work_connections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">work_connections</span></code></a>()</td>
 <td>Return the full list of work connections for this ward</td>
 </tr>
 </tbody>
@@ -431,7 +440,7 @@ ID is used as the index into the Network array</li>
 by codes, rather than names</li>
 <li><strong>authority</strong> (<em>str</em>) – The local authority name for this node</li>
 <li><strong>region</strong> (<em>str</em>) – The name of the region containing this ward</li>
-<li><strong>info</strong> (<a class="reference internal" href="metawards.WardInfo.html#metawards.WardInfo" title="metawards.WardInfo"><em>WardInfo</em></a>) – The complete WardInfo used to identify this ward.</li>
+<li><strong>info</strong> (<a class="reference internal" href="../index_api_MetaWards.html#metawards.WardInfo" title="metawards.WardInfo"><em>WardInfo</em></a>) – The complete WardInfo used to identify this ward.</li>
 <li><strong>auto_assign_players</strong> (<em>bool</em>) – Whether or not to automatically ensure that all remaining
 player weight is assigned to players who play in their home
 ward</li>
@@ -529,6 +538,14 @@ return the dereferenced ward.</p>
 <em class="property">static </em><code class="descname">from_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.from_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.from_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Ward that has been created from the passed dictionary
 (e.g. which has been deserialised from JSON)</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="metawards.Ward.from_json">
+<em class="property">static </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>s: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Ward constructed from the passed json. This will
+either load from a passed json string, or from json loaded
+from the passed file</p>
 </dd></dl>
 
 <dl class="method">
@@ -790,6 +807,36 @@ if they work out of ward</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="metawards.Ward.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><em>filename: Optional[str] = None</em>, <em>indent: Optional[int] = None</em>, <em>auto_bzip: bool = True</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialise the ward to JSON. This will write to a file
+if filename is set, otherwise it will return a JSON string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>str</em>) – The name of the file to write the JSON to. The absolute
+path to the written file will be returned. If filename is None
+then this will serialise to a JSON string which will be
+returned.</li>
+<li><strong>indent</strong> (<em>int</em>) – The number of spaces of indent to use when writing the json</li>
+<li><strong>auto_bzip</strong> (<em>bool</em>) – Whether or not to automatically bzip2 the written json file</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns either the absolute path to the written file, or
+the json-serialised string</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.Ward.work_connections">
 <code class="descname">work_connections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.work_connections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.work_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the full list of work connections for this ward</p>
@@ -807,7 +854,7 @@ if they work out of ward</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="metawards.Wards.html" class="btn btn-neutral float-right" title="metawards.Wards" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="metawards.WardInfo.html" class="btn btn-neutral float-right" title="metawards.WardInfo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="metawards.VariableSets.html" class="btn btn-neutral float-left" title="metawards.VariableSets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -820,7 +867,7 @@ if they work out of ward</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 18, 2020.
+        Last updated on Jul 22, 2020.
       </span>
 
     </p>

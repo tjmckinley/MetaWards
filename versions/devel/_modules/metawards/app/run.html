@@ -96,6 +96,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../model_data.html">Model data</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quick Start Guide</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/index.html">Tutorial</a></li>
 </ul>
 <ul>
@@ -207,7 +210,7 @@
            <span class="s2">&quot;cli&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_parallel_scheme"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_parallel_scheme.html#metawards.app.get_parallel_scheme">[docs]</a><span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">get_parallel_scheme</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;This function tries to work out which of the different parallel</span>
 <span class="sd">       methods we should use to distribute work between multiple processes.</span>
 
@@ -221,10 +224,10 @@
     <span class="k">elif</span> <span class="s2">&quot;scoop&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;scoop&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span></div>
+        <span class="k">return</span> <span class="s2">&quot;multiprocessing&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../api/generated/metawards.app.parse_args.html#metawards.app.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Parse all of the command line arguments&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">configargparse</span>
     <span class="kn">import</span> <span class="nn">sys</span>
@@ -529,10 +532,10 @@
         <span class="n">print_version_string</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_hostfile"><a class="viewcode-back" href="../../../api/generated/metawards.app.get_hostfile.html#metawards.app.get_hostfile">[docs]</a><span class="k">def</span> <span class="nf">get_hostfile</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_hostfile</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Attempt to find the name of the hostfile used to specify the hosts</span>
 <span class="sd">       to use in a cluster</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -553,7 +556,7 @@
     <span class="k">if</span> <span class="n">hostfile</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">hostfile</span>
 
-    <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="k">return</span> <span class="kc">None</span>
 
 
 <span class="k">def</span> <span class="nf">get_cores_per_node</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -607,7 +610,6 @@
 <span class="sd">       form the scoop call to run a scoop version of the program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">stat</span>
     <span class="kn">import</span> <span class="nn">sys</span>
     <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">Console</span>
 
@@ -716,7 +718,6 @@
 <span class="sd">       form the mpiexec call to run an MPI version of the program</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">stat</span>
     <span class="kn">import</span> <span class="nn">sys</span>
     <span class="kn">from</span> <span class="nn">metawards.utils</span> <span class="kn">import</span> <span class="n">Console</span>
 
@@ -1458,7 +1459,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jul 18, 2020.
+        Last updated on Jul 22, 2020.
       </span>
 
     </p>

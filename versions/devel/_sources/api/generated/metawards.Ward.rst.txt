@@ -23,6 +23,7 @@ metawards.Ward
       ~Ward.depopulate
       ~Ward.dereference
       ~Ward.from_data
+      ~Ward.from_json
       ~Ward.get_player_lists
       ~Ward.get_players
       ~Ward.get_worker_lists
@@ -56,6 +57,7 @@ metawards.Ward
       ~Ward.subtract_player_weight
       ~Ward.subtract_workers
       ~Ward.to_data
+      ~Ward.to_json
       ~Ward.work_connections
    
    

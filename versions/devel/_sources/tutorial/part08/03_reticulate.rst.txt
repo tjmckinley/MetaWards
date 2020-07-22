@@ -29,6 +29,13 @@ To set this, use the ``use_python`` function in R, e.g.
 
 (remembering to use the path that is appropriate for your computer)
 
+.. note::
+
+   We have provided the ``metawards-reticulate`` command. Run this from
+   the console/terminal to get the list of commmands you need to type into
+   R to import reticulate, set the Python executable and import the
+   :mod:`metawards` module.
+
 Using metawards in R
 --------------------
 
