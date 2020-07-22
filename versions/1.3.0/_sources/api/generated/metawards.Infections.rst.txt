@@ -1,0 +1,41 @@
+metawards.Infections
+====================
+
+.. currentmodule:: metawards
+
+.. autoclass:: Infections
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Infections.__init__
+      ~Infections.aggregate
+      ~Infections.build
+      ~Infections.clear
+      ~Infections.get_stage_mapping
+      ~Infections.get_work_index
+      ~Infections.has_different_stage_mapping
+      ~Infections.has_different_work_matrix
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Infections.N_INF_CLASSES
+      ~Infections.nlinks
+      ~Infections.nnodes
+      ~Infections.nsubnets
+      ~Infections.play
+      ~Infections.subinfs
+      ~Infections.work
+   
+   
