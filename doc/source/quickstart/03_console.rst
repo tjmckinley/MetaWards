@@ -19,98 +19,150 @@ For this quick start guide, we will create three demographics;
 Creating a mild disease
 -----------------------
 
-First, we need to save the current version of the lurgy to a file called
-``lurgy.json.bz2``.
+We must create a milder version of the lurgy that is written to the file
+``mild_lurgy.json.bz2``;
 
-.. code-block:: python
+::
 
-   >>> lurgy.to_json("lurgy.json.bz2")
-
-Next, we much create a milder version of the lurgy and save this to
-``mild_lurgy.json.bz2`` using;
-
-.. code-block:: python
-
-   >>> mild_lurgy = mw.Disease("mild_lurgy")
-   >>> mild_lurgy.add("E", progress=0.25, beta=0.0)
-   >>> mild_lurgy.add("I", progress=0.5, beta=0.2)
-   >>> mild_lurgy.add("R")
-   >>> mild_lurgy.to_json("mild_lurgy.json.bz2")
+  {
+    "name": "mild_lurgy",
+    "stage": ["E", "I", "R"],
+    "beta": [0.0, 0.2, 0.0],
+    "progress": [0.25, 0.5, 0.0]
+  }
 
 Creating the networks
 ---------------------
 
 We now need to create the three networks for the three demographics.
 We will start with the students, who will move between home and school.
-This will be saved to ``students.json.bz2``.
+This will be saved to ``students.json``.
 
-.. code-block:: python
+::
 
-   >>> home = mw.Ward("home")
-   >>> school = mw.Ward("school")
-   >>> home.add_workers(3000, destination=school)
-   >>> students = mw.Wards()
-   >>> students.add(home)
-   >>> students.add(school)
-   >>> students.to_json("students.json.bz2")
+  [
+    {
+        "id": 1,
+        "info": {
+        "name": "home"
+        },
+        "num_workers": 3000,
+        "num_players": 0,
+        "workers": {
+        "destination": [
+            2
+        ],
+        "population": [
+            3000
+        ]
+        }
+    },
+    {
+        "id": 2,
+        "info": {
+        "name": "school"
+        },
+        "num_workers": 0,
+        "num_players": 0
+    }
+  ]
 
 We will next do the same for the teachers, who will also move between
 home and school (saving to ``teachers.json.bz2``).
 
-.. code-block:: python
+::
 
-   >>> home = mw.Ward("home")
-   >>> school = mw.Ward("school")
-   >>> home.add_workers(200, destination=school)
-   >>> teachers = mw.Wards()
-   >>> teachers.add(home)
-   >>> teachers.add(school)
-   >>> teachers.to_json("teachers.json.bz2")
+  [
+    {
+        "id": 1,
+        "info": {
+        "name": "home"
+        },
+        "num_workers": 200,
+        "num_players": 0,
+        "workers": {
+        "destination": [
+            2
+        ],
+        "population": [
+            200
+        ]
+        }
+    },
+    {
+        "id": 2,
+        "info": {
+        "name": "school"
+        },
+        "num_workers": 0,
+        "num_players": 0
+    }
+  ]
 
 Next, we will create the default network. This will consist of some players
 who stay at home, and workers who go to work.
 
-.. code-block:: python
+::
 
-   >>> home = mw.Ward("home")
-   >>> work = mw.Ward("work")
-   >>> home.set_num_players(10000)
-   >>> home.add_workers(7000, destination=work)
-   >>> default = mw.Wards()
-   >>> default.add(home)
-   >>> default.add(work)
-   >>> default.to_json("default.json.bz2")
+  [
+    {
+        "id": 1,
+        "info": {
+        "name": "home"
+        },
+        "num_workers": 7000,
+        "num_players": 10000,
+        "workers": {
+        "destination": [
+            2
+        ],
+        "population": [
+            7000
+        ]
+        }
+    },
+    {
+        "id": 2,
+        "info": {
+        "name": "work"
+        },
+        "num_workers": 0,
+        "num_players": 0
+    }
+  ]
 
 Creating the demographics
 -------------------------
 
 Next, we create the demographics. We do this by creating
-:class:`~metawards.Demographic` objects for each demographic that
-specify the network and disease to use for each group. These are then
-combined into a single :class:`~metawards.Demographics` object.
+a file called ``network.json`` that contains data for each demographic that
+specify the network and disease to use for each group.
 
-.. code-block:: python
+::
 
-   >>> students = mw.Demographic("students",
-                                 disease="mild_lurgy.json.bz2",
-                                 network="students.json.bz2")
-   >>> teachers = mw.Demographic("teachers",
-                                 disease="lurgy.json.bz2",
-                                 network="teachers.json.bz2")
-   >>> default = mw.Demographic("default",
-                                disease="lurgy.json.bz2",
-                                network="default.json.bz2")
-   >>> demographics = mw.Demographics()
-   >>> demographics.add(default)
-   >>> demographics.add(teachers)
-   >>> demographics.add(students)
-   >>> print(demographics)
+  {
+    "demographics": [
+        "default",
+        "teachers",
+        "students"
+    ],
+    "diseases": [
+        "lurgy.json",
+        "lurgy.json",
+        "mild_lurgy.json"
+    ],
+    "networks": [
+        "default.json",
+        "teachers.json",
+        "students.json"
+    ]
+  }
 
-   [
-     Demographic(name='default', work_ratio=0.0, play_ratio=0.0, disease=lurgy.json.bz2, network='default.json.bz2')
-     Demographic(name='teachers', work_ratio=0.0, play_ratio=0.0, disease=lurgy.json.bz2, network='teachers.json.bz2')
-     Demographic(name='students', work_ratio=0.0, play_ratio=0.0, disease=mild_lurgy.json.bz2, network='students.json.bz2')
-   ]
+.. note::
+
+   Like before, it is easier to write these json file using the Python
+   or R APIs. Any small errors in the file can cause difficult-to-debug
+   errors when running metawards.
 
 Running the model
 -----------------
@@ -118,10 +170,9 @@ Running the model
 We can run the model by passing in the demographics. Note that we don't need
 to specify the model as this is now fully specified in the demographics.
 
-.. code-block:: python
+.. code-block:: bash
 
-   >>> results = mw.run(disease=lurgy, demographics=demographics,
-                        additional="1, 5, home, default", silent=True)
+   metawards --disease lurgy.json --demographics demographics.json --additional "1, 100, home, default"
 
 .. note::
 
@@ -132,10 +183,9 @@ to specify the model as this is now fully specified in the demographics.
 
 You can then process and graph the results as before;
 
-.. code-block:: python
+.. code-block:: bash
 
-   >>> df = pd.read_csv(results)
-   >>> df.plot.line(x="day", y=["S","E","I","IR","R"])
+   metawards-plot -i output/results.csv.bz2
 
 When you do this, you will notice that the number of susceptibles falls
 until it reaches a number above 3200. This is because we seeded the outbreak
@@ -148,13 +198,10 @@ argument. This specifies a mixing function to use. We will use
 :func:`~metawards.mixers.mix_evenly`, which sets that all demographics will
 mix evenly with each other.
 
-.. code-block:: python
+.. code-block:: bash
 
-   >>> results = mw.run(disease=lurgy, demographics=demographics,
-                        additional="1, 5, home, default",
-                        mixer="mix_evenly", silent=True)
-   >>> df = pd.read_csv(results)
-   >>> df.plot.line(x="day", y=["S","E","I","IR","R"])
+   metawards --disease lurgy.json --demographics demographics.json --additional "1, 100, home, default" --mixer mix_evenly
+   metawards-plot -i output/results.csv.bz2
 
 Now you should see that the outbreak spreads through the entire population.
 
@@ -163,76 +210,6 @@ Now you should see that the outbreak spreads through the entire population.
    The ``trajectory.csv.bz2`` file in the output directory of the run
    contains the trajectory for each of the demographics in each
    disease state. You can load this to generate demographic graphs.
-
-Complete code
--------------
-
-The complete Python code for this part of the getting started guide is
-re-copied below (this continues from the code in the last part);
-
-.. code-block:: python
-
-   # save the lurgy to disk
-   lurgy.to_json("lurgy.json.bz2")
-
-   # create a milder lurgy and save to disk
-   mild_lurgy = mw.Disease("mild_lurgy")
-   mild_lurgy.add("E", progress=0.25, beta=0.0)
-   mild_lurgy.add("I", progress=0.5, beta=0.2)
-   mild_lurgy.add("R")
-   mild_lurgy.to_json("mild_lurgy.json.bz2")
-
-   # create the students network
-   home = mw.Ward("home")
-   school = mw.Ward("school")
-   home.add_workers(3000, destination=school)
-   students = mw.Wards()
-   students.add(home)
-   students.add(school)
-   students.to_json("students.json.bz2")
-
-   # create the teachers network
-   home = mw.Ward("home")
-   school = mw.Ward("school")
-   home.add_workers(200, destination=school)
-   teachers = mw.Wards()
-   teachers.add(home)
-   teachers.add(school)
-   teachers.to_json("teachers.json.bz2")
-
-   # create the default network
-   home = mw.Ward("home")
-   work = mw.Ward("work")
-   home.set_num_players(10000)
-   home.add_workers(7000, destination=work)
-   default = mw.Wards()
-   default.add(home)
-   default.add(work)
-   default.to_json("default.json.bz2")
-
-   # now create the demographics
-   students = mw.Demographic("students",
-                             disease="mild_lurgy.json.bz2",
-                             network="students.json.bz2")
-   teachers = mw.Demographic("teachers",
-                             disease="lurgy.json.bz2",
-                             network="teachers.json.bz2")
-   default = mw.Demographic("default",
-                            disease="lurgy.json.bz2",
-                            network="default.json.bz2")
-   demographics = mw.Demographics()
-   demographics.add(default)
-   demographics.add(teachers)
-   demographics.add(students)
-
-   # run the model
-   results = mw.run(disease=lurgy, demographics=demographics,
-                    additional="1, 5, home, default",
-                    mixer="mix_evenly", silent=True)
-
-   # graph the results
-   df = pd.read_csv(results)
-   df.plot.line(x="day", y=["S","E","I","IR","R"])
 
 What's next?
 ------------
