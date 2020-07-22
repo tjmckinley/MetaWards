@@ -51,10 +51,16 @@ def _load_additional_seeds(network: _Union[Network, Networks],
     if _os.path.exists(filename):
         Console.print(f"Loading additional seeds from {filename}")
         with open(filename, "r") as FILE:
-            lines = FILE.readlines()
+            ilines = FILE.readlines()
     else:
         Console.print(f"Loading additional seeds from the command line")
-        lines = filename.split("\\n")
+        ilines = filename.split("\\n")
+
+    lines = []
+
+    for line in ilines:
+        for l in line.split(";"):
+            lines.append(l.strip())
 
     seeds = []
 
@@ -89,6 +95,7 @@ def _load_additional_seeds(network: _Union[Network, Networks],
         dialect = csv.excel  #  default comma-separated file
 
     titles = None
+    nwords = None
 
     for line in csv.reader(lines, dialect=dialect,
                            quoting=csv.QUOTE_ALL,
@@ -115,25 +122,54 @@ def _load_additional_seeds(network: _Union[Network, Networks],
         if len(words) == 0:
             continue
 
-        if len(words) < 3:
+        if nwords is None:
+            nwords = len(words)
+
+        if len(words) < nwords:
             continue
 
         if titles is None:
-            if "day" in words and "number" in words and "ward" in words:
+            if "day" in words or "number" in words or "ward" in words or \
+                    "demographics" in words:
                 titles = {}
-                titles["day"] = words.index("day")
-                titles["number"] = words.index("number")
-                titles["ward"] = words.index("ward")
+
+                try:
+                    titles["day"] = words.index("day")
+                except Exception:
+                    pass
+
+                try:
+                    titles["number"] = words.index("number")
+                except Exception:
+                    pass
+
+                try:
+                    titles["ward"] = words.index("ward")
+                except Exception:
+                    pass
 
                 try:
                     titles["demographic"] = words.index("demographic")
                 except Exception:
-                    titles["demographic"] = 3
+                    pass
 
                 continue
             else:
-                # yes, this is really the order of the seeds - "t num loc"
-                titles = {"day": 0, "number": 1, "ward": 2, "demographic": 3}
+                # try to guess the values based on the number of items and
+                # their type
+                if nwords == 1:
+                    titles = {"number": 0, "day": 1, "ward": 2}
+                    words.append(1)
+                    words.append(1)
+                elif nwords == 2:
+                    titles = {"day": 0, "number": 1, "ward": 2}
+                    words.append(1)
+                elif nwords == 3:
+                    titles = {"day": 0, "number": 1, "ward": 2}
+                else:
+                    # yes, this is really the order of the seeds - "t num loc"
+                    titles = {"day": 0, "number": 1,
+                              "ward": 2, "demographic": 3}
 
         row = []
 
@@ -146,7 +182,7 @@ def _load_additional_seeds(network: _Union[Network, Networks],
 
         this_network = network
 
-        if len(words) == 4:
+        if titles.get("demographic", None):
             demographic = _get_demographic(words[titles["demographic"]],
                                            network=network)
 
@@ -278,8 +314,6 @@ def advance_additional(network: _Union[Network, Networks],
 
             try:
                 ward = seed_network.get_node_index(ward)
-
-                print(f"INFECT {ward}")
 
                 if seed_wards.play_suscept[ward] == 0:
                     Console.warning(

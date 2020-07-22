@@ -444,22 +444,13 @@ set the model data.""")
              If a string is passed then the InputFiles will be loaded
              based on that string.
         """
-        from .utils._console import Console
+        if isinstance(input_files, InputFiles):
+            from copy import deepcopy
+            self.input_files = deepcopy(input_files)
+            return
 
-        if isinstance(input_files, str):
-            import os
-
-            if os.path.exists(input_files):
-                # this is likely a JSON file containing a custom network
-                Console.print(f"Loading custom network from {input_files}")
-                self.input_files = input_files
-                return
-
-            input_files = InputFiles.load(input_files,
-                                          repository=self._repository_dir)
-
-        from copy import deepcopy
-        self.input_files = deepcopy(input_files)
+        self.input_files = InputFiles.load(input_files,
+                                           repository=self._repository_dir)
 
     def set_disease(self, disease: Disease, silent: bool = True):
         """"Set the disease that will be modelled

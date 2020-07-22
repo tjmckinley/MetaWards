@@ -260,8 +260,6 @@ class Ward:
 
     def assert_sane(self):
         """Assert that the data in this ward is sane"""
-        assert self._id is not None and self._id > 0
-
         t = sum(self._players.values()) + self._player_total
 
         if abs(t - 1.0) > 1e-6:
@@ -997,3 +995,97 @@ class Ward:
         ward.assert_sane()
 
         return ward
+
+    def to_json(self, filename: str = None, indent: int = None,
+                auto_bzip: bool = True) -> str:
+        """Serialise the ward to JSON. This will write to a file
+           if filename is set, otherwise it will return a JSON string.
+
+           Parameters
+           ----------
+           filename: str
+             The name of the file to write the JSON to. The absolute
+             path to the written file will be returned. If filename is None
+             then this will serialise to a JSON string which will be
+             returned.
+           indent: int
+             The number of spaces of indent to use when writing the json
+           auto_bzip: bool
+             Whether or not to automatically bzip2 the written json file
+
+           Returns
+           -------
+           str
+             Returns either the absolute path to the written file, or
+             the json-serialised string
+        """
+        import json
+
+        if indent is not None:
+            indent = int(indent)
+
+        if filename is None:
+            return json.dumps(self.to_data(), indent=indent)
+        else:
+            from pathlib import Path
+            filename = str(Path(filename).expanduser().resolve().absolute())
+
+            if auto_bzip:
+                if not filename.endswith(".bz2"):
+                    filename += ".bz2"
+
+                import bz2
+                with bz2.open(filename, "wt") as FILE:
+                    try:
+                        json.dump(self.to_data(), FILE, indent=indent)
+                    except Exception:
+                        import os
+                        FILE.close()
+                        os.unlink(filename)
+                        raise
+            else:
+                with open(filename, "w") as FILE:
+                    try:
+                        json.dump(self.to_data(), FILE, indent=indent)
+                    except Exception:
+                        import os
+                        FILE.close()
+                        os.unlink(filename)
+                        raise
+
+            return filename
+
+    @staticmethod
+    def from_json(s: str):
+        """Return the Ward constructed from the passed json. This will
+           either load from a passed json string, or from json loaded
+           from the passed file
+        """
+        import os
+        import json
+
+        if os.path.exists(s):
+            try:
+                import bz2
+                with bz2.open(s, "rt") as FILE:
+                    data = json.load(FILE)
+            except Exception:
+                data = None
+
+            if data is None:
+                with open(s, "rt") as FILE:
+                    data = json.load(FILE)
+        else:
+            try:
+                data = json.loads(s)
+            except Exception:
+                data = None
+
+        if data is None:
+            from .utils._console import Console
+            Console.error(f"Unable to load a Ward from '{s}'. Check that "
+                          f"this is valid JSON or that the file exists.")
+
+            raise IOError(f"Cannot load Wards from '{s}'")
+
+        return Ward.from_data(data)

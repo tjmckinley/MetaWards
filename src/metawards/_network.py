@@ -137,11 +137,12 @@ class Network:
 
         p = profiler.start("Network.build")
 
-        if isinstance(params.input_files, str):
+        if params.input_files.is_wards_data:
             from ._wards import Wards
-            wards = Wards.from_json(params.input_files)
+            wards = Wards.from_json(params.input_files.wards_data)
             network = Network.from_wards(wards, params=params,
                                          profiler=p, nthreads=nthreads)
+            network.params.input_files = params.input_files
 
             p.stop()
             return network
@@ -175,10 +176,6 @@ class Network:
         add_wards_network_distance(network, nthreads=nthreads)
 
         from .utils._console import Console
-        Console.print("Get min/max distances...")
-        (_mindist, maxdist) = network.get_min_max_distances(nthreads=nthreads)
-
-        network.params.dyn_dist_cutoff = maxdist + 1
         p = p.stop()
 
         # add metadata about the wards

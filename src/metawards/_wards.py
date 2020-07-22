@@ -604,7 +604,7 @@ class Wards:
            if filename is set, otherwise it will return a JSON string.
 
            Parameters
-           == == == == ==
+           ----------
            filename: str
              The name of the file to write the JSON to. The absolute
              path to the written file will be returned. If filename is None
@@ -616,7 +616,7 @@ class Wards:
              Whether or not to automatically bzip2 the written json file
 
            Returns
-           == == == =
+           -------
            str
              Returns either the absolute path to the written file, or
              the json-serialised string
