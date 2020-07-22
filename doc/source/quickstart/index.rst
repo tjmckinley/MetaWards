@@ -11,15 +11,15 @@ Quick Start Guide
 You have three choices for how you use MetaWards, and thus three choices
 for how you will follow this quick start guide;
 
-1. R interface. You can choose to use MetaWards from directly within R
-   (including interactively, e.g. within RStudio).
+1. :doc:`R interface <01_R>`. You can choose to use MetaWards from directly
+   within R (including interactively, e.g. within RStudio).
 
-2. Python interface. You can choose to use MetaWards from directly within
-   Python (including interactively, e.g. within ipython or Jupyter notebook
-   or lab).
+2. :doc:`Python interface <01_python>`. You can choose to use MetaWards from
+   directly within Python (including interactively, e.g. within ipython or
+   Jupyter notebook or lab).
 
-3. Command-line interface. You can choose to use MetaWards from the command
-   line (terminal/console/command prompt).
+3. :doc:`Command-line interface <01_console>`. You can choose to use MetaWards
+   from the command line (terminal/console/command prompt).
 
 There is no one right or wrong interface to use, so please feel free to use
 the one (or many) that fit your needs.

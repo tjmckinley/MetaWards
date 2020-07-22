@@ -85,7 +85,7 @@ the next stage each day.
 
 .. code-block:: R
 
-   > lurgy$add("E", beta=0.0, progress=0.25)
+   > lurgy$add("E", beta=0.0, progress=0.5)
 
 Next we will add the infectious ("I") stage. This will have a high ``beta``
 value (0.8), but a lower progress (0.25) as we will model this as a

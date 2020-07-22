@@ -733,11 +733,20 @@ set the model data.""")
         """Return a new Disease constructed from the passed data
            dictionary (e.g. deserialised from json)
         """
-        disease = Disease(beta=data.get("beta", []),
-                          progress=data.get("progress", []),
-                          too_ill_to_move=data.get("too_ill_to_move", []),
-                          contrib_foi=data.get("contrib_foi", []),
-                          start_symptom=data.get("start_symptom", 3),
+        beta = data.get("beta", [])
+        default = [1.0] * len(beta)
+
+        progress = data.get("progress", [])
+        too_ill_to_move = data.get("too_ill_to_move", default)
+        contrib_foi = data.get("contrib_foi", default)
+
+        start_symptom = data.get("start_symptom", None)
+
+        disease = Disease(beta=beta,
+                          progress=progress,
+                          too_ill_to_move=too_ill_to_move,
+                          contrib_foi=contrib_foi,
+                          start_symptom=start_symptom,
                           mapping=data.get("mapping", None),
                           stage=data.get("stage", None),
                           name=data.get("name", "unnamed"),
