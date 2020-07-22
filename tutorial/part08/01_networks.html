@@ -40,7 +40,7 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Input files and formats" href="../../fileformats/index.html" />
+    <link rel="next" title="Creating a Custom Network" href="02_custom_network.html" />
     <link rel="prev" title="Part 8 - Different networks for different demographics" href="../index_part08.html" /> 
 </head>
 
@@ -97,6 +97,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../model_data.html">Model data</a></li>
 </ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quick Start Guide</a></li>
+</ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tutorial</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../index_part01.html">Part 1 - Modelling outbreaks</a></li>
@@ -112,6 +115,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#seeding-the-outbreak">Seeding the outbreak</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="02_custom_network.html">Creating a Custom Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03_reticulate.html">Creating Networks in R</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04_using_custom.html">Using a Custom Network</a></li>
 </ul>
 </li>
 </ul>
@@ -207,7 +213,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../../fileformats/index.html" class="btn btn-neutral float-right" title="Input files and formats" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="02_custom_network.html" class="btn btn-neutral float-right" title="Creating a Custom Network" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../index_part08.html" class="btn btn-neutral float-left" title="Part 8 - Different networks for different demographics" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -226,14 +232,14 @@ are grouped into workers and players, and distributed across wards. The
 force of infection of a ward caused by infection of an individual, based on
 their movements and behaviour is calculated, and used to decide whether
 other individuals who reside or visit that ward should be infected.</p>
-<p>The <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> is the collection of
-<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">Nodes</span></code></a> and <a class="reference internal" href="../../api/generated/metawards.Links.html#metawards.Links" title="metawards.Links"><code class="xref py py-class docutils literal notranslate"><span class="pre">Links</span></code></a> that describe
+<p>The <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> is the collection of
+<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">Nodes</span></code></a> and <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Links" title="metawards.Links"><code class="xref py py-class docutils literal notranslate"><span class="pre">Links</span></code></a> that describe
 the individual wards, and the movements between wards of their
 residents.</p>
-<p>Up to now, you have used a single underlying <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>
+<p>Up to now, you have used a single underlying <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>
 for every demographic and model run in this tutorial. This does not need
 to be the case, and you can choose to assign different
-<a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> objects to different demographics in
+<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> objects to different demographics in
 a simulation. You would do this, for example, to model different connections
 or movements between wards for different demographics, e.g. workers
 or school students. Or to use different networks to represent movements
@@ -354,7 +360,7 @@ be <a class="reference internal" href="../../fileformats/extraseeds.html"><span 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../fileformats/index.html" class="btn btn-neutral float-right" title="Input files and formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="02_custom_network.html" class="btn btn-neutral float-right" title="Creating a Custom Network" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../index_part08.html" class="btn btn-neutral float-left" title="Part 8 - Different networks for different demographics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -367,7 +373,7 @@ be <a class="reference internal" href="../../fileformats/extraseeds.html"><span 
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 27, 2020.
+        Last updated on Jul 22, 2020.
       </span>
 
     </p>

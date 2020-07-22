@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Design (scan) files" href="design.html" />
-    <link rel="prev" title="Input files and formats" href="index.html" /> 
+    <link rel="prev" title="Network Files" href="network.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,13 +98,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../model_data.html">Model data</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quick Start Guide</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Input files and formats</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#flexible-format-files">Flexible-format files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#rigid-format-files">Rigid-format files</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html#json-format-files">JSON-format files</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#json-format-files">JSON-format files</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#detailed-descriptions">Detailed descriptions</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="network.html">Network Files</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Extra seeds files</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
@@ -204,7 +209,7 @@
         <a href="design.html" class="btn btn-neutral float-right" title="Design (scan) files" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Input files and formats" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="network.html" class="btn btn-neutral float-left" title="Network Files" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
   </div>
   
@@ -222,7 +227,7 @@ file containing information about a specific seeding event.</p>
 <ol class="arabic simple">
 <li><code class="docutils literal notranslate"><span class="pre">day</span></code> : The day or date to seed the infection(s). This should be
 an integer or a date that is interpreted via
-<a class="reference internal" href="../api/generated/metawards.Interpret.html#metawards.Interpret.day_or_date" title="metawards.Interpret.day_or_date"><code class="xref py py-func docutils literal notranslate"><span class="pre">Interpret.day_or_date</span></code></a> function.
+<a class="reference internal" href="../api/index_api_MetaWards.html#metawards.Interpret.day_or_date" title="metawards.Interpret.day_or_date"><code class="xref py py-func docutils literal notranslate"><span class="pre">Interpret.day_or_date</span></code></a> function.
 This either sets the day number on which to seed, or the exact date
 in which to seed.</li>
 <li><code class="docutils literal notranslate"><span class="pre">ward</span></code> : The ward (either index or name) in which the infection
@@ -230,16 +235,16 @@ will be seeded. This should either be an integer (whole number) specifying
 the index of the ward (1-indexed), or a string that identifies the
 ward by name, e.g. <code class="docutils literal notranslate"><span class="pre">Clifton/Bristol</span></code> would look for the ward called
 <code class="docutils literal notranslate"><span class="pre">Clifton</span></code> in the authority <code class="docutils literal notranslate"><span class="pre">Bristol</span></code>. The ward is looked up by
-name using the <a class="reference internal" href="../api/generated/metawards.WardInfos.html#metawards.WardInfos.find" title="metawards.WardInfos.find"><code class="xref py py-func docutils literal notranslate"><span class="pre">WardInfos.find</span></code></a>
+name using the <a class="reference internal" href="../api/index_api_MetaWards.html#metawards.WardInfos.find" title="metawards.WardInfos.find"><code class="xref py py-func docutils literal notranslate"><span class="pre">WardInfos.find</span></code></a>
 function.</li>
 <li><code class="docutils literal notranslate"><span class="pre">number</span></code> : The number of infections to be seeded. This is an integer
 that is interpreted via the
-<a class="reference internal" href="../api/generated/metawards.Interpret.html#metawards.Interpret.integer" title="metawards.Interpret.integer"><code class="xref py py-func docutils literal notranslate"><span class="pre">Interpret.integer</span></code></a> function.</li>
+<a class="reference internal" href="../api/index_api_MetaWards.html#metawards.Interpret.integer" title="metawards.Interpret.integer"><code class="xref py py-func docutils literal notranslate"><span class="pre">Interpret.integer</span></code></a> function.</li>
 <li><code class="docutils literal notranslate"><span class="pre">demographic</span></code> (optional) : The demographic (either index or name)
 in which the infection will be seeded. If this is not specified,
 then the first demographic in the network is seeded. If this is
 the index it is interpreted via
-<a class="reference internal" href="../api/generated/metawards.Interpret.html#metawards.Interpret.integer" title="metawards.Interpret.integer"><code class="xref py py-func docutils literal notranslate"><span class="pre">Interpret.integer</span></code></a>, while if this
+<a class="reference internal" href="../api/index_api_MetaWards.html#metawards.Interpret.integer" title="metawards.Interpret.integer"><code class="xref py py-func docutils literal notranslate"><span class="pre">Interpret.integer</span></code></a>, while if this
 is the name then this will direct look-up the demographic by name.</li>
 </ol>
 <p>This is a column-formatted file. Like all flexible-format files you can use
@@ -303,7 +308,7 @@ each day.</p>
         <a href="design.html" class="btn btn-neutral float-right" title="Design (scan) files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Input files and formats" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="network.html" class="btn btn-neutral float-left" title="Network Files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -313,7 +318,7 @@ each day.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jun 27, 2020.
+        Last updated on Jul 22, 2020.
       </span>
 
     </p>

@@ -16,6 +16,7 @@ metawards.Parameters
       ~Parameters.__init__
       ~Parameters.add_seeds
       ~Parameters.copy
+      ~Parameters.default
       ~Parameters.get_repository
       ~Parameters.load
       ~Parameters.read_variables
@@ -34,6 +35,7 @@ metawards.Parameters
    
       ~Parameters.UV
       ~Parameters.additional_seeds
+      ~Parameters.adjustments
       ~Parameters.daily_imports
       ~Parameters.daily_ward_vaccination_capacity
       ~Parameters.disease_params
