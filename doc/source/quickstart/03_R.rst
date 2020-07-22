@@ -107,9 +107,9 @@ combined into a single :class:`~metawards.Demographics` object.
    > print(demographics)
 
    [
-     Demographics(name='default', work_ratio=0.0, play_ratio=0.0, disease=lurgy.json.bz2, network='default.json.bz2')
-     Demographics(name='teachers', work_ratio=0.0, play_ratio=0.0, disease=lurgy.json.bz2, network='teachers.json.bz2')
-     Demographics(name='students', work_ratio=0.0, play_ratio=0.0, disease=mild_lurgy.json.bz2, network='students.json.bz2')
+     Demographic(name='default', work_ratio=0.0, play_ratio=0.0, disease=lurgy.json.bz2, network='default.json.bz2')
+     Demographic(name='teachers', work_ratio=0.0, play_ratio=0.0, disease=lurgy.json.bz2, network='teachers.json.bz2')
+     Demographic(name='students', work_ratio=0.0, play_ratio=0.0, disease=mild_lurgy.json.bz2, network='students.json.bz2')
    ]
 
 Running the model
@@ -120,8 +120,8 @@ to specify the model as this is now fully specified in the demographics.
 
 .. code-block:: R
 
-   > results = metawards$run(disease=lurgy, demographics=demographics,
-                             additional="1, 5, home, default", silent=TRUE)
+   > results <- metawards$run(disease=lurgy, demographics=demographics,
+                              additional="1, 5, home, default", silent=TRUE)
 
 .. note::
 
