@@ -39,20 +39,25 @@ class _NullProgress:
 
 class _Progress:
     def __init__(self, show_limit: int = 50):
-        from rich.progress import Progress
-        self._progress = Progress(auto_refresh=False)
+        from rich.progress import Progress, BarColumn, TimeRemainingColumn
+        self._progress = Progress(
+            "[progress.description]{task.description}",
+            BarColumn(style="bar.back",
+                      complete_style="bar.complete",
+                      finished_style="bar.complete"),
+            "[progress.percentage]{task.percentage:>3.0f}%",
+            TimeRemainingColumn(),
+            auto_refresh=False)
         self._last_update = _datetime.now()
         self._show_limit = show_limit
         self._completed = {}
 
     def __enter__(self, *args, **kwargs):
+        self._progress.__enter__(*args, **kwargs)
         return self
 
     def __exit__(self, *args, **kwargs):
-        if len(self._completed) > 0:
-            self._progress.refresh()
-            Console.print("")
-
+        self._progress.__exit__(*args, **kwargs)
         return False
 
     def add_task(self, description: str, total: int):
