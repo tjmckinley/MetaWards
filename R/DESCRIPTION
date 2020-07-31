@@ -9,8 +9,8 @@ Authors@R: c(
 Description: Highly flexible disease modelling package that uses
     a metapopulation model to study how movements and interactions
     of individuals affect the spread of a disease.
-    See https://metawards.org/features for more information, and 
-    https://metawards.org/quickstart for a quick start guide.
+    See \url(https://metawards.org/features) for more information, and 
+    \url(https://metawards.org/quickstart) for a quick start guide.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -18,3 +18,4 @@ Imports:
     reticulate
 Suggests: 
     testthat
+RoxygenNote: 7.1.1

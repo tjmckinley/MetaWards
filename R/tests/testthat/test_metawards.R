@@ -10,11 +10,11 @@ skip_if_no_metawards <- function() {
 
 test_that("metawards is loaded", {
   skip_if_no_metawards()
-  expect_equal(is_metawards_available(), TRUE)
+  expect_equal(py_metawards_available(), TRUE)
 })
 
 test_that("metawards can run", {
   skip_if_no_metawards()
-  disease <- metawards$Disease(name="test")
-  expect_equal(disease$name, "test")
+  ward <- metawards$Ward(name="test")
+  expect_equal(ward$name(), "test")
 })
