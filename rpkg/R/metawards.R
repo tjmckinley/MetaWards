@@ -1,4 +1,4 @@
-#' metawards: Metapopulation Disease Modelling Package
+#' metawards: Metapopulation Disease Modelling
 #'
 #' This package provides a convenient R wrapper around the Python
 #' metawards package. For more information about MetaWards see
@@ -6,11 +6,12 @@
 #' \url{https://metawards.org/quickstart}.
 #'
 #' This package uses reticulate to automatically load and wrap
-#' the Python metawards package. To install metawards you will need
-#' to either manually install metawards into the python interpreter
-#' used by reticulate, or you can use the convenience function
-#' 'py_install_metawards()', which will install into the default
-#' python environment supplied with reticulate.
+#' the Python metawards package. The easiest way to install metawards
+#' is to run the \code{\link{py_install_metawards}} function. This will
+#' install metawards into the default python associated with
+#' reticulate. Alternatively, you can install python manually into
+#' your own python environment and then tell reticulate to use
+#' that python so that it can find the metawards module.
 #'
 #' @section Python functions:
 #' The python functions that are wrapped are all documented

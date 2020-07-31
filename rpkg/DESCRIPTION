@@ -1,6 +1,6 @@
 Package: metawards
 Type: Package
-Title: Metapopulation Disease Modelling Package
+Title: Metapopulation Disease Modelling
 Version: 1.3.0
 Authors@R: c(
     person("Leon", "Danon", email = "l.danon@bristol.ac.uk", role = "aut"),
