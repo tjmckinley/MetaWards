@@ -27,6 +27,7 @@
 #' @name metawards
 NULL
 
+#' @export
 metawards <- NULL
 
 .onLoad <- function(libname, pkgname){
@@ -43,6 +44,7 @@ metawards <- NULL
 #'                       than or equal to 3.7. Only use if you want to force
 #'                       a particular python version to be used.
 #' @return NULL
+#' @export
 py_install_metawards <- function(method = "auto", python_version = NULL){
   # get the current python version
   py_version <- reticulate::py_config()["version"]
@@ -66,6 +68,7 @@ py_install_metawards <- function(method = "auto", python_version = NULL){
 #' Return whether MetaWards is installed and available
 #'
 #' @return Boolean of whether MetaWards is installed
+#' @export
 py_metawards_available <- function(){
   return(reticulate::py_module_available("metawards"))
 }
@@ -73,6 +76,7 @@ py_metawards_available <- function(){
 #' Return the version number of the installed MetaWards module
 #'
 #' @return The version number as a string
+#' @export
 py_version_metawards <- function(){
   return(reticulate::py_to_r(
     reticulate::py_get_attr(metawards, "__version__")))
