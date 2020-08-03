@@ -70,6 +70,11 @@ def load_from_wards(wards: Wards, params: Parameters = None,
     cdef double * nodes_save_play_suscept = get_double_array_ptr(
                                                 nodes.save_play_suscept)
 
+    cdef double * nodes_scale_uv = get_double_array_ptr(nodes.scale_uv)
+    cdef double * nodes_cutoff = get_double_array_ptr(nodes.cutoff)
+
+    cdef double * nodes_custom
+
     cdef int * nodes_begin_p = get_int_array_ptr(nodes.begin_p)
     cdef int * nodes_end_p = get_int_array_ptr(nodes.end_p)
     cdef int * nodes_self_p = get_int_array_ptr(nodes.self_p)
@@ -118,6 +123,13 @@ def load_from_wards(wards: Wards, params: Parameters = None,
 
             nodes_play_suscept[node_id] = <double>(ward.num_players())
             nodes_save_play_suscept[node_id] = nodes_play_suscept[node_id]
+
+            nodes_scale_uv[node_id] = ward.scale_uv()
+            nodes_cutoff[node_id] = ward.cutoff()
+
+            for key, value in ward._custom_params.items():
+                nodes_custom = get_double_array_ptr(nodes.get_custom(key))
+                nodes_custom[node_id] = value
 
             info[node_id] = ward.info()
 
@@ -321,6 +333,10 @@ def save_to_wards(network: Network, profiler: Profiler = None,
     cdef double * nodes_x = get_double_array_ptr(nodes.x)
     cdef double * nodes_y = get_double_array_ptr(nodes.y)
 
+    cdef double * nodes_scale_uv = get_double_array_ptr(nodes.scale_uv)
+    cdef double * nodes_cutoff = get_double_array_ptr(nodes.cutoff)
+    cdef double * nodes_custom
+
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
     cdef int * links_ito = get_int_array_ptr(links.ito)
     cdef double * links_weight = get_double_array_ptr(links.weight)
@@ -365,6 +381,13 @@ def save_to_wards(network: Network, profiler: Profiler = None,
                     ward.set_position(lat=nodes_x[i], long=nodes_y[i])
 
             ward.set_num_players(nodes_save_play_suscept[i])
+
+            ward.set_scale_uv(nodes_scale_uv[i])
+            ward.set_cutoff(nodes_cutoff[i])
+
+            for key, value in nodes._custom_params.items():
+                nodes_custom = get_double_array_ptr(value)
+                ward.set_custom(key, nodes_custom[i])
 
             wards.append(ward)
 

@@ -121,6 +121,11 @@ class Ward:
 
         self._pos = {}
 
+        self._scale_uv = 1.0
+        self._cutoff = 99999.99
+
+        self._custom_params = {}
+
         # use this nomenclature to ensure this is a True/False data type
         self._auto_assign_players = True if auto_assign_players else False
 
@@ -184,6 +189,8 @@ class Ward:
 
            This will add the workers from 'other' to this ward,
            plus will average the player weights between the two
+
+           This will do nothing to the scale_uv, cutoff or custom parameters
         """
         if self._info != other._info:
             raise ValueError(
@@ -258,6 +265,27 @@ class Ward:
         from copy import deepcopy
         return deepcopy(self._info)
 
+    def scale_uv(self) -> float:
+        """Return the scale_uv parameter for this ward. This is the amount
+           by which to scale the force of infection (FOI) during the
+           FOI calculation
+        """
+        return self._scale_uv
+
+    def cutoff(self) -> float:
+        """Return the cutoff parameter for this ward. This sets the
+           maximum distance that residents (or travellers) to this ward
+           can travel
+        """
+        return self._cutoff
+
+    def custom(self, key: str, default: float = 0.0) -> float:
+        """Return the per-ward custom parameter at key 'key', returning
+           'default' if this has not been set. Note that all custom
+           parameters are stored as floats
+        """
+        return self._custom_params.get(key, float(default))
+
     def assert_sane(self):
         """Assert that the data in this ward is sane"""
         t = sum(self._players.values()) + self._player_total
@@ -270,6 +298,14 @@ class Ward:
         if abs(t - self._num_workers) > 1e-6:
             raise AssertionError(
                 f"Worker sum should be {self._num_workers}, not {t}")
+
+        if self._scale_uv < 0:
+            raise AssertionError(
+                f"scale_uv must be positive, not {self._scale_uv}")
+
+        if self._cutoff < 0:
+            raise AssertionError(
+                f"cutoff must be positive, not {self._cutoff}")
 
     def set_name(self, name: str):
         """Set the name of this ward"""
@@ -333,6 +369,40 @@ class Ward:
     def set_region(self, region: str):
         """Set the region of this ward"""
         self._info.region = str(region)
+
+    def set_scale_uv(self, scale_uv: float):
+        """Set the scale_uv parameter for this ward. This is the amount
+           by which to scale the FOI when caclulating the FOI. This
+           defaults to 1.0
+        """
+        scale_uv = float(scale_uv)
+
+        if scale_uv < 0:
+            raise ValueError(
+                f"You cannot set scale_uv to a negative value: {scale_uv}")
+
+        self._scale_uv = scale_uv
+
+    def set_cutoff(self, cutoff: float):
+        """Set the cutoff distance (in km) for this ward. This is the
+           maximum distance that residents (or travellers to) this ward
+           are allowed to travel. This defaults to 99999.99, which is
+           larger than any point to point distance on earth
+        """
+        cutoff = float(cutoff)
+
+        if cutoff < 0:
+            raise ValueError(
+                f"You cannot set cutoff to a negative value: {cutoff}")
+
+        self._cutoff = cutoff
+
+    def set_custom(self, key: str, value: float):
+        """Set the value of the custom ward parameter to 'value'. Note
+           that this must be convertible to a float as all custom
+           parameters are stored as floats
+        """
+        self._custom_params[key] = float(value)
 
     def set_info(self, info: WardInfo):
         """Set the info of this ward"""
@@ -710,6 +780,7 @@ class Ward:
         from .utils._array import create_int_array
 
         keys = list(self._workers.keys())
+
         keys.sort()
 
         wards = create_int_array(len(keys))
@@ -932,6 +1003,16 @@ class Ward:
             data["players"] = {"destination": players[0].tolist(),
                                "weights": players[1].tolist()}
 
+        if self._scale_uv != 1.0:
+            data["scale_uv"] = self._scale_uv
+
+        if self._cutoff != 99999.99:
+            data["cutoff"] = self._cutoff
+
+        if len(self._custom_params) > 0:
+            from copy import deepcopy
+            data["custom"] = deepcopy(self._custom_params)
+
         return data
 
     @staticmethod
@@ -991,6 +1072,12 @@ class Ward:
         elif ward._player_total < 0:
             raise AssertionError(
                 f"The sum of player weights cannot be greater than zero")
+
+        ward._scale_uv = float(data.get("scale_uv", 1.0))
+        ward._cutoff = float(data.get("cutoff", 99999.99))
+
+        for key, value in data.get("custom", {}).items():
+            ward._custom_params[key] = float(value)
 
         ward.assert_sane()
 
