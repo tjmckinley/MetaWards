@@ -161,6 +161,7 @@ class Parameters:
     static_play_at_home: float = 0.0
     dyn_play_at_home: float = 0.0
 
+    #: The cutoff distance in km beyond which workers or players cannot move
     dyn_dist_cutoff: float = 10000000.0
 
     play_to_work: float = 0.0
