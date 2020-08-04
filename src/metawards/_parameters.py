@@ -1,6 +1,7 @@
 
 from dataclasses import dataclass as _dataclass
 from typing import List as _List, Dict as _Dict
+from datetime import date as _date
 
 from ._inputfiles import InputFiles
 from ._disease import Disease
@@ -181,6 +182,9 @@ class Parameters:
     #: Seasonality parameter
     UV: float = 0.0
 
+    #: Date when transmission should be at a maximum
+    UV_max: _date = None
+
     #: User parameters
     user_params: _Dict[str, float] = None
 
@@ -223,6 +227,7 @@ class Parameters:
                             self.neighbour_weight_threshold),
                            ("daily_imports", self.daily_imports),
                            ("UV", self.UV),
+                           ("UV_max", self.UV_max),
                            ("stage_0", self.stage_0)]:
             if value is not None:
                 parts.append(f"* {key}: {value}")
@@ -353,6 +358,7 @@ set the model data.""")
                 "neighbour_weight_threshold", 0.0),
             daily_imports=data.get("daily_imports", 0),
             UV=data.get("UV", 0.0),
+            UV_max=data.get("UV_max", None),
             _name=data.get("name", parameters),
             _authors=data.get("author(s)", "unknown"),
             _version=data.get("version", "unknown"),

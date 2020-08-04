@@ -156,7 +156,13 @@ def advance_foi_omp(network: Network, population: Population,
     # Copy arguments from Python into C cdef variables
     cdef double uv = params.UV
     cdef double uvscale = population.scale_uv
+
     cdef int ts = population.day
+
+    try:
+        ts = int((population.date - params.UV_max).days)
+    except Exception:
+        pass
 
     play_infections = infections.play
     infections = infections.work
