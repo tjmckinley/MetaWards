@@ -1,5 +1,5 @@
 =====================
-Alternative Lockdowns
+Alternative lockdowns
 =====================
 
 The flexibility of ``metawards`` means that there are multiple different
