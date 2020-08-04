@@ -1,6 +1,6 @@
-====================
-Restricting movement
-====================
+=====================
+Alternative Lockdowns
+=====================
 
 The flexibility of ``metawards`` means that there are multiple different
 ways you could choose to model a lockdown.

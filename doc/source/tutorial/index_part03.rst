@@ -26,3 +26,4 @@ In this third part of the tutorial you will:
    part03/05_scanning
    part03/06_scan_lockdown
    part03/07_cutoff
+   part03/08_local_lockdown
