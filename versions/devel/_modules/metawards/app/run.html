@@ -404,6 +404,12 @@
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Value for the UV parameter for the model &quot;</span>
                              <span class="s2">&quot;(default is 0.0)&quot;</span><span class="p">)</span>
 
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--UV-max&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Date when the seasonal adjustment should be at &quot;</span>
+                             <span class="s2">&quot;its maximum. By default, this is January 1st &quot;</span>
+                             <span class="s2">&quot;on the assumption that disease spread is &quot;</span>
+                             <span class="s2">&quot;stronger in the (Northern) winter&quot;</span><span class="p">)</span>
+
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--theme&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;The theme to use to color the output. &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;Use &#39;--theme simple&#39; if you prefer a &quot;</span>
@@ -1260,6 +1266,37 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">params</span><span class="o">.</span><span class="n">UV</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">UV</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">UV_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+        <span class="c1"># default to January 1st of the starting year</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">UV_max</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">start_day_date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># is this a day number?</span>
+            <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+            <span class="n">UV_max</span> <span class="o">=</span> <span class="n">start_day_date</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">UV_max</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">UV_max</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">UV_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">.._interpret</span> <span class="kn">import</span> <span class="n">Interpret</span>
+                <span class="n">UV_max</span> <span class="o">=</span> <span class="n">Interpret</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">UV_max</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">UV_max</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">UV_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">UV_max</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">UV_max</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Cannot interpret a valid date from &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">UV_max</span><span class="si">}</span><span class="s2">&#39;. Error is &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">params</span><span class="o">.</span><span class="n">UV_max</span> <span class="o">=</span> <span class="n">UV_max</span>
+
     <span class="c1"># set these extra parameters to 0</span>
     <span class="n">params</span><span class="o">.</span><span class="n">static_play_at_home</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">params</span><span class="o">.</span><span class="n">play_to_work</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1459,7 +1496,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 03, 2020.
+        Last updated on Aug 05, 2020.
       </span>
 
     </p>

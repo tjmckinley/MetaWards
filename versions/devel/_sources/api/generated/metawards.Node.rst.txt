@@ -14,6 +14,8 @@ metawards.Node
    .. autosummary::
    
       ~Node.__init__
+      ~Node.get_custom
+      ~Node.set_custom
    
    
 
@@ -25,6 +27,7 @@ metawards.Node
    
       ~Node.begin_p
       ~Node.begin_to
+      ~Node.cutoff
       ~Node.day_foi
       ~Node.denominator_d
       ~Node.denominator_n
@@ -36,6 +39,7 @@ metawards.Node
       ~Node.night_foi
       ~Node.play_suscept
       ~Node.save_play_suscept
+      ~Node.scale_uv
       ~Node.self_p
       ~Node.self_w
       ~Node.weekend_foi

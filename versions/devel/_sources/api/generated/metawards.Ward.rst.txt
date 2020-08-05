@@ -20,6 +20,8 @@ metawards.Ward
       ~Ward.authority
       ~Ward.auto_assign_players
       ~Ward.code
+      ~Ward.custom
+      ~Ward.cutoff
       ~Ward.depopulate
       ~Ward.dereference
       ~Ward.from_data
@@ -44,9 +46,12 @@ metawards.Ward
       ~Ward.region
       ~Ward.resolve
       ~Ward.scale
+      ~Ward.scale_uv
       ~Ward.set_authority
       ~Ward.set_auto_assign_players
       ~Ward.set_code
+      ~Ward.set_custom
+      ~Ward.set_cutoff
       ~Ward.set_id
       ~Ward.set_info
       ~Ward.set_name
@@ -54,6 +59,7 @@ metawards.Ward
       ~Ward.set_num_workers
       ~Ward.set_position
       ~Ward.set_region
+      ~Ward.set_scale_uv
       ~Ward.subtract_player_weight
       ~Ward.subtract_workers
       ~Ward.to_data

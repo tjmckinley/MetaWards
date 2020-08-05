@@ -2078,7 +2078,7 @@ Demographics</p>
 
 <dl class="class">
 <dt id="metawards.Node">
-<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>label: int = None</em>, <em>begin_to: int = None</em>, <em>end_to: int = None</em>, <em>self_w: int = None</em>, <em>begin_p: int = None</em>, <em>end_p: int = None</em>, <em>self_p: int = None</em>, <em>day_foi: float = 0.0</em>, <em>night_foi: float = 0.0</em>, <em>weekend_foi: float = 0.0</em>, <em>play_suscept: float = 0.0</em>, <em>save_play_suscept: float = 0.0</em>, <em>denominator_n: float = 0.0</em>, <em>denominator_d: float = 0.0</em>, <em>denominator_p: float = 0.0</em>, <em>denominator_pd: float = 0.0</em>, <em>x: float = 0.0</em>, <em>y: float = 0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_node.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Node" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>label: int = None</em>, <em>begin_to: int = None</em>, <em>end_to: int = None</em>, <em>self_w: int = None</em>, <em>begin_p: int = None</em>, <em>end_p: int = None</em>, <em>self_p: int = None</em>, <em>day_foi: float = 0.0</em>, <em>night_foi: float = 0.0</em>, <em>weekend_foi: float = 0.0</em>, <em>play_suscept: float = 0.0</em>, <em>save_play_suscept: float = 0.0</em>, <em>denominator_n: float = 0.0</em>, <em>denominator_d: float = 0.0</em>, <em>denominator_p: float = 0.0</em>, <em>denominator_pd: float = 0.0</em>, <em>x: float = 0.0</em>, <em>y: float = 0.0</em>, <em>scale_uv: float = 1.0</em>, <em>cutoff: float = 99999.99</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_node.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class represents an electoral ward (node) in the network</p>
 <dl class="attribute">
 <dt id="metawards.Node.begin_p">
@@ -2095,6 +2095,12 @@ network Links list</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="metawards.Node.cutoff">
+<code class="descname">cutoff</code><em class="property"> = 99999.99</em><a class="headerlink" href="#metawards.Node.cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>The per-ward cutoff (restrict movement to below this distance in km)</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="metawards.Node.end_p">
 <code class="descname">end_p</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.end_p" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number (int) of links for this node in the Links play list</p>
@@ -2104,6 +2110,13 @@ network Links list</p>
 <dt id="metawards.Node.end_to">
 <code class="descname">end_to</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.end_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number (int) of links for this node in the Links list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Node.get_custom">
+<code class="descname">get_custom</code><span class="sig-paren">(</span><em>key: str</em>, <em>default: float = 0.0</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/metawards/_node.html#Node.get_custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Node.get_custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the custom parameter at key ‘key’,
+returning ‘default’ if this doesn’t exist</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2117,6 +2130,20 @@ run from 1 up to len(nodes). A value of -1 implies a null node</p>
 <dt id="metawards.Node.play_suscept">
 <code class="descname">play_suscept</code><em class="property"> = 0.0</em><a class="headerlink" href="#metawards.Node.play_suscept" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of susceptible players in this ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.scale_uv">
+<code class="descname">scale_uv</code><em class="property"> = 1.0</em><a class="headerlink" href="#metawards.Node.scale_uv" title="Permalink to this definition">¶</a></dt>
+<dd><p>The per-ward scale_uv (amount to scale up or down the FOI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Node.set_custom">
+<code class="descname">set_custom</code><span class="sig-paren">(</span><em>key: str</em>, <em>value: float</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/metawards/_node.html#Node.set_custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Node.set_custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of the custom parameter at key ‘key’ to ‘value’.
+Note that this <em>must</em> be a floating point value, or something
+that can be converted to a float</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2136,7 +2163,7 @@ run from 1 up to len(nodes). A value of -1 implies a null node</p>
 <dl class="class">
 <dt id="metawards.Nodes">
 <em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Nodes</code><span class="sig-paren">(</span><em>N: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_nodes.html#Nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a container class for Nodes. This uses Numpy arrays
+<dd><p>This is a container class for Nodes. This uses Python arrays
 to store a list of Node objects as a “struct of arrays”.
 This should improve speed of loading and access.</p>
 <dl class="method">
@@ -2182,6 +2209,25 @@ This will return the index with  Python reverse indexing,
 so that “-1” refers to the last node in the collection</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="metawards.Nodes.begin_p">
+<code class="descname">begin_p</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.begin_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>The start index for play links</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.begin_to">
+<code class="descname">begin_to</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.begin_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>The start index for work links</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.coordinates">
+<code class="descname">coordinates</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinate system used (x/y for X,Y in km, lat/long for
+latitude and longitude)</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="metawards.Nodes.copy">
 <code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_nodes.html#Nodes.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.copy" title="Permalink to this definition">¶</a></dt>
@@ -2194,12 +2240,104 @@ and self_p. If you are changing the links then you will
 need to recreate these arrays.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="metawards.Nodes.cutoff">
+<code class="descname">cutoff</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>per-ward cutoff value - default to a large number that
+is greater than any distance between points on Earth
+(distance in k)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.day_foi">
+<code class="descname">day_foi</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.day_foi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dayime force of infection for each ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.day_inf_prob">
+<code class="descname">day_inf_prob</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.day_inf_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Daytime infection probability for each ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.denominator_d">
+<code class="descname">denominator_d</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.denominator_d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Day time work denominator for each ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.denominator_n">
+<code class="descname">denominator_n</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.denominator_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Night time work denominator for each ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.denominator_p">
+<code class="descname">denominator_p</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.denominator_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Night time play denominator for each ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.denominator_pd">
+<code class="descname">denominator_pd</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.denominator_pd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Day time play denominator for each ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.end_p">
+<code class="descname">end_p</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.end_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>The end index for play links</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.end_to">
+<code class="descname">end_to</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.end_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>The end index for work links</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Nodes.get_custom">
+<code class="descname">get_custom</code><span class="sig-paren">(</span><em>key: str</em>, <em>default: float = 0.0</em><span class="sig-paren">)</span> &#x2192; array[float]<a class="reference internal" href="../_modules/metawards/_nodes.html#Nodes.get_custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.get_custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the array of custom parameters for the key called ‘key’.
+If these don’t exist then create them with the specified
+default value. Note that this returns a shallow copy of the
+array, meaning that you can modify this directly and it
+will change the value of the nodes. This is identical
+to the behaviour of the other arrays in this Nodes
+object (it is optimised for speed, not safety)</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="metawards.Nodes.get_index">
 <code class="descname">get_index</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_nodes.html#Nodes.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.get_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the mapped index for the ith node. This will raise an
 IndexError if this is an invalid index. If not, it will map
 a negative index into a canonical positive index</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.label">
+<code class="descname">label</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>ID number for each node. This should equal the node index</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.night_foi">
+<code class="descname">night_foi</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.night_foi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nighttime force of infection for each ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.night_inf_prob">
+<code class="descname">night_inf_prob</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.night_inf_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nighttime infection probability for each ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.play_suscept">
+<code class="descname">play_suscept</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.play_suscept" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of susceptible players in each ward</p>
 </dd></dl>
 
 <dl class="method">
@@ -2229,9 +2367,15 @@ when you pre-allocate a large Nodes container, and then
 want to reduce the size to fit the number of loaded nodes</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="metawards.Nodes.save_play_suscept">
+<code class="descname">save_play_suscept</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.save_play_suscept" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saved value of the number of susceptible players</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="metawards.Nodes.scale_susceptibles">
-<code class="descname">scale_susceptibles</code><span class="sig-paren">(</span><em>ratio: any = None</em>, <em>work_ratio: any = None</em>, <em>play_ratio: any = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_nodes.html#Nodes.scale_susceptibles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.scale_susceptibles" title="Permalink to this definition">¶</a></dt>
+<code class="descname">scale_susceptibles</code><span class="sig-paren">(</span><em>ratio: Optional[any] = None</em>, <em>work_ratio: Optional[any] = None</em>, <em>play_ratio: Optional[any] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_nodes.html#Nodes.scale_susceptibles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.scale_susceptibles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scale the number of susceptibles in these Nodes
 by the passed scale ratios. These can be values, e.g.
 ratio = 2.0 will scale the total number of susceptibles
@@ -2258,6 +2402,47 @@ susceptibles - evenly scales the work and play populations</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.scale_uv">
+<code class="descname">scale_uv</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.scale_uv" title="Permalink to this definition">¶</a></dt>
+<dd><p>per-ward UV scaling parameter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.self_p">
+<code class="descname">self_p</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.self_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index of the home player play link</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.self_w">
+<code class="descname">self_w</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.self_w" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index of the home commuter work link</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Nodes.set_custom">
+<code class="descname">set_custom</code><span class="sig-paren">(</span><em>key: str, value: _Union[float, array[float]], index: int = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/metawards/_nodes.html#Nodes.set_custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Nodes.set_custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the custom parameters for the key called ‘key’ to ‘value’.
+If the index is set then this just sets the value for that
+index. You pass in either an array of floats (thus setting
+all node parameters, or a single float, which is for the
+single ward, or will set all wards to have that value.</p>
+<p>Note that custom parameters can only be floats!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.x">
+<code class="descname">x</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>X-coordinate of the center of each ward</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.y">
+<code class="descname">y</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Y-coordinate of the center of each ward</p>
 </dd></dl>
 
 </dd></dl>
@@ -2512,7 +2697,7 @@ the output files will be written</p>
 
 <dl class="class">
 <dt id="metawards.Parameters">
-<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Parameters</code><span class="sig-paren">(</span><em>input_files: metawards._inputfiles.InputFiles = None</em>, <em>uv_filename: str = None</em>, <em>disease_params: metawards._disease.Disease = None</em>, <em>additional_seeds: List[str] = None</em>, <em>length_day: float = 0.7</em>, <em>plength_day: float = 0.5</em>, <em>initial_inf: int = 5</em>, <em>static_play_at_home: float = 0.0</em>, <em>dyn_play_at_home: float = 0.0</em>, <em>dyn_dist_cutoff: float = 10000000.0</em>, <em>play_to_work: float = 0.0</em>, <em>work_to_play: float = 0.0</em>, <em>local_vaccination_thresh: int = 4</em>, <em>global_detection_thresh: int = 4</em>, <em>daily_ward_vaccination_capacity: int = 5</em>, <em>neighbour_weight_threshold: float = 0.0</em>, <em>daily_imports: float = 0.0</em>, <em>stage_0: str = 'R'</em>, <em>UV: float = 0.0</em>, <em>user_params: Dict[str</em>, <em>float] = None</em>, <em>adjustments: List[metawards._variableset.VariableSet] = None</em>, <em>_name: str = None</em>, <em>_version: str = None</em>, <em>_authors: str = None</em>, <em>_contacts: str = None</em>, <em>_references: str = None</em>, <em>_filename: str = None</em>, <em>_repository: str = None</em>, <em>_repository_version: str = None</em>, <em>_repository_branch: str = None</em>, <em>_repository_dir: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_parameters.html#Parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Parameters" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Parameters</code><span class="sig-paren">(</span><em>input_files: metawards._inputfiles.InputFiles = None</em>, <em>uv_filename: str = None</em>, <em>disease_params: metawards._disease.Disease = None</em>, <em>additional_seeds: List[str] = None</em>, <em>length_day: float = 0.7</em>, <em>plength_day: float = 0.5</em>, <em>initial_inf: int = 5</em>, <em>static_play_at_home: float = 0.0</em>, <em>dyn_play_at_home: float = 0.0</em>, <em>dyn_dist_cutoff: float = 10000000.0</em>, <em>play_to_work: float = 0.0</em>, <em>work_to_play: float = 0.0</em>, <em>local_vaccination_thresh: int = 4</em>, <em>global_detection_thresh: int = 4</em>, <em>daily_ward_vaccination_capacity: int = 5</em>, <em>neighbour_weight_threshold: float = 0.0</em>, <em>daily_imports: float = 0.0</em>, <em>stage_0: str = 'R'</em>, <em>UV: float = 0.0</em>, <em>UV_max: datetime.date = None</em>, <em>user_params: Dict[str</em>, <em>float] = None</em>, <em>adjustments: List[metawards._variableset.VariableSet] = None</em>, <em>_name: str = None</em>, <em>_version: str = None</em>, <em>_authors: str = None</em>, <em>_contacts: str = None</em>, <em>_references: str = None</em>, <em>_filename: str = None</em>, <em>_repository: str = None</em>, <em>_repository_version: str = None</em>, <em>_repository_branch: str = None</em>, <em>_repository_dir: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_parameters.html#Parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>The full set of Parameters that are used to control the model
 outbreak over a Network. The combination of a Network and
 a Parameters defines the model outbreak.</p>
@@ -2530,6 +2715,12 @@ e.g.</p>
 <dt id="metawards.Parameters.UV">
 <code class="descname">UV</code><em class="property"> = 0.0</em><a class="headerlink" href="#metawards.Parameters.UV" title="Permalink to this definition">¶</a></dt>
 <dd><p>Seasonality parameter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Parameters.UV_max">
+<code class="descname">UV_max</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Parameters.UV_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Date when transmission should be at a maximum</p>
 </dd></dl>
 
 <dl class="method">
@@ -2600,6 +2791,12 @@ include any subnetwork parameters if ‘include_subparams’ is False</p>
 <dt id="metawards.Parameters.disease_params">
 <code class="descname">disease_params</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Parameters.disease_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>The set of parameters that define the disease</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Parameters.dyn_dist_cutoff">
+<code class="descname">dyn_dist_cutoff</code><em class="property"> = 10000000.0</em><a class="headerlink" href="#metawards.Parameters.dyn_dist_cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cutoff distance in km beyond which workers or players cannot move</p>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -3558,6 +3755,22 @@ added to the home-ward player weight</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="metawards.Ward.custom">
+<code class="descname">custom</code><span class="sig-paren">(</span><em>key: str</em>, <em>default: float = 0.0</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/metawards/_ward.html#Ward.custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the per-ward custom parameter at key ‘key’, returning
+‘default’ if this has not been set. Note that all custom
+parameters are stored as floats</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Ward.cutoff">
+<code class="descname">cutoff</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/metawards/_ward.html#Ward.cutoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the cutoff parameter for this ward. This sets the
+maximum distance that residents (or travellers) to this ward
+can travel</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.Ward.depopulate">
 <code class="descname">depopulate</code><span class="sig-paren">(</span><em>zero_player_weights: bool = False</em><span class="sig-paren">)</span> &#x2192; metawards._ward.Ward<a class="reference internal" href="../_modules/metawards/_ward.html#Ward.depopulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.depopulate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a copy of this Ward with exact same details, but with
@@ -3649,6 +3862,7 @@ this ward are unresolved, or whether the ID of this ward is None</p>
 and the ID numbers must match (or be None).</p>
 <p>This will add the workers from ‘other’ to this ward,
 plus will average the player weights between the two</p>
+<p>This will do nothing to the scale_uv, cutoff or custom parameters</p>
 </dd></dl>
 
 <dl class="method">
@@ -3746,6 +3960,14 @@ to scale up the number of workers and players</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="metawards.Ward.scale_uv">
+<code class="descname">scale_uv</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/metawards/_ward.html#Ward.scale_uv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.scale_uv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the scale_uv parameter for this ward. This is the amount
+by which to scale the force of infection (FOI) during the
+FOI calculation</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.Ward.set_authority">
 <code class="descname">set_authority</code><span class="sig-paren">(</span><em>authority: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.set_authority"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_authority" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the local authority of this ward</p>
@@ -3762,6 +3984,23 @@ assigned to the home-ward player weight</p>
 <dt id="metawards.Ward.set_code">
 <code class="descname">set_code</code><span class="sig-paren">(</span><em>code: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.set_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the code of this ward</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Ward.set_custom">
+<code class="descname">set_custom</code><span class="sig-paren">(</span><em>key: str</em>, <em>value: float</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.set_custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of the custom ward parameter to ‘value’. Note
+that this must be convertible to a float as all custom
+parameters are stored as floats</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Ward.set_cutoff">
+<code class="descname">set_cutoff</code><span class="sig-paren">(</span><em>cutoff: float</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.set_cutoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the cutoff distance (in km) for this ward. This is the
+maximum distance that residents (or travellers to) this ward
+are allowed to travel. This defaults to 99999.99, which is
+larger than any point to point distance on earth</p>
 </dd></dl>
 
 <dl class="method">
@@ -3824,6 +4063,14 @@ meters or “km” for kilometers</li>
 <dt id="metawards.Ward.set_region">
 <code class="descname">set_region</code><span class="sig-paren">(</span><em>region: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.set_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the region of this ward</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Ward.set_scale_uv">
+<code class="descname">set_scale_uv</code><span class="sig-paren">(</span><em>scale_uv: float</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.set_scale_uv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_scale_uv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the scale_uv parameter for this ward. This is the amount
+by which to scale the FOI when caclulating the FOI. This
+defaults to 1.0</p>
 </dd></dl>
 
 <dl class="method">
@@ -4435,7 +4682,7 @@ By default we zero the subspace networks
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 03, 2020.
+        Last updated on Aug 05, 2020.
       </span>
 
     </p>

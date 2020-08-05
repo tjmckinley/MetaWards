@@ -290,6 +290,12 @@ ward</li>
 <tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.code" title="metawards.Ward.code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">code</span></code></a>()</td>
 <td>Return the code of this ward</td>
 </tr>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.custom" title="metawards.Ward.custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">custom</span></code></a>(key,&nbsp;default)</td>
+<td>Return the per-ward custom parameter at key ‘key’, returning ‘default’ if this has not been set.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.cutoff" title="metawards.Ward.cutoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cutoff</span></code></a>()</td>
+<td>Return the cutoff parameter for this ward.</td>
+</tr>
 <tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.depopulate" title="metawards.Ward.depopulate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">depopulate</span></code></a>(zero_player_weights)</td>
 <td>Return a copy of this Ward with exact same details, but with zero population.</td>
 </tr>
@@ -362,35 +368,47 @@ ward</li>
 <tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.scale" title="metawards.Ward.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(work_ratio,&nbsp;play_ratio,&nbsp;_inplace)</td>
 <td>Return a copy of these wards where the number of workers and players have been scaled by ‘work_ratios’ and ‘play_ratios’ respectively.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_authority" title="metawards.Ward.set_authority"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_authority</span></code></a>(authority)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.scale_uv" title="metawards.Ward.scale_uv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_uv</span></code></a>()</td>
+<td>Return the scale_uv parameter for this ward.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_authority" title="metawards.Ward.set_authority"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_authority</span></code></a>(authority)</td>
 <td>Set the local authority of this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_auto_assign_players" title="metawards.Ward.set_auto_assign_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_auto_assign_players</span></code></a>(auto_assign_players)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_auto_assign_players" title="metawards.Ward.set_auto_assign_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_auto_assign_players</span></code></a>(auto_assign_players)</td>
 <td>Return whether or not the remaining player weight is automatically assigned to the home-ward player weight</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_code" title="metawards.Ward.set_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_code</span></code></a>(code)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_code" title="metawards.Ward.set_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_code</span></code></a>(code)</td>
 <td>Set the code of this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_id" title="metawards.Ward.set_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_id</span></code></a>(id)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_custom" title="metawards.Ward.set_custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_custom</span></code></a>(key,&nbsp;value)</td>
+<td>Set the value of the custom ward parameter to ‘value’.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_cutoff" title="metawards.Ward.set_cutoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_cutoff</span></code></a>(cutoff)</td>
+<td>Set the cutoff distance (in km) for this ward.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_id" title="metawards.Ward.set_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_id</span></code></a>(id)</td>
 <td>Set the ID of this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_info" title="metawards.Ward.set_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_info</span></code></a>(info)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_info" title="metawards.Ward.set_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_info</span></code></a>(info)</td>
 <td>Set the info of this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_name" title="metawards.Ward.set_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_name</span></code></a>(name)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_name" title="metawards.Ward.set_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_name</span></code></a>(name)</td>
 <td>Set the name of this ward</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_num_players" title="metawards.Ward.set_num_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_num_players</span></code></a>(number)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_num_players" title="metawards.Ward.set_num_players"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_num_players</span></code></a>(number)</td>
 <td>Set the number of players in this ward</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_num_workers" title="metawards.Ward.set_num_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_num_workers</span></code></a>(number)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_num_workers" title="metawards.Ward.set_num_workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_num_workers</span></code></a>(number)</td>
 <td>Set the number of workers in this ward.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_position" title="metawards.Ward.set_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_position</span></code></a>(x,&nbsp;y,&nbsp;lat,&nbsp;long,&nbsp;units)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_position" title="metawards.Ward.set_position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_position</span></code></a>(x,&nbsp;y,&nbsp;lat,&nbsp;long,&nbsp;units)</td>
 <td>Set the position of the centre of this ward.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_region" title="metawards.Ward.set_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_region</span></code></a>(region)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_region" title="metawards.Ward.set_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_region</span></code></a>(region)</td>
 <td>Set the region of this ward</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.set_scale_uv" title="metawards.Ward.set_scale_uv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_scale_uv</span></code></a>(scale_uv)</td>
+<td>Set the scale_uv parameter for this ward.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Ward.subtract_player_weight" title="metawards.Ward.subtract_player_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subtract_player_weight</span></code></a>(weight,&nbsp;destination)</td>
 <td>Subtract the weight for players who will randomly move to the specified destination to play (or to play in the home ward if destination is not set).</td>
@@ -517,6 +535,22 @@ added to the home-ward player weight</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="metawards.Ward.custom">
+<code class="descname">custom</code><span class="sig-paren">(</span><em>key: str</em>, <em>default: float = 0.0</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the per-ward custom parameter at key ‘key’, returning
+‘default’ if this has not been set. Note that all custom
+parameters are stored as floats</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Ward.cutoff">
+<code class="descname">cutoff</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.cutoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the cutoff parameter for this ward. This sets the
+maximum distance that residents (or travellers) to this ward
+can travel</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.Ward.depopulate">
 <code class="descname">depopulate</code><span class="sig-paren">(</span><em>zero_player_weights: bool = False</em><span class="sig-paren">)</span> &#x2192; metawards._ward.Ward<a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.depopulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.depopulate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a copy of this Ward with exact same details, but with
@@ -608,6 +642,7 @@ this ward are unresolved, or whether the ID of this ward is None</p>
 and the ID numbers must match (or be None).</p>
 <p>This will add the workers from ‘other’ to this ward,
 plus will average the player weights between the two</p>
+<p>This will do nothing to the scale_uv, cutoff or custom parameters</p>
 </dd></dl>
 
 <dl class="method">
@@ -705,6 +740,14 @@ to scale up the number of workers and players</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="metawards.Ward.scale_uv">
+<code class="descname">scale_uv</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.scale_uv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.scale_uv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the scale_uv parameter for this ward. This is the amount
+by which to scale the force of infection (FOI) during the
+FOI calculation</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.Ward.set_authority">
 <code class="descname">set_authority</code><span class="sig-paren">(</span><em>authority: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.set_authority"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_authority" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the local authority of this ward</p>
@@ -721,6 +764,23 @@ assigned to the home-ward player weight</p>
 <dt id="metawards.Ward.set_code">
 <code class="descname">set_code</code><span class="sig-paren">(</span><em>code: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.set_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the code of this ward</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Ward.set_custom">
+<code class="descname">set_custom</code><span class="sig-paren">(</span><em>key: str</em>, <em>value: float</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.set_custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of the custom ward parameter to ‘value’. Note
+that this must be convertible to a float as all custom
+parameters are stored as floats</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Ward.set_cutoff">
+<code class="descname">set_cutoff</code><span class="sig-paren">(</span><em>cutoff: float</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.set_cutoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the cutoff distance (in km) for this ward. This is the
+maximum distance that residents (or travellers to) this ward
+are allowed to travel. This defaults to 99999.99, which is
+larger than any point to point distance on earth</p>
 </dd></dl>
 
 <dl class="method">
@@ -783,6 +843,14 @@ meters or “km” for kilometers</li>
 <dt id="metawards.Ward.set_region">
 <code class="descname">set_region</code><span class="sig-paren">(</span><em>region: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.set_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the region of this ward</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Ward.set_scale_uv">
+<code class="descname">set_scale_uv</code><span class="sig-paren">(</span><em>scale_uv: float</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_ward.html#Ward.set_scale_uv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_scale_uv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the scale_uv parameter for this ward. This is the amount
+by which to scale the FOI when caclulating the FOI. This
+defaults to 1.0</p>
 </dd></dl>
 
 <dl class="method">
@@ -867,7 +935,7 @@ the json-serialised string</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 03, 2020.
+        Last updated on Aug 05, 2020.
       </span>
 
     </p>
