@@ -156,7 +156,13 @@ def advance_foi_omp(network: Network, population: Population,
     # Copy arguments from Python into C cdef variables
     cdef double uv = params.UV
     cdef double uvscale = population.scale_uv
+
     cdef int ts = population.day
+
+    try:
+        ts = int((population.date - params.UV_max).days)
+    except Exception:
+        pass
 
     play_infections = infections.play
     infections = infections.work
@@ -166,6 +172,9 @@ def advance_foi_omp(network: Network, population: Population,
 
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
+
+    cdef double * wards_scale_uv = get_double_array_ptr(wards.scale_uv)
+    cdef double * wards_cutoff = get_double_array_ptr(wards.cutoff)
 
     cdef double * links_weight = get_double_array_ptr(links.weight)
     cdef double * play_weight = get_double_array_ptr(play.weight)
@@ -183,6 +192,7 @@ def advance_foi_omp(network: Network, population: Population,
     cdef double * play_distance = get_double_array_ptr(play.distance)
 
     cdef double cutoff = params.dyn_dist_cutoff
+    cdef double local_cutoff = cutoff
 
     # get the random number generator
     cdef uintptr_t [::1] rngs_view = rngs
@@ -266,7 +276,12 @@ def advance_foi_omp(network: Network, population: Population,
                         ifrom = links_ifrom[j]
                         ito = links_ito[j]
 
-                        if links_distance[j] < cutoff:
+                        local_cutoff = min(wards_cutoff[ifrom],
+                                           wards_cutoff[ito])
+
+                        local_cutoff = min(cutoff, local_cutoff)
+
+                        if links_distance[j] < local_cutoff:
                             # number staying - this is G_ij
                             staying = _ran_binomial(rng,
                                                     too_ill_to_move,
@@ -277,7 +292,8 @@ def advance_foi_omp(network: Network, population: Population,
 
                             if staying > 0:
                                 add_to_buffer(day_buffer, ifrom,
-                                              staying * scl_foi_uv,
+                                              staying * scl_foi_uv *
+                                              wards_scale_uv[ifrom],
                                               &(wards_day_foi[0]))
 
                             # Daytime Force of
@@ -287,7 +303,8 @@ def advance_foi_omp(network: Network, population: Population,
                             # this is the sum for all G_ij (including g_ii
                             if moving > 0:
                                 add_to_buffer(day_buffer, ito,
-                                              moving * scl_foi_uv,
+                                              moving * scl_foi_uv *
+                                              wards_scale_uv[ito],
                                               &(wards_day_foi[0]))
 
                             # Daytime FOI for destination is incremented
@@ -296,12 +313,14 @@ def advance_foi_omp(network: Network, population: Population,
                             # outside cutoff
                             if inf_ij > 0:
                                 add_to_buffer(day_buffer, ifrom,
-                                              inf_ij * scl_foi_uv,
+                                              inf_ij * scl_foi_uv *
+                                              wards_scale_uv[ifrom],
                                               &(wards_day_foi[0]))
 
                         if inf_ij > 0:
                             add_to_buffer(night_buffer, ifrom,
-                                          inf_ij * scl_foi_uv,
+                                          inf_ij * scl_foi_uv *
+                                          wards_scale_uv[ifrom],
                                           &(wards_night_foi[0]))
                         #wards_night_foi[ifrom] += inf_ij * scl_foi_uv
 
@@ -332,7 +351,8 @@ def advance_foi_omp(network: Network, population: Population,
                     # playmatrix loop FOI loop (random/unpredictable movements)
                     inf_ij = play_infections_i[j]
                     if inf_ij > 0:
-                        wards_night_foi[j] += inf_ij * scl_foi_uv
+                        wards_night_foi[j] += inf_ij * scl_foi_uv * \
+                                              wards_scale_uv[j]
 
                         staying = _ran_binomial(rng, play_at_home_scl, inf_ij)
                         moving = inf_ij - staying
@@ -344,10 +364,13 @@ def advance_foi_omp(network: Network, population: Population,
 
                         while (moving > 0) and (k < end_p):
                             # distributing people across play wards
-                            if play_distance[k] < cutoff:
+                            ifrom = play_ifrom[k]
+                            ito = play_ito[k]
+                            local_cutoff = min(cutoff, wards_cutoff[ifrom])
+                            local_cutoff = min(local_cutoff, wards_cutoff[ito])
+
+                            if play_distance[k] < local_cutoff:
                                 weight = play_weight[k]
-                                ifrom = play_ifrom[k]
-                                ito = play_ito[k]
 
                                 prob_scaled = weight / (1.0 - cumulative_prob)
                                 cumulative_prob = cumulative_prob + weight
@@ -356,7 +379,8 @@ def advance_foi_omp(network: Network, population: Population,
                                                           moving)
 
                                 add_to_buffer(day_buffer, ito,
-                                              play_move * scl_foi_uv,
+                                              play_move * scl_foi_uv *
+                                              wards_scale_uv[ito],
                                               &(wards_day_foi[0]))
 
                                 moving = moving - play_move
@@ -365,7 +389,8 @@ def advance_foi_omp(network: Network, population: Population,
                             k = k + 1
                         # end of while loop
 
-                        wards_day_foi[j] += (moving + staying) * scl_foi_uv
+                        wards_day_foi[j] += (moving + staying) * scl_foi_uv * \
+                                            wards_scale_uv[j]
                     # end of if inf_ij (there are new infections)
 
                 # end of loop over all nodes
@@ -434,6 +459,9 @@ def advance_foi_serial(network: Network, population: Population,
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
 
+    cdef double * wards_scale_uv = get_double_array_ptr(wards.scale_uv)
+    cdef double * wards_cutoff = get_double_array_ptr(wards.cutoff)
+
     cdef double * links_weight = get_double_array_ptr(links.weight)
     cdef double * play_weight = get_double_array_ptr(play.weight)
 
@@ -450,6 +478,7 @@ def advance_foi_serial(network: Network, population: Population,
     cdef double * play_distance = get_double_array_ptr(play.distance)
 
     cdef double cutoff = params.dyn_dist_cutoff
+    cdef double local_cutoff = cutoff
 
     # get the random number generator
     cdef binomial_rng* rng = _get_binomial_ptr(rngs[0])
@@ -515,7 +544,12 @@ def advance_foi_serial(network: Network, population: Population,
                         ifrom = links_ifrom[j]
                         ito = links_ito[j]
 
-                        if links_distance[j] < cutoff:
+                        local_cutoff = min(wards_cutoff[ifrom],
+                                           wards_cutoff[ito])
+
+                        local_cutoff = min(local_cutoff, cutoff)
+
+                        if links_distance[j] < local_cutoff:
                             # number staying - this is G_ij
                             staying = _ran_binomial(rng,
                                                     too_ill_to_move,
@@ -525,7 +559,9 @@ def advance_foi_serial(network: Network, population: Population,
                             moving = inf_ij - staying
 
                             if staying > 0:
-                                wards_day_foi[ifrom] += staying * scl_foi_uv
+                                wards_day_foi[ifrom] += \
+                                        staying * scl_foi_uv * \
+                                        wards_scale_uv[ifrom]
 
                             # Daytime Force of
                             # Infection is proportional to
@@ -533,17 +569,20 @@ def advance_foi_serial(network: Network, population: Population,
                             # in the ward (too ill to work)
                             # this is the sum for all G_ij (including g_ii
                             if moving > 0:
-                                wards_day_foi[ito] += moving * scl_foi_uv
+                                wards_day_foi[ito] += moving * scl_foi_uv * \
+                                                      wards_scale_uv[ito]
 
                             # Daytime FOI for destination is incremented
                             # (including self links, I_ii)
                         else:
                             # outside cutoff
                             if inf_ij > 0:
-                                wards_day_foi[ifrom] += inf_ij * scl_foi_uv
+                                wards_day_foi[ifrom] += inf_ij * scl_foi_uv * \
+                                                        wards_scale_uv[ifrom]
 
                         if inf_ij > 0:
-                            wards_night_foi[ifrom] += inf_ij * scl_foi_uv
+                            wards_night_foi[ifrom] += inf_ij * scl_foi_uv * \
+                                                      wards_scale_uv[ifrom]
 
                         # Nighttime Force of Infection is
                         # prop. to the number of Infected individuals
@@ -561,7 +600,8 @@ def advance_foi_serial(network: Network, population: Population,
                     # playmatrix loop FOI loop (random/unpredictable movements)
                     inf_ij = play_infections_i[j]
                     if inf_ij > 0:
-                        wards_night_foi[j] += inf_ij * scl_foi_uv
+                        wards_night_foi[j] += inf_ij * scl_foi_uv * \
+                                              wards_scale_uv[j]
 
                         staying = _ran_binomial(rng, play_at_home_scl, inf_ij)
                         moving = inf_ij - staying
@@ -572,11 +612,14 @@ def advance_foi_serial(network: Network, population: Population,
                         end_p = wards_end_p[j]
 
                         while (moving > 0) and (k < end_p):
+                            ifrom = play_ifrom[k]
+                            ito = play_ito[k]
+                            local_cutoff = min(cutoff, wards_cutoff[ifrom])
+                            local_cutoff = min(local_cutoff, wards_cutoff[ito])
+
                             # distributing people across play wards
-                            if play_distance[k] < cutoff:
+                            if play_distance[k] < local_cutoff:
                                 weight = play_weight[k]
-                                ifrom = play_ifrom[k]
-                                ito = play_ito[k]
 
                                 prob_scaled = weight / (1.0 - cumulative_prob)
                                 cumulative_prob = cumulative_prob + weight
@@ -584,7 +627,9 @@ def advance_foi_serial(network: Network, population: Population,
                                 play_move = _ran_binomial(rng, prob_scaled,
                                                           moving)
 
-                                wards_day_foi[ito] += play_move * scl_foi_uv
+                                wards_day_foi[ito] += \
+                                    play_move * scl_foi_uv * \
+                                    wards_scale_uv[ito]
 
                                 moving = moving - play_move
                             # end of if within cutoff
@@ -592,7 +637,8 @@ def advance_foi_serial(network: Network, population: Population,
                             k = k + 1
                         # end of while loop
 
-                        wards_day_foi[j] += (moving + staying) * scl_foi_uv
+                        wards_day_foi[j] += (moving + staying) * scl_foi_uv * \
+                                            wards_scale_uv[j]
                     # end of if inf_ij (there are new infections)
 
                 # end of loop over all nodes

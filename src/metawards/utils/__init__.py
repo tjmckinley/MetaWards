@@ -16,6 +16,7 @@ Functions
     build_play_matrix
     build_wards_network
     call_function_on_network
+    check_for_updates
     clear_all_infections
     Console
     create_int_array
@@ -57,6 +58,7 @@ Functions
     scale_node_susceptibles
     seed_ran_binomial
     string_to_ints
+    update_metawards
     vaccinate_same_id
     zero_workspace
 
@@ -82,6 +84,7 @@ from ._import_module import *
 from ._get_functions import *
 from ._safe_eval import *
 from ._console import *
+from ._updates import *
 
 from ._add_lookup import *
 from ._aggregate import *
