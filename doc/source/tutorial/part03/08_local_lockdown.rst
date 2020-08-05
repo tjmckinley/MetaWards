@@ -306,3 +306,85 @@ shows the following ``output/overview.jpg`` plot;
 
 .. image:: ../../images/tutorial_3_8.jpg
    :alt: Outbreak controlled using local lockdowns
+
+This wave behaviour is more clear if we make the entering of exiting of
+local lockdown more extreme. For example, update your ``lockdown.py``
+to read;
+
+.. code-block:: python
+
+    from metawards.iterators import iterate_default
+    from metawards.utils import Console
+
+    def advance_lockdown(network, workspace, **kwargs):
+        # get the ward-specific scaling and cutoff parameters
+        scale_uv = network.nodes.scale_uv
+        cutoff = network.nodes.cutoff
+
+        # get the custom parameter 'in_lockdown' which we will
+        # initialise to 0 (meaning false)
+        in_lockdown = network.nodes.get_custom("in_lockdown", default=0)
+
+        # count of number of case-free days per ward
+        case_free_days = network.nodes.get_custom("case_free_days", default=0)
+
+        # get the total number of infections from the workspace
+        I_in_wards = workspace.I_in_wards
+
+        # loop over all wards
+        for i in range(1, network.nnodes + 1):
+            # is this ward in lockdown?
+            if in_lockdown[i]:
+                # has the number of infections dropped to zero? If so,
+                # then leave lockdown
+                if I_in_wards[i] == 0:
+                    # we need 28 case-free days before releasing lockdown
+                    if case_free_days[i] > 28:
+                        Console.debug(f"Ward {i} leaving lockdown")
+                        # completely relax the lockdown
+                        scale_uv[i] = 1.0
+                        cutoff[i] = 99999.99
+                        in_lockdown[i] = 0
+                        case_free_days[i] = 0
+                    else:
+                        case_free_days[i] += 1
+                        Console.debug(f"Ward {i} case_free_days equals {case_free_days[i]}")
+                else:
+                    case_free_days[i] = 0
+
+            # if not, then enter lockdown if the number of infections
+            # goes above 5
+            elif I_in_wards[i] > 5:
+                Console.debug(f"Ward {i} entering lockdown")
+                in_lockdown[i] = 1
+                case_free_days[i] = 0
+
+                # stop all travel and enact measures that
+                # stop all local transmission (beta is 0)
+                cutoff[i] = 0.0
+                scale_uv[i] = 0.0
+
+        # get the number of wards in lockdown
+        num_lockdown = int(sum(in_lockdown))
+
+        if num_lockdown > 0:
+            Console.print(f"Number of wards in lockdown equals {num_lockdown}")
+
+
+    def iterate_lockdown(stage, **kwargs):
+        # get the default functions for this stage
+        funcs = iterate_default(stage=stage, **kwargs)
+
+        if stage == "foi":
+            return [advance_lockdown] + funcs
+        else:
+            return funcs
+
+The only change is that ``scale_uv[i]`` is set to ``0.0`` for wards that
+are in lockdown (i.e. there is no more spread), while ``scale_uv[i]``
+is returned to ``1.0`` for wards that leave lockdown. This extreme switching
+when entering and leaving lockdown causes waves of infection that
+spread across wards, e.g. when I run this model I see;
+
+.. image:: ../../images/tutorial_3_8_2.jpg
+   :alt: Outbreak with local lockdowns resulting in waves of disease
