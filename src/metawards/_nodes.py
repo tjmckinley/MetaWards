@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class Nodes:
-    """This is a container class for Nodes. This uses Numpy arrays
+    """This is a container class for Nodes. This uses Python arrays
        to store a list of Node objects as a "struct of arrays".
        This should improve speed of loading and access.
     """
@@ -29,44 +29,77 @@ class Nodes:
             # Struct of arrays for each piece of data. See the
             # Node class for information about what each variable
             # holds. Code uses "-1" to represent a null value
+
+            #: ID number for each node. This should equal the node index
             self.label = create_int_array(N, -1)
 
+            #: The start index for work links
             self.begin_to = create_int_array(N, -1)
+
+            #: The end index for work links
             self.end_to = create_int_array(N, -1)
+
+            #: The index of the home commuter work link
             self.self_w = create_int_array(N, -1)
 
+            #: The start index for play links
             self.begin_p = create_int_array(N, -1)
+
+            #: The end index for play links
             self.end_p = create_int_array(N, -1)
+
+            #: The index of the home player play link
             self.self_p = create_int_array(N, -1)
 
+            #: Dayime force of infection for each ward
             self.day_foi = create_double_array(N, 0.0)
+
+            #: Nighttime force of infection for each ward
             self.night_foi = create_double_array(N, 0.0)
 
+            #: Number of susceptible players in each ward
             self.play_suscept = create_double_array(N, 0.0)
+
+            #: Saved value of the number of susceptible players
             self.save_play_suscept = create_double_array(N, 0.0)
 
+            #: Night time work denominator for each ward
             self.denominator_n = create_double_array(N, 0.0)
+
+            #: Day time work denominator for each ward
             self.denominator_d = create_double_array(N, 0.0)
 
+            #: Night time play denominator for each ward
             self.denominator_p = create_double_array(N, 0.0)
+
+            #: Day time play denominator for each ward
             self.denominator_pd = create_double_array(N, 0.0)
 
+            #: Daytime infection probability for each ward
             self.day_inf_prob = create_double_array(N, 0.0)
+
+            #: Nighttime infection probability for each ward
             self.night_inf_prob = create_double_array(N, 0.0)
 
+            #: X-coordinate of the center of each ward
             self.x = create_double_array(N, 0.0)  # no good initialiser for x
+            #: Y-coordinate of the center of each ward
             self.y = create_double_array(N, 0.0)  # no good initialiser for y
 
-            # per-ward UV scaling parameter
+            #: per-ward UV scaling parameter
             self.scale_uv = create_double_array(N, 1.0)
 
-            # per-ward cutoff value - default to a large number that
-            # is greater than any distance between points on Earth
-            # (distance in k)
+            #: per-ward cutoff value - default to a large number that
+            #: is greater than any distance between points on Earth
+            #: (distance in k)
             self.cutoff = create_double_array(N, 99999.99)
 
+            #: Coordinate system used (x/y for X,Y in km, lat/long for
+            #: latitude and longitude)
             self.coordinates = "x/y"
 
+            #: Dictionary of all user-provided custom parameters for
+            #: each ward
             self._custom_params = {}
 
     def is_null(self):

@@ -351,7 +351,8 @@ def advance_foi_omp(network: Network, population: Population,
                     # playmatrix loop FOI loop (random/unpredictable movements)
                     inf_ij = play_infections_i[j]
                     if inf_ij > 0:
-                        wards_night_foi[j] += inf_ij * scl_foi_uv
+                        wards_night_foi[j] += inf_ij * scl_foi_uv * \
+                                              wards_scale_uv[j]
 
                         staying = _ran_binomial(rng, play_at_home_scl, inf_ij)
                         moving = inf_ij - staying
@@ -599,7 +600,8 @@ def advance_foi_serial(network: Network, population: Population,
                     # playmatrix loop FOI loop (random/unpredictable movements)
                     inf_ij = play_infections_i[j]
                     if inf_ij > 0:
-                        wards_night_foi[j] += inf_ij * scl_foi_uv
+                        wards_night_foi[j] += inf_ij * scl_foi_uv * \
+                                              wards_scale_uv[j]
 
                         staying = _ran_binomial(rng, play_at_home_scl, inf_ij)
                         moving = inf_ij - staying
