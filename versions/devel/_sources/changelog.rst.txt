@@ -2,6 +2,23 @@
 Changelog
 =========
 
+`1.4.0 <https://github.com/metawards/MetaWards/compare/1.3.0...1.4.0>`__ - August 10th 2020
+-------------------------------------------------------------------------------------------
+
+* MetaWards now includes ward-local parameters (e.g. cutoff and scale_uv), plus
+  supports custom user ward-local parameters. This supports modelling of
+  different ward-local behaviour, e.g. local control measures or
+  local lockdowns. Examples of a local lockdown model is
+  in :doc:`chapter 7 <tutorial/part03/07_cutoff>` and
+  :doc:`chapter 8 <tutorial/part03/08_local_lockdown>` of
+  :doc:`part 3 <tutorial/index_part03>` of the tutorial, plus
+  :doc:`chapter 5 of part 8 <tutorial/part08/05_local_network>`.
+* MetaWards now has a `proper R package <https://github.com/metawards/rpkg>`_.
+  You can now install and update
+  MetaWards directly from within R. See the updated
+  :doc:`installation instructions <install>` and the
+  :doc:`R quickstart guide <quickstart/01_R>`.
+
 `1.3.0 <https://github.com/metawards/MetaWards/compare/1.2.0...1.3.0>`__ - July 22nd 2020
 -----------------------------------------------------------------------------------------
 

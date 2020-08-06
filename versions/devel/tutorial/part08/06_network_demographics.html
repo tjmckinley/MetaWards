@@ -231,12 +231,13 @@ use them to use the concept of metapopulations to model different
 environments.</p>
 <p>For example, we can use a custom network to model <code class="docutils literal notranslate"><span class="pre">home</span></code>, <code class="docutils literal notranslate"><span class="pre">school</span></code>
 and <code class="docutils literal notranslate"><span class="pre">work</span></code>, and then use different demographics to model
-<code class="docutils literal notranslate"><span class="pre">students</span></code>, <code class="docutils literal notranslate"><span class="pre">teachers</span></code> and everyone else (<code class="docutils literal notranslate"><span class="pre">default</span></code>). This way
+students, teachers and everyone else. This way
 you could explore how closing schools could impact disease spread.</p>
 <p>This concept is explored in detail in the
-<span class="xref std std-doc">quick start guide</span>. The key takeaway you should
-have now, having worked through this tutorial as well as the quick start,
-is that you can create;</p>
+<a class="reference internal" href="../../quickstart/index.html"><span class="doc">quick start guide</span></a>. The key takeaway you should
+have now, having worked through this
+<a class="reference internal" href="../index.html"><span class="doc">tutorial</span></a> as well as the
+<a class="reference internal" href="../../quickstart/index.html"><span class="doc">quick start</span></a>, is that you can create;</p>
 <ul class="simple">
 <li>different <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Disease" title="metawards.Disease"><code class="xref py py-class docutils literal notranslate"><span class="pre">Disease</span></code></a> objects that contain different
 disease stages and parameters,</li>
@@ -244,9 +245,12 @@ disease stages and parameters,</li>
 different groups of individuals, each of which can experience
 different <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Disease" title="metawards.Disease"><code class="xref py py-class docutils literal notranslate"><span class="pre">Disease</span></code></a> objects (and thus advance
 along different pathways,</li>
-<li>and who can each experience metapopulation movements on different
+<li>who can each experience metapopulation movements on different
 <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> networks (built flexibly via the
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> / <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Wards" title="metawards.Wards"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code></a> objects).</li>
+<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> / <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Wards" title="metawards.Wards"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code></a> objects),</li>
+<li>where each ward in each network can have its own parameters, thereby
+enabling modelling of ward-local behaviour for different demographics at
+different disease stages in different networks.</li>
 </ul>
 <p>This flexibility for the model is then enhanced by building custom
 <a class="reference internal" href="../../api/index_api_MetaWards_iterators.html#module-metawards.iterators" title="metawards.iterators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">iterators</span></code></a> that enable you to write your own code
@@ -271,6 +275,22 @@ runs to check for statistical variance.</p>
 script using the Python or R APIs, or you can run from the command line,
 or from within a batch script that will automatically parallelise
 the runs over a supercomputing cluster.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Congratulations on reaching the end of the tutorial. Hopefully this
+has given you a good insight into what you could do with <code class="docutils literal notranslate"><span class="pre">metawards</span></code>.
+If you have any questions then please
+<a class="reference external" href="https://github.com/metawards/MetaWards/issues">post an issue to our GitHub repository</a>.
+Please feel free to post issues to request more tutorials, or to
+ask for more documentation.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are moving on to developing <code class="docutils literal notranslate"><span class="pre">metawards</span></code>, or writing more
+complex code on top of <code class="docutils literal notranslate"><span class="pre">metawards</span></code>, then you should read the
+developer documentation for the <a class="reference internal" href="../../api/index_api_MetaWards.html#module-metawards" title="metawards"><code class="xref py py-mod docutils literal notranslate"><span class="pre">metawards</span></code></a> module, which can be
+<a class="reference internal" href="../../api/index.html"><span class="doc">found here</span></a>.</p>
+</div>
 </div>
 
 
@@ -294,7 +314,7 @@ the runs over a supercomputing cluster.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 05, 2020.
+        Last updated on Aug 06, 2020.
       </span>
 
     </p>

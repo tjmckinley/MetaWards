@@ -37,19 +37,3 @@ This work will take place in the
 `feature_holidays <https://github.com/metawards/MetaWards/issues/135>`_
 feature branch.
 
-Different nodes using different parameters
-------------------------------------------
-
-This is planned for MetaWards 1.4. Currently disease and control parameters
-affect all wards equally. Custom iterators can be written now that change
-those parameters on a ward-by-ward or regional basis, but this is clumsy.
-We would like to implement per-ward, and per-demographic/per-ward disease,
-control and user parameters.
-
-This will enable modelling of;
-
-* regional and local differences in, e.g. beta depending on levels of
-  adherence to lockdown or availability of suitable accommodation
-
-* regional differences in control measures, and modelling local differences
-  in enacting and releasing controls
