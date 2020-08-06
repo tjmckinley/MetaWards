@@ -9,10 +9,10 @@ script_dir = os.path.dirname(__file__)
 
 def test_plugins():
 
-    iterator = f"{script_dir}/plugins/test_iterator.py"
-    extractor = f"{script_dir}/plugins/test_extractor.py"
-    mover = f"{script_dir}/plugins/test_mover.py"
-    mixer = f"{script_dir}/plugins/test_mixer.py"
+    iterator = f"{script_dir}/plugins/_iterator.py"
+    extractor = f"{script_dir}/plugins/_extractor.py"
+    mover = f"{script_dir}/plugins/_mover.py"
+    mixer = f"{script_dir}/plugins/_mixer.py"
 
     params = Parameters()
     params.set_disease("ncov")
