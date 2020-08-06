@@ -4,7 +4,7 @@ Installation instructions
 
 MetaWards is a Python package, but it does come with R wrappers. This
 means that you can choose to install MetaWards either via Python or
-via R
+via R.
 
 Installation via Python
 =======================
@@ -35,9 +35,6 @@ please use ``python3`` instead of ``python``.
 If you don't have Python >=3.7 installed, then you can install Python
 either via your package manager, or more simply, by using
 `anaconda <https://anaconda.org>`__.
-
-pip install
------------
 
 Once you have a working Python >= 3.7, the easiest way to install
 MetaWards is using
