@@ -2,8 +2,12 @@
 Installation instructions
 =========================
 
-Dependencies
-============
+MetaWards is a Python package, but it does come with R wrappers. This
+means that you can choose to install MetaWards either via Python or
+via R
+
+Installation via Python
+=======================
 
 MetaWards is compiled and
 `tested on Windows, Linux and OS X <https://github.com/metawards/MetaWards/actions>`__,
@@ -33,7 +37,7 @@ either via your package manager, or more simply, by using
 `anaconda <https://anaconda.org>`__.
 
 pip install
-=============
+-----------
 
 Once you have a working Python >= 3.7, the easiest way to install
 MetaWards is using
@@ -77,6 +81,55 @@ of your computer than you will need to install
 a different compiler, e.g. installing clang via
 `homebrew <https://brew.sh>`__. If you have any problems then please
 `post an issue on GitHub <https://github.com/metawards/MetaWards/issues>`__.
+
+Installation via R
+==================
+
+MetaWards can be used within R via the `reticulate <https://rstudio.github.io/reticulate/>`_
+package. We have built a MetaWards R package that simplifies this use.
+
+First, open R or RStudio and install the MetaWards R package from GitHub;
+
+.. code-block:: R
+
+   > library(devtools)
+   > install_github("metawards/rpkg")
+
+Next, load the ``metawards`` package and use the ``py_install_metawards``
+function to install metawards into the Python that is supplied
+with reticulate.
+
+.. code-block:: R
+
+   > metawards::py_install_metawards()
+
+This may take a few minutes. If it works, then you can check that
+metawards is available by calling the ``py_metawards_available`` function,
+e.g.
+
+.. code-block:: R
+
+   > metawards::py_metawards_available()
+   [1] TRUE
+
+.. note::
+
+   If you want to use a different Python environment, then this can be
+   set using ``reticulate::use_python("/path/to/python", required = TRUE)``
+   before you call any of the metawards functions.
+
+This will install the latest version of metawards. You can check if there
+are any updates available via;
+
+.. code-block:: R
+
+   > metawards::py_metawards_update_available()
+
+and you can update to the lastest version using;
+
+.. code-block:: R
+
+   > metawards::py_update_metawards()
 
 Source install
 ==============
