@@ -26,6 +26,7 @@ Classes
     VariableSet
     VariableSets
     Ward
+    WardID
     WardInfo
     WardInfos
     Wards
@@ -54,7 +55,7 @@ __all__ = ["get_version_string", "print_version_string", "input",
            "InputFiles", "Interpret", "Link", "Links", "Network",
            "Networks", "Node", "Nodes", "OutputFiles", "Parameters",
            "Population", "Populations", "VariableSet", "VariableSets",
-           "Ward", "WardInfo", "WardInfos", "Wards", "Workspace"]
+           "Ward", "WardID", "WardInfo", "WardInfos", "Wards", "Workspace"]
 
 # make sure that the directory containing this __init__.py is
 # early in the path - this will ensure that this versions modules
@@ -119,6 +120,7 @@ Populations = _lazy_import.lazy_class("._population.Populations")
 VariableSet = _lazy_import.lazy_class("._variableset.VariableSet")
 VariableSets = _lazy_import.lazy_class("._variableset.VariableSets")
 Ward = _lazy_import.lazy_class("._ward.Ward")
+WardID = _lazy_import.lazy_class("._wardid.WardID")
 WardInfo = _lazy_import.lazy_class("._wardinfo.WardInfo")
 WardInfos = _lazy_import.lazy_class("._wardinfo.WardInfos")
 Wards = _lazy_import.lazy_class("._wards.Wards")
@@ -134,7 +136,7 @@ if _sys.version_info < (3, 7):
 
 # import the pyx cython-compiled modules
 
-__manual_version__ = "1.2.0"
+__manual_version__ = "1.4.0"
 
 _v = get_versions()
 __version__ = _v['version']
