@@ -62,6 +62,10 @@ To this end, MetaWards features;
     Built in metawards-plot tool for rapid visualisation of results,
     including across multiple networks
 
+* per-ward custom parameter support. Different wards can have different
+  parameters, meaning that you can easily model local behaviour
+  (e.g. local lockdowns, changes in local control measures etc.).
+
 * flexible data output support - again handled using an array of in-built
   or user-supplied data extraction plugin functions. Output the data you
   need in the format you want to perform analysis.

@@ -9,13 +9,14 @@ environments.
 
 For example, we can use a custom network to model ``home``, ``school``
 and ``work``, and then use different demographics to model
-``students``, ``teachers`` and everyone else (``default``). This way
+students, teachers and everyone else. This way
 you could explore how closing schools could impact disease spread.
 
 This concept is explored in detail in the
-:doc:`quick start guide <../quickstart/index>`. The key takeaway you should
-have now, having worked through this tutorial as well as the quick start,
-is that you can create;
+:doc:`quick start guide <../../quickstart/index>`. The key takeaway you should
+have now, having worked through this
+:doc:`tutorial <../index>` as well as the
+:doc:`quick start <../../quickstart/index>`, is that you can create;
 
 * different :class:`~metawards.Disease` objects that contain different
   disease stages and parameters,
@@ -23,9 +24,12 @@ is that you can create;
   different groups of individuals, each of which can experience
   different :class:`~metawards.Disease` objects (and thus advance
   along different pathways,
-* and who can each experience metapopulation movements on different
+* who can each experience metapopulation movements on different
   :class:`~metawards.Network` networks (built flexibly via the
-  :class:`~metawards.Ward` / :class:`~metawards.Wards` objects).
+  :class:`~metawards.Ward` / :class:`~metawards.Wards` objects),
+* where each ward in each network can have its own parameters, thereby
+  enabling modelling of ward-local behaviour for different demographics at
+  different disease stages in different networks.
 
 This flexibility for the model is then enhanced by building custom
 :mod:`~metawards.iterators` that enable you to write your own code
@@ -55,3 +59,19 @@ And (finally!) you can do all of this from within a single Python or R
 script using the Python or R APIs, or you can run from the command line,
 or from within a batch script that will automatically parallelise
 the runs over a supercomputing cluster.
+
+.. note::
+
+   Congratulations on reaching the end of the tutorial. Hopefully this
+   has given you a good insight into what you could do with ``metawards``.
+   If you have any questions then please
+   `post an issue to our GitHub repository <https://github.com/metawards/MetaWards/issues>`_.
+   Please feel free to post issues to request more tutorials, or to
+   ask for more documentation.
+
+.. note::
+
+   If you are moving on to developing ``metawards``, or writing more
+   complex code on top of ``metawards``, then you should read the
+   developer documentation for the :mod:`metawards` module, which can be
+   :doc:`found here <../../api/index>`.
