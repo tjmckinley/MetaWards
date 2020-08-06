@@ -108,11 +108,6 @@ def iterate_both(stage, **kwargs):
 
 @pytest.mark.slow
 def test_local():
-    """This test repeats main_RepeatsNcov.c and validates that the
-       various stages report the same results as the original C code
-       for ncov, when using a custom integrator that just calls
-       iterate_weekday
-    """
     prompt = None
 
     # user input parameters
