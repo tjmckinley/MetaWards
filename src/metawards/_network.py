@@ -197,29 +197,25 @@ class Network:
         # By default, we initialise the network ready for a run,
         # namely make sure everything is reset and the population
         # is at work
-        Console.print("Reset everything...")
         p = p.start("reset_everything")
         network.reset_everything(nthreads=nthreads, profiler=p)
         p = p.stop()
 
-        Console.print("Rescale play matrix...")
         p = p.start("rescale_play_matrix")
         network.rescale_play_matrix(nthreads=nthreads, profiler=p)
         p = p.stop()
 
-        Console.print("Move population from play to work...")
         p = p.start("move_from_play_to_work")
         network.move_from_play_to_work(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         if not p.is_null():
             p = p.stop()
-            print(p)
+            Console.print(str(p))
 
-        Console.print(f"**Network loaded. Population: {network.population}, "
+        Console.print(f"[bold]Network loaded. Population: {network.population}, "
                       f"Workers: {network.work_population}, Players: "
-                      f"{network.play_population}**",
-                      markdown=True)
+                      f"{network.play_population}[/]", markup=True)
 
         return network
 

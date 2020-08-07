@@ -83,6 +83,17 @@ class MoveGenerator:
         """
         if isinstance(network, Network):
             # make sure that we are only working with a single demographic
+            if self._from_demo is not None:
+                for demo in self._from_demo:
+                    if demo != 0 or demo != network.name:
+                        raise ValueError(
+                            f"Incompatible demographic: {self._from_demo}")
+
+            if self._to_demo is not None:
+                for demo in self._to_demo:
+                    if demo != 0 or demo != network.name:
+                        raise ValueError(
+                            f"Incompatible demographic: {self._to_demo}")
 
             disease = network.params.disease_params
 
@@ -107,4 +118,61 @@ class MoveGenerator:
 
             return [[0, x, 0, y] for x, y in zip(from_stages, to_stages)]
         else:
-            raise NotImplementedError("Write the code Chris ;-)")
+            from_demos = self._from_demo
+            to_demos = self._to_demo
+
+            if from_demos is None:
+                from_demos = list(range(0, len(network.subnets)))
+            else:
+                from_demos = [network.demographics.get_index(x)
+                              for x in from_demos]
+
+            if to_demos is None:
+                to_demos = from_demos
+            elif len(to_demos) == 1:
+                to_demos = len(from_demos) * \
+                    [network.demographics.get_index(to_demos[0])]
+            elif len(to_demos) != len(from_demos):
+                raise ValueError(
+                    f"{from_demos} incompatible wiht {to_demos}")
+            else:
+                to_demos = [network.demographics.get_index(x)
+                            for x in to_demos]
+
+            moves = []
+
+            for from_demo, to_demo in zip(from_demos, to_demos):
+                from_disease = network.subnets[from_demo].params.disease_params
+                to_disease = network.subnets[to_demo].params.disease_params
+
+                from_stages = self._from_stage
+                to_stages = self._to_stage
+
+                if len(from_disease) != len(to_disease):
+                    raise ValueError(
+                        f"Cannot demographics without specifying the disease "
+                        f"stages to move because the disease for demographic "
+                        f"{from_demo} ({from_disease}) is different to the "
+                        f"disease for {to_demo} ({to_disease})")
+
+                if from_stages is None:
+                    from_stages = list(range(0, len(from_disease)))
+                else:
+                    from_stages = [from_disease.get_index(x)
+                                   for x in from_stages]
+
+                if to_stages is None:
+                    to_stages = from_stages
+                elif len(to_stages) == 1:
+                    to_stages = len(from_stages) * \
+                        [to_disease.get_index(to_stages[0])]
+                elif len(to_stages) != len(from_stages):
+                    raise ValueError(
+                        f"{from_stages} incompatible with {to_stages}")
+                else:
+                    to_stages = [to_disease.get_index(x) for x in to_stages]
+
+                moves += [[from_demo, x, to_demo, y]
+                          for x, y in zip(from_stages, to_stages)]
+
+            return moves

@@ -292,10 +292,9 @@ def load_from_wards(wards: Wards, params: Parameters = None,
     network.rescale_play_matrix(nthreads=nthreads, profiler=p)
     p = p.stop()
 
-    Console.print(f"**Network loaded. Population: {network.population}, "
-                    f"Workers: {network.work_population}, Players: "
-                    f"{network.play_population}**",
-                    markdown=True)
+    Console.print(f"[bold]Network loaded. Population: {network.population}, "
+                  f"Workers: {network.work_population}, Players: "
+                  f"{network.play_population}[/]", markup=True)
 
     if network.work_population != wards.num_workers() or \
        network.play_population != wards.num_players():
