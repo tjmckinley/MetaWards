@@ -408,6 +408,12 @@ class Disease:
                         f"Invalid mapping value '{v}'. Valid values "
                         f"are only {valid}")
 
+        for stage in self.stage:
+            if stage.strip().lower() == "s":
+                raise AssertionError(
+                    "The stage 'S' is reserved for the Susceptible class. "
+                    f"You cannot use it for your disease: {self.stage}")
+
     def insert(self, index: int, name: str, mapping: str = None,
                beta: float = None, progress: float = None,
                too_ill_to_move: float = None, contrib_foi: float = None,
@@ -446,6 +452,11 @@ class Disease:
              out automatically by the code.
         """
         index = int(index)
+
+        if name.strip().lower() == "s":
+            raise ValueError(
+                f"You cannot add a disease stage called 'S'. This name "
+                f"is reserved for the Susceptible class")
 
         if self.beta is None:
             if self.name is None:
@@ -525,8 +536,14 @@ class Disease:
                     is_start_symptom=is_start_symptom)
 
     def get_index(self, idx):
-        """Return the index of disease stage 'idx' in this disease"""
+        """Return the index of disease stage 'idx' in this disease.
+           Note that "S" is a special name that refers to the
+           susceptibles. This will return -1
+        """
         if isinstance(idx, str):
+            if idx.strip().lower() == "s":
+                return -1
+
             # lookup by name
             for i, name in enumerate(self.stage):
                 if idx == name:

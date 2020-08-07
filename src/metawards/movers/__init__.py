@@ -15,6 +15,7 @@ Functions
     move_default
 
     MoveGenerator
+    MoveRecord
 
 """
 
@@ -26,3 +27,4 @@ from ._move_custom import *
 from ._move_default import *
 
 from ._movegenerator import *
+from ._moverecord import *

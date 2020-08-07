@@ -1,0 +1,46 @@
+
+from typing import Tuple as _Tuple
+
+from .._network import PersonType
+
+__all__ = ["MoveRecord"]
+
+
+class MoveRecord:
+    """This class holds a record of mover-initiated moves. This could
+       be used, to reverse moves, e.g. to send individuals back from
+       home hospital, or to send individuals back home from holiday
+    """
+
+    def __init__(self):
+        self._record = []
+
+    def add(self,
+            from_stage: int, to_stage: int,
+            from_type: PersonType, to_type: PersonType,
+            from_ward: int, to_ward: int,
+            from_demographic: int = 0, to_demographic: int = 0,
+            number: int = 1):
+        """Record the move from the specified demographic, stage
+           type and ward to the specified demographic, stage,
+           type and ward, recording the number of individuals
+           who made this move.
+
+           If the type is PLAYER, then the ward is the ward index
+           If the type is WORKER, then the ward is the link index
+        """
+        self._record.append(
+            (int(from_demographic), int(from_stage),
+             int(from_type.value), int(from_ward),
+             int(to_demographic), int(to_stage),
+             int(to_type.value), int(to_ward), int(number)))
+
+    def __len__(self):
+        return len(self._record)
+
+    def __getitem__(self, i: int) -> _Tuple[int, int, int, int,
+                                            int, int, int, int, int]:
+        return self._record[i]
+
+    def __str__(self):
+        return f"MoveRecord(count={len(self)})"

@@ -1,7 +1,7 @@
 
 from metawards import Parameters, Network, Population, Demographics, WardID, \
     Ward, PersonType
-from metawards.movers import MoveGenerator
+from metawards.movers import MoveGenerator, MoveRecord
 
 import os
 import pytest
@@ -33,7 +33,8 @@ def test_move_generator():
     assert m.should_move_all()
 
     m = MoveGenerator(to_stage="R")
-    assert m.generate(network) == [[0, 0, 0, 4],
+    assert m.generate(network) == [[0, -1, 0, 4],
+                                   [0, 0, 0, 4],
                                    [0, 1, 0, 4],
                                    [0, 2, 0, 4],
                                    [0, 3, 0, 4],
@@ -56,7 +57,8 @@ def test_move_generator():
     assert m.should_move_all()
 
     m = MoveGenerator()
-    assert m.generate(network) == [[0, 0, 0, 0],
+    assert m.generate(network) == [[0, -1, 0, -1],
+                                   [0, 0, 0, 0],
                                    [0, 1, 0, 1],
                                    [0, 2, 0, 2],
                                    [0, 3, 0, 3],
@@ -68,16 +70,19 @@ def test_move_generator():
     networks = demographics.specialise(network)
 
     m = MoveGenerator()
-    assert m.generate(networks) == [[0, 0, 0, 0],
+    assert m.generate(networks) == [[0, -1, 0, -1],
+                                    [0, 0, 0, 0],
                                     [0, 1, 0, 1],
                                     [0, 2, 0, 2],
                                     [0, 3, 0, 3],
                                     [0, 4, 0, 4],
+                                    [1, -1, 1, -1],
                                     [1, 0, 1, 0],
                                     [1, 1, 1, 1],
                                     [1, 2, 1, 2],
                                     [1, 3, 1, 3],
                                     [1, 4, 1, 4],
+                                    [2, -1, 2, -1],
                                     [2, 0, 2, 0],
                                     [2, 1, 2, 1],
                                     [2, 2, 2, 2],
@@ -92,16 +97,19 @@ def test_move_generator():
                                     ]
 
     m = MoveGenerator(to_stage="R")
-    assert m.generate(networks) == [[0, 0, 0, 4],
+    assert m.generate(networks) == [[0, -1, 0, 4],
+                                    [0, 0, 0, 4],
                                     [0, 1, 0, 4],
                                     [0, 2, 0, 4],
                                     [0, 3, 0, 4],
                                     [0, 4, 0, 4],
+                                    [1, -1, 1, 4],
                                     [1, 0, 1, 4],
                                     [1, 1, 1, 4],
                                     [1, 2, 1, 4],
                                     [1, 3, 1, 4],
                                     [1, 4, 1, 4],
+                                    [2, -1, 2, 4],
                                     [2, 0, 2, 4],
                                     [2, 1, 2, 4],
                                     [2, 2, 2, 4],
@@ -110,23 +118,27 @@ def test_move_generator():
                                     ]
 
     m = MoveGenerator(from_demographic="red")
-    assert m.generate(networks) == [[0, 0, 0, 0],
+    assert m.generate(networks) == [[0, -1, 0, -1],
+                                    [0, 0, 0, 0],
                                     [0, 1, 0, 1],
                                     [0, 2, 0, 2],
                                     [0, 3, 0, 3],
                                     [0, 4, 0, 4]]
 
     m = MoveGenerator(to_demographic="blue")
-    assert m.generate(networks) == [[0, 0, 2, 0],
+    assert m.generate(networks) == [[0, -1, 2, -1],
+                                    [0, 0, 2, 0],
                                     [0, 1, 2, 1],
                                     [0, 2, 2, 2],
                                     [0, 3, 2, 3],
                                     [0, 4, 2, 4],
+                                    [1, -1, 2, -1],
                                     [1, 0, 2, 0],
                                     [1, 1, 2, 1],
                                     [1, 2, 2, 2],
                                     [1, 3, 2, 3],
                                     [1, 4, 2, 4],
+                                    [2, -1, 2, -1],
                                     [2, 0, 2, 0],
                                     [2, 1, 2, 1],
                                     [2, 2, 2, 2],
@@ -135,16 +147,19 @@ def test_move_generator():
                                     ]
 
     m = MoveGenerator(to_demographic="blue", to_stage="R")
-    assert m.generate(networks) == [[0, 0, 2, 4],
+    assert m.generate(networks) == [[0, -1, 2, 4],
+                                    [0, 0, 2, 4],
                                     [0, 1, 2, 4],
                                     [0, 2, 2, 4],
                                     [0, 3, 2, 4],
                                     [0, 4, 2, 4],
+                                    [1, -1, 2, 4],
                                     [1, 0, 2, 4],
                                     [1, 1, 2, 4],
                                     [1, 2, 2, 4],
                                     [1, 3, 2, 4],
                                     [1, 4, 2, 4],
+                                    [2, -1, 2, 4],
                                     [2, 0, 2, 4],
                                     [2, 1, 2, 4],
                                     [2, 2, 2, 4],
@@ -153,15 +168,18 @@ def test_move_generator():
                                     ]
 
     m = MoveGenerator(from_demographic="red", to_demographic="blue",
-                      from_stage=["I1", "I2"], to_stage="R")
+                      from_stage=["I1", "I2"], to_stage="S")
 
-    assert m.generate(networks) == [[0, 2, 2, 4],
-                                    [0, 3, 2, 4]]
+    assert m.generate(networks) == [[0, 2, 2, -1],
+                                    [0, 3, 2, -1]]
 
     m = MoveGenerator(to_ward=1)
 
-    assert m.generate_wards(network) == [[None, (PersonType.PLAYER, 1)]]
-    assert m.generate_wards(networks) == [[None, (PersonType.PLAYER, 1)]]
+    player = PersonType.PLAYER
+    worker = PersonType.WORKER
+
+    assert m.generate_wards(network) == [[None, (player, 1)]]
+    assert m.generate_wards(networks) == [[None, (player, 1)]]
     assert not m.should_move_all()
     assert m.fraction() == 1.0
     assert m.number() > 7000000000
@@ -188,9 +206,6 @@ def test_move_generator():
     assert not m.should_move_all()
     assert m.fraction() == 0.3
     assert m.number() == 100
-
-    player = PersonType.PLAYER
-    worker = PersonType.WORKER
 
     print(m.generate_wards(network))
 
@@ -233,6 +248,48 @@ def test_move_generator():
 
     assert network.links.ifrom[4] == network.get_node_index("london")
     assert network.links.ito[4] == network.get_node_index("bristol")
+
+    bristol_ids = network.get_ward_ids("bristol", include_players=True)
+
+    m = MoveGenerator(from_stage="S", to_stage="R",
+                      from_ward=bristol_ids,
+                      to_ward="oxford",
+                      number=42, fraction=0.5)
+
+    print(m.generate(network))
+    print(m.generate_wards(network))
+
+    assert m.generate(network) == [[0, -1, 0, 4]]
+
+    record = MoveRecord()
+
+    for stage in m.generate(network):
+        for ward in m.generate_wards(network):
+            record.add(from_demographic=stage[0], from_stage=stage[1],
+                       to_demographic=stage[2], to_stage=stage[3],
+                       from_type=ward[0][0], from_ward=ward[0][1],
+                       to_type=ward[1][0], to_ward=ward[1][1],
+                       number=m.number() * m.fraction())
+
+            print(ward)
+
+            assert ward[1] == (player, 3)
+
+            if ward[0][0] == player:
+                assert ward[0][1] == 1
+            else:
+                assert ward[0][0] == worker
+                assert network.links.ifrom[ward[0][1]] == 1
+
+    records = [(0, -1, 1, 1, 0, 4, 2, 3, 21),
+               (0, -1, 1, 2, 0, 4, 2, 3, 21),
+               (0, -1, 1, 3, 0, 4, 2, 3, 21),
+               (0, -1, 2, 1, 0, 4, 2, 3, 21)]
+
+    print(record)
+    for i, move in enumerate(record):
+        print(move)
+        assert move == records[i]
 
 
 if __name__ == "__main__":

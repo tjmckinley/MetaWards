@@ -112,7 +112,7 @@ class MoveGenerator:
             to_stages = self._to_stage
 
             if from_stages is None:
-                from_stages = list(range(0, len(disease)))
+                from_stages = list(range(-1, len(disease)))
             else:
                 from_stages = [disease.get_index(x) for x in from_stages]
 
@@ -167,7 +167,7 @@ class MoveGenerator:
                         f"disease for {to_demo} ({to_disease})")
 
                 if from_stages is None:
-                    from_stages = list(range(0, len(from_disease)))
+                    from_stages = list(range(-1, len(from_disease)))
                 else:
                     from_stages = [from_disease.get_index(x)
                                    for x in from_stages]

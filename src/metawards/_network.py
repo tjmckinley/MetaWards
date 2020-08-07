@@ -33,6 +33,12 @@ class PersonType(_Enum):
     def __repr__(self):
         return str(self)
 
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            return self.value == other.value
+        else:
+            return self.name == other or self.value == other
+
 
 @_dataclass
 class Network:
@@ -273,6 +279,67 @@ class Network:
             lookup_function = add_lookup
 
         lookup_function(self, nthreads=nthreads)
+
+    def get_ward_ids(self,
+                     home: _Union[int, str] = None,
+                     destination: _Union[int, str] = None,
+                     include_players: bool = True) -> _List[WardID]:
+        """Return the WardIDs for all of the wards that
+           match the specified home (or all homes if this is not set),
+           with the specified destination (or all destinations,
+           if this is not set), optionally including player WardIDs
+           if include_players is True. This returns a list
+           of matchinig WardIDs, or an empty list if there are
+           no matches
+        """
+        if home is not None:
+            try:
+                home = self.get_node_index(home)
+            except Exception:
+                return []
+
+        if destination is not None:
+            try:
+                destination = self.get_node_index(destination)
+            except Exception:
+                if include_players:
+                    return [WardID(home)]
+                else:
+                    return []
+
+        wards = []
+
+        links = self.links
+
+        if home is None:
+            if destination is None:
+                for i in range(1, self.nlinks + 1):
+                    wards.append(WardID(links.ifrom[i], links.ito[i]))
+            else:
+                for i in range(1, self.nlinks + 1):
+                    if links.ito[i] == destination:
+                        wards.append(WardID(links.ifrom[i], links.ito[i]))
+        else:
+            nodes = self.nodes
+
+            if destination is None:
+                for i in range(nodes.begin_to[home], nodes.end_to[home]):
+                    assert links.ifrom[i] == home
+                    wards.append(WardID(links.ifrom[i], links.ito[i]))
+            else:
+                for i in range(nodes.begin_to[home], nodes.end_to[home]):
+                    assert links.ifrom[i] == home
+                    if links.ito[i] == destination:
+                        wards.append(WardID(home, destination))
+
+        if include_players:
+            if home is None:
+                for i in range(1, self.nnodes + 1):
+                    wards.append(WardID(i))
+            else:
+                wards.append(WardID(home))
+
+        return wards
 
     def get_index(self, id: WardID) -> _Tuple[PersonType, int]:
         """Return the index of the Node or Link that corresponds
