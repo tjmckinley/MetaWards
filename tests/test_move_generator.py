@@ -1,5 +1,5 @@
 
-from metawards import Parameters, Network, Population, Demographics
+from metawards import Parameters, Network, Population, Demographics, WardID
 from metawards.movers import MoveGenerator
 
 import os
@@ -9,6 +9,12 @@ demography_json = os.path.join(script_dir, "data", "demography.json")
 
 
 def test_move_generator():
+    m = MoveGenerator(fraction=0.3)
+    assert m.fraction() == 0.3
+
+    m = MoveGenerator(number=1000)
+    assert m.number() == 1000
+
     params = Parameters()
     params.set_disease("lurgy")
 
@@ -140,6 +146,15 @@ def test_move_generator():
 
     assert m.generate(networks) == [[0, 2, 2, 4],
                                     [0, 3, 2, 4]]
+
+    m = MoveGenerator(to_ward=5)
+
+    assert m.generate_wards(network) == [[None, WardID(5)]]
+
+    m = MoveGenerator(from_ward=["bristol", WardID("bristol", "london")],
+                      to_ward="oxford")
+
+    print(m.generate_wards(networks))
 
 
 if __name__ == "__main__":

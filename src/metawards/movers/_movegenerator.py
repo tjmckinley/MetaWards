@@ -70,6 +70,17 @@ class MoveGenerator:
             #  a large number that is greater than any ward population
             self._number = 2 ** 32
 
+    def fraction(self):
+        """Return the fraction of individuals in each ward or
+           ward-link who should be moved"""
+        return self._fraction
+
+    def number(self):
+        """Return the maximum number of individuals in each ward
+           of ward-link who should move
+        """
+        return self._number
+
     def generate(self, network: _Union[Network, Networks]):
         """Return a list indexes of the demographics plus infexes
            of the disease stages for from and to for the
@@ -176,3 +187,38 @@ class MoveGenerator:
                           for x, y in zip(from_stages, to_stages)]
 
             return moves
+
+    def should_move_all(self):
+        """Return whether or not all individuals in the specified
+           demographics / disease stages should be moved
+        """
+        return self._from_ward is None and self._to_ward is None
+
+    def generate_wards(self, network):
+        """Return a list of ward to ward moves for workers and players.
+           This returns None if all individuals should be moved
+        """
+        if self.should_move_all():
+            return None
+
+        from_wards = self._from_ward
+        to_wards = self._to_ward
+
+        if from_wards is None:
+            if len(to_wards) != 1:
+                raise ValueError(
+                    f"You cannot move multiple ward-worth of individuals "
+                    f"to more than one ward")
+
+            return [[None, to_wards[0]]]
+
+        if to_wards is None:
+            to_wards = from_wards
+        elif len(to_wards) == 1:
+            to_wards = len(from_wards) * to_wards
+        elif len(to_wards) != len(from_wards):
+            raise ValueError(
+                f"to_wards and from_wards must have the same size if both "
+                f"specify more than one ward")
+
+        return [[x, y] for x, y in zip(from_wards, to_wards)]
