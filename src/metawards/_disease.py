@@ -249,6 +249,10 @@ class Disease:
         """Return the number of stages of the disease"""
         return len(self.beta)
 
+    def assert_sane(self):
+        """Assert that this disease is valid"""
+        self._validate()
+
     def _validate(self):
         """Check that the loaded parameters make sense"""
         try:

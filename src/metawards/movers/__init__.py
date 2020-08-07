@@ -10,6 +10,7 @@ Functions
     go_isolate
     go_stage
     go_to
+    go_ward
 
     move_custom
     move_default
@@ -22,6 +23,7 @@ Functions
 from ._go_isolate import *
 from ._go_stage import *
 from ._go_to import *
+from ._go_ward import *
 
 from ._move_custom import *
 from ._move_default import *

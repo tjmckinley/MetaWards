@@ -23,7 +23,7 @@ from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 from ._movegenerator import MoveGenerator
 from ._moverecord import MoveRecord
 
-__all__ = ["go_stage", "go_stage_serial", "go_stage_parallel"]
+__all__ = ["go_ward", "go_ward_serial", "go_ward_parallel"]
 
 
 def go_ward_parallel(generator: MoveGenerator,
@@ -72,8 +72,8 @@ def go_ward_parallel(generator: MoveGenerator,
     cdef int number = 0
     cdef double fraction = 0.0
 
-    cdef int nnodes_plus_one = 0
-    cdef int nlinks_plus_one = 0
+    cdef int nnodes_plus_one = subnets[0].nnodes + 1
+    cdef int nlinks_plus_one = subnets[0].nlinks + 1
 
     cdef int * to_work_infections
     cdef int * from_work_infections
@@ -303,7 +303,7 @@ def go_ward_parallel(generator: MoveGenerator,
                             to_work_infections[ito] = \
                                             to_work_infections[ito] + nmove
                         else:
-                            to_links_suscept[i] = \
+                            to_links_suscept[ito] = \
                                                 to_links_suscept[ito] + nmove
 
                         to_links_weight[ito] = to_links_weight[ito] + nmove
@@ -312,7 +312,7 @@ def go_ward_parallel(generator: MoveGenerator,
                             to_play_infections[ito] = \
                                         to_play_infections[ito] + nmove
                         else:
-                            to_play_suscept[i] = \
+                            to_play_suscept[ito] = \
                                         to_play_suscept[ito] + nmove
 
                         to_save_play_suscept[ito] = \
@@ -349,7 +349,7 @@ def go_ward_parallel(generator: MoveGenerator,
                                    from_type=from_type,
                                    to_type=to_type,
                                    from_ward=ifrom,
-                                   to_ward=ifrom,
+                                   to_ward=ito,
                                    number=nmove
                                   )
                 # end of if nmove > 0

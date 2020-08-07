@@ -68,7 +68,7 @@ class MoveGenerator:
                 self._number = 0
         else:
             #  a large number that is greater than any ward population
-            self._number = 2 ** 63
+            self._number = 1000000000
 
     def fraction(self):
         """Return the fraction of individuals in each ward or

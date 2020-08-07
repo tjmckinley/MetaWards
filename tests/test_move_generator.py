@@ -26,7 +26,7 @@ def test_move_generator():
     assert m.generate(network) == [[0, 1, 0, 1]]
     assert m.should_move_all()
     assert m.fraction() == 1.0
-    assert m.number() > 7000000000
+    assert m.number() >= 1000000000
 
     m = MoveGenerator(from_stage="E", to_stage="R")
     assert m.generate(network) == [[0, 1, 0, 4]]
@@ -182,7 +182,7 @@ def test_move_generator():
     assert m.generate_wards(networks) == [[None, (player, 1)]]
     assert not m.should_move_all()
     assert m.fraction() == 1.0
-    assert m.number() > 7000000000
+    assert m.number() >= 1000000000
 
     bristol = Ward("bristol")
     london = Ward("london")
