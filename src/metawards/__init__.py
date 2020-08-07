@@ -21,6 +21,7 @@ Classes
     Nodes
     OutputFiles
     Parameters
+    PersonType
     Population
     Populations
     VariableSet
@@ -115,6 +116,7 @@ Node = _lazy_import.lazy_class("._node.Node")
 Nodes = _lazy_import.lazy_class("._nodes.Nodes")
 OutputFiles = _lazy_import.lazy_class("._outputfiles.OutputFiles")
 Parameters = _lazy_import.lazy_class("._parameters.Parameters")
+PersonType = _lazy_import.lazy_class("._network.PersonType")
 Population = _lazy_import.lazy_class("._population.Population")
 Populations = _lazy_import.lazy_class("._population.Populations")
 VariableSet = _lazy_import.lazy_class("._variableset.VariableSet")

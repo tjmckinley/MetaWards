@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Union as _Union
-from typing import List as _List
 
 __all__ = ["WardID"]
 

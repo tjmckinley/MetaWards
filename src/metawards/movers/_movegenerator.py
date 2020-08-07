@@ -68,7 +68,7 @@ class MoveGenerator:
                 self._number = 0
         else:
             #  a large number that is greater than any ward population
-            self._number = 2 ** 32
+            self._number = 2 ** 63
 
     def fraction(self):
         """Return the fraction of individuals in each ward or
@@ -201,6 +201,9 @@ class MoveGenerator:
         if self.should_move_all():
             return None
 
+        if isinstance(network, Networks):
+            network = network.overall
+
         from_wards = self._from_ward
         to_wards = self._to_ward
 
@@ -210,15 +213,19 @@ class MoveGenerator:
                     f"You cannot move multiple ward-worth of individuals "
                     f"to more than one ward")
 
-            return [[None, to_wards[0]]]
+            return [[None, network.get_index(to_wards[0])]]
+
+        from_wards = [network.get_index(x) for x in from_wards]
 
         if to_wards is None:
             to_wards = from_wards
         elif len(to_wards) == 1:
-            to_wards = len(from_wards) * to_wards
+            to_wards = len(from_wards) * [network.get_index(to_wards[0])]
         elif len(to_wards) != len(from_wards):
             raise ValueError(
                 f"to_wards and from_wards must have the same size if both "
                 f"specify more than one ward")
+        else:
+            to_wards = [network.get_index(x) for x in to_wards]
 
         return [[x, y] for x, y in zip(from_wards, to_wards)]

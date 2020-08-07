@@ -2,6 +2,9 @@
 from dataclasses import dataclass as _dataclass
 from typing import List as _List
 from typing import Union as _Union
+from typing import Tuple as _Tuple
+
+from enum import Enum as _Enum
 
 from ._parameters import Parameters
 from ._disease import Disease
@@ -10,8 +13,25 @@ from ._links import Links
 from ._population import Population
 from ._outputfiles import OutputFiles
 from ._wardinfo import WardInfos
+from ._wardid import WardID
 
-__all__ = ["Network"]
+__all__ = ["Network", "PersonType"]
+
+
+class PersonType(_Enum):
+    """The type of individual in the network."""
+    #: A WORKER is an individual that makes fixed movements between
+    #: their home and commute (work) ward
+    WORKER = 1
+    #: A PLAYER is an individual who makes random movements between
+    #: their home ward and the play wards linked to their home ward
+    PLAYER = 2
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return str(self)
 
 
 @_dataclass
@@ -254,6 +274,45 @@ class Network:
 
         lookup_function(self, nthreads=nthreads)
 
+    def get_index(self, id: WardID) -> _Tuple[PersonType, int]:
+        """Return the index of the Node or Link that corresponds
+           to the passed WardID. If this is a player, then it will
+           be the index into Node, while if this is for a worker,
+           then it will be the index of the Link that corresponds
+           to the ward-ward commuter link. This returns a tuple
+           of the PersonType (WORKER or PLAYER) plus the index
+           into the appropriate array.
+
+           This raises a KeyError if there is no ward or ward-link
+           that matches the WardID
+        """
+        if id.is_null():
+            raise ValueError(f"Cannot get the index of a null WardID")
+
+        home = self.get_node_index(id.home())
+
+        if id.is_ward():
+            return (PersonType.PLAYER, home)
+
+        commute = self.get_node_index(id.commute())
+
+        # need to see if there is a work link between these
+        # two wards...
+        wards = self.nodes
+        links = self.links
+
+        if wards.begin_to[home] != -1 and wards.end_to[home] != -1:
+            for i in range(wards.begin_to[home], wards.end_to[home]):
+                ifrom = links.ifrom[i]
+                ito = links.ito[i]
+
+                if ifrom == home and ito == commute:
+                    return (PersonType.WORKER, i)
+
+        raise KeyError(
+            f"There is no work connection between ward {home} and "
+            f"ward {commute}")
+
     def get_node_index(self, index: _Union[str, int]):
         """Return the index of the node in this network that matches
            'index'. This could be an integer, in which case this
@@ -356,7 +415,7 @@ class Network:
     def update(self, params: Parameters, demographics=None, population=None,
                nthreads: int = 1, profiler=None):
         """Update this network with a new set of parameters
-           (and optionally demographics).
+           ( and optionally demographics).
 
            This is used to update the parameters for the network
            for a new run. The network will be reset
@@ -525,7 +584,7 @@ class Network:
                    disease: Disease = None,
                    profiler=None,
                    nthreads: int = 1):
-        """Construct a Network from the passed Wards object (e.g. after
+        """Construct a Network from the passed Wards object(e.g. after
            editing, or restoring from JSON
         """
         from .utils._network_wards import load_from_wards
@@ -549,11 +608,11 @@ class Network:
            All output files are written to 'output_dir'
 
            The simulation will continue until the infection has
-           died out or until 'nsteps' has passed (keep as 'None'
+           died out or until 'nsteps' has passed(keep as 'None'
            to prevent exiting early).
 
            Parameters
-           ----------
+           - ---------
            population: Population
              The initial population at the start of the model outbreak.
              This is also used to set start date and day of the model
@@ -578,10 +637,10 @@ class Network:
              that are used to extract data for analysis or writing to files
            mixer: function
              Function that is used to mix demographic data. Not used
-             by a single Network (used by Networks)
+             by a single Network(used by Networks)
            mover: function
              Function that is used to move the population between different
-             demographics. Not used by a single Network (used by Networks)
+             demographics. Not used by a single Network(used by Networks)
         """
         # Create the random number generator
         from .utils._ran_binomial import seed_ran_binomial, ran_binomial
