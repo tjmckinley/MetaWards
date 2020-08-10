@@ -21,6 +21,12 @@ def go_travel(generator, **kwargs):
     print(record._record)
 
 
+def move_bristol(**kwargs):
+    gen = MoveGenerator(to_ward="bristol")
+    go_bristol = lambda **kwargs: go_travel(generator=gen, **kwargs)
+    return [go_bristol]
+
+
 def move_travel(network, **kwargs):
     gen1 = MoveGenerator(from_ward=network.get_ward_ids("bristol"),
                          from_stage="E",
@@ -98,6 +104,15 @@ def test_go_ward():
     # we should have completed all 200 steps as this will never end
     assert trajectory[-1].day == 200
     assert trajectory[-1].recovereds <= 100
+
+    # move everyone to Bristol
+    with OutputFiles(outdir, force_empty=True, prompt=None) as output_dir:
+        trajectory = network.copy().run(population=Population(),
+                                        output_dir=output_dir,
+                                        mover=move_bristol)
+
+    print(trajectory[-1])
+    assert trajectory[-1].recovereds > 100
 
     # now move through all of bristol, london, oxford
     with OutputFiles(outdir, force_empty=True, prompt=None) as output_dir:

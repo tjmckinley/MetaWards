@@ -238,7 +238,7 @@ def go_isolate_parallel(go_from: _Union[DemographicID, DemographicIDs],
         # we need to recalculate the denominators for the subnets that
         # are involved in this move
         for ii in go_from:
-            subnet.recalculate_denominators(profiler=profiler)
+            subnets[ii].recalculate_denominators(profiler=profiler)
 
         to_subnet.recalculate_denominators(profiler=profiler)
 
@@ -440,7 +440,7 @@ def go_isolate_serial(go_from: _Union[DemographicID, DemographicIDs],
         # we need to recalculate the denominators for the subnets that
         # are involved in this move
         for ii in go_from:
-            subnet.recalculate_denominators(profiler=profiler)
+            subnets[ii].recalculate_denominators(profiler=profiler)
 
         to_subnet.recalculate_denominators(profiler=profiler)
 

@@ -159,13 +159,6 @@ class MoveGenerator:
                 from_stages = self._from_stage
                 to_stages = self._to_stage
 
-                if len(from_disease) != len(to_disease):
-                    raise ValueError(
-                        f"Cannot demographics without specifying the disease "
-                        f"stages to move because the disease for demographic "
-                        f"{from_demo} ({from_disease}) is different to the "
-                        f"disease for {to_demo} ({to_disease})")
-
                 if from_stages is None:
                     from_stages = list(range(-1, len(from_disease)))
                 else:
@@ -173,6 +166,15 @@ class MoveGenerator:
                                    for x in from_stages]
 
                 if to_stages is None:
+                    if len(from_disease) != len(to_disease):
+                        raise ValueError(
+                            f"Cannot change between demographics with "
+                            f"diseases with different numbers of stages "
+                            f"without specifying the to_stages to which "
+                            f"the move should be made. "
+                            f"{from_demo}:{from_disease} is different to "
+                            f"{to_demo}:{to_disease}")
+
                     to_stages = from_stages
                 elif len(to_stages) == 1:
                     to_stages = len(from_stages) * \
