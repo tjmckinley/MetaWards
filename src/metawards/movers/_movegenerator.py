@@ -1,4 +1,6 @@
+from __future__ import annotations
 
+from typing import List as _List
 from typing import Union as _Union
 
 from .._wardid import WardID
@@ -6,6 +8,14 @@ from .._network import Network
 from .._networks import Networks
 
 __all__ = ["MoveGenerator"]
+
+_str_or_int = _Union[str, int]
+_list_str_or_int = _List[_str_or_int]
+_strs_or_ints = _Union[_str_or_int, _list_str_or_int]
+
+_wardid = _Union[str, int, WardID]
+_list_wardids = _List[_wardid]
+_wardids = _Union[_wardid, _list_wardids]
 
 
 def _int_or_str(x):
@@ -40,11 +50,58 @@ def _parse_ward(x):
 
 
 class MoveGenerator:
-    def __init__(self, from_demographic=None, to_demographic=None,
-                 from_stage=None, to_stage=None,
-                 from_ward=None, to_ward=None,
+    def __init__(self,
+                 from_demographic: _strs_or_ints = None,
+                 to_demographic: _strs_or_ints = None,
+                 from_stage: _strs_or_ints = None,
+                 to_stage: _strs_or_ints = None,
+                 from_ward: _wardids = None,
+                 to_ward: _wardids = None,
                  fraction: float = 1.0,
                  number: int = None):
+        """Initialise the generator to generate moves between the
+           specified demographics, and/or stages, and/or wards.
+
+       Parameters
+       ----------
+       from_demographic: int, str or list of int / str
+         The ID(s) of the demographic(s) to move from. This can be either
+         a single demographic (identified by an integer ID or string),
+         a list of demographics, or, if None, then all demographics.
+       to_demographic: int, str or list of int / str
+         The ID(s) of the demographic to move to. This can be either
+         a single demographic (identified by an integer ID or string),
+         a list of demographics, or, if None, then all demographics.
+         If this is not set, then it is equal to "from_demo"
+       from_stage: int, str or list of int / str
+         The ID(s) of the disease stage(s) to move from. This can be either
+         a single stage (identified by an integer ID or string),
+         a list of stages, or, if None, then all stages.
+       to_stage: int, str or list of int / str
+         The ID(s) of the disease stage(s) to move to. This can be either
+         a single stage (identified by an integer ID or string),
+         a list of stages, or, if None, then all stages. If this
+         is not set, then it is equal to "from_stage"
+       from_ward: int, str, WardID, or list of int / str / WardID
+         The ID(s) of the ward(s) or ward-links(s) to move from. This can
+         be either a single ward or ward-link (identified by an integer ID
+         or string or WardID), a list of ward(s)/ward link(s), or, if None,
+         then all wards and ward links.
+       to_ward: int, str, WardID, or list of int / str / WardID
+         The ID(s) of the ward(s) or ward-links(s) to move to. This can
+         be either a single ward or ward-link (identified by an integer ID
+         or string or WardID), a list of ward(s)/ward link(s), or, if None,
+         then all wards and ward links. If this is not set then it is equal
+         to "from_ward"
+       fraction: float
+         The fraction of individuals in each ward to move, e.g. 0.75 would move
+         75% of the individuals in a ward / ward-link. By default 100%
+         are moved.
+       number: int
+         The maximum number of individuals in each ward / ward-link to move.
+         The fraction is taken from min(number, number_in_ward). By
+         default all individuals in a ward / ward-link are sampled.
+        """
         self._from_demo = _parse_int_or_str(from_demographic)
         self._to_demo = _parse_int_or_str(to_demographic)
 
@@ -87,7 +144,7 @@ class MoveGenerator:
            passed networok. This returns a list of quads of
            indicies, e.g.
 
-           [ [from_demographic, from_stage, to_demographic, to_stage],
+           [[from_demographic, from_stage, to_demographic, to_stage],
              [from_demographic, from_stage, to_demographic, to_stage],
              ...
            ]
@@ -96,13 +153,13 @@ class MoveGenerator:
             # make sure that we are only working with a single demographic
             if self._from_demo is not None:
                 for demo in self._from_demo:
-                    if demo != 0 or demo != network.name:
+                    if demo not in [0, network.name]:
                         raise ValueError(
                             f"Incompatible demographic: {self._from_demo}")
 
             if self._to_demo is not None:
                 for demo in self._to_demo:
-                    if demo != 0 or demo != network.name:
+                    if demo not in [0, network.name]:
                         raise ValueError(
                             f"Incompatible demographic: {self._to_demo}")
 

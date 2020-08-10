@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 from typing import Tuple as _Tuple
 
@@ -44,3 +45,27 @@ class MoveRecord:
 
     def __str__(self):
         return f"MoveRecord(count={len(self)})"
+
+    def invert(self) -> MoveRecord:
+        """Return a copy of this record with the moves inverted - i.e.
+           a move of X -> Y of 10 individuals will become a move
+           from Y -> X of 10 individuals. Use this, together with
+           MoveGenerator, to reverse moves
+        """
+        inverted = MoveRecord()
+
+        for r in self._record:
+            (from_demographic, from_stage, from_type, from_ward,
+             to_demographic, to_stage, to_type, to_ward, number) = r
+
+            inverted.add(from_demographic=to_demographic,
+                         from_stage=to_stage,
+                         from_type=to_type,
+                         from_ward=to_ward,
+                         to_demographic=from_demographic,
+                         to_stage=from_stage,
+                         to_type=from_type,
+                         to_ward=from_ward,
+                         number=number)
+
+        return inverted

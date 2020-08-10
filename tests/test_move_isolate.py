@@ -14,7 +14,6 @@ isolate_json = os.path.join(script_dir, "data", "isolate.json")
 def move_isolate(**kwargs):
     func = lambda **kwargs2: go_isolate(go_from="home",
                                         go_to="isolate",
-                                        release_to="released",
                                         self_isolate_stage=2,
                                         **kwargs2)
 

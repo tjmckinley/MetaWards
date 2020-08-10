@@ -23,16 +23,16 @@ from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 from ._movegenerator import MoveGenerator
 from ._moverecord import MoveRecord
 
-__all__ = ["go_ward", "go_ward_serial", "go_ward_parallel"]
+__all__ = ["go_ward"]
 
 
-def go_ward_parallel(generator: MoveGenerator,
-                     network: _Union[Network, Networks],
-                     infections: Infections,
-                     nthreads: int,
-                     rngs,
-                     record: MoveRecord = None,
-                     **kwargs) -> None:
+def go_ward(generator: MoveGenerator,
+            network: _Union[Network, Networks],
+            infections: Infections,
+            rngs,
+            nthreads: int = 1,
+            record: MoveRecord = None,
+            **kwargs) -> None:
     """This go function will move individuals according to the flexible
        move specification described by the passed 'generator'.
 
@@ -67,7 +67,7 @@ def go_ward_parallel(generator: MoveGenerator,
         subinfs = infections.subinfs
 
     cdef int from_stage = 0
-    cdef int to_stage = 1
+    cdef int to_stage = 0
 
     cdef int number = 0
     cdef double fraction = 0.0
@@ -525,36 +525,3 @@ def go_ward_parallel(generator: MoveGenerator,
     # were changed by this move
     for i in affected_subnets.keys():
         subnets[i].recalculate_denominators()
-
-
-def go_ward_serial(**kwargs) -> None:
-    go_ward_parallel(nthreads=1, **kwargs)
-
-
-def go_ward(nthreads: int = 1, **kwargs) -> None:
-    """This go function will move individuals according to the flexible
-       move specification described by the passed 'generator'.
-
-       If you want a record of all moves, then pass in 'record',
-       which will be updated.
-
-       Parameters
-       ----------
-       generator: MoveGenerator
-         Fully describes all of the moves that should be performed
-       network: Network or Networks
-         The network(s) in which the individuals will be moved
-       infections: Infections
-         Current record of infections
-       nthreads: int
-         Number of threads over which to parallelise the move
-       rngs:
-         Thread-safe random number generators used to choose the fraction
-         of individuals
-       record: MoveRecord
-         An optional record to which to record the moves that are performed
-    """
-    if nthreads > 1:
-        go_ward_parallel(nthreads=nthreads, **kwargs)
-    else:
-        go_ward_serial(**kwargs)
