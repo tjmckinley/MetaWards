@@ -163,7 +163,14 @@ class Network:
 
         p = profiler.start("Network.build")
 
-        if params.input_files.is_wards_data:
+        if params.input_files is None:
+            from .utils._console import Console
+            Console.error("You must specify the model/network to use, e.g. "
+                          "setting it from 'single', from a Wards object, "
+                          "or specifying the model to load from "
+                          "MetaWardsData")
+            raise AssertionError("You must specify the model to run")
+        elif params.input_files.is_wards_data:
             from ._wards import Wards
             wards = Wards.from_json(params.input_files.wards_data)
             network = Network.from_wards(wards, params=params,

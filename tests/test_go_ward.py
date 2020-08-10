@@ -79,13 +79,27 @@ def test_go_ward():
     params.set_disease(disease)
     params.add_seeds("1 20 bristol")
 
+    outdir = os.path.join(script_dir, "test_go_ward_output")
+
     network = Network.from_wards(bristol + london + oxford, params=params)
 
+    with OutputFiles(outdir, force_empty=True, prompt=None) as output_dir:
+        trajectory = network.copy().run(population=Population(),
+                                        output_dir=output_dir,
+                                        nthreads=1)
+
+    print(trajectory[-1])
+
+    # there are no workers, so can only infect the 100 Bristolians
+    assert trajectory[-1].recovereds <= 100
+
+    # Repeat with a different number of threads to test parallel code
     outdir = os.path.join(script_dir, "test_go_ward_output")
 
     with OutputFiles(outdir, force_empty=True, prompt=None) as output_dir:
         trajectory = network.copy().run(population=Population(),
-                                        output_dir=output_dir)
+                                        output_dir=output_dir,
+                                        nthreads=4)
 
     print(trajectory[-1])
 
