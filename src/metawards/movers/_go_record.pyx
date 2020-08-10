@@ -51,10 +51,7 @@ def go_record(moves: MoveRecord,
     cdef int to_stage = 0
 
     cdef int from_ward = 0
-    cdef int from_type = 0
-
     cdef int to_ward = 0
-    cdef int to_type = 0
 
     cdef int number = 0
 

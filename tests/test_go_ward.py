@@ -1,5 +1,5 @@
 
-from metawards import Network, Ward, Parameters, Disease, WardID, Population, \
+from metawards import Network, Ward, Parameters, Disease, Population, \
     OutputFiles, PersonType
 from metawards.movers import go_ward, MoveGenerator, MoveRecord
 

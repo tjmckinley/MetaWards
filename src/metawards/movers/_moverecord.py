@@ -60,11 +60,11 @@ class MoveRecord:
 
             inverted.add(from_demographic=to_demographic,
                          from_stage=to_stage,
-                         from_type=to_type,
+                         from_type=PersonType(to_type),
                          from_ward=to_ward,
                          to_demographic=from_demographic,
                          to_stage=from_stage,
-                         to_type=from_type,
+                         to_type=PersonType(from_type),
                          to_ward=from_ward,
                          number=number)
 
