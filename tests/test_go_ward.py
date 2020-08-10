@@ -1,6 +1,6 @@
 
 from metawards import Network, Ward, Parameters, Disease, WardID, Population, \
-    OutputFiles
+    OutputFiles, PersonType
 from metawards.movers import go_ward, MoveGenerator, MoveRecord
 
 import os
@@ -9,46 +9,117 @@ script_dir = os.path.dirname(__file__)
 
 
 def move_cycle(**kwargs):
-    generator = MoveGenerator(from_stage="R", to_stage="S")
-    go_cycle = lambda **kwargs: go_ward(generator=generator, **kwargs)
+    # move individuals back to S when they hit R
+    def go_cycle(population, **kwargs):
+        generator = MoveGenerator(from_stage="R", to_stage="S")
+
+        old_recovereds = population.recovereds
+
+        record = MoveRecord()
+        go_ward(population=population, generator=generator,
+                record=record, **kwargs)
+
+        for r in record:
+            (from_dem, from_stage, from_typ, from_ward,
+             to_dem, to_stage, to_typ, to_ward, number) = r
+
+            assert from_dem == 0
+            assert to_dem == 0
+            assert from_stage == 2
+            assert to_stage == -1
+            assert PersonType.PLAYER == from_typ
+            assert PersonType.PLAYER == to_typ
+            assert from_ward == to_ward
+            assert number == old_recovereds
 
     return [go_cycle]
 
 
-def go_travel(generator, **kwargs):
-    record = MoveRecord()
-    go_ward(generator=generator, record=record, **kwargs)
-    print(record._record)
-
-
 def move_bristol(**kwargs):
-    gen = MoveGenerator(to_ward="bristol")
-    go_bristol = lambda **kwargs: go_travel(generator=gen, **kwargs)
+
+    # move everyone to Bristol
+    def go_bristol(population, **kwargs):
+        gen = MoveGenerator(to_ward="bristol")
+        record = MoveRecord()
+        go_ward(population=population, generator=gen, record=record, **kwargs)
+
+        if population.day == 1:
+            # this should have moved everyone to Bristol
+            assert len(record) == 2
+            # move all 100 players from london to bristol
+            assert (0, -1, 2, 2, 0, -1, 2, 1, 100) in record
+            # move all 100 players from oxford to bristol
+            assert (0, -1, 2, 3, 0, -1, 2, 1, 100) in record
+        else:
+            # no-one left to move
+            assert len(record) == 0
+
     return [go_bristol]
 
 
 def move_travel(network, **kwargs):
-    gen1 = MoveGenerator(from_ward=network.get_ward_ids("bristol"),
-                         from_stage="E",
-                         to_ward="london",
-                         to_stage="E",
-                         fraction=0.5)
+    def go_travel1(**kwargs):
+        gen = MoveGenerator(from_ward=network.get_ward_ids("bristol"),
+                            from_stage="E",
+                            to_ward="london",
+                            to_stage="E",
+                            fraction=0.5)
+        record = MoveRecord()
+        go_ward(generator=gen, record=record, **kwargs)
 
-    gen2 = MoveGenerator(from_ward=network.get_ward_ids("bristol"),
-                         from_stage="E",
-                         to_ward="oxford",
-                         to_stage="E",
-                         fraction=1.0)
+        for r in record:
+            (from_dem, from_stage, from_typ, from_ward,
+             to_dem, to_stage, to_typ, to_ward, number) = r
 
-    gen3 = MoveGenerator(from_ward=network.get_ward_ids("london") +
-                         network.get_ward_ids("bristol"),
-                         from_stage="R",
-                         to_ward="oxford",
-                         to_stage="R")
+            assert from_dem == 0
+            assert to_dem == 0
+            assert from_stage == 0
+            assert to_stage == 0
+            assert from_ward == 1
+            assert to_ward == 2
+            assert number < 100
 
-    go_travel1 = lambda **kwargs: go_travel(generator=gen1, **kwargs)
-    go_travel2 = lambda **kwargs: go_travel(generator=gen2, **kwargs)
-    go_travel3 = lambda **kwargs: go_travel(generator=gen3, **kwargs)
+    def go_travel2(**kwargs):
+        gen = MoveGenerator(from_ward=network.get_ward_ids("bristol"),
+                            from_stage="E",
+                            to_ward="oxford",
+                            to_stage="E",
+                            fraction=1.0)
+        record = MoveRecord()
+        go_ward(generator=gen, record=record, **kwargs)
+
+        for r in record:
+            (from_dem, from_stage, from_typ, from_ward,
+             to_dem, to_stage, to_typ, to_ward, number) = r
+
+            assert from_dem == 0
+            assert to_dem == 0
+            assert from_stage == 0
+            assert to_stage == 0
+            assert from_ward == 1
+            assert to_ward == 3
+            assert number < 100
+
+    def go_travel3(**kwargs):
+        gen = MoveGenerator(from_ward=network.get_ward_ids("london") +
+                            network.get_ward_ids("bristol"),
+                            from_stage="R",
+                            to_ward="oxford",
+                            to_stage="R")
+        record = MoveRecord()
+        go_ward(generator=gen, record=record, **kwargs)
+
+        for r in record:
+            (from_dem, from_stage, from_typ, from_ward,
+             to_dem, to_stage, to_typ, to_ward, number) = r
+
+            print(r)
+            assert from_dem == 0
+            assert to_dem == 0
+            assert from_stage == 2
+            assert to_stage == 2
+            assert from_ward in [1, 2]
+            assert to_ward == 3
 
     return [go_travel1, go_travel2, go_travel3]
 
