@@ -17,6 +17,7 @@ from ..utils._profiler import Profiler
 
 from .._workspace import Workspace
 
+from ..utils._array import create_int_array
 from ..utils._get_array_ptr cimport get_int_array_ptr, get_double_array_ptr
 
 __all__ = ["setup_core", "output_core", "output_core_omp",
@@ -288,10 +289,16 @@ def output_core_omp(network: Network, population: Population,
 
     cdef int first_inf_stage = -1
 
+    is_infected_stage = create_int_array(N_INF_CLASSES)
+    cdef int * is_inf_stage = get_int_array_ptr(is_infected_stage)
+
     for i, is_infected in enumerate(disease.is_infected):
         if is_infected:
-            first_inf_stage = i
-            break
+            if first_inf_stage == -1:
+                first_inf_stage = i
+            is_inf_stage[i] = 1
+        else:
+            is_inf_stage[i] = 0
 
     # Finally some variables used to control parallelisation and
     # some reduction buffers
@@ -399,10 +406,11 @@ def output_core_omp(network: Network, population: Population,
 
                     # inf_tot[i] += infections[i][j]
                     redvar[0].inf_tot += infections_i[j]
-                    # total_inf_ward[ifrom] += infections[i][j]
-                    _add_to_buffer(total_inf_ward_buffer,
-                                   ifrom, infections_i[j],
-                                   &(total_inf_ward[0]), &lock)
+
+                    if is_inf_stage[i]:
+                        _add_to_buffer(total_inf_ward_buffer,
+                                       ifrom, infections_i[j],
+                                       &(total_inf_ward[0]), &lock)
 
                     _add_to_buffer(ward_inf_tot_buffer,
                                    ifrom, infections_i[j],
@@ -444,8 +452,11 @@ def output_core_omp(network: Network, population: Population,
                 if play_infections_i[j] > 0:
                     # pinf_tot[i] += play_infections[i][j]
                     redvar[0].pinf_tot += play_infections_i[j]
-                    # total_inf_ward[j] += play_infections[i][j]
-                    total_inf_ward[j] += play_infections_i[j]
+
+                    if is_inf_stage[i]:
+                        # total_inf_ward[j] += play_infections[i][j]
+                        total_inf_ward[j] += play_infections_i[j]
+
                     ward_inf_tot_i[j] += play_infections_i[j]
                     X_in_wards[j] += play_infections_i[j]
 
@@ -666,10 +677,16 @@ def output_core_serial(network: Network, population: Population,
 
     cdef int first_inf_stage = -1
 
+    is_infected_stage = create_int_array(N_INF_CLASSES)
+    cdef int * is_inf_stage = get_int_array_ptr(is_infected_stage)
+
     for i, is_infected in enumerate(disease.is_infected):
         if is_infected:
-            first_inf_stage = i
-            break
+            if first_inf_stage == -1:
+                first_inf_stage = i
+            is_inf_stage[i] = 1
+        else:
+            is_inf_stage[i] = 0
 
     ###
     ### Finally(!) we can now loop over the links and wards and
@@ -743,7 +760,10 @@ def output_core_serial(network: Network, population: Population,
                         total_new_inf_ward[ifrom] += infections_i[j]
 
                     inf_tot_i += infections_i[j]
-                    total_inf_ward[ifrom] += infections_i[j]
+
+                    if is_inf_stage[i]:
+                        total_inf_ward[ifrom] += infections_i[j]
+
                     ward_inf_tot_i[ifrom] += infections_i[j]
                     X_in_wards[ifrom] += infections_i[j]
 
@@ -766,7 +786,10 @@ def output_core_serial(network: Network, population: Population,
 
                 if play_infections_i[j] > 0:
                     pinf_tot_i += play_infections_i[j]
-                    total_inf_ward[j] += play_infections_i[j]
+
+                    if is_inf_stage[i]:
+                        total_inf_ward[j] += play_infections_i[j]
+
                     ward_inf_tot_i[j] += play_infections_i[j]
                     X_in_wards[j] += play_infections_i[j]
 
