@@ -275,20 +275,26 @@
 <tr class="row-even"><td><a class="reference internal" href="#metawards.Parameters" title="metawards.Parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameters</span></code></a>(input_files,&nbsp;uv_filename,&nbsp;…)</td>
 <td>The full set of Parameters that are used to control the model outbreak over a Network.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Population" title="metawards.Population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Population</span></code></a>(initial,&nbsp;susceptibles,&nbsp;latent,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/metawards.PersonType.html#metawards.PersonType" title="metawards.PersonType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PersonType</span></code></a></td>
+<td>The type of individual in the network.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Population" title="metawards.Population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Population</span></code></a>(initial,&nbsp;susceptibles,&nbsp;latent,&nbsp;…)</td>
 <td>This class holds information about the progress of the disease through the population</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.Populations" title="metawards.Populations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Populations</span></code></a>(_trajectory)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.Populations" title="metawards.Populations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Populations</span></code></a>(_trajectory)</td>
 <td>This class holds the trajectory of Population objects recorded for every step (day) of a model outbreak</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSet" title="metawards.VariableSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableSet</span></code></a>(variables,&nbsp;float]&nbsp;=&nbsp;None,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSet" title="metawards.VariableSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableSet</span></code></a>(variables,&nbsp;float]&nbsp;=&nbsp;None,&nbsp;…)</td>
 <td>This class holds a single set of adjustable variables that are used to adjust the variables as part of a model run</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.VariableSets" title="metawards.VariableSets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableSets</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.VariableSets" title="metawards.VariableSets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableSets</span></code></a>()</td>
 <td>This class holds the collection of all VariableSet objects that contain the set of adjustable variables that are used to control a single run of the model</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.Ward" title="metawards.Ward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ward</span></code></a>(id,&nbsp;name,&nbsp;code,&nbsp;authority,&nbsp;region,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="#metawards.Ward" title="metawards.Ward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ward</span></code></a>(id,&nbsp;name,&nbsp;code,&nbsp;authority,&nbsp;region,&nbsp;…)</td>
 <td>This class holds all of the information about a Ward.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#metawards.WardID" title="metawards.WardID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WardID</span></code></a>(home,&nbsp;str,&nbsp;int,&nbsp;None]&nbsp;=&nbsp;None,&nbsp;…)</td>
+<td>A simple class that identifies a Ward (or Wards), or a connection between Wards.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#metawards.WardInfo" title="metawards.WardInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WardInfo</span></code></a>(name,&nbsp;alternate_names,&nbsp;code,&nbsp;…)</td>
 <td>This class holds metadata about a ward, e.g.</td>
@@ -767,6 +773,12 @@ out automatically by the code.</li>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="metawards.Disease.assert_sane">
+<code class="descname">assert_sane</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_disease.html#Disease.assert_sane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease.assert_sane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that this disease is valid</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="metawards.Disease.beta">
 <code class="descname">beta</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.beta" title="Permalink to this definition">¶</a></dt>
@@ -798,7 +810,9 @@ from the passed file</p>
 <dl class="method">
 <dt id="metawards.Disease.get_index">
 <code class="descname">get_index</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_disease.html#Disease.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease.get_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the index of disease stage ‘idx’ in this disease</p>
+<dd><p>Return the index of disease stage ‘idx’ in this disease.
+Note that “S” is a special name that refers to the
+susceptibles. This will return -1</p>
 </dd></dl>
 
 <dl class="method">
@@ -1561,8 +1575,22 @@ the network that you can use to reset between runs</p>
 <dl class="staticmethod">
 <dt id="metawards.Network.from_wards">
 <em class="property">static </em><code class="descname">from_wards</code><span class="sig-paren">(</span><em>wards</em>, <em>params: metawards._parameters.Parameters = None</em>, <em>disease: metawards._disease.Disease = None</em>, <em>profiler=None</em>, <em>nthreads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_network.html#Network.from_wards"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.from_wards" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a Network from the passed Wards object (e.g. after
+<dd><p>Construct a Network from the passed Wards object(e.g. after
 editing, or restoring from JSON</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Network.get_index">
+<code class="descname">get_index</code><span class="sig-paren">(</span><em>id: metawards._wardid.WardID</em><span class="sig-paren">)</span> &#x2192; Tuple[metawards._network.PersonType, int]<a class="reference internal" href="../_modules/metawards/_network.html#Network.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.get_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the Node or Link that corresponds
+to the passed WardID. If this is a player, then it will
+be the index into Node, while if this is for a worker,
+then it will be the index of the Link that corresponds
+to the ward-ward commuter link. This returns a tuple
+of the PersonType (WORKER or PLAYER) plus the index
+into the appropriate array.</p>
+<p>This raises a KeyError if there is no ward or ward-link
+that matches the WardID</p>
 </dd></dl>
 
 <dl class="method">
@@ -1581,6 +1609,18 @@ will directly look up the index of the node in the
 Nodes, or else it could be a string, in which case
 the WardInfo will be used to identify the node and
 look up the index from there.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Network.get_ward_ids">
+<code class="descname">get_ward_ids</code><span class="sig-paren">(</span><em>home: Union[int</em>, <em>str] = None</em>, <em>destination: Union[int</em>, <em>str] = None</em>, <em>include_players: bool = True</em><span class="sig-paren">)</span> &#x2192; List[metawards._wardid.WardID]<a class="reference internal" href="../_modules/metawards/_network.html#Network.get_ward_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.get_ward_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the WardIDs for all of the wards that
+match the specified home (or all homes if this is not set),
+with the specified destination (or all destinations,
+if this is not set), optionally including player WardIDs
+if include_players is True. This returns a list
+of matchinig WardIDs, or an empty list if there are
+no matches</p>
 </dd></dl>
 
 <dl class="method">
@@ -1717,36 +1757,41 @@ The random number seed is given in ‘seed’. If this
 is None, then a random seed is used.</p>
 <p>All output files are written to ‘output_dir’</p>
 <p>The simulation will continue until the infection has
-died out or until ‘nsteps’ has passed (keep as ‘None’
+died out or until ‘nsteps’ has passed(keep as ‘None’
 to prevent exiting early).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>population</strong> (<a class="reference internal" href="#metawards.Population" title="metawards.Population"><em>Population</em></a>) – The initial population at the start of the model outbreak.
+<p>Parameters
+- ———
+population: Population</p>
+<blockquote>
+<div>The initial population at the start of the model outbreak.
 This is also used to set start date and day of the model
-outbreak</li>
-<li><strong>output_dir</strong> (<a class="reference internal" href="#metawards.OutputFiles" title="metawards.OutputFiles"><em>OutputFiles</em></a>) – The directory to write all of the output into</li>
-<li><strong>seed</strong> (<em>int</em>) – The random number seed used for this model run. If this is
-None then a very random random number seed will be used</li>
-<li><strong>nsteps</strong> (<em>int</em>) – The maximum number of steps to run in the outbreak. If None
-then run until the outbreak has finished</li>
-<li><strong>profiler</strong> (<a class="reference internal" href="generated/metawards.utils.Profiler.html#metawards.utils.Profiler" title="metawards.utils.Profiler"><em>Profiler</em></a>) – The profiler to use - a new one is created if one isn’t passed</li>
-<li><strong>nthreads</strong> (<em>int</em>) – Number of threads over which to parallelise this model run</li>
-<li><strong>iterator</strong> (<em>function</em>) – Function that is called at each iteration to get the functions
-that are used to advance the model</li>
-<li><strong>extractor</strong> (<em>function</em>) – Function that is called at each iteration to get the functions
-that are used to extract data for analysis or writing to files</li>
-<li><strong>mixer</strong> (<em>function</em>) – Function that is used to mix demographic data. Not used
-by a single Network (used by Networks)</li>
-<li><strong>mover</strong> (<em>function</em>) – Function that is used to move the population between different
-demographics. Not used by a single Network (used by Networks)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+outbreak</div></blockquote>
+<dl class="docutils">
+<dt>output_dir: OutputFiles</dt>
+<dd>The directory to write all of the output into</dd>
+<dt>seed: int</dt>
+<dd>The random number seed used for this model run. If this is
+None then a very random random number seed will be used</dd>
+<dt>nsteps: int</dt>
+<dd>The maximum number of steps to run in the outbreak. If None
+then run until the outbreak has finished</dd>
+<dt>profiler: Profiler</dt>
+<dd>The profiler to use - a new one is created if one isn’t passed</dd>
+<dt>nthreads: int</dt>
+<dd>Number of threads over which to parallelise this model run</dd>
+<dt>iterator: function</dt>
+<dd>Function that is called at each iteration to get the functions
+that are used to advance the model</dd>
+<dt>extractor: function</dt>
+<dd>Function that is called at each iteration to get the functions
+that are used to extract data for analysis or writing to files</dd>
+<dt>mixer: function</dt>
+<dd>Function that is used to mix demographic data. Not used
+by a single Network(used by Networks)</dd>
+<dt>mover: function</dt>
+<dd>Function that is used to move the population between different
+demographics. Not used by a single Network(used by Networks)</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1827,7 +1872,7 @@ to JSON</p>
 <dt id="metawards.Network.update">
 <code class="descname">update</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>demographics=None</em>, <em>population=None</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_network.html#Network.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update this network with a new set of parameters
-(and optionally demographics).</p>
+( and optionally demographics).</p>
 <p>This is used to update the parameters for the network
 for a new run. The network will be reset
 and ready for a new run.</p>
@@ -2078,7 +2123,7 @@ Demographics</p>
 
 <dl class="class">
 <dt id="metawards.Node">
-<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>label: int = None</em>, <em>begin_to: int = None</em>, <em>end_to: int = None</em>, <em>self_w: int = None</em>, <em>begin_p: int = None</em>, <em>end_p: int = None</em>, <em>self_p: int = None</em>, <em>day_foi: float = 0.0</em>, <em>night_foi: float = 0.0</em>, <em>weekend_foi: float = 0.0</em>, <em>play_suscept: float = 0.0</em>, <em>save_play_suscept: float = 0.0</em>, <em>denominator_n: float = 0.0</em>, <em>denominator_d: float = 0.0</em>, <em>denominator_p: float = 0.0</em>, <em>denominator_pd: float = 0.0</em>, <em>x: float = 0.0</em>, <em>y: float = 0.0</em>, <em>scale_uv: float = 1.0</em>, <em>cutoff: float = 99999.99</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_node.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Node" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>label: int = None</em>, <em>begin_to: int = None</em>, <em>end_to: int = None</em>, <em>self_w: int = None</em>, <em>begin_p: int = None</em>, <em>end_p: int = None</em>, <em>self_p: int = None</em>, <em>day_foi: float = 0.0</em>, <em>night_foi: float = 0.0</em>, <em>weekend_foi: float = 0.0</em>, <em>play_suscept: float = 0.0</em>, <em>save_play_suscept: float = 0.0</em>, <em>denominator_n: float = 0.0</em>, <em>denominator_d: float = 0.0</em>, <em>denominator_p: float = 0.0</em>, <em>denominator_pd: float = 0.0</em>, <em>x: float = 0.0</em>, <em>y: float = 0.0</em>, <em>scale_uv: float = 1.0</em>, <em>cutoff: float = 99999.99</em>, <em>bg_foi: float = 0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_node.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class represents an electoral ward (node) in the network</p>
 <dl class="attribute">
 <dt id="metawards.Node.begin_p">
@@ -2092,6 +2137,12 @@ play Links list (play)</p>
 <code class="descname">begin_to</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Node.begin_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>The index (int) of the first link for this node in the
 network Links list</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Node.bg_foi">
+<code class="descname">bg_foi</code><em class="property"> = 0.0</em><a class="headerlink" href="#metawards.Node.bg_foi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Per-ward background FOI (starting value for FOI calculations)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2219,6 +2270,15 @@ so that “-1” refers to the last node in the collection</p>
 <dt id="metawards.Nodes.begin_to">
 <code class="descname">begin_to</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.begin_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>The start index for work links</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Nodes.bg_foi">
+<code class="descname">bg_foi</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Nodes.bg_foi" title="Permalink to this definition">¶</a></dt>
+<dd><p>per-ward bg_foi value - this the starting FOI for the
+ward in the FOI calculation. This defaults to 0.0,
+but can be set to larger values if you want the ward
+to have a background FOI that drives infections</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -3749,6 +3809,18 @@ added to the home-ward player weight</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="metawards.Ward.bg_foi">
+<code class="descname">bg_foi</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/metawards/_ward.html#Ward.bg_foi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.bg_foi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the background force of infection (FOI). This is the
+starting value for ward FOI calculations. It defaults to 0.0.
+Positive values are used when you want the ward to have some
+background effect that drives infections independently of
+the number of infecteds. Negative values imply a background
+effect that reduces the risk of infection, regardless of
+the number of infecteds</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="metawards.Ward.code">
 <code class="descname">code</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the code of this ward</p>
@@ -3862,7 +3934,8 @@ this ward are unresolved, or whether the ID of this ward is None</p>
 and the ID numbers must match (or be None).</p>
 <p>This will add the workers from ‘other’ to this ward,
 plus will average the player weights between the two</p>
-<p>This will do nothing to the scale_uv, cutoff or custom parameters</p>
+<p>This will do nothing to the scale_uv, cutoff,
+bg_foi or custom parameters</p>
 </dd></dl>
 
 <dl class="method">
@@ -3978,6 +4051,18 @@ FOI calculation</p>
 <code class="descname">set_auto_assign_players</code><span class="sig-paren">(</span><em>auto_assign_players: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.set_auto_assign_players"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_auto_assign_players" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return whether or not the remaining player weight is automatically
 assigned to the home-ward player weight</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Ward.set_bg_foi">
+<code class="descname">set_bg_foi</code><span class="sig-paren">(</span><em>bg_foi: float</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.set_bg_foi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.set_bg_foi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the background force of infection (FOI). This is the
+starting value for ward FOI calculations. It defaults to 0.0.
+Positive values are used when you want the ward to have some
+background effect that drives infections independently of
+the number of infecteds. Negative values imply a background
+effect that reduces the risk of infection, regardless of
+the number of infecteds</p>
 </dd></dl>
 
 <dl class="method">
@@ -4128,6 +4213,71 @@ the json-serialised string</p>
 <dt id="metawards.Ward.work_connections">
 <code class="descname">work_connections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.work_connections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.work_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the full list of work connections for this ward</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="metawards.WardID">
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">WardID</code><span class="sig-paren">(</span><em>home: Union[metawards._wardid.WardID</em>, <em>str</em>, <em>int</em>, <em>None] = None</em>, <em>commute: Union[metawards._wardid.WardID</em>, <em>str</em>, <em>int</em>, <em>None] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple class that identifies a Ward (or Wards),
+or a connection between Wards. This could be used,
+e.g. to specify ward moves</p>
+<dl class="method">
+<dt id="metawards.WardID.__eq__">
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self==value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.WardID.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>home: Union[metawards._wardid.WardID</em>, <em>str</em>, <em>int</em>, <em>None] = None</em>, <em>commute: Union[metawards._wardid.WardID</em>, <em>str</em>, <em>int</em>, <em>None] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a WardID that identifies the ‘home’ ward, and (optionally)
+the ‘commute’ ward if this is a ward-link (used to identify
+workers)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.WardID.__repr__">
+<code class="descname">__repr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.WardID.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.WardID.commute">
+<code class="descname">commute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID.commute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID.commute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the commute ward is this is a ward connection</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.WardID.home">
+<code class="descname">home</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID.home"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID.home" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the home ward</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.WardID.is_null">
+<code class="descname">is_null</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID.is_null"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID.is_null" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not this is null</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.WardID.is_ward">
+<code class="descname">is_ward</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID.is_ward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID.is_ward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not this specifies a single ward</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.WardID.is_ward_connection">
+<code class="descname">is_ward_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_wardid.html#WardID.is_ward_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.WardID.is_ward_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not this is a ward connection
+(has both a home and commute ward)</p>
 </dd></dl>
 
 </dd></dl>
@@ -4682,7 +4832,7 @@ By default we zero the subspace networks
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 06, 2020.
+        Last updated on Aug 11, 2020.
       </span>
 
     </p>

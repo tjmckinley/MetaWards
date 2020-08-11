@@ -269,28 +269,31 @@ the Disease.load function, e.g.</p>
 <tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.add" title="metawards.Disease.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(name,&nbsp;mapping,&nbsp;beta,&nbsp;progress,&nbsp;…)</td>
 <td>Add a new stage to the disease.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.from_data" title="metawards.Disease.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a>(data)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.assert_sane" title="metawards.Disease.assert_sane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_sane</span></code></a>()</td>
+<td>Assert that this disease is valid</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.from_data" title="metawards.Disease.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a>(data)</td>
 <td>Return a new Disease constructed from the passed data dictionary (e.g.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.from_json" title="metawards.Disease.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a>(s)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.from_json" title="metawards.Disease.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a>(s)</td>
 <td>Return the Disease constructed from the passed json.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.get_index" title="metawards.Disease.get_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index</span></code></a>(idx)</td>
-<td>Return the index of disease stage ‘idx’ in this disease</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.get_index" title="metawards.Disease.get_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index</span></code></a>(idx)</td>
+<td>Return the index of disease stage ‘idx’ in this disease.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.get_mapping_to" title="metawards.Disease.get_mapping_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mapping_to</span></code></a>(other)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.get_mapping_to" title="metawards.Disease.get_mapping_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mapping_to</span></code></a>(other)</td>
 <td>Return the mapping from stage index i of this disease to stage index j other the passed other disease.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.insert" title="metawards.Disease.insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code></a>(index,&nbsp;name,&nbsp;mapping,&nbsp;beta,&nbsp;progress,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.insert" title="metawards.Disease.insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code></a>(index,&nbsp;name,&nbsp;mapping,&nbsp;beta,&nbsp;progress,&nbsp;…)</td>
 <td>Insert a new stage into the disease.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.load" title="metawards.Disease.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(disease,&nbsp;repository,&nbsp;folder,&nbsp;filename)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.load" title="metawards.Disease.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(disease,&nbsp;repository,&nbsp;folder,&nbsp;filename)</td>
 <td>Load the disease parameters for the specified disease.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.to_data" title="metawards.Disease.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.to_data" title="metawards.Disease.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a>()</td>
 <td>Return a data dictionary version of this disease, suitable for serialising to, e.g., json</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.to_json" title="metawards.Disease.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a>(filename,&nbsp;indent,&nbsp;auto_bzip)</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.to_json" title="metawards.Disease.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a>(filename,&nbsp;indent,&nbsp;auto_bzip)</td>
 <td>Serialise the Disease to JSON.</td>
 </tr>
 </tbody>
@@ -402,6 +405,12 @@ out automatically by the code.</li>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="metawards.Disease.assert_sane">
+<code class="descname">assert_sane</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_disease.html#Disease.assert_sane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease.assert_sane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that this disease is valid</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="metawards.Disease.beta">
 <code class="descname">beta</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.beta" title="Permalink to this definition">¶</a></dt>
@@ -433,7 +442,9 @@ from the passed file</p>
 <dl class="method">
 <dt id="metawards.Disease.get_index">
 <code class="descname">get_index</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_disease.html#Disease.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease.get_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the index of disease stage ‘idx’ in this disease</p>
+<dd><p>Return the index of disease stage ‘idx’ in this disease.
+Note that “S” is a special name that refers to the
+susceptibles. This will return -1</p>
 </dd></dl>
 
 <dl class="method">
@@ -628,7 +639,7 @@ the json-serialised string</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 06, 2020.
+        Last updated on Aug 11, 2020.
       </span>
 
     </p>

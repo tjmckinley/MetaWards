@@ -16,6 +16,7 @@ metawards.Disease
       ~Disease.N_INF_CLASSES
       ~Disease.__init__
       ~Disease.add
+      ~Disease.assert_sane
       ~Disease.from_data
       ~Disease.from_json
       ~Disease.get_index

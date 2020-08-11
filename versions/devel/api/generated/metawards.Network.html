@@ -258,13 +258,19 @@ work (predictable movements) and play (unpredictable movements)</p>
 <td>Return a copy of this Network.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Network.from_wards" title="metawards.Network.from_wards"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_wards</span></code></a>(wards,&nbsp;params,&nbsp;disease[,&nbsp;profiler])</td>
-<td>Construct a Network from the passed Wards object (e.g.</td>
+<td>Construct a Network from the passed Wards object(e.g.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Network.get_min_max_distances" title="metawards.Network.get_min_max_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_min_max_distances</span></code></a>(nthreads[,&nbsp;profiler])</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Network.get_index" title="metawards.Network.get_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index</span></code></a>(id)</td>
+<td>Return the index of the Node or Link that corresponds to the passed WardID.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Network.get_min_max_distances" title="metawards.Network.get_min_max_distances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_min_max_distances</span></code></a>(nthreads[,&nbsp;profiler])</td>
 <td>Calculate and return the minimum and maximum distances between nodes in the network</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Network.get_node_index" title="metawards.Network.get_node_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_node_index</span></code></a>(index,&nbsp;int])</td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Network.get_node_index" title="metawards.Network.get_node_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_node_index</span></code></a>(index,&nbsp;int])</td>
 <td>Return the index of the node in this network that matches ‘index’.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Network.get_ward_ids" title="metawards.Network.get_ward_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ward_ids</span></code></a>(home,&nbsp;str]&nbsp;=&nbsp;None,&nbsp;destination,&nbsp;…)</td>
+<td>Return the WardIDs for all of the wards that match the specified home (or all homes if this is not set), with the specified destination (or all destinations, if this is not set), optionally including player WardIDs if include_players is True.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Network.get_work_index" title="metawards.Network.get_work_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_work_index</span></code></a>()</td>
 <td>Return the mapping from the index in this sub-networks work matrix to the mapping in the overall network’s work matrix</td>
@@ -303,7 +309,7 @@ work (predictable movements) and play (unpredictable movements)</p>
 <td>Return the ward-level data in this network converted to a Wards object.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Network.update" title="metawards.Network.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(params[,&nbsp;demographics,&nbsp;population,&nbsp;…])</td>
-<td>Update this network with a new set of parameters (and optionally demographics).</td>
+<td>Update this network with a new set of parameters ( and optionally demographics).</td>
 </tr>
 </tbody>
 </table>
@@ -390,8 +396,22 @@ the network that you can use to reset between runs</p>
 <dl class="staticmethod">
 <dt id="metawards.Network.from_wards">
 <em class="property">static </em><code class="descname">from_wards</code><span class="sig-paren">(</span><em>wards</em>, <em>params: metawards._parameters.Parameters = None</em>, <em>disease: metawards._disease.Disease = None</em>, <em>profiler=None</em>, <em>nthreads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.from_wards"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.from_wards" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a Network from the passed Wards object (e.g. after
+<dd><p>Construct a Network from the passed Wards object(e.g. after
 editing, or restoring from JSON</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Network.get_index">
+<code class="descname">get_index</code><span class="sig-paren">(</span><em>id: metawards._wardid.WardID</em><span class="sig-paren">)</span> &#x2192; Tuple[metawards._network.PersonType, int]<a class="reference internal" href="../../_modules/metawards/_network.html#Network.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.get_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the Node or Link that corresponds
+to the passed WardID. If this is a player, then it will
+be the index into Node, while if this is for a worker,
+then it will be the index of the Link that corresponds
+to the ward-ward commuter link. This returns a tuple
+of the PersonType (WORKER or PLAYER) plus the index
+into the appropriate array.</p>
+<p>This raises a KeyError if there is no ward or ward-link
+that matches the WardID</p>
 </dd></dl>
 
 <dl class="method">
@@ -410,6 +430,18 @@ will directly look up the index of the node in the
 Nodes, or else it could be a string, in which case
 the WardInfo will be used to identify the node and
 look up the index from there.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="metawards.Network.get_ward_ids">
+<code class="descname">get_ward_ids</code><span class="sig-paren">(</span><em>home: Union[int</em>, <em>str] = None</em>, <em>destination: Union[int</em>, <em>str] = None</em>, <em>include_players: bool = True</em><span class="sig-paren">)</span> &#x2192; List[metawards._wardid.WardID]<a class="reference internal" href="../../_modules/metawards/_network.html#Network.get_ward_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.get_ward_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the WardIDs for all of the wards that
+match the specified home (or all homes if this is not set),
+with the specified destination (or all destinations,
+if this is not set), optionally including player WardIDs
+if include_players is True. This returns a list
+of matchinig WardIDs, or an empty list if there are
+no matches</p>
 </dd></dl>
 
 <dl class="method">
@@ -546,36 +578,41 @@ The random number seed is given in ‘seed’. If this
 is None, then a random seed is used.</p>
 <p>All output files are written to ‘output_dir’</p>
 <p>The simulation will continue until the infection has
-died out or until ‘nsteps’ has passed (keep as ‘None’
+died out or until ‘nsteps’ has passed(keep as ‘None’
 to prevent exiting early).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>population</strong> (<a class="reference internal" href="../index_api_MetaWards.html#metawards.Population" title="metawards.Population"><em>Population</em></a>) – The initial population at the start of the model outbreak.
+<p>Parameters
+- ———
+population: Population</p>
+<blockquote>
+<div>The initial population at the start of the model outbreak.
 This is also used to set start date and day of the model
-outbreak</li>
-<li><strong>output_dir</strong> (<a class="reference internal" href="../index_api_MetaWards.html#metawards.OutputFiles" title="metawards.OutputFiles"><em>OutputFiles</em></a>) – The directory to write all of the output into</li>
-<li><strong>seed</strong> (<em>int</em>) – The random number seed used for this model run. If this is
-None then a very random random number seed will be used</li>
-<li><strong>nsteps</strong> (<em>int</em>) – The maximum number of steps to run in the outbreak. If None
-then run until the outbreak has finished</li>
-<li><strong>profiler</strong> (<a class="reference internal" href="metawards.utils.Profiler.html#metawards.utils.Profiler" title="metawards.utils.Profiler"><em>Profiler</em></a>) – The profiler to use - a new one is created if one isn’t passed</li>
-<li><strong>nthreads</strong> (<em>int</em>) – Number of threads over which to parallelise this model run</li>
-<li><strong>iterator</strong> (<em>function</em>) – Function that is called at each iteration to get the functions
-that are used to advance the model</li>
-<li><strong>extractor</strong> (<em>function</em>) – Function that is called at each iteration to get the functions
-that are used to extract data for analysis or writing to files</li>
-<li><strong>mixer</strong> (<em>function</em>) – Function that is used to mix demographic data. Not used
-by a single Network (used by Networks)</li>
-<li><strong>mover</strong> (<em>function</em>) – Function that is used to move the population between different
-demographics. Not used by a single Network (used by Networks)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+outbreak</div></blockquote>
+<dl class="docutils">
+<dt>output_dir: OutputFiles</dt>
+<dd>The directory to write all of the output into</dd>
+<dt>seed: int</dt>
+<dd>The random number seed used for this model run. If this is
+None then a very random random number seed will be used</dd>
+<dt>nsteps: int</dt>
+<dd>The maximum number of steps to run in the outbreak. If None
+then run until the outbreak has finished</dd>
+<dt>profiler: Profiler</dt>
+<dd>The profiler to use - a new one is created if one isn’t passed</dd>
+<dt>nthreads: int</dt>
+<dd>Number of threads over which to parallelise this model run</dd>
+<dt>iterator: function</dt>
+<dd>Function that is called at each iteration to get the functions
+that are used to advance the model</dd>
+<dt>extractor: function</dt>
+<dd>Function that is called at each iteration to get the functions
+that are used to extract data for analysis or writing to files</dd>
+<dt>mixer: function</dt>
+<dd>Function that is used to mix demographic data. Not used
+by a single Network(used by Networks)</dd>
+<dt>mover: function</dt>
+<dd>Function that is used to move the population between different
+demographics. Not used by a single Network(used by Networks)</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -656,7 +693,7 @@ to JSON</p>
 <dt id="metawards.Network.update">
 <code class="descname">update</code><span class="sig-paren">(</span><em>params: metawards._parameters.Parameters</em>, <em>demographics=None</em>, <em>population=None</em>, <em>nthreads: int = 1</em>, <em>profiler=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#Network.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Network.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update this network with a new set of parameters
-(and optionally demographics).</p>
+( and optionally demographics).</p>
 <p>This is used to update the parameters for the network
 for a new run. The network will be reset
 and ready for a new run.</p>
@@ -717,7 +754,7 @@ Demographics</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 06, 2020.
+        Last updated on Aug 11, 2020.
       </span>
 
     </p>

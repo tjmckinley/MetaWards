@@ -1,0 +1,27 @@
+metawards.movers.MoveGenerator
+==============================
+
+.. currentmodule:: metawards.movers
+
+.. autoclass:: MoveGenerator
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MoveGenerator.__init__
+      ~MoveGenerator.fraction
+      ~MoveGenerator.generate
+      ~MoveGenerator.generate_wards
+      ~MoveGenerator.number
+      ~MoveGenerator.should_move_all
+   
+   
+
+   
+   
+   

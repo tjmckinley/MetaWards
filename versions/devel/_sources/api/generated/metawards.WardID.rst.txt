@@ -1,0 +1,27 @@
+metawards.WardID
+================
+
+.. currentmodule:: metawards
+
+.. autoclass:: WardID
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~WardID.__init__
+      ~WardID.commute
+      ~WardID.home
+      ~WardID.is_null
+      ~WardID.is_ward
+      ~WardID.is_ward_connection
+   
+   
+
+   
+   
+   

@@ -27,6 +27,7 @@ metawards.Node
    
       ~Node.begin_p
       ~Node.begin_to
+      ~Node.bg_foi
       ~Node.cutoff
       ~Node.day_foi
       ~Node.denominator_d

@@ -289,6 +289,12 @@
             <span class="c1">#: (distance in k)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="n">create_double_array</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mf">99999.99</span><span class="p">)</span>
 
+            <span class="c1">#: per-ward bg_foi value - this the starting FOI for the</span>
+            <span class="c1">#: ward in the FOI calculation. This defaults to 0.0,</span>
+            <span class="c1">#: but can be set to larger values if you want the ward</span>
+            <span class="c1">#: to have a background FOI that drives infections</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bg_foi</span> <span class="o">=</span> <span class="n">create_double_array</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
             <span class="c1">#: Coordinate system used (x/y for X,Y in km, lat/long for</span>
             <span class="c1">#: latitude and longitude)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="s2">&quot;x/y&quot;</span>
@@ -338,6 +344,7 @@
 
         <span class="n">nodes</span><span class="o">.</span><span class="n">scale_uv</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_uv</span><span class="p">)</span>
         <span class="n">nodes</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">bg_foi</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bg_foi</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">nodes</span><span class="o">.</span><span class="n">_custom_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -429,6 +436,7 @@
 
                         <span class="n">scale_uv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_uv</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                         <span class="n">cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                        <span class="n">bg_foi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bg_foi</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
 
                         <span class="n">_custom_params</span><span class="o">=</span><span class="n">custom_params</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -480,6 +488,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">cutoff</span> \
             <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">99999.99</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bg_foi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">bg_foi</span> \
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">bg_foi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">0.0</span>
 
         <span class="kn">from</span> <span class="nn">.utils._array</span> <span class="kn">import</span> <span class="n">create_double_array</span>
 
@@ -538,6 +549,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">scale_uv</span> <span class="o">=</span> <span class="n">resize_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_uv</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="n">resize_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mf">99999.99</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bg_foi</span> <span class="o">=</span> <span class="n">resize_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bg_foi</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_custom_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">resize_array</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div>
@@ -645,7 +657,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 06, 2020.
+        Last updated on Aug 11, 2020.
       </span>
 
     </p>

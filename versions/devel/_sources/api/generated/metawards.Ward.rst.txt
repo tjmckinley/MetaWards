@@ -19,6 +19,7 @@ metawards.Ward
       ~Ward.assert_sane
       ~Ward.authority
       ~Ward.auto_assign_players
+      ~Ward.bg_foi
       ~Ward.code
       ~Ward.custom
       ~Ward.cutoff
@@ -49,6 +50,7 @@ metawards.Ward
       ~Ward.scale_uv
       ~Ward.set_authority
       ~Ward.set_auto_assign_players
+      ~Ward.set_bg_foi
       ~Ward.set_code
       ~Ward.set_custom
       ~Ward.set_cutoff
