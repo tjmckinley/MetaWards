@@ -2,6 +2,9 @@
 from dataclasses import dataclass as _dataclass
 from typing import List as _List
 from typing import Union as _Union
+from typing import Tuple as _Tuple
+
+from enum import Enum as _Enum
 
 from ._parameters import Parameters
 from ._disease import Disease
@@ -10,8 +13,31 @@ from ._links import Links
 from ._population import Population
 from ._outputfiles import OutputFiles
 from ._wardinfo import WardInfos
+from ._wardid import WardID
 
-__all__ = ["Network"]
+__all__ = ["Network", "PersonType"]
+
+
+class PersonType(_Enum):
+    """The type of individual in the network."""
+    #: A WORKER is an individual that makes fixed movements between
+    #: their home and commute (work) ward
+    WORKER = 1
+    #: A PLAYER is an individual who makes random movements between
+    #: their home ward and the play wards linked to their home ward
+    PLAYER = 2
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return str(self)
+
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            return self.value == other.value
+        else:
+            return self.name == other or self.value == other
 
 
 @_dataclass
@@ -137,7 +163,14 @@ class Network:
 
         p = profiler.start("Network.build")
 
-        if params.input_files.is_wards_data:
+        if params.input_files is None:
+            from .utils._console import Console
+            Console.error("You must specify the model/network to use, e.g. "
+                          "setting it from 'single', from a Wards object, "
+                          "or specifying the model to load from "
+                          "MetaWardsData")
+            raise AssertionError("You must specify the model to run")
+        elif params.input_files.is_wards_data:
             from ._wards import Wards
             wards = Wards.from_json(params.input_files.wards_data)
             network = Network.from_wards(wards, params=params,
@@ -197,29 +230,25 @@ class Network:
         # By default, we initialise the network ready for a run,
         # namely make sure everything is reset and the population
         # is at work
-        Console.print("Reset everything...")
         p = p.start("reset_everything")
         network.reset_everything(nthreads=nthreads, profiler=p)
         p = p.stop()
 
-        Console.print("Rescale play matrix...")
         p = p.start("rescale_play_matrix")
         network.rescale_play_matrix(nthreads=nthreads, profiler=p)
         p = p.stop()
 
-        Console.print("Move population from play to work...")
         p = p.start("move_from_play_to_work")
         network.move_from_play_to_work(nthreads=nthreads, profiler=p)
         p = p.stop()
 
         if not p.is_null():
             p = p.stop()
-            print(p)
+            Console.print(str(p))
 
-        Console.print(f"**Network loaded. Population: {network.population}, "
+        Console.print(f"[bold]Network loaded. Population: {network.population}, "
                       f"Workers: {network.work_population}, Players: "
-                      f"{network.play_population}**",
-                      markdown=True)
+                      f"{network.play_population}[/]", markup=True)
 
         return network
 
@@ -257,6 +286,106 @@ class Network:
             lookup_function = add_lookup
 
         lookup_function(self, nthreads=nthreads)
+
+    def get_ward_ids(self,
+                     home: _Union[int, str] = None,
+                     destination: _Union[int, str] = None,
+                     include_players: bool = True) -> _List[WardID]:
+        """Return the WardIDs for all of the wards that
+           match the specified home (or all homes if this is not set),
+           with the specified destination (or all destinations,
+           if this is not set), optionally including player WardIDs
+           if include_players is True. This returns a list
+           of matchinig WardIDs, or an empty list if there are
+           no matches
+        """
+        if home is not None:
+            try:
+                home = self.get_node_index(home)
+            except Exception:
+                return []
+
+        if destination is not None:
+            try:
+                destination = self.get_node_index(destination)
+            except Exception:
+                if include_players:
+                    return [WardID(home)]
+                else:
+                    return []
+
+        wards = []
+
+        links = self.links
+
+        if home is None:
+            if destination is None:
+                for i in range(1, self.nlinks + 1):
+                    wards.append(WardID(links.ifrom[i], links.ito[i]))
+            else:
+                for i in range(1, self.nlinks + 1):
+                    if links.ito[i] == destination:
+                        wards.append(WardID(links.ifrom[i], links.ito[i]))
+        else:
+            nodes = self.nodes
+
+            if destination is None:
+                for i in range(nodes.begin_to[home], nodes.end_to[home]):
+                    assert links.ifrom[i] == home
+                    wards.append(WardID(links.ifrom[i], links.ito[i]))
+            else:
+                for i in range(nodes.begin_to[home], nodes.end_to[home]):
+                    assert links.ifrom[i] == home
+                    if links.ito[i] == destination:
+                        wards.append(WardID(home, destination))
+
+        if include_players:
+            if home is None:
+                for i in range(1, self.nnodes + 1):
+                    wards.append(WardID(i))
+            else:
+                wards.append(WardID(home))
+
+        return wards
+
+    def get_index(self, id: WardID) -> _Tuple[PersonType, int]:
+        """Return the index of the Node or Link that corresponds
+           to the passed WardID. If this is a player, then it will
+           be the index into Node, while if this is for a worker,
+           then it will be the index of the Link that corresponds
+           to the ward-ward commuter link. This returns a tuple
+           of the PersonType (WORKER or PLAYER) plus the index
+           into the appropriate array.
+
+           This raises a KeyError if there is no ward or ward-link
+           that matches the WardID
+        """
+        if id.is_null():
+            raise ValueError(f"Cannot get the index of a null WardID")
+
+        home = self.get_node_index(id.home())
+
+        if id.is_ward():
+            return (PersonType.PLAYER, home)
+
+        commute = self.get_node_index(id.commute())
+
+        # need to see if there is a work link between these
+        # two wards...
+        wards = self.nodes
+        links = self.links
+
+        if wards.begin_to[home] != -1 and wards.end_to[home] != -1:
+            for i in range(wards.begin_to[home], wards.end_to[home]):
+                ifrom = links.ifrom[i]
+                ito = links.ito[i]
+
+                if ifrom == home and ito == commute:
+                    return (PersonType.WORKER, i)
+
+        raise KeyError(
+            f"There is no work connection between ward {home} and "
+            f"ward {commute}")
 
     def get_node_index(self, index: _Union[str, int]):
         """Return the index of the node in this network that matches
@@ -360,7 +489,7 @@ class Network:
     def update(self, params: Parameters, demographics=None, population=None,
                nthreads: int = 1, profiler=None):
         """Update this network with a new set of parameters
-           (and optionally demographics).
+           ( and optionally demographics).
 
            This is used to update the parameters for the network
            for a new run. The network will be reset
@@ -529,7 +658,7 @@ class Network:
                    disease: Disease = None,
                    profiler=None,
                    nthreads: int = 1):
-        """Construct a Network from the passed Wards object (e.g. after
+        """Construct a Network from the passed Wards object(e.g. after
            editing, or restoring from JSON
         """
         from .utils._network_wards import load_from_wards
@@ -553,11 +682,11 @@ class Network:
            All output files are written to 'output_dir'
 
            The simulation will continue until the infection has
-           died out or until 'nsteps' has passed (keep as 'None'
+           died out or until 'nsteps' has passed(keep as 'None'
            to prevent exiting early).
 
            Parameters
-           ----------
+           - ---------
            population: Population
              The initial population at the start of the model outbreak.
              This is also used to set start date and day of the model
@@ -582,10 +711,10 @@ class Network:
              that are used to extract data for analysis or writing to files
            mixer: function
              Function that is used to mix demographic data. Not used
-             by a single Network (used by Networks)
+             by a single Network(used by Networks)
            mover: function
              Function that is used to move the population between different
-             demographics. Not used by a single Network (used by Networks)
+             demographics. Not used by a single Network(used by Networks)
         """
         # Create the random number generator
         from .utils._ran_binomial import seed_ran_binomial, ran_binomial

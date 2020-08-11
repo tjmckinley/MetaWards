@@ -72,6 +72,7 @@ def load_from_wards(wards: Wards, params: Parameters = None,
 
     cdef double * nodes_scale_uv = get_double_array_ptr(nodes.scale_uv)
     cdef double * nodes_cutoff = get_double_array_ptr(nodes.cutoff)
+    cdef double * nodes_bg_foi = get_double_array_ptr(nodes.bg_foi)
 
     cdef double * nodes_custom
 
@@ -126,6 +127,7 @@ def load_from_wards(wards: Wards, params: Parameters = None,
 
             nodes_scale_uv[node_id] = ward.scale_uv()
             nodes_cutoff[node_id] = ward.cutoff()
+            nodes_bg_foi[node_id] = ward.bg_foi()
 
             for key, value in ward._custom_params.items():
                 nodes_custom = get_double_array_ptr(nodes.get_custom(key))
@@ -292,10 +294,9 @@ def load_from_wards(wards: Wards, params: Parameters = None,
     network.rescale_play_matrix(nthreads=nthreads, profiler=p)
     p = p.stop()
 
-    Console.print(f"**Network loaded. Population: {network.population}, "
-                    f"Workers: {network.work_population}, Players: "
-                    f"{network.play_population}**",
-                    markdown=True)
+    Console.print(f"[bold]Network loaded. Population: {network.population}, "
+                  f"Workers: {network.work_population}, Players: "
+                  f"{network.play_population}[/]", markup=True)
 
     if network.work_population != wards.num_workers() or \
        network.play_population != wards.num_players():
@@ -335,6 +336,7 @@ def save_to_wards(network: Network, profiler: Profiler = None,
 
     cdef double * nodes_scale_uv = get_double_array_ptr(nodes.scale_uv)
     cdef double * nodes_cutoff = get_double_array_ptr(nodes.cutoff)
+    cdef double * nodes_bg_foi = get_double_array_ptr(nodes.bg_foi)
     cdef double * nodes_custom
 
     cdef int * links_ifrom = get_int_array_ptr(links.ifrom)
@@ -384,6 +386,7 @@ def save_to_wards(network: Network, profiler: Profiler = None,
 
             ward.set_scale_uv(nodes_scale_uv[i])
             ward.set_cutoff(nodes_cutoff[i])
+            ward.set_bg_foi(nodes_bg_foi[i])
 
             for key, value in nodes._custom_params.items():
                 nodes_custom = get_double_array_ptr(value)

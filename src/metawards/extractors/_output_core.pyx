@@ -178,11 +178,11 @@ def setup_core(nthreads: int = 1, **kwargs):
 
         if _buffer_nthreads != 0:
             _free_red_variables(_redvars)
-            _free_inf_buffers(_total_new_inf_ward_buffers, nthreads)
-            _free_inf_buffers(_total_inf_ward_buffers, nthreads)
-            _free_inf_buffers(_S_buffers, nthreads)
-            _free_inf_buffers(_X_buffers, nthreads)
-            _free_inf_buffers(_ward_inf_tot_buffers, nthreads)
+            _free_inf_buffers(_total_new_inf_ward_buffers, _buffer_nthreads)
+            _free_inf_buffers(_total_inf_ward_buffers, _buffer_nthreads)
+            _free_inf_buffers(_S_buffers, _buffer_nthreads)
+            _free_inf_buffers(_X_buffers, _buffer_nthreads)
+            _free_inf_buffers(_ward_inf_tot_buffers, _buffer_nthreads)
 
         _redvars = _allocate_red_variables(nthreads)
         _total_new_inf_ward_buffers = _allocate_inf_buffers(nthreads)

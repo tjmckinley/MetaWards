@@ -175,6 +175,7 @@ def advance_foi_omp(network: Network, population: Population,
 
     cdef double * wards_scale_uv = get_double_array_ptr(wards.scale_uv)
     cdef double * wards_cutoff = get_double_array_ptr(wards.cutoff)
+    cdef double * wards_bg_foi = get_double_array_ptr(wards.bg_foi)
 
     cdef double * links_weight = get_double_array_ptr(links.weight)
     cdef double * play_weight = get_double_array_ptr(play.weight)
@@ -405,6 +406,20 @@ def advance_foi_omp(network: Network, population: Population,
     p = p.stop()
     # end of loop over all disease classes
 
+    p = p.start("bg_foi")
+    with nogil, parallel(num_threads=num_threads):
+        for i in prange(1, nnodes_plus_one, schedule="static"):
+            if wards_bg_foi[i] > 0.0:
+                wards_day_foi[i] = wards_day_foi[i] + wards_bg_foi[i]
+                wards_night_foi[i] = wards_night_foi[i] + wards_bg_foi[i]
+            elif wards_bg_foi[i] < 0.0:
+                # must protect against negative values
+                wards_day_foi[i] = max(0.0, wards_day_foi[i] + wards_bg_foi[i])
+                wards_night_foi[i] = max(0.0, wards_night_foi[i],
+                                              wards_bg_foi[i])
+
+    p = p.stop()
+
     free_foi_buffers(&(day_buffers[0]), num_threads)
     free_foi_buffers(&(night_buffers[0]), num_threads)
 
@@ -461,6 +476,7 @@ def advance_foi_serial(network: Network, population: Population,
 
     cdef double * wards_scale_uv = get_double_array_ptr(wards.scale_uv)
     cdef double * wards_cutoff = get_double_array_ptr(wards.cutoff)
+    cdef double * wards_bg_foi = get_double_array_ptr(wards.bg_foi)
 
     cdef double * links_weight = get_double_array_ptr(links.weight)
     cdef double * play_weight = get_double_array_ptr(play.weight)
@@ -647,6 +663,20 @@ def advance_foi_serial(network: Network, population: Population,
         # end of params.disease_params.contrib_foi[i] > 0:
     p = p.stop()
     # end of loop over all disease classes
+
+    p = p.start("bg_foi")
+    with nogil:
+        for i in range(1, nnodes_plus_one):
+            if wards_bg_foi[i] > 0.0:
+                wards_day_foi[i] += wards_bg_foi[i]
+                wards_night_foi[i] += wards_bg_foi[i]
+            elif wards_bg_foi[i] < 0.0:
+                # Need to protect against negative values
+                wards_day_foi[i] = max(0.0, wards_day_foi[i] + wards_bg_foi[i])
+                wards_night_foi[i] = max(0.0, wards_night_foi[i] +
+                                              wards_bg_foi[i])
+
+    p = p.stop()
 
 
 def advance_foi(nthreads: int, **kwargs):

@@ -123,6 +123,7 @@ class Ward:
 
         self._scale_uv = 1.0
         self._cutoff = 99999.99
+        self._bg_foi = 0.0
 
         self._custom_params = {}
 
@@ -190,7 +191,8 @@ class Ward:
            This will add the workers from 'other' to this ward,
            plus will average the player weights between the two
 
-           This will do nothing to the scale_uv, cutoff or custom parameters
+           This will do nothing to the scale_uv, cutoff,
+           bg_foi or custom parameters
         """
         if self._info != other._info:
             raise ValueError(
@@ -278,6 +280,17 @@ class Ward:
            can travel
         """
         return self._cutoff
+
+    def bg_foi(self) -> float:
+        """Return the background force of infection (FOI). This is the
+           starting value for ward FOI calculations. It defaults to 0.0.
+           Positive values are used when you want the ward to have some
+           background effect that drives infections independently of
+           the number of infecteds. Negative values imply a background
+           effect that reduces the risk of infection, regardless of
+           the number of infecteds
+        """
+        return self._bg_foi
 
     def custom(self, key: str, default: float = 0.0) -> float:
         """Return the per-ward custom parameter at key 'key', returning
@@ -396,6 +409,24 @@ class Ward:
                 f"You cannot set cutoff to a negative value: {cutoff}")
 
         self._cutoff = cutoff
+
+    def set_bg_foi(self, bg_foi: float):
+        """Set the background force of infection (FOI). This is the
+           starting value for ward FOI calculations. It defaults to 0.0.
+           Positive values are used when you want the ward to have some
+           background effect that drives infections independently of
+           the number of infecteds. Negative values imply a background
+           effect that reduces the risk of infection, regardless of
+           the number of infecteds
+        """
+        bg_foi = float(bg_foi)
+
+        from math import isnan
+
+        if isnan(bg_foi):
+            raise ValueError("You cannot set bg_foi to NaN")
+
+        self._bg_foi = bg_foi
 
     def set_custom(self, key: str, value: float):
         """Set the value of the custom ward parameter to 'value'. Note
@@ -1009,6 +1040,9 @@ class Ward:
         if self._cutoff != 99999.99:
             data["cutoff"] = self._cutoff
 
+        if self._bg_foi != 0.0:
+            data["bg_foi"] = self._bg_foi
+
         if len(self._custom_params) > 0:
             from copy import deepcopy
             data["custom"] = deepcopy(self._custom_params)
@@ -1075,6 +1109,7 @@ class Ward:
 
         ward._scale_uv = float(data.get("scale_uv", 1.0))
         ward._cutoff = float(data.get("cutoff", 99999.99))
+        ward._bg_foi = float(data.get("bg_foi", 0.0))
 
         for key, value in data.get("custom", {}).items():
             ward._custom_params[key] = float(value)

@@ -421,23 +421,32 @@ def test_ward_params():
     london.set_scale_uv(1.5)
     oxford.set_cutoff(15.4)
 
+    bristol.set_bg_foi(10.8)
+    london.set_bg_foi(-5.2)
+
     bristol.set_custom("something", 9.9)
     oxford.set_custom("else", 22.1)
 
     assert bristol.scale_uv() == 0.5
     assert bristol.cutoff() == 5.0
+    assert bristol.bg_foi() == 10.8
     assert bristol.custom("something") == 9.9
     assert bristol.custom("else") == 0.0
     assert bristol.custom("else", 1.0) == 1.0
 
     assert london.scale_uv() == 1.5
+    assert london.bg_foi() == -5.2
+
     assert oxford.cutoff() == 15.4
+    assert oxford.bg_foi() == 0.0
     assert oxford.custom("else") == 22.1
 
     wards = bristol + london + oxford
 
     assert wards[bristol].scale_uv() == 0.5
     assert wards[oxford].custom("else") == 22.1
+    assert wards[bristol].bg_foi() == 10.8
+    assert wards[oxford].bg_foi() == 0.0
 
     s = wards.to_json()
     print(s)
@@ -452,6 +461,10 @@ def test_ward_params():
     assert network.nodes.cutoff[1] == 5.0
     assert network.nodes.cutoff[2] == 99999.99
     assert network.nodes.cutoff[3] == 15.4
+
+    assert network.nodes.bg_foi[1] == 10.8
+    assert network.nodes.bg_foi[2] == -5.2
+    assert network.nodes.bg_foi[3] == 0.0
 
     something = network.nodes.get_custom("something")
     els = network.nodes.get_custom("else")
@@ -477,6 +490,7 @@ def test_ward_params():
     for i in range(1, network.nnodes + 1):
         assert network.nodes.scale_uv[i] == network2.nodes.scale_uv[i]
         assert network.nodes.cutoff[i] == network2.nodes.cutoff[i]
+        assert network.nodes.bg_foi[i] == network2.nodes.bg_foi[i]
         assert network.nodes.get_custom("something")[i] == \
             network2.nodes.get_custom("something")[i]
         assert network.nodes.get_custom("else")[i] == \
