@@ -94,6 +94,12 @@ class Nodes:
             #: (distance in k)
             self.cutoff = create_double_array(N, 99999.99)
 
+            #: per-ward bg_foi value - this the starting FOI for the
+            #: ward in the FOI calculation. This defaults to 0.0,
+            #: but can be set to larger values if you want the ward
+            #: to have a background FOI that drives infections
+            self.bg_foi = create_double_array(N, 0.0)
+
             #: Coordinate system used (x/y for X,Y in km, lat/long for
             #: latitude and longitude)
             self.coordinates = "x/y"
@@ -143,6 +149,7 @@ class Nodes:
 
         nodes.scale_uv = deepcopy(self.scale_uv)
         nodes.cutoff = deepcopy(self.cutoff)
+        nodes.bg_foi = deepcopy(self.bg_foi)
 
         for key, value in self._custom_params.items():
             nodes._custom_params[key] = deepcopy(value)
@@ -234,6 +241,7 @@ class Nodes:
 
                         scale_uv=self.scale_uv[i],
                         cutoff=self.cutoff[i],
+                        bg_foi=self.bg_foi[i],
 
                         _custom_params=custom_params)
         except Exception as e:
@@ -285,6 +293,9 @@ class Nodes:
 
         self.cutoff[i] = value.cutoff \
             if value.cutoff is not None else 99999.99
+
+        self.bg_foi[i] = value.bg_foi \
+            if value.bg_foi is not None else 0.0
 
         from .utils._array import create_double_array
 
@@ -343,6 +354,7 @@ class Nodes:
 
         self.scale_uv = resize_array(self.scale_uv, N, 1.0)
         self.cutoff = resize_array(self.cutoff, N, 99999.99)
+        self.bg_foi = resize_array(self.bg_foi, N, 0.0)
 
         for key, value in self._custom_params.items():
             self._custom_params[key] = resize_array(value, N, 0.0)

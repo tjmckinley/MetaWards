@@ -56,6 +56,9 @@ class Node:
     #: The per-ward cutoff (restrict movement to below this distance in km)
     cutoff: float = 99999.99
 
+    #: Per-ward background FOI (starting value for FOI calculations)
+    bg_foi: float = 0.0
+
     #: The per-ward custom user parameters
     _custom_params = {}
 
