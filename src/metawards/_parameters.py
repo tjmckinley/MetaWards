@@ -142,8 +142,7 @@ class Parameters:
     """
     #: The set of input files that define the model Network
     input_files: InputFiles = None
-    #: The name of the UV file
-    uv_filename: str = None
+
     #: The set of parameters that define the disease
     disease_params: Disease = None
 
@@ -153,10 +152,6 @@ class Parameters:
 
     #: The fraction of day considered "day" for work, e.g. 0.7 * 24 hours
     length_day: float = 0.7
-    #: The fraction of day considered "day" for play
-    plength_day: float = 0.5
-    #: The number of initial infections
-    initial_inf: int = 5
 
     static_play_at_home: float = 0.0
     dyn_play_at_home: float = 0.0
@@ -167,17 +162,19 @@ class Parameters:
     play_to_work: float = 0.0
     work_to_play: float = 0.0
 
-    local_vaccination_thresh: int = 4
-    global_detection_thresh: int = 4
-    daily_ward_vaccination_capacity: int = 5
-    neighbour_weight_threshold: float = 0.0
-
-    #: proportion of daily imports
+    #: proportion of daily imports if there are additional infections
     daily_imports: float = 0.0
+
+    #: The index of the seeding ward if there are daily imports
+    ward_seed_index: int = None
+
+    #: The number of initial infections if there are daily imports
+    initial_inf: int = 5
 
     #: how to treat the * state (stage 0). This should be a string
     #: describing the method. Currently "R", "E" and "disable" are
-    #: supported
+    #: supported. Not needed if the mapping is specified explicitly
+    #: in the disease
     stage_0: str = "R"
 
     #: Seasonality parameter
@@ -217,15 +214,12 @@ class Parameters:
                            ("repository_branch", self._repository_branch),
                            ("repository_version", self._repository_version),
                            ("length_day", self.length_day),
-                           ("plength_day", self.plength_day),
                            ("initial_inf", self.initial_inf),
                            ("static_play_at_home", self.static_play_at_home),
                            ("dyn_play_at_home", self.dyn_play_at_home),
                            ("dyn_dist_cutoff", self.dyn_play_at_home),
                            ("play_to_work", self.play_to_work),
                            ("work_to_play", self.work_to_play),
-                           ("neighbour_weight_threshold",
-                            self.neighbour_weight_threshold),
                            ("daily_imports", self.daily_imports),
                            ("UV", self.UV),
                            ("UV_max", self.UV_max),
@@ -342,21 +336,12 @@ set the model data.""")
 
         par = Parameters(
             length_day=data.get("length_day", 0.7),
-            plength_day=data.get("plength_day", 0.5),
             initial_inf=data.get("initial_inf", 0),
             static_play_at_home=data.get("static_play_at_home", 0.0),
             dyn_play_at_home=data.get("dyn_play_at_home", 0.0),
             dyn_dist_cutoff=data.get("dyn_dist_cutoff", 10000000.0),
             play_to_work=data.get("play_to_work", 0.0),
             work_to_play=data.get("work_to_play", 0.0),
-            local_vaccination_thresh=data.get(
-                "local_vaccination_threshold", 4),
-            global_detection_thresh=data.get(
-                "global_detection_threshold", 4),
-            daily_ward_vaccination_capacity=data.get(
-                "daily_ward_vaccination_capacity", 5),
-            neighbour_weight_threshold=data.get(
-                "neighbour_weight_threshold", 0.0),
             daily_imports=data.get("daily_imports", 0),
             UV=data.get("UV", 0.0),
             UV_max=data.get("UV_max", None),

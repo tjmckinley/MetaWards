@@ -278,9 +278,9 @@ class Disease:
             raise AssertionError(f"Data read for disease {self.name} "
                                  f"is corrupted! {e.__class__}: {e}")
 
-        if self.stage is None and n < 4:
+        if self.stage is None and n < 3:
             raise AssertionError(
-                f"There must be at least 4 disease stages ('*', 'E', 'I', "
+                f"There must be at least 3 disease stages ('E', 'I', "
                 f"'R') - the number of stages here is {n}")
 
         elif n == 0:
@@ -293,6 +293,7 @@ class Disease:
             self.progress = [1.0] * n
             self.too_ill_to_move = [0.0] * n
             self.contrib_foi = [1.0] * n
+            self.is_infected = [None] * n
 
             self.progress[-1] = 0.0
 
@@ -321,64 +322,20 @@ class Disease:
                     f"Invalid disease parameter at index {i}: "
                     f"{e.__class__} {e}")
 
-        # for the model to work the different stages have set meanings
-        errors = []
-
         if self.stage is None:
-            # - stage 0 is newly infected that day, so progress must be 1
-            #   and beta must be 0 (not infective)
-            # This is not an error - the pox and flu2 diseases have this.
-            # I don't think I understand correctly though if that is right,
-            # as this means that individuals will stay longer in the
-            # post-infect but pre-latent stage and be recorded as "recovered"?
-            # if self.progress[0] != 1.0:
-            #    errors.append(
-            #        f"The progress[0] value must be 1.0 as individuals are "
-            #        f"only newly infected for one day, and so must progress "
-            #        f"immediately to the 'latent' stage.")
-
-            if self.beta[0] != 0.0:
-                errors.append(
-                    f"The beta[0] value must be 0.0 as newly infected "
-                    f"individuals should not be infective and cannot "
-                    f"infect others.")
-
-            # - stage 1 is 'latent', meaning that beta must be 0
-            # (not infective)
-            if self.beta[1] != 0.0:
-                errors.append(
-                    f"The beta[1] value must be 0.0 as 'latent' individuals "
-                    f"are not infectious and should not be able to infect "
-                    f"others.")
-
-            # - stage -1 is 'recovered', meaning that beta must not be 0
-            #   and progress is 0, as once recovered, always recovered
-            if self.beta[-1] != 0.0:
-                errors.append(
-                    f"The beta[-1] value must be 0.0 as 'recovered' "
-                    f"are not infectious and should not be able to infect "
-                    f"others.")
-
-            if self.progress[-1] != 0.0:
-                errors.append(
-                    f"The progress[-1] value must be 0.0 as 'recovered' "
-                    f"individuals have no further disease stage to progress "
-                    f"to. We hope that once recovered, always recovered.")
-
-            if len(errors) > 0:
-                from .utils._console import Console
-                Console.error("\n".join(errors))
-                raise AssertionError("Invalid disease parameters!\n" +
-                                     "\n".join(errors))
-
-            # set the default names - these are '*', "E", "I?", "R"
+            # set the default names - these are ['*'], "E", "I?", "R"
             self.stage = ["R"] * self.N_INF_CLASSES()
 
-            self.stage[0] = "*"
-            self.stage[1] = "E"
+            if len(self.stage) >= 4:
+                self.stage[0] = "*"
+                self.stage[1] = "E"
+            else:
+                self.stage[0] = "E"
 
             if len(self.stage) == 4:
                 self.stage[2] = "I"
+            elif len(self.stage) == 3:
+                self.stage[1] = "I"
             else:
                 j = 1
                 for i in range(2, self.N_INF_CLASSES() - 1):
@@ -819,6 +776,11 @@ set the model data.""")
         else:
             is_infected = [None if x is None
                            else bool(x) for x in is_infected]
+
+        if len(is_infected) != len(beta):
+            raise AssertionError(
+                "Incompatible beta ({beta}) and is_infected "
+                f"({is_infected})")
 
         start_symptom = data.get("start_symptom", None)
 
