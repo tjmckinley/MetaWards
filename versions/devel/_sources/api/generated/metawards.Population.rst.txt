@@ -35,6 +35,8 @@ metawards.Population
       ~Population.initial
       ~Population.latent
       ~Population.n_inf_wards
+      ~Population.other_totals
+      ~Population.others
       ~Population.population
       ~Population.recovereds
       ~Population.scale_uv

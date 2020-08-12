@@ -229,12 +229,12 @@
 <h1>metawards.Population<a class="headerlink" href="#metawards-population" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="metawards.Population">
-<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Population</code><span class="sig-paren">(</span><em>initial: int = 0</em>, <em>susceptibles: int = 0</em>, <em>latent: int = 0</em>, <em>total: int = 0</em>, <em>totals: Dict[str</em>, <em>int] = None</em>, <em>recovereds: int = 0</em>, <em>n_inf_wards: int = 0</em>, <em>scale_uv: float = 1.0</em>, <em>day: int = 0</em>, <em>date: datetime.date = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_population.html#Population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Population" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Population</code><span class="sig-paren">(</span><em>initial: int = 0</em>, <em>susceptibles: int = 0</em>, <em>latent: int = 0</em>, <em>total: int = 0</em>, <em>totals: Dict[str</em>, <em>int] = None</em>, <em>other_totals: Dict[str</em>, <em>int] = None</em>, <em>recovereds: int = 0</em>, <em>n_inf_wards: int = 0</em>, <em>scale_uv: float = 1.0</em>, <em>day: int = 0</em>, <em>date: datetime.date = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_population.html#Population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Population" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class holds information about the progress of the
 disease through the population</p>
 <dl class="method">
 <dt id="metawards.Population.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>initial: int = 0</em>, <em>susceptibles: int = 0</em>, <em>latent: int = 0</em>, <em>total: int = 0</em>, <em>totals: Dict[str</em>, <em>int] = None</em>, <em>recovereds: int = 0</em>, <em>n_inf_wards: int = 0</em>, <em>scale_uv: float = 1.0</em>, <em>day: int = 0</em>, <em>date: datetime.date = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Population.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>initial: int = 0</em>, <em>susceptibles: int = 0</em>, <em>latent: int = 0</em>, <em>total: int = 0</em>, <em>totals: Dict[str</em>, <em>int] = None</em>, <em>other_totals: Dict[str</em>, <em>int] = None</em>, <em>recovereds: int = 0</em>, <em>n_inf_wards: int = 0</em>, <em>scale_uv: float = 1.0</em>, <em>day: int = 0</em>, <em>date: datetime.date = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Population.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
@@ -287,16 +287,22 @@ disease through the population</p>
 <td>The initial population loaded into the model</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.latent" title="metawards.Population.latent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">latent</span></code></a></td>
-<td>The number of latent infections</td>
+<td>The number of latent infections (E)</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.n_inf_wards" title="metawards.Population.n_inf_wards"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_inf_wards</span></code></a></td>
-<td>The number infected in all wards</td>
+<td>The number infected in all wards (IW)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.other_totals" title="metawards.Population.other_totals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">other_totals</span></code></a></td>
+<td>The total number of individuals in other non-infected states (X)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.others" title="metawards.Population.others"><code class="xref py py-obj docutils literal notranslate"><span class="pre">others</span></code></a></td>
+<td>Return the number who are in the ‘other’ state, i.e.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.population" title="metawards.Population.population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">population</span></code></a></td>
 <td>The total population in all wards</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.recovereds" title="metawards.Population.recovereds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recovereds</span></code></a></td>
-<td>The total number who are removed from the outbreak, either because they have recovered, or are otherwise no longer able to be infected</td>
+<td>The total number who are removed from the outbreak, either because they have recovered, or are otherwise no longer able to be infected (R)</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.scale_uv" title="metawards.Population.scale_uv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_uv</span></code></a></td>
 <td>The scale_uv parameter that can be used to affect the foi calculation.</td>
@@ -305,13 +311,13 @@ disease through the population</p>
 <td>The populations in each of the multi-demographic subnetworks</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.susceptibles" title="metawards.Population.susceptibles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">susceptibles</span></code></a></td>
-<td>The number of members who could be infected</td>
+<td>The number of members who could be infected (S)</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.total" title="metawards.Population.total"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total</span></code></a></td>
-<td>The total number of infections</td>
+<td>The total number of infections (I)</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Population.totals" title="metawards.Population.totals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">totals</span></code></a></td>
-<td>The totao number of infections in other states</td>
+<td>The total number of infections in other infected states (X)</td>
 </tr>
 </tbody>
 </table>
@@ -377,13 +383,28 @@ e.g. [“S”, “E”, “I”, “R”]</p>
 <dl class="attribute">
 <dt id="metawards.Population.latent">
 <code class="descname">latent</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.latent" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of latent infections</p>
+<dd><p>The number of latent infections (E)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="metawards.Population.n_inf_wards">
 <code class="descname">n_inf_wards</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.n_inf_wards" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number infected in all wards</p>
+<dd><p>The number infected in all wards (IW)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Population.other_totals">
+<code class="descname">other_totals</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Population.other_totals" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number of individuals in other non-infected states (X)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Population.others">
+<code class="descname">others</code><a class="headerlink" href="#metawards.Population.others" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number who are in the ‘other’ state, i.e.
+not classed as susceptible, latent, infected or recovered/removed.
+This is the sum of states that are set as “is_infected=False”
+in the disease model, e.g. V (vaccinated)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -397,7 +418,7 @@ e.g. [“S”, “E”, “I”, “R”]</p>
 <code class="descname">recovereds</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.recovereds" title="Permalink to this definition">¶</a></dt>
 <dd><p>The total number who are removed from the outbreak,
 either because they have recovered, or are otherwise
-no longer able to be infected</p>
+no longer able to be infected (R)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -439,19 +460,19 @@ out during a model run</p>
 <dl class="attribute">
 <dt id="metawards.Population.susceptibles">
 <code class="descname">susceptibles</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.susceptibles" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of members who could be infected</p>
+<dd><p>The number of members who could be infected (S)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="metawards.Population.total">
 <code class="descname">total</code><em class="property"> = 0</em><a class="headerlink" href="#metawards.Population.total" title="Permalink to this definition">¶</a></dt>
-<dd><p>The total number of infections</p>
+<dd><p>The total number of infections (I)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="metawards.Population.totals">
 <code class="descname">totals</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Population.totals" title="Permalink to this definition">¶</a></dt>
-<dd><p>The totao number of infections in other states</p>
+<dd><p>The total number of infections in other infected states (X)</p>
 </dd></dl>
 
 </dd></dl>
@@ -479,7 +500,7 @@ out during a model run</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 11, 2020.
+        Last updated on Aug 12, 2020.
       </span>
 
     </p>

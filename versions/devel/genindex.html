@@ -504,8 +504,6 @@
       </ul></li>
       <li><a href="api/generated/metawards.utils.aggregate_networks.html#metawards.utils.aggregate_networks">aggregate_networks() (in module metawards.utils)</a>
 </li>
-      <li><a href="api/generated/metawards.utils.allocate_vaccination.html#metawards.utils.allocate_vaccination">allocate_vaccination() (in module metawards.utils)</a>
-</li>
       <li><a href="api/generated/metawards.WardInfo.html#metawards.WardInfo.alternate_codes">alternate_codes (metawards.WardInfo attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.WardInfo.alternate_codes">[1]</a>
 </li>
       <li><a href="api/generated/metawards.WardInfo.html#metawards.WardInfo.alternate_names">alternate_names (metawards.WardInfo attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.WardInfo.alternate_names">[1]</a>
@@ -964,8 +962,6 @@
 </li>
       <li><a href="api/generated/metawards.WardID.html#metawards.WardID.home">home() (metawards.WardID method)</a>, <a href="api/index_api_MetaWards.html#metawards.WardID.home">[1]</a>
 </li>
-      <li><a href="api/generated/metawards.utils.how_many_vaccinated.html#metawards.utils.how_many_vaccinated">how_many_vaccinated() (in module metawards.utils)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -1055,6 +1051,8 @@
       <li><a href="api/generated/metawards.OutputFiles.html#metawards.OutputFiles.is_database">is_database() (metawards.OutputFiles method)</a>, <a href="api/index_api_MetaWards.html#metawards.OutputFiles.is_database">[1]</a>
 </li>
       <li><a href="api/generated/metawards.VariableSet.html#metawards.VariableSet.is_empty">is_empty() (metawards.VariableSet method)</a>, <a href="api/index_api_MetaWards.html#metawards.VariableSet.is_empty">[1]</a>
+</li>
+      <li><a href="api/generated/metawards.Disease.html#metawards.Disease.is_infected">is_infected (metawards.Disease attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Disease.is_infected">[1]</a>
 </li>
       <li><a href="api/generated/metawards.Demographics.html#metawards.Demographics.is_multi_network">is_multi_network() (metawards.Demographics method)</a>, <a href="api/index_api_MetaWards.html#metawards.Demographics.is_multi_network">[1]</a>
 </li>
@@ -1318,16 +1316,20 @@
 </li>
       <li><a href="api/generated/metawards.OutputFiles.html#metawards.OutputFiles.open_subdir">open_subdir() (metawards.OutputFiles method)</a>, <a href="api/index_api_MetaWards.html#metawards.OutputFiles.open_subdir">[1]</a>
 </li>
+      <li><a href="api/generated/metawards.Population.html#metawards.Population.other_totals">other_totals (metawards.Population attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Population.other_totals">[1]</a>
+</li>
+      <li><a href="api/generated/metawards.Population.html#metawards.Population.others">others (metawards.Population attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Population.others">[1]</a>
+</li>
       <li><a href="api/generated/metawards.extractors.output_basic.html#metawards.extractors.output_basic">output_basic() (in module metawards.extractors)</a>
 </li>
       <li><a href="api/generated/metawards.extractors.output_core.html#metawards.extractors.output_core">output_core() (in module metawards.extractors)</a>
 </li>
       <li><a href="api/generated/metawards.extractors.output_core_omp.html#metawards.extractors.output_core_omp">output_core_omp() (in module metawards.extractors)</a>
 </li>
-      <li><a href="api/generated/metawards.extractors.output_core_serial.html#metawards.extractors.output_core_serial">output_core_serial() (in module metawards.extractors)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/metawards.extractors.output_core_serial.html#metawards.extractors.output_core_serial">output_core_serial() (in module metawards.extractors)</a>
+</li>
       <li><a href="api/generated/metawards.OutputFiles.html#metawards.OutputFiles.output_dir">output_dir() (metawards.OutputFiles method)</a>, <a href="api/index_api_MetaWards.html#metawards.OutputFiles.output_dir">[1]</a>
 
       <ul>
@@ -1392,11 +1394,9 @@
         <li><a href="api/generated/metawards.Nodes.html#metawards.Nodes.play_suscept">(metawards.Nodes attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Nodes.play_suscept">[1]</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/metawards.PersonType.html#metawards.PersonType.PLAYER">PLAYER (metawards.PersonType attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.plength_day">plength_day (metawards.Parameters attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Parameters.plength_day">[1]</a>
+      <li><a href="api/generated/metawards.PersonType.html#metawards.PersonType.PLAYER">PLAYER (metawards.PersonType attribute)</a>
 </li>
       <li><a href="api/generated/metawards.Population.html#metawards.Population">Population (class in metawards)</a>, <a href="api/index_api_MetaWards.html#metawards.Population">[1]</a>
 </li>
@@ -1774,17 +1774,15 @@
       </ul></li>
       <li><a href="api/generated/metawards.utils.update_metawards.html#metawards.utils.update_metawards">update_metawards() (in module metawards.utils)</a>
 </li>
-      <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.user_params">user_params (metawards.Parameters attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Parameters.user_params">[1]</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.user_params">user_params (metawards.Parameters attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Parameters.user_params">[1]</a>
+</li>
       <li><a href="api/generated/metawards.Demographics.html#metawards.Demographics.uses_named_network">uses_named_network() (metawards.Demographics method)</a>, <a href="api/index_api_MetaWards.html#metawards.Demographics.uses_named_network">[1]</a>
 </li>
       <li><a href="api/generated/metawards.InputFiles.html#metawards.InputFiles.uv">uv (metawards.InputFiles attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.InputFiles.uv">[1]</a>
 </li>
       <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.UV">UV (metawards.Parameters attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Parameters.UV">[1]</a>
-</li>
-      <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.uv_filename">uv_filename (metawards.Parameters attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Parameters.uv_filename">[1]</a>
 </li>
       <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.UV_max">UV_max (metawards.Parameters attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Parameters.UV_max">[1]</a>
 </li>
@@ -1794,8 +1792,6 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/generated/metawards.utils.vaccinate_same_id.html#metawards.utils.vaccinate_same_id">vaccinate_same_id() (in module metawards.utils)</a>
-</li>
       <li><a href="api/generated/metawards.VariableSet.html#metawards.VariableSet.variable_names">variable_names() (metawards.VariableSet method)</a>, <a href="api/index_api_MetaWards.html#metawards.VariableSet.variable_names">[1]</a>
 </li>
       <li><a href="api/generated/metawards.VariableSet.html#metawards.VariableSet.variable_values">variable_values() (metawards.VariableSet method)</a>, <a href="api/index_api_MetaWards.html#metawards.VariableSet.variable_values">[1]</a>
@@ -1817,6 +1813,8 @@
       <li><a href="api/generated/metawards.Ward.html#metawards.Ward">Ward (class in metawards)</a>, <a href="api/index_api_MetaWards.html#metawards.Ward">[1]</a>
 </li>
       <li><a href="api/generated/metawards.Workspace.html#metawards.Workspace.ward_inf_tot">ward_inf_tot (metawards.Workspace attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Workspace.ward_inf_tot">[1]</a>
+</li>
+      <li><a href="api/generated/metawards.Parameters.html#metawards.Parameters.ward_seed_index">ward_seed_index (metawards.Parameters attribute)</a>, <a href="api/index_api_MetaWards.html#metawards.Parameters.ward_seed_index">[1]</a>
 </li>
       <li><a href="api/generated/metawards.WardID.html#metawards.WardID">WardID (class in metawards)</a>, <a href="api/index_api_MetaWards.html#metawards.WardID">[1]</a>
 </li>
@@ -1914,7 +1912,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 11, 2020.
+        Last updated on Aug 12, 2020.
       </span>
 
     </p>

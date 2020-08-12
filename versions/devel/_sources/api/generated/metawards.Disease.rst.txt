@@ -36,6 +36,7 @@ metawards.Disease
    
       ~Disease.beta
       ~Disease.contrib_foi
+      ~Disease.is_infected
       ~Disease.mapping
       ~Disease.name
       ~Disease.progress

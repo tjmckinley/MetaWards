@@ -229,7 +229,7 @@
 <h1>metawards.Disease<a class="headerlink" href="#metawards-disease" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="metawards.Disease">
-<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Disease</code><span class="sig-paren">(</span><em>name: Optional[str] = None</em>, <em>stage: Optional[List[str]] = None</em>, <em>mapping: Optional[List[str]] = None</em>, <em>beta: Optional[List[float]] = None</em>, <em>progress: Optional[List[float]] = None</em>, <em>too_ill_to_move: Optional[List[float]] = None</em>, <em>contrib_foi: Optional[List[float]] = None</em>, <em>start_symptom: Optional[int] = None</em>, <em>_version: Optional[str] = None</em>, <em>_authors: Optional[str] = None</em>, <em>_contacts: Optional[str] = None</em>, <em>_references: Optional[str] = None</em>, <em>_filename: Optional[str] = None</em>, <em>_repository: Optional[str] = None</em>, <em>_repository_version: Optional[str] = None</em>, <em>_repository_branch: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_disease.html#Disease"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">Disease</code><span class="sig-paren">(</span><em>name: Optional[str] = None</em>, <em>stage: Optional[List[str]] = None</em>, <em>mapping: Optional[List[str]] = None</em>, <em>beta: Optional[List[float]] = None</em>, <em>progress: Optional[List[float]] = None</em>, <em>too_ill_to_move: Optional[List[float]] = None</em>, <em>contrib_foi: Optional[List[float]] = None</em>, <em>is_infected: Optional[List[bool]] = None</em>, <em>start_symptom: Optional[int] = None</em>, <em>_version: Optional[str] = None</em>, <em>_authors: Optional[str] = None</em>, <em>_contacts: Optional[str] = None</em>, <em>_references: Optional[str] = None</em>, <em>_filename: Optional[str] = None</em>, <em>_repository: Optional[str] = None</em>, <em>_repository_version: Optional[str] = None</em>, <em>_repository_branch: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_disease.html#Disease"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class holds the parameters about a single disease</p>
 <p>A disease is characterised as a serious of stages, each
 with their own values of the beta, progress, too_ill_to_move
@@ -250,7 +250,7 @@ the Disease.load function, e.g.</p>
 </div>
 <dl class="method">
 <dt id="metawards.Disease.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>name: Optional[str] = None</em>, <em>stage: Optional[List[str]] = None</em>, <em>mapping: Optional[List[str]] = None</em>, <em>beta: Optional[List[float]] = None</em>, <em>progress: Optional[List[float]] = None</em>, <em>too_ill_to_move: Optional[List[float]] = None</em>, <em>contrib_foi: Optional[List[float]] = None</em>, <em>start_symptom: Optional[int] = None</em>, <em>_version: Optional[str] = None</em>, <em>_authors: Optional[str] = None</em>, <em>_contacts: Optional[str] = None</em>, <em>_references: Optional[str] = None</em>, <em>_filename: Optional[str] = None</em>, <em>_repository: Optional[str] = None</em>, <em>_repository_version: Optional[str] = None</em>, <em>_repository_branch: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Disease.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>name: Optional[str] = None</em>, <em>stage: Optional[List[str]] = None</em>, <em>mapping: Optional[List[str]] = None</em>, <em>beta: Optional[List[float]] = None</em>, <em>progress: Optional[List[float]] = None</em>, <em>too_ill_to_move: Optional[List[float]] = None</em>, <em>contrib_foi: Optional[List[float]] = None</em>, <em>is_infected: Optional[List[bool]] = None</em>, <em>start_symptom: Optional[int] = None</em>, <em>_version: Optional[str] = None</em>, <em>_authors: Optional[str] = None</em>, <em>_contacts: Optional[str] = None</em>, <em>_references: Optional[str] = None</em>, <em>_filename: Optional[str] = None</em>, <em>_repository: Optional[str] = None</em>, <em>_repository_version: Optional[str] = None</em>, <em>_repository_branch: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#metawards.Disease.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
@@ -311,22 +311,25 @@ the Disease.load function, e.g.</p>
 <tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.contrib_foi" title="metawards.Disease.contrib_foi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contrib_foi</span></code></a></td>
 <td>Contribution to the Force of Infection (FOI) parameter for each stage of the disease</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.mapping" title="metawards.Disease.mapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mapping</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.is_infected" title="metawards.Disease.is_infected"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_infected</span></code></a></td>
+<td>Whether or not this stage is an infected stage.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.mapping" title="metawards.Disease.mapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mapping</span></code></a></td>
 <td>Mapping label, e.g.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.name" title="metawards.Disease.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.name" title="metawards.Disease.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></td>
 <td>Name of the disease</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.progress" title="metawards.Disease.progress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">progress</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.progress" title="metawards.Disease.progress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">progress</span></code></a></td>
 <td>Progress parameter for each stage of the disease</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.stage" title="metawards.Disease.stage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stage</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.stage" title="metawards.Disease.stage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stage</span></code></a></td>
 <td>Name of the stage, e.g.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.start_symptom" title="metawards.Disease.start_symptom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_symptom</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.start_symptom" title="metawards.Disease.start_symptom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_symptom</span></code></a></td>
 <td>Index of the first symptomatic stage</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.too_ill_to_move" title="metawards.Disease.too_ill_to_move"><code class="xref py py-obj docutils literal notranslate"><span class="pre">too_ill_to_move</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="../index_api_MetaWards.html#metawards.Disease.too_ill_to_move" title="metawards.Disease.too_ill_to_move"><code class="xref py py-obj docutils literal notranslate"><span class="pre">too_ill_to_move</span></code></a></td>
 <td>TooIllToMove parameter for each stage of the disease</td>
 </tr>
 </tbody>
@@ -372,7 +375,7 @@ dictionary (and their values) match the arguments to the
 
 <dl class="method">
 <dt id="metawards.Disease.add">
-<code class="descname">add</code><span class="sig-paren">(</span><em>name: str</em>, <em>mapping: Optional[str] = None</em>, <em>beta: Optional[float] = None</em>, <em>progress: Optional[float] = None</em>, <em>too_ill_to_move: Optional[float] = None</em>, <em>contrib_foi: Optional[float] = None</em>, <em>is_start_symptom: Optional[bool] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/metawards/_disease.html#Disease.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease.add" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add</code><span class="sig-paren">(</span><em>name: str</em>, <em>mapping: Optional[str] = None</em>, <em>beta: Optional[float] = None</em>, <em>progress: Optional[float] = None</em>, <em>too_ill_to_move: Optional[float] = None</em>, <em>contrib_foi: Optional[float] = None</em>, <em>is_start_symptom: Optional[bool] = None</em>, <em>is_infected: Optional[bool] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/metawards/_disease.html#Disease.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new stage to the disease. This will append a new stage
 onto the list of stages.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -398,6 +401,16 @@ if not set.</li>
 <li><strong>is_start_symptom</strong> (<em>bool</em>) – Whether this is the start symptom of the disease. This
 normally doesn’t need to be set as this will be worked
 out automatically by the code.</li>
+<li><strong>is_infected</strong> (<em>bool</em>) – Whether or not this stage is an infected stage. Infected
+stages are any where the individual is infected by the
+virus. Non-infected stages are thus “S” and “R”. If
+you don’t specify this then it will be guess based
+on the stage name. Note that “R” stages cannot be
+classed as infected. You typically don’t need to set this
+as the automatic guess is good. The only time you need
+to use this is if you want to add additional non-infected
+stages to “S” and “R”, e.g. “V” to represent
+vaccinated individuals</li>
 </ul>
 </td>
 </tr>
@@ -470,7 +483,7 @@ If we still can’t map, then this is an error.</p>
 
 <dl class="method">
 <dt id="metawards.Disease.insert">
-<code class="descname">insert</code><span class="sig-paren">(</span><em>index: int</em>, <em>name: str</em>, <em>mapping: Optional[str] = None</em>, <em>beta: Optional[float] = None</em>, <em>progress: Optional[float] = None</em>, <em>too_ill_to_move: Optional[float] = None</em>, <em>contrib_foi: Optional[float] = None</em>, <em>is_start_symptom: Optional[bool] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/metawards/_disease.html#Disease.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease.insert" title="Permalink to this definition">¶</a></dt>
+<code class="descname">insert</code><span class="sig-paren">(</span><em>index: int</em>, <em>name: str</em>, <em>mapping: Optional[str] = None</em>, <em>beta: Optional[float] = None</em>, <em>progress: Optional[float] = None</em>, <em>too_ill_to_move: Optional[float] = None</em>, <em>contrib_foi: Optional[float] = None</em>, <em>is_start_symptom: Optional[bool] = None</em>, <em>is_infected: Optional[bool] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/metawards/_disease.html#Disease.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Disease.insert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert a new stage into the disease. This will insert a new stage
 into the list of stages at index ‘index’</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -497,11 +510,29 @@ if not set.</li>
 <li><strong>is_start_symptom</strong> (<em>bool</em>) – Whether this is the start symptom of the disease. This
 normally doesn’t need to be set as this will be worked
 out automatically by the code.</li>
+<li><strong>is_infected</strong> (<em>bool</em>) – Whether or not this stage is an infected stage. Infected
+stages are any where the individual is infected by the
+virus. Non-infected stages are thus “S” and “R”. If
+you don’t specify this then it will be guess based
+on the stage name. Note that “R” stages cannot be
+classed as infected. You typically don’t need to set this
+as the automatic guess is good. The only time you need
+to use this is if you want to add additional non-infected
+stages to “S” and “R”, e.g. “V” to represent
+vaccinated individuals</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="metawards.Disease.is_infected">
+<code class="descname">is_infected</code><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.is_infected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not this stage is an infected stage. By default
+all stages other than those mapped to “R” are classes
+as infected stages</p>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -639,7 +670,7 @@ the json-serialised string</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 11, 2020.
+        Last updated on Aug 12, 2020.
       </span>
 
     </p>

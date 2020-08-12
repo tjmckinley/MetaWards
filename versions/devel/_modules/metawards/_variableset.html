@@ -233,14 +233,6 @@
     <span class="n">params</span><span class="o">.</span><span class="n">length_day</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_set_plengthday</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adjust the Parameters.plength_day parameter&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the lengthday&quot;</span><span class="p">)</span>
-
-    <span class="n">params</span><span class="o">.</span><span class="n">plength_day</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
-
 <span class="k">def</span> <span class="nf">_set_uv</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Adjust the Parameters.UV parameter&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -297,46 +289,6 @@
     <span class="n">params</span><span class="o">.</span><span class="n">work_to_play</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_set_local_vaccination_thresh</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adjust the Parameters.local_vaccination_thresh parameter&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the local_vaccination_thresh &quot;</span>
-                         <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
-
-    <span class="n">params</span><span class="o">.</span><span class="n">local_vaccination_thresh</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_set_global_detection_thresh</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adjust the Parameters.global_detection_thresh parameter&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the global_detection_thresh &quot;</span>
-                         <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
-
-    <span class="n">params</span><span class="o">.</span><span class="n">global_detection_thresh</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_set_daily_ward_vaccination_capacity</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                         <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adjust the Parameters.daily_ward_vaccination_capacity</span>
-<span class="sd">       parameter</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the daily_ward_vaccination &quot;</span>
-                         <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
-
-    <span class="n">params</span><span class="o">.</span><span class="n">daily_ward_vaccination_capacity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_set_neighbour_weight_threshold</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adjust the Parameters.neighbour_weight_threshold parameter&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;You cannot index the neighbour_weight_threshold &quot;</span>
-                         <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
-
-    <span class="n">params</span><span class="o">.</span><span class="n">neighbour_weight_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
-
 <span class="k">def</span> <span class="nf">_set_daily_imports</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Adjust the Parameters.daily_imports parameter&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -377,7 +329,6 @@
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;contrib_foi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_contrib_foi</span>
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_user_params</span>
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;length_day&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_lengthday</span>
-<span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;plength_day&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_plengthday</span>
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;UV&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_uv</span>
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;initial_inf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_initial_inf</span>
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;static_play_at_home&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_static_play_at_home</span>
@@ -385,11 +336,6 @@
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;dyn_dist_cutoff&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_dyn_dist_cutoff</span>
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;play_to_work&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_play_to_work</span>
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;work_to_play&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_work_to_play</span>
-<span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;local_vaccination_thesh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_local_vaccination_thresh</span>
-<span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;global_detection_thresh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_global_detection_thresh</span>
-<span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;daily_ward_vaccination_capacity&quot;</span><span class="p">]</span> <span class="o">=</span> \
-    <span class="n">_set_daily_ward_vaccination_capacity</span>
-<span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;neighbour_weight_threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_neighbour_weight_threshold</span>
 <span class="n">_adjustable</span><span class="p">[</span><span class="s2">&quot;daily_imports&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_daily_imports</span>
 
 
@@ -1578,7 +1524,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 11, 2020.
+        Last updated on Aug 12, 2020.
       </span>
 
     </p>
