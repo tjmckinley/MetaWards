@@ -38,14 +38,6 @@ def _set_lengthday(params, name: str, index: int, value: float):
     params.length_day = float(value)
 
 
-def _set_plengthday(params, name: str, index: int, value: float):
-    """Adjust the Parameters.plength_day parameter"""
-    if index is not None:
-        raise IndexError("You cannot index the lengthday")
-
-    params.plength_day = float(value)
-
-
 def _set_uv(params, name: str, index: int, value: float):
     """Adjust the Parameters.UV parameter"""
     if index is not None:
@@ -102,46 +94,6 @@ def _set_work_to_play(params, name: str, index: int, value: float):
     params.work_to_play = float(value)
 
 
-def _set_local_vaccination_thresh(params, name: str, index: int, value: float):
-    """Adjust the Parameters.local_vaccination_thresh parameter"""
-    if index is not None:
-        raise IndexError("You cannot index the local_vaccination_thresh "
-                         "parameter")
-
-    params.local_vaccination_thresh = float(value)
-
-
-def _set_global_detection_thresh(params, name: str, index: int, value: float):
-    """Adjust the Parameters.global_detection_thresh parameter"""
-    if index is not None:
-        raise IndexError("You cannot index the global_detection_thresh "
-                         "parameter")
-
-    params.global_detection_thresh = float(value)
-
-
-def _set_daily_ward_vaccination_capacity(params, name: str,
-                                         index: int, value: float):
-    """Adjust the Parameters.daily_ward_vaccination_capacity
-       parameter
-    """
-    if index is not None:
-        raise IndexError("You cannot index the daily_ward_vaccination "
-                         "parameter")
-
-    params.daily_ward_vaccination_capacity = float(value)
-
-
-def _set_neighbour_weight_threshold(params, name: str,
-                                    index: int, value: float):
-    """Adjust the Parameters.neighbour_weight_threshold parameter"""
-    if index is not None:
-        raise IndexError("You cannot index the neighbour_weight_threshold "
-                         "parameter")
-
-    params.neighbour_weight_threshold = float(value)
-
-
 def _set_daily_imports(params, name: str, index: int, value: float):
     """Adjust the Parameters.daily_imports parameter"""
     if index is not None:
@@ -182,7 +134,6 @@ _adjustable["too_ill_to_move"] = _set_too_ill_to_move
 _adjustable["contrib_foi"] = _set_contrib_foi
 _adjustable["user"] = _set_user_params
 _adjustable["length_day"] = _set_lengthday
-_adjustable["plength_day"] = _set_plengthday
 _adjustable["UV"] = _set_uv
 _adjustable["initial_inf"] = _set_initial_inf
 _adjustable["static_play_at_home"] = _set_static_play_at_home
@@ -190,11 +141,6 @@ _adjustable["dyn_play_at_home"] = _set_dyn_play_at_home
 _adjustable["dyn_dist_cutoff"] = _set_dyn_dist_cutoff
 _adjustable["play_to_work"] = _set_play_to_work
 _adjustable["work_to_play"] = _set_work_to_play
-_adjustable["local_vaccination_thesh"] = _set_local_vaccination_thresh
-_adjustable["global_detection_thresh"] = _set_global_detection_thresh
-_adjustable["daily_ward_vaccination_capacity"] = \
-    _set_daily_ward_vaccination_capacity
-_adjustable["neighbour_weight_threshold"] = _set_neighbour_weight_threshold
 _adjustable["daily_imports"] = _set_daily_imports
 
 

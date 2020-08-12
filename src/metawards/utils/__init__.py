@@ -11,7 +11,6 @@ Functions
     add_lookup
     add_wards_network_distance
     aggregate_networks
-    allocate_vaccination
     assert_sane_network
     build_play_matrix
     build_wards_network
@@ -32,7 +31,6 @@ Functions
     get_model_loop_functions
     get_min_max_distances
     get_number_of_processes
-    how_many_vaccinated
     initialise_infections
     initialise_play_infections
     move_population_from_work_to_play
@@ -59,7 +57,6 @@ Functions
     seed_ran_binomial
     string_to_ints
     update_metawards
-    vaccinate_same_id
     zero_workspace
 
 Classes
@@ -102,7 +99,6 @@ from ._ran_binomial import *
 from ._parallel import *
 from ._scale_susceptibles import *
 from ._assert_sane_network import *
-from ._vaccination import *
 from ._clear_all_infections import *
 from ._network_wards import *
 from ._zero_workspace import *
