@@ -173,6 +173,11 @@ def test_move_generator():
     assert m.generate(networks) == [[0, 2, 2, -1],
                                     [0, 3, 2, -1]]
 
+    m = MoveGenerator(from_demographic="blue", from_stage="E", to_stage="I1")
+
+    print(m.generate(networks))
+    assert m.generate(networks) == [[2, 1, 2, 2]]
+
     m = MoveGenerator(to_ward=1)
 
     player = PersonType.PLAYER

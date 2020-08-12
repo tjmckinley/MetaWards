@@ -10,12 +10,12 @@ In this ninth part of the tutorial you will;
   of individuals.
 * Use :meth:`Disease.is_infected <metawards.Disease.is_infected>` to
   create the non-infected Vaccinated (V) stage, and use
-  :func:`~metawards.go_ward` to model vaccination, both nationally
+  :func:`~metawards.movers.go_ward` to model vaccination, both nationally
   and on a ward-by-ward basis.
-* Use :class:`~metawards.MoveGenerator` to create advanced moves
+* Use :class:`~metawards.movers.MoveGenerator` to create advanced moves
   that model individuals losing immunity due to vaccination or
   recovery after a period of time.
-* Use :class:`~metawards.MoveGenerator` to model movement of
+* Use :class:`~metawards.movers.MoveGenerator` to model movement of
   individuals from their home to their university ward at the start
   of the university year. This can include movements between
   workers and players.
@@ -30,3 +30,4 @@ In this ninth part of the tutorial you will;
    :maxdepth: 2
 
    part09/01_move_ward
+   part09/02_vaccinate

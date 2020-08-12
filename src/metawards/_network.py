@@ -360,32 +360,8 @@ class Network:
            This raises a KeyError if there is no ward or ward-link
            that matches the WardID
         """
-        if id.is_null():
-            raise ValueError(f"Cannot get the index of a null WardID")
-
-        home = self.get_node_index(id.home())
-
-        if id.is_ward():
-            return (PersonType.PLAYER, home)
-
-        commute = self.get_node_index(id.commute())
-
-        # need to see if there is a work link between these
-        # two wards...
-        wards = self.nodes
-        links = self.links
-
-        if wards.begin_to[home] != -1 and wards.end_to[home] != -1:
-            for i in range(wards.begin_to[home], wards.end_to[home]):
-                ifrom = links.ifrom[i]
-                ito = links.ito[i]
-
-                if ifrom == home and ito == commute:
-                    return (PersonType.WORKER, i)
-
-        raise KeyError(
-            f"There is no work connection between ward {home} and "
-            f"ward {commute}")
+        from .utils._network_functions import network_get_index
+        return network_get_index(self, id)
 
     def get_node_index(self, index: _Union[str, int]):
         """Return the index of the node in this network that matches

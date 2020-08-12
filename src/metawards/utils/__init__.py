@@ -101,4 +101,5 @@ from ._scale_susceptibles import *
 from ._assert_sane_network import *
 from ._clear_all_infections import *
 from ._network_wards import *
+from ._network_functions import *
 from ._zero_workspace import *
