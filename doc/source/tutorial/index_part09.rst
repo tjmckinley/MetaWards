@@ -31,3 +31,4 @@ In this ninth part of the tutorial you will;
 
    part09/01_move_ward
    part09/02_vaccinate
+   part09/03_fading_immunity

@@ -119,8 +119,8 @@ You can limit this by specifying multiple states per move, e.g.
    the ``to`` without the ``from``. In this case, it moves everyone
    to the ``to``.
 
-WardID and PersonType
----------------------
+WardID and commuters
+--------------------
 
 ``from_ward`` and ``to_ward`` are a little more complex because individuals
 are either workers or players.
@@ -143,14 +143,21 @@ To do this, the :class:`metawards.WardID` class is used, e.g.
    # to become players who live in London
    gen = MoveGenerator(from_ward=WardID("Bristol", "Oxford"), to_ward="London")
 
-The :class:`metawards.PersonType` is used to specify whether an individual
-is a :meth:`~metawards.PersonType.WORKER` or
-a :meth:`~metawards.PersonType.PLAYER`.
+Often you want to identify all workers who reside in a ward, not just those
+that commute between two wards. To do this, you need to set
+``all_commute`` to true, e.g.
 
-You can use the :meth:`metawards.Network.get_ward_ids` function
-of :class:`~metawards.Network` to get the :class:`~metawards.WardID`
-identifiers for all workers and all players that match a home or
-commute ward in a given network, e.g.
+.. code-block:: python
+
+   from metawards import WardID
+   from metawards.movers import MoveGenerator
+
+   # Move all of the workers who live in Bristol
+   # to become players who live in London
+   gen = MoveGenerator(from_ward=WardID("Bristol", all_commute=True),
+                       to_ward="London")
+
+This enables you to specify moves with a lot of detail, e.g.
 
 .. code-block:: python
 
@@ -172,28 +179,27 @@ commute ward in a given network, e.g.
    network = Network.from_wards(bristol+london+oxford)
 
    # Move everyone who lives in Bristol from the red to blue demographic
-   gen = MoveGenerator(from_wards=network.get_ward_ids(home="Bristol"),
+   gen = MoveGenerator(from_wards=["bristol",
+                                    WardID("bristol", all_commute=True)],
                        from_demographic="red", to_demographic="blue")
 
    # Move only workers who live in Bristol from the red to blue demographic
-   gen = MoveGenerator(from_wards=network.get_ward_ids(home="Bristol",
-                                                       include_players=False),
+   gen = MoveGenerator(from_wards=WardID("bristol", all_commute=True),
                        from_demographic="red", to_demographic="blue")
 
-   # Move only workers who live in Bristol and commute to London from the red to blue demographic
-   gen = MoveGenerator(from_wards=network.get_ward_ids(home="Bristol",
-                                                       destination="London",
-                                                       include_players=False),
+   # Move only workers who live in Bristol and commute to London
+   # from the red to blue demographic
+   gen = MoveGenerator(from_wards=WardID("bristol", "london"),
                        from_demographic="red", to_demographic="blue")
 
    # Move only workers who commute to London from red to blue
-   gen = MoveGenerator(from_wards=network.get_ward_ids(destination="London",
-                                                       include_players=False),
+   gen = MoveGenerator(from_wards=[WardID("bristol", "london"),
+                                   WardID("oxford", "london")],
                        from_demographic="red", to_demographic="blue")
 
    # Move all workers who commute to Oxford to become players in Oxford
-   gen = MoveGenerator(from_wards=network.get_ward_ids(destination="Oxford",
-                                                       include_players=False),
+   gen = MoveGenerator(from_wards=[WardID("bristol", "oxford"),
+                                   WardID("london", "oxford")],
                        to_wards="Oxford")
 
    # Move all players in Bristol to become workers who commute to London

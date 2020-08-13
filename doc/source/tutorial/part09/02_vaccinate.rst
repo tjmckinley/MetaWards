@@ -167,38 +167,61 @@ modify ``move_vaccinate.py`` to read;
 
 .. code-block:: python
 
+    from metawards import WardID
     from metawards.movers import MoveGenerator, go_ward
     from metawards.utils import Console
 
 
     def move_vaccinate(**kwargs):
         capacity = 50  # number of vaccinations per day
-        trigger = 100  # number of infections to trigger vaccination
+        trigger = 20  # number of infections to trigger vaccination
+        stop_trigger = 5 # number of infections to stop vaccination
 
         def go_vaccinate(network, workspace, **kwargs):
-            # create ward-local is_vaccinating parameters, that default to 0.0
+            # create ward-local is_vaccinating parameters, that defaults to 0.0
             is_vaccinating = network.nodes.get_custom("is_vaccinating", 0.0)
 
-            I_in_wards = workspace.I_in_wards
-
             vaccinate = []
+
+            I_in_wards = workspace.I_in_wards
 
             for i in range(1, network.nnodes + 1):
                 if not is_vaccinating[i]:
                     if I_in_wards[i] >= trigger:
                         is_vaccinating[i] = 1.0
-                        Console.print(f"Vaccination starting in ward {i}")
 
                 if is_vaccinating[i]:
-                    # add all workers and players in this ward to
-                    # the list of individuals that should be
-                    # vaccinated
-                    vaccinate += network.get_ward_ids(i, include_players=True)
+                    if I_in_wards[i] < stop_trigger:
+                        is_vaccinating[i] = 0.0
+                    else:
+                        vaccinate.append(WardID(i, all_commute=True))
+                        vaccinate.append(WardID(i))
 
-            if len(vaccinate) > 0:
+            nv = int(sum(is_vaccinating))
+
+            if nv > 0:
+                print(f"Vaccinating in wards: number = {nv}")
                 gen = MoveGenerator(from_ward=vaccinate,
                                     from_stage="S", to_stage="V", number=capacity)
                 go_ward(generator=gen, network=network,
                         workspace=workspace, **kwargs)
 
         return [go_vaccinate]
+
+You can run this model using;
+
+.. code-block:: bash
+
+   metawards -d lurgy5.json -m 2011Data --mover move_vaccinate.py -a ExtraSeedsLondon.dat
+
+In this case, vaccination starts in a ward if the number of infections
+grows to 50 or above. Then, there is capacity for 20 vaccinations per day
+per ward and per ward-link. If the number of infections in the ward drops
+below 5 then vaccination is stopped.
+
+For my run, I see that all wards enter the vaccination program, with
+eventually ~44 M vaccinations and ~10 M infections. The progress
+plot produced via ``metawards-plot`` is shown below;
+
+.. image:: ../../images/tutorial_9_2.jpg
+   :alt: Demographic trajectories for the ward-local vaccinations
