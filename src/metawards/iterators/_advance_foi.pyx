@@ -259,7 +259,7 @@ def advance_foi_omp(network: Network, population: Population,
         infections_i = get_int_array_ptr(infections[i])
         play_infections_i = get_int_array_ptr(play_infections[i])
 
-        if contrib_foi > 0:
+        if scl_foi_uv > 0:
             p = p.start(f"work_{i}")
             with nogil, parallel(num_threads=num_threads):
                 thread_id = cython.parallel.threadid()
@@ -549,7 +549,7 @@ def advance_foi_serial(network: Network, population: Population,
         infections_i = get_int_array_ptr(infections[i])
         play_infections_i = get_int_array_ptr(play_infections[i])
 
-        if contrib_foi > 0:
+        if scl_foi_uv > 0:
             p = p.start(f"work_{i}")
             with nogil:
                 for j in range(1, nlinks_plus_one):

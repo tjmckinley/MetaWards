@@ -270,20 +270,50 @@ def test_move_generator():
 
     for stage in m.generate(network):
         for ward in m.generate_wards(network):
-            record.add(from_demographic=stage[0], from_stage=stage[1],
-                       to_demographic=stage[2], to_stage=stage[3],
-                       from_type=ward[0][0],
-                       from_ward_begin=ward[0][1],
-                       from_ward_end=ward[0][2],
-                       to_type=ward[1][0],
-                       to_ward_begin=ward[1][1],
-                       to_ward_end=ward[1][2],
-                       number=m.number() * m.fraction())
+            from_type = ward[0][0]
+            ifrom_begin = ward[0][1]
+            ifrom_end = ward[0][2]
+
+            to_type = ward[1][0]
+            ito_begin = ward[1][1]
+            ito_end = ward[1][2]
+
+            n = ifrom_end - ifrom_begin
+
+            print(ifrom_begin, ifrom_end, ito_begin, ito_end)
+
+            if ito_end - ito_begin == 0:
+                raise ValueError(
+                    "Cannot move individuals to a non-existent "
+                    "ward or ward-link")
+            elif ito_end - ito_begin == 1:
+                # this is a single to-ward (or link)
+                ito_delta = 0
+            elif ito_end - ito_begin != ifrom_end - ifrom_begin:
+                # different number of links
+                raise ValueError(
+                    "Cannot move individuals as the number of from "
+                    "and to links are not the same: "
+                    f"{ifrom_begin}:{ifrom_end} versus "
+                    f"{ito_begin}:{ito_end}")
+            else:
+                ito_delta = 1
+
+            for i in range(0, n):
+                ifrom = ifrom_begin + i
+                ito = ito_begin + (i * ito_delta)
+                record.add(from_demographic=stage[0], from_stage=stage[1],
+                           to_demographic=stage[2], to_stage=stage[3],
+                           from_type=from_type, from_ward=ifrom,
+                           to_type=to_type, to_ward=ito,
+                           number=m.number() * m.fraction())
 
     from array import array
 
-    records = [array("i", (0, -1, 1, 1, 4, 0, 4, 2, 3, 4, 21)),
-               array("i", (0, -1, 2, 1, 2, 0, 4, 2, 3, 4, 21))]
+    records = [array("i", (0, -1, 1, 1, 0, 4, 2, 3, 21)),
+               array("i", (0, -1, 1, 2, 0, 4, 2, 3, 21)),
+               array("i", (0, -1, 1, 3, 0, 4, 2, 3, 21)),
+               array("i", (0, -1, 2, 1, 0, 4, 2, 3, 21))]
 
     print(record._record)
     for i, move in enumerate(record):
