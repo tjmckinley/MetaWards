@@ -276,9 +276,6 @@ def go_ward(generator: MoveGenerator,
                 # nothing to move
                 continue
 
-            # this cannot run in parallel
-            rng = _get_binomial_ptr(rngs_view[0])
-
             for ward in wards:
                 if ward[0] is None:
                     # everyone will move to 'to_ward'
@@ -421,6 +418,9 @@ def go_ward(generator: MoveGenerator,
                     # end of parallel section
                 # end of from_type is None (move all wards)
                 else:
+                    # this cannot run in parallel
+                    rng = _get_binomial_ptr(rngs_view[0])
+
                     from_type = ward[0][0]
                     ifrom = ward[0][1]
                     to_type = ward[1][0]
@@ -441,6 +441,8 @@ def go_ward(generator: MoveGenerator,
                             nmove = min(number, from_play_infections[ifrom])
                         else:
                             nmove = min(number, <int>from_play_suscept[ifrom])
+                    elif from_type == PersonType.ALL:
+                        raise NotImplementedError("NEED TO IMPLEMENT ALL")
                     else:
                         raise NotImplementedError(
                                 f"Unknown PersonType: {from_type}")

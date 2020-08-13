@@ -287,75 +287,28 @@ class Network:
 
         lookup_function(self, nthreads=nthreads)
 
-    def get_ward_ids(self,
-                     home: _Union[int, str] = None,
-                     destination: _Union[int, str] = None,
-                     include_players: bool = True) -> _List[WardID]:
-        """Return the WardIDs for all of the wards that
-           match the specified home (or all homes if this is not set),
-           with the specified destination (or all destinations,
-           if this is not set), optionally including player WardIDs
-           if include_players is True. This returns a list
-           of matchinig WardIDs, or an empty list if there are
-           no matches
-        """
-        if home is not None:
-            try:
-                home = self.get_node_index(home)
-            except Exception:
-                return []
+    def get_index(self, id: WardID) -> _Tuple[PersonType, int, int]:
+        """Return the index of the Node or Link(s) that corresponds
+           to the passed WardID.
 
-        if destination is not None:
-            try:
-                destination = self.get_node_index(destination)
-            except Exception:
-                if include_players:
-                    return [WardID(home)]
-                else:
-                    return []
+           This returns a tuple of three values;
 
-        wards = []
+           (PersonType, start_idx, end_idx)
 
-        links = self.links
+           If this is a worker, then it will either return the
+           index of the Link for a specific work-link connection,
+           or the range of indicies for all of the work links
+           to this ward, so
 
-        if home is None:
-            if destination is None:
-                for i in range(1, self.nlinks + 1):
-                    wards.append(WardID(links.ifrom[i], links.ito[i]))
-            else:
-                for i in range(1, self.nlinks + 1):
-                    if links.ito[i] == destination:
-                        wards.append(WardID(links.ifrom[i], links.ito[i]))
-        else:
-            nodes = self.nodes
+           (PersonType.WORKER, link_idx, link_idx+!)  for a single link, or
 
-            if destination is None:
-                for i in range(nodes.begin_to[home], nodes.end_to[home]):
-                    assert links.ifrom[i] == home
-                    wards.append(WardID(links.ifrom[i], links.ito[i]))
-            else:
-                for i in range(nodes.begin_to[home], nodes.end_to[home]):
-                    assert links.ifrom[i] == home
-                    if links.ito[i] == destination:
-                        wards.append(WardID(home, destination))
+           (PersonType.WORKER, link.begin_to, link.end_to) for all links
 
-        if include_players:
-            if home is None:
-                for i in range(1, self.nnodes + 1):
-                    wards.append(WardID(i))
-            else:
-                wards.append(WardID(home))
+           If this is a player, then it will return the ID of the
+           Node (which is the index of the Node in Nodes), and
+           so
 
-        return wards
-
-    def get_index(self, id: WardID) -> _Tuple[PersonType, int]:
-        """Return the index of the Node or Link that corresponds
-           to the passed WardID. If this is a player, then it will
-           be the index into Node, while if this is for a worker,
-           then it will be the index of the Link that corresponds
-           to the ward-ward commuter link. This returns a tuple
-           of the PersonType (WORKER or PLAYER) plus the index
-           into the appropriate array.
+           (PersonType.PLAYER, node_index, node_index+1)
 
            This raises a KeyError if there is no ward or ward-link
            that matches the WardID
