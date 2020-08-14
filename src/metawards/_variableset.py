@@ -440,6 +440,14 @@ class VariableSet:
 
         self._add(key, value)
 
+    def set_value(self, key, value):
+        """Set the value of 'key' to 'value'"""
+        self.__setitem__(key, value)
+
+    def get_value(self, key):
+        """Return the value of 'key'"""
+        return self.__getitem__(key)
+
     def _add(self, name, value):
         """Internal function to add a new variable called 'name' to
            be varied - it will be set equal to 'value'

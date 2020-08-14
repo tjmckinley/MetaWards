@@ -59,19 +59,3 @@ And (finally!) you can do all of this from within a single Python or R
 script using the Python or R APIs, or you can run from the command line,
 or from within a batch script that will automatically parallelise
 the runs over a supercomputing cluster.
-
-.. note::
-
-   Congratulations on reaching the end of the tutorial. Hopefully this
-   has given you a good insight into what you could do with ``metawards``.
-   If you have any questions then please
-   `post an issue to our GitHub repository <https://github.com/metawards/MetaWards/issues>`_.
-   Please feel free to post issues to request more tutorials, or to
-   ask for more documentation.
-
-.. note::
-
-   If you are moving on to developing ``metawards``, or writing more
-   complex code on top of ``metawards``, then you should read the
-   developer documentation for the :mod:`metawards` module, which can be
-   :doc:`found here <../../api/index>`.
