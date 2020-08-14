@@ -155,7 +155,9 @@ def advance_foi_omp(network: Network, population: Population,
 
     # Copy arguments from Python into C cdef variables
     cdef double uv = params.UV
-    cdef double uvscale = population.scale_uv
+    cdef double uvscale = population.scale_uv * params.scale_uv
+
+    cdef double bg_foi = params.bg_foi
 
     cdef int ts = population.day
 
@@ -237,11 +239,11 @@ def advance_foi_omp(network: Network, population: Population,
     ## update the daytime and nighttime foi arrays
     ## for each ward (wards.day_foi and wards.night_foi)
 
-    ## we begin by initialising the day and night fois to 0
+    ## we begin by initialising the day and night fois to bg_foi
     p = profiler.start("setup")
     for i in range(1, network.nnodes+1):
-        wards_day_foi[i] = 0.0
-        wards_night_foi[i] = 0.0
+        wards_day_foi[i] = bg_foi
+        wards_night_foi[i] = bg_foi
     p = p.stop()
 
     p = p.start("loop_over_classes")
@@ -462,7 +464,8 @@ def advance_foi_serial(network: Network, population: Population,
 
     # Copy arguments from Python into C cdef variables
     cdef double uv = params.UV
-    cdef double uvscale = population.scale_uv
+    cdef double uvscale = population.scale_uv * params.scale_uv
+    cdef double bg_foi = params.bg_foi
     cdef int ts = population.day
 
     play_infections = infections.play
@@ -527,11 +530,11 @@ def advance_foi_serial(network: Network, population: Population,
     ## update the daytime and nighttime foi arrays
     ## for each ward (wards.day_foi and wards.night_foi)
 
-    ## we begin by initialising the day and night fois to 0
+    ## we begin by initialising the day and night fois to bg_foi
     p = profiler.start("setup")
     for i in range(1, network.nnodes+1):
-        wards_day_foi[i] = 0.0
-        wards_night_foi[i] = 0.0
+        wards_day_foi[i] = bg_foi
+        wards_night_foi[i] = bg_foi
     p = p.stop()
 
     p = p.start("loop_over_classes")
