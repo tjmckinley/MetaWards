@@ -19,5 +19,8 @@ metawards.PersonType
    
       ~PersonType.PLAYER
       ~PersonType.WORKER
+      ~PersonType.__doc__
+      ~PersonType.__members__
+      ~PersonType.__module__
    
    

@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -29,18 +29,19 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/custom.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/custom.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Input files and formats" href="../../fileformats/index.html" />
+    <link rel="next" title="Part 9 - Advanced Moves and Scenarios" href="../index_part09.html" />
     <link rel="prev" title="Specifying ward-local parameters" href="05_local_network.html" /> 
 </head>
 
@@ -118,6 +119,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Different networks for different demographics</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part09.html">Part 9 - Advanced Moves and Scenarios</a></li>
 </ul>
 </li>
 </ul>
@@ -211,7 +213,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../../fileformats/index.html" class="btn btn-neutral float-right" title="Input files and formats" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../index_part09.html" class="btn btn-neutral float-right" title="Part 9 - Advanced Moves and Scenarios" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="05_local_network.html" class="btn btn-neutral float-left" title="Specifying ward-local parameters" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -239,18 +241,18 @@ have now, having worked through this
 <a class="reference internal" href="../index.html"><span class="doc">tutorial</span></a> as well as the
 <a class="reference internal" href="../../quickstart/index.html"><span class="doc">quick start</span></a>, is that you can create;</p>
 <ul class="simple">
-<li>different <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Disease" title="metawards.Disease"><code class="xref py py-class docutils literal notranslate"><span class="pre">Disease</span></code></a> objects that contain different
-disease stages and parameters,</li>
-<li>different <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Demographic" title="metawards.Demographic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Demographic</span></code></a> objects that represent
+<li><p>different <a class="reference internal" href="../../api/generated/metawards.Disease.html#metawards.Disease" title="metawards.Disease"><code class="xref py py-class docutils literal notranslate"><span class="pre">Disease</span></code></a> objects that contain different
+disease stages and parameters,</p></li>
+<li><p>different <a class="reference internal" href="../../api/generated/metawards.Demographic.html#metawards.Demographic" title="metawards.Demographic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Demographic</span></code></a> objects that represent
 different groups of individuals, each of which can experience
-different <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Disease" title="metawards.Disease"><code class="xref py py-class docutils literal notranslate"><span class="pre">Disease</span></code></a> objects (and thus advance
-along different pathways,</li>
-<li>who can each experience metapopulation movements on different
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> networks (built flexibly via the
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> / <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Wards" title="metawards.Wards"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code></a> objects),</li>
-<li>where each ward in each network can have its own parameters, thereby
+different <a class="reference internal" href="../../api/generated/metawards.Disease.html#metawards.Disease" title="metawards.Disease"><code class="xref py py-class docutils literal notranslate"><span class="pre">Disease</span></code></a> objects (and thus advance
+along different pathways,</p></li>
+<li><p>who can each experience metapopulation movements on different
+<a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> networks (built flexibly via the
+<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> / <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Wards" title="metawards.Wards"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wards</span></code></a> objects),</p></li>
+<li><p>where each ward in each network can have its own parameters, thereby
 enabling modelling of ward-local behaviour for different demographics at
-different disease stages in different networks.</li>
+different disease stages in different networks.</p></li>
 </ul>
 <p>This flexibility for the model is then enhanced by building custom
 <a class="reference internal" href="../../api/index_api_MetaWards_iterators.html#module-metawards.iterators" title="metawards.iterators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">iterators</span></code></a> that enable you to write your own code
@@ -276,8 +278,8 @@ script using the Python or R APIs, or you can run from the command line,
 or from within a batch script that will automatically parallelise
 the runs over a supercomputing cluster.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Congratulations on reaching the end of the tutorial. Hopefully this
+<p class="admonition-title">Note</p>
+<p>Congratulations on reaching the end of the tutorial. Hopefully this
 has given you a good insight into what you could do with <code class="docutils literal notranslate"><span class="pre">metawards</span></code>.
 If you have any questions then please
 <a class="reference external" href="https://github.com/metawards/MetaWards/issues">post an issue to our GitHub repository</a>.
@@ -285,8 +287,8 @@ Please feel free to post issues to request more tutorials, or to
 ask for more documentation.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If you are moving on to developing <code class="docutils literal notranslate"><span class="pre">metawards</span></code>, or writing more
+<p class="admonition-title">Note</p>
+<p>If you are moving on to developing <code class="docutils literal notranslate"><span class="pre">metawards</span></code>, or writing more
 complex code on top of <code class="docutils literal notranslate"><span class="pre">metawards</span></code>, then you should read the
 developer documentation for the <a class="reference internal" href="../../api/index_api_MetaWards.html#module-metawards" title="metawards"><code class="xref py py-mod docutils literal notranslate"><span class="pre">metawards</span></code></a> module, which can be
 <a class="reference internal" href="../../api/index.html"><span class="doc">found here</span></a>.</p>
@@ -301,7 +303,7 @@ developer documentation for the <a class="reference internal" href="../../api/in
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../fileformats/index.html" class="btn btn-neutral float-right" title="Input files and formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../index_part09.html" class="btn btn-neutral float-right" title="Part 9 - Advanced Moves and Scenarios" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="05_local_network.html" class="btn btn-neutral float-left" title="Specifying ward-local parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -314,7 +316,7 @@ developer documentation for the <a class="reference internal" href="../../api/in
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 12, 2020.
+        Last updated on Aug 14, 2020.
       </span>
 
     </p>

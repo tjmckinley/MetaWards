@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -29,11 +29,12 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/custom.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/custom.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -126,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../index_part06.html">Part 6 - Moving between demographics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_part07.html">Part 7 - Different pathways for different demographics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_part08.html">Part 8 - Creating your own models / networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part09.html">Part 9 - Advanced Moves and Scenarios</a></li>
 </ul>
 </li>
 </ul>
@@ -246,19 +248,19 @@ the scaling and cutoff parameters.</p>
 of the cutoff parameter. Movement between two wards is only permitted
 if the distance between wards is less than the minimum of the
 cutoff distance of each ward, and the value of
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Parameters.dyn_dist_cutoff" title="metawards.Parameters.dyn_dist_cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parameters.dyn_dist_cutoff</span></code></a>,
+<a class="reference internal" href="../../api/generated/metawards.Parameters.html#metawards.Parameters.dyn_dist_cutoff" title="metawards.Parameters.dyn_dist_cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parameters.dyn_dist_cutoff</span></code></a>,
 e.g. if this condition is true;</p>
 <ol class="arabic simple" start="3">
-<li><span class="math notranslate nohighlight">\(D_\text{ij} &lt; \text{min}( C_i, C_j, C_\text{global} )\)</span></li>
+<li><p><span class="math notranslate nohighlight">\(D_\text{ij} &lt; \text{min}( C_i, C_j, C_\text{global} )\)</span></p></li>
 </ol>
 <p>where;</p>
 <ul class="simple">
-<li><span class="math notranslate nohighlight">\(D_\text{ij}\)</span> is the distance between the centres of wards
-<span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>,</li>
-<li><span class="math notranslate nohighlight">\(C_i\)</span> is the local cutoff parameter for ward <span class="math notranslate nohighlight">\(i\)</span>,</li>
-<li><span class="math notranslate nohighlight">\(C_j\)</span> is the local cutoff parameter for ward <span class="math notranslate nohighlight">\(j\)</span>, and</li>
-<li><span class="math notranslate nohighlight">\(C_\text{global}\)</span> is the global cutoff distance set via
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Parameters.dyn_dist_cutoff" title="metawards.Parameters.dyn_dist_cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parameters.dyn_dist_cutoff</span></code></a></li>
+<li><p><span class="math notranslate nohighlight">\(D_\text{ij}\)</span> is the distance between the centres of wards
+<span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(C_i\)</span> is the local cutoff parameter for ward <span class="math notranslate nohighlight">\(i\)</span>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(C_j\)</span> is the local cutoff parameter for ward <span class="math notranslate nohighlight">\(j\)</span>, and</p></li>
+<li><p><span class="math notranslate nohighlight">\(C_\text{global}\)</span> is the global cutoff distance set via
+<a class="reference internal" href="../../api/generated/metawards.Parameters.html#metawards.Parameters.dyn_dist_cutoff" title="metawards.Parameters.dyn_dist_cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Parameters.dyn_dist_cutoff</span></code></a></p></li>
 </ul>
 </div>
 <div class="section" id="scaling-foi-at-a-local-level">
@@ -266,25 +268,25 @@ e.g. if this condition is true;</p>
 <p>Every ward can have its own value of the FOI scaling parameter. In reality,
 equation 1 is actually;</p>
 <ol class="arabic simple" start="4">
-<li><span class="math notranslate nohighlight">\(F(w) = S \times S_l(w) \times U(t) \times \sum_s [ C_s \beta_s N_s(w) ]\)</span></li>
+<li><p><span class="math notranslate nohighlight">\(F(w) = S \times S_l(w) \times U(t) \times \sum_s [ C_s \beta_s N_s(w) ]\)</span></p></li>
 </ol>
 <p>where;</p>
 <ul class="simple">
-<li><span class="math notranslate nohighlight">\(S_l(w)\)</span> is the local scaling factor for ward <span class="math notranslate nohighlight">\(w\)</span>. This acts
+<li><p><span class="math notranslate nohighlight">\(S_l(w)\)</span> is the local scaling factor for ward <span class="math notranslate nohighlight">\(w\)</span>. This acts
 together with <span class="math notranslate nohighlight">\(S\)</span>, <span class="math notranslate nohighlight">\(U(t)\)</span> and <span class="math notranslate nohighlight">\(C_s\)</span> to give you a lot
 of control over how infectious individuals at each disease stage in each
-ward contribute to the ward’s FOI.</li>
+ward contribute to the ward’s FOI.</p></li>
 </ul>
 </div>
 <div class="section" id="reading-and-writing-local-parameters">
 <h2>Reading and writing local parameters<a class="headerlink" href="#reading-and-writing-local-parameters" title="Permalink to this headline">¶</a></h2>
 <p>You can read and write local ward parameters from within a custom
 iterator. The local ward parameters are stored in the
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">network.nodes</span></code></a> object. This provides arrays
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">network.nodes</span></code></a> object. This provides arrays
 which are indexed by ward ID (i.e. counting up from <code class="docutils literal notranslate"><span class="pre">1</span></code> to <code class="docutils literal notranslate"><span class="pre">nnodes</span> <span class="pre">+</span> <span class="pre">1</span></code>).</p>
-<p><a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> contains the
+<p><a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> contains the
 <span class="math notranslate nohighlight">\(S_l(w)\)</span> values for each node, while
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a> contains the
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a> contains the
 cutoff values for each node (in kilometers).</p>
 <p>The scaling factors for each node default to <code class="docutils literal notranslate"><span class="pre">1.0</span></code> (meaning no local scaling),
 while the cutoff defaults to a large distance that is greater than the
@@ -318,8 +320,8 @@ create a new iterator called <code class="docutils literal notranslate"><span cl
 </div>
 <p>This iterator defines the <code class="docutils literal notranslate"><span class="pre">advance_lockdown</span></code> advance function. This
 simply loops over all even-numbered wards and sets
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> and
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a> to zero.
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> and
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a> to zero.
 In effect, this places half of the country into extreme lockdown,
 where the disease is unable to spread.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">iterate_lockdown</span></code> function takes the <code class="docutils literal notranslate"><span class="pre">stage</span></code> parameter. This
@@ -329,8 +331,8 @@ default advance functions for that stage (as returned by
 <a class="reference internal" href="../../api/generated/metawards.iterators.iterate_default.html#metawards.iterators.iterate_default" title="metawards.iterators.iterate_default"><code class="xref py py-func docutils literal notranslate"><span class="pre">iterate_default()</span></code></a>). For the <code class="docutils literal notranslate"><span class="pre">foi</span></code> stage,
 this return <code class="docutils literal notranslate"><span class="pre">advance_lockdown</span></code> before the default functions, thereby
 ensuring that <code class="docutils literal notranslate"><span class="pre">advance_lockdown</span></code> changes the
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> and
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a> ward-local parameters
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> and
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a> ward-local parameters
 before they are used to calculate the force of infection of each ward.</p>
 <p>You can run this iterator using;</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy3 -a ExtraSeedsLondon.dat --iterator lockdown
@@ -375,7 +377,7 @@ Ending on day 186
 <h2>Custom ward-local parameters<a class="headerlink" href="#custom-ward-local-parameters" title="Permalink to this headline">¶</a></h2>
 <p>You can also read and write your own custom ward-local parameters.
 You do this by calling
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.get_custom" title="metawards.Nodes.get_custom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.get_custom</span></code></a>. For example;</p>
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.get_custom" title="metawards.Nodes.get_custom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.get_custom</span></code></a>. For example;</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_params</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">get_custom</span><span class="p">(</span><span class="s2">&quot;my_params&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -383,11 +385,11 @@ You do this by calling
 don’t exist, then they are created, with each ward given a default
 starting value specified by <code class="docutils literal notranslate"><span class="pre">default</span></code> (here <code class="docutils literal notranslate"><span class="pre">0.0</span></code>). The return value
 is the array indexed by ward ID. This can be read and written in an identical
-way to <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> and
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a>.</p>
+way to <a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> and
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Custom ward-level parameters are always stored as an array of
+<p class="admonition-title">Note</p>
+<p>Custom ward-level parameters are always stored as an array of
 floating point numbers.</p>
 </div>
 <p>You can use custom parameters to store or manipulate extra ward-level data.
@@ -468,10 +470,10 @@ array from the passed <a class="reference internal" href="../../api/index_api_Me
 <p>Two ward-local custom parameters are used to record whether or not
 a ward is in a local lockdown;</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">in_lockdown</span></code> is 1 if the ward is in lockdown, and 0 if it is not</li>
-<li><code class="docutils literal notranslate"><span class="pre">case_free_days</span></code> is the count of the number of consecutive days in
+<li><p><code class="docutils literal notranslate"><span class="pre">in_lockdown</span></code> is 1 if the ward is in lockdown, and 0 if it is not</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">case_free_days</span></code> is the count of the number of consecutive days in
 a ward without an infection (really detectable infection, e.g. an
-individual in the <code class="docutils literal notranslate"><span class="pre">I</span></code> state).</li>
+individual in the <code class="docutils literal notranslate"><span class="pre">I</span></code> state).</p></li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">advance_lockdown</span></code> function works by looping over all wards and
 seeing if the ward is in lockdown by checking the <code class="docutils literal notranslate"><span class="pre">in_lockdown</span></code> value
@@ -489,8 +491,8 @@ the scaling factor is <code class="docutils literal notranslate"><span class="pr
 <p>Finally, the number of wards in lockdown is calculated as the sum of
 the <code class="docutils literal notranslate"><span class="pre">in_lockdown</span></code> custom parameter, and is printed to the screen.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Note that there are some additional <a class="reference internal" href="../../api/generated/metawards.utils.Console.html#metawards.utils.Console.debug" title="metawards.utils.Console.debug"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Console.debug</span></code></a>
+<p class="admonition-title">Note</p>
+<p>Note that there are some additional <a class="reference internal" href="../../api/generated/metawards.utils.Console.html#metawards.utils.Console.debug" title="metawards.utils.Console.debug"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Console.debug</span></code></a>
 statements in the function that print out debug lines when wards move
 in and out of lockdown.</p>
 </div>
@@ -609,7 +611,7 @@ spread across wards, e.g. when I run this model I see;</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 12, 2020.
+        Last updated on Aug 14, 2020.
       </span>
 
     </p>

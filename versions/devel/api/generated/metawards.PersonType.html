@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -29,11 +29,12 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/custom.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/custom.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -227,43 +228,58 @@
             
   <div class="section" id="metawards-persontype">
 <h1>metawards.PersonType<a class="headerlink" href="#metawards-persontype" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="metawards.PersonType">
-<em class="property">class </em><code class="descclassname">metawards.</code><code class="descname">PersonType</code><a class="reference internal" href="../../_modules/metawards/_network.html#PersonType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.PersonType" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">metawards.</code><code class="sig-name descname">PersonType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#PersonType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.PersonType" title="Permalink to this definition">¶</a></dt>
 <dd><p>The type of individual in the network.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="metawards.PersonType.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#metawards.PersonType.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#metawards.PersonType.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <p class="rubric">Attributes</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#metawards.PersonType.PLAYER" title="metawards.PersonType.PLAYER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PLAYER</span></code></a></td>
-<td>A PLAYER is an individual who makes random movements between their home ward and the play wards linked to their home ward</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#metawards.PersonType.PLAYER" title="metawards.PersonType.PLAYER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PLAYER</span></code></a></p></td>
+<td><p>A PLAYER is an individual who makes random movements between their home ward and the play wards linked to their home ward</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#metawards.PersonType.WORKER" title="metawards.PersonType.WORKER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WORKER</span></code></a></td>
-<td>A WORKER is an individual that makes fixed movements between their home and commute (work) ward</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#metawards.PersonType.WORKER" title="metawards.PersonType.WORKER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WORKER</span></code></a></p></td>
+<td><p>A WORKER is an individual that makes fixed movements between their home and commute (work) ward</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__doc__</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__members__</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__module__</span></code></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="metawards.PersonType.PLAYER">
-<code class="descname">PLAYER</code><em class="property"> = 2</em><a class="headerlink" href="#metawards.PersonType.PLAYER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PLAYER</code><em class="property"> = 2</em><a class="headerlink" href="#metawards.PersonType.PLAYER" title="Permalink to this definition">¶</a></dt>
 <dd><p>A PLAYER is an individual who makes random movements between
 their home ward and the play wards linked to their home ward</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="metawards.PersonType.WORKER">
-<code class="descname">WORKER</code><em class="property"> = 1</em><a class="headerlink" href="#metawards.PersonType.WORKER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">WORKER</code><em class="property"> = 1</em><a class="headerlink" href="#metawards.PersonType.WORKER" title="Permalink to this definition">¶</a></dt>
 <dd><p>A WORKER is an individual that makes fixed movements between
 their home and commute (work) ward</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="metawards.PersonType.__eq__">
+<code class="sig-name descname">__eq__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_network.html#PersonType.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.PersonType.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self==value.</p>
 </dd></dl>
 
 </dd></dl>
@@ -291,7 +307,7 @@ their home and commute (work) ward</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 12, 2020.
+        Last updated on Aug 14, 2020.
       </span>
 
     </p>

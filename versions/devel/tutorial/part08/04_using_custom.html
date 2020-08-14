@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -29,11 +29,12 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/custom.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/custom.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -121,6 +122,7 @@
 <li class="toctree-l3"><a class="reference internal" href="06_network_demographics.html">Different networks for different demographics</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part09.html">Part 9 - Advanced Moves and Scenarios</a></li>
 </ul>
 </li>
 </ul>
@@ -305,13 +307,13 @@ objects (e.g. the wards, disease, demographics) can be passed in as
 Python objects. They will be automatically converted to JSON files and
 passed to the <code class="docutils literal notranslate"><span class="pre">metawards</span></code> processed in the background.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">You can use the <code class="docutils literal notranslate"><span class="pre">+</span></code> operator to add multiple individual ward objects
+<p class="admonition-title">Note</p>
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">+</span></code> operator to add multiple individual ward objects
 together to create the wards, e.g. <code class="docutils literal notranslate"><span class="pre">wards</span> <span class="pre">=</span> <span class="pre">bristol</span> <span class="pre">+</span> <span class="pre">london</span></code>.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">You can force <a class="reference internal" href="../../api/generated/metawards.run.html#metawards.run" title="metawards.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">metawards.run()</span></code></a> to use a specified output directory
+<p class="admonition-title">Note</p>
+<p>You can force <a class="reference internal" href="../../api/generated/metawards.run.html#metawards.run" title="metawards.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">metawards.run()</span></code></a> to use a specified output directory
 by passing in the <code class="docutils literal notranslate"><span class="pre">output</span></code> argument. You will need to set
 <code class="docutils literal notranslate"><span class="pre">force_overwrite_output</span></code> to True to overwrite any existing output.
 You can silence the printing to the screen by passing in
@@ -336,8 +338,8 @@ You can silence the printing to the screen by passing in
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">R does not support adding individual ward objects together to get Wards</p>
+<p class="admonition-title">Note</p>
+<p>R does not support adding individual ward objects together to get Wards</p>
 </div>
 </div>
 </div>
@@ -363,7 +365,7 @@ You can silence the printing to the screen by passing in
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 12, 2020.
+        Last updated on Aug 14, 2020.
       </span>
 
     </p>

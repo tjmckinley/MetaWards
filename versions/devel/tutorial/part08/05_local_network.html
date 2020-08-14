@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -29,11 +29,12 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/custom.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/custom.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -121,6 +122,7 @@
 <li class="toctree-l3"><a class="reference internal" href="06_network_demographics.html">Different networks for different demographics</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part09.html">Part 9 - Advanced Moves and Scenarios</a></li>
 </ul>
 </li>
 </ul>
@@ -230,8 +232,8 @@
 <h1>Specifying ward-local parameters<a class="headerlink" href="#specifying-ward-local-parameters" title="Permalink to this headline">¶</a></h1>
 <p>In <a class="reference internal" href="../part03/08_local_lockdown.html"><span class="doc">part 3</span></a> you learned how to read
 and write ward-local parameters, e.g.
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> and
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a>.</p>
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.scale_uv" title="metawards.Nodes.scale_uv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.scale_uv</span></code></a> and
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.cutoff" title="metawards.Nodes.cutoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.cutoff</span></code></a>.</p>
 <p>You can also set these parameters (and custom parameters) using
 the <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Ward" title="metawards.Ward"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ward</span></code></a> object.</p>
 <p>For example, in Python;</p>
@@ -298,14 +300,14 @@ is set to 15 kilometers, and the <code class="docutils literal notranslate"><spa
 Two custom parameters are added; <code class="docutils literal notranslate"><span class="pre">in_lockdown</span></code> which is set to 0 and
 <code class="docutils literal notranslate"><span class="pre">case_free_days</span></code> which is set to 21.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">You can set the position of a ward using either X/Y coordinates
+<p class="admonition-title">Note</p>
+<p>You can set the position of a ward using either X/Y coordinates
 (which should be in kilometers) or latitude / longitude. All wards
 in a single network should use the same coordinates scheme.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">You can add as many custom parameters as you like. They will all be
+<p class="admonition-title">Note</p>
+<p>You can add as many custom parameters as you like. They will all be
 stored as (double precision) floating point numbers. This means
 that <code class="docutils literal notranslate"><span class="pre">True</span></code> will be converted to <code class="docutils literal notranslate"><span class="pre">1.0</span></code> and <code class="docutils literal notranslate"><span class="pre">42</span></code> will be
 converted to <code class="docutils literal notranslate"><span class="pre">42.0</span></code>.</p>
@@ -323,8 +325,8 @@ Python;</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wards</span> <span class="o">=</span> <span class="n">bristol</span> <span class="o">+</span> <span class="n">london</span>
 </pre></div>
 </div>
-<p>You can now convert this into a <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">metawards.Network</span></code></a>. We can then
-read the parameters using the <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">network.nodes</span></code></a>
+<p>You can now convert this into a <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">metawards.Network</span></code></a>. We can then
+read the parameters using the <a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">network.nodes</span></code></a>
 object, as we did in <a class="reference internal" href="../part03/08_local_lockdown.html"><span class="doc">part 3</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">metawards</span> <span class="kn">import</span> <span class="n">Network</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">Network</span><span class="o">.</span><span class="n">from_wards</span><span class="p">(</span><span class="n">wards</span><span class="p">)</span>
@@ -405,7 +407,7 @@ note how <code class="docutils literal notranslate"><span class="pre">case_free_
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 12, 2020.
+        Last updated on Aug 14, 2020.
       </span>
 
     </p>

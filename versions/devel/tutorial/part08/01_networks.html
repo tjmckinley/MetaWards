@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -29,11 +29,12 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/custom.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/custom.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -122,6 +123,7 @@
 <li class="toctree-l3"><a class="reference internal" href="06_network_demographics.html">Different networks for different demographics</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part09.html">Part 9 - Advanced Moves and Scenarios</a></li>
 </ul>
 </li>
 </ul>
@@ -234,14 +236,14 @@ are grouped into workers and players, and distributed across wards. The
 force of infection of a ward caused by infection of an individual, based on
 their movements and behaviour is calculated, and used to decide whether
 other individuals who reside or visit that ward should be infected.</p>
-<p>The <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> is the collection of
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">Nodes</span></code></a> and <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Links" title="metawards.Links"><code class="xref py py-class docutils literal notranslate"><span class="pre">Links</span></code></a> that describe
+<p>The <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> is the collection of
+<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes" title="metawards.Nodes"><code class="xref py py-class docutils literal notranslate"><span class="pre">Nodes</span></code></a> and <a class="reference internal" href="../../api/generated/metawards.Links.html#metawards.Links" title="metawards.Links"><code class="xref py py-class docutils literal notranslate"><span class="pre">Links</span></code></a> that describe
 the individual wards, and the movements between wards of their
 residents.</p>
-<p>Up to now, you have used a single underlying <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>
+<p>Up to now, you have used a single underlying <a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>
 for every demographic and model run in this tutorial. This does not need
 to be the case, and you can choose to assign different
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> objects to different demographics in
+<a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a> objects to different demographics in
 a simulation. You would do this, for example, to model different connections
 or movements between wards for different demographics, e.g. workers
 or school students. Or to use different networks to represent movements
@@ -254,18 +256,18 @@ is <code class="docutils literal notranslate"><span class="pre">2011Data</span><
 electoral ward in England and Wales.</p>
 <p>There are two other models supplied;</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">2011UK</span></code> : Again, this is based on the 2011 census, but includes Scotland
-and Northern Ireland. This model is still a work in progress.</li>
-<li><code class="docutils literal notranslate"><span class="pre">single</span></code> : This is a single-ward network that is used for testing, or
-when you don’t want to model geographic behaviour.</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">2011UK</span></code> : Again, this is based on the 2011 census, but includes Scotland
+and Northern Ireland. This model is still a work in progress.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">single</span></code> : This is a single-ward network that is used for testing, or
+when you don’t want to model geographic behaviour.</p></li>
 </ul>
 <p>You can run a single-ward simulation using the command line;</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>metawards -d lurgy_home -m single -P <span class="m">100</span>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">We are using the <code class="docutils literal notranslate"><span class="pre">lurgy_home.json</span></code> file from the last chapter of this
+<p class="admonition-title">Note</p>
+<p>We are using the <code class="docutils literal notranslate"><span class="pre">lurgy_home.json</span></code> file from the last chapter of this
 tutorial. Note that we also need to set the population of this single
 ward using the <code class="docutils literal notranslate"><span class="pre">-P</span></code> or <code class="docutils literal notranslate"><span class="pre">--population</span></code> command line argument. In this
 case, we are setting the population to 100 individuals.</p>
@@ -284,8 +286,8 @@ every outbreak. This file contains the single line;</p>
 (the first number), infecting 5 individuals (the second number) in
 ward 255 (the third number).</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The name of this file is misleading, as it is really seeding
+<p class="admonition-title">Warning</p>
+<p>The name of this file is misleading, as it is really seeding
 the ward with index 255, not seeding a ward in London. This will
 only be seeding London if the network this is used with has a
 ward in London at index 255.</p>
@@ -308,8 +310,8 @@ IndexError: Invalid node index 255. Number of nodes in this container equals 2
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The traceback can be long and complex, and is really only of use for <code class="docutils literal notranslate"><span class="pre">metawards</span></code>
+<p class="admonition-title">Note</p>
+<p>The traceback can be long and complex, and is really only of use for <code class="docutils literal notranslate"><span class="pre">metawards</span></code>
 developers. You can normally work out what has gone wrong by scrolling up
 to before the traceback, and seeing if there is a <code class="docutils literal notranslate"><span class="pre">ERROR</span></code> printed immediately
 before.</p>
@@ -321,8 +323,8 @@ in ward 1 on the first day of the outbreak. This contains the line;</p>
 </div>
 <p>which says to seed 5 individuals on the first day in ward 1.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Nodes are indexed from 1 rather than 0. This means that <code class="docutils literal notranslate"><span class="pre">ward[1]</span></code>
+<p class="admonition-title">Note</p>
+<p>Nodes are indexed from 1 rather than 0. This means that <code class="docutils literal notranslate"><span class="pre">ward[1]</span></code>
 is the first node, and <code class="docutils literal notranslate"><span class="pre">ward[nnodes]</span></code> is the last node in the
 network.</p>
 </div>
@@ -345,8 +347,8 @@ and then 10 individuals on day 2, via;</p>
 <p>The contents of the string is interpreted identically to if it had been
 read from a file, with <code class="docutils literal notranslate"><span class="pre">\n</span></code> representing a newline character.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The extra seeds file has a flexible and powerful format, e.g. supporting
+<p class="admonition-title">Note</p>
+<p>The extra seeds file has a flexible and powerful format, e.g. supporting
 seeding by date, seeding random wards or by random amounts etc.
 More information on the format of this file can
 be <a class="reference internal" href="../../fileformats/extraseeds.html"><span class="doc">found here</span></a>.</p>
@@ -375,7 +377,7 @@ be <a class="reference internal" href="../../fileformats/extraseeds.html"><span 
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 12, 2020.
+        Last updated on Aug 14, 2020.
       </span>
 
     </p>

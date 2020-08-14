@@ -13,7 +13,27 @@ metawards.Parameters
 
    .. autosummary::
    
+      ~Parameters.__delattr__
+      ~Parameters.__dir__
+      ~Parameters.__eq__
+      ~Parameters.__format__
+      ~Parameters.__ge__
+      ~Parameters.__getattribute__
+      ~Parameters.__getitem__
+      ~Parameters.__gt__
       ~Parameters.__init__
+      ~Parameters.__init_subclass__
+      ~Parameters.__le__
+      ~Parameters.__lt__
+      ~Parameters.__ne__
+      ~Parameters.__new__
+      ~Parameters.__reduce__
+      ~Parameters.__reduce_ex__
+      ~Parameters.__repr__
+      ~Parameters.__setattr__
+      ~Parameters.__sizeof__
+      ~Parameters.__str__
+      ~Parameters.__subclasshook__
       ~Parameters.add_seeds
       ~Parameters.copy
       ~Parameters.default
@@ -35,6 +55,25 @@ metawards.Parameters
    
       ~Parameters.UV
       ~Parameters.UV_max
+      ~Parameters.__annotations__
+      ~Parameters.__dataclass_fields__
+      ~Parameters.__dataclass_params__
+      ~Parameters.__dict__
+      ~Parameters.__doc__
+      ~Parameters.__hash__
+      ~Parameters.__module__
+      ~Parameters.__weakref__
+      ~Parameters._authors
+      ~Parameters._contacts
+      ~Parameters._filename
+      ~Parameters._name
+      ~Parameters._references
+      ~Parameters._repository
+      ~Parameters._repository_branch
+      ~Parameters._repository_dir
+      ~Parameters._repository_version
+      ~Parameters._subparams
+      ~Parameters._version
       ~Parameters.additional_seeds
       ~Parameters.adjustments
       ~Parameters.daily_imports
@@ -47,7 +86,6 @@ metawards.Parameters
       ~Parameters.play_to_work
       ~Parameters.stage_0
       ~Parameters.static_play_at_home
-      ~Parameters.user_params
       ~Parameters.ward_seed_index
       ~Parameters.work_to_play
    

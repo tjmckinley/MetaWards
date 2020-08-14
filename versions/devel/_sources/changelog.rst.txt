@@ -13,11 +13,59 @@ Changelog
   :doc:`chapter 8 <tutorial/part03/08_local_lockdown>` of
   :doc:`part 3 <tutorial/index_part03>` of the tutorial, plus
   :doc:`chapter 5 of part 8 <tutorial/part08/05_local_network>`.
+  This can also be used to model
+  :doc:`ward-local vaccination strategies <tutorial/part09/02_vaccinate>`.
+* We have re-worked the go_functions. We have added
+  :func:`~metawards.movers.go_ward` that can be used with
+  :class:`~metawards.movers.MoveGenerator` to specify moves between
+  any and all combinations of demographics, disease stages and wards
+  (for players) and ward links (for workers). Individuals can move
+  from worker to player, player to worker, move around the network,
+  move to different networks in different demographics, move
+  between different disease stages, move from susceptible to
+  infected or infected to susceptible etc. etc. This enables
+  some advanced modelling, e.g. of vaccinated or recovered individuals
+  who gradually lose immunity and become susceptible again, movements
+  associated with, e.g. start of university, and movements and
+  quarantine associated with holidays.
+* Added a :meth:`Ward.bg_foi <metawards.Ward.bg_foi>` per-ward
+  parameter to set a background force of infection that can be used
+  to drive (or suppress) infections regardless of the number of
+  infecteds in each ward. This is useful for creating wards that
+  represent, e.g. holiday destinations that have different background
+  rates of infection.
+* Added :class:`~metawards.movers.MoveRecord` that can be used to
+  record all moves performed by a mover or go_function. Added
+  :func:`~metawards.go_record` that can move specific individuals
+  according to specific moves indicated in the
+  :class:`~metawards.movers.MoveRecord`. As there is a
+  :func:`MoveRecord.invert <metawards.movers.MoveRecord.invert>` you can
+  use this to reverse moves.
+* Added :meth:`is_infected <metawards.Disease.is_infected>` parameter
+  to :class:`~metawards.Disease` to mark whether a disease stage is classed
+  as being an infected stage. This is useful for non-recovered,
+  non-susceptible and non-infected stages, e.g. vaccinated (V) stages.
+  For example see :doc:`this tutorial <tutorial/part09/02_vaccinate>`.
 * MetaWards now has a `proper R package <https://github.com/metawards/rpkg>`_.
   You can now install and update
   MetaWards directly from within R. See the updated
   :doc:`installation instructions <install>` and the
   :doc:`R quickstart guide <quickstart/01_R>`.
+* Added a ``--UV-max`` command line parameter so that you can specify
+  the date in the year when disease transmission is highest (if UV is not
+  equal to 1.0, and thus disease transmission is seasonal). This defaults
+  to the first day of the outbreak.
+* Optimised :func:`~metawards.iterators.advance_foi` to skip calculations
+  of FOI for a stage if beta[stage] is zero. This changes the order
+  of random numbers, so meaning that this version of metawards will
+  give different output than older versions for the same input and
+  same random number seed. We've made a similar change to the original
+  C code to make sure that this has not invalidated the results.
+* Added a "null" or "scratch" ward that can be used to temporarily
+  store individuals during a day. This is useful when implementing more
+  complex moves that involve gathering and scattering populations.
+* Removed all parameters and dead code that were ported from the original
+  C code but are unused.
 
 `1.3.0 <https://github.com/metawards/MetaWards/compare/1.2.0...1.3.0>`__ - July 22nd 2020
 -----------------------------------------------------------------------------------------

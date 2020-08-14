@@ -13,7 +13,32 @@ metawards.Ward
 
    .. autosummary::
    
+      ~Ward.__add__
+      ~Ward.__delattr__
+      ~Ward.__dir__
+      ~Ward.__eq__
+      ~Ward.__format__
+      ~Ward.__ge__
+      ~Ward.__getattribute__
+      ~Ward.__gt__
+      ~Ward.__imul__
       ~Ward.__init__
+      ~Ward.__init_subclass__
+      ~Ward.__le__
+      ~Ward.__lt__
+      ~Ward.__mul__
+      ~Ward.__ne__
+      ~Ward.__new__
+      ~Ward.__reduce__
+      ~Ward.__reduce_ex__
+      ~Ward.__repr__
+      ~Ward.__rmul__
+      ~Ward.__setattr__
+      ~Ward.__sizeof__
+      ~Ward.__str__
+      ~Ward.__subclasshook__
+      ~Ward._harmonise_links
+      ~Ward._resolve_destination
       ~Ward.add_player_weight
       ~Ward.add_workers
       ~Ward.assert_sane
@@ -71,5 +96,15 @@ metawards.Ward
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Ward.__dict__
+      ~Ward.__doc__
+      ~Ward.__hash__
+      ~Ward.__module__
+      ~Ward.__weakref__
    
    

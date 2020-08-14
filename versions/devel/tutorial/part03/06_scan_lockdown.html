@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -29,11 +29,12 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/custom.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/custom.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -123,6 +124,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../index_part06.html">Part 6 - Moving between demographics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_part07.html">Part 7 - Different pathways for different demographics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index_part08.html">Part 8 - Creating your own models / networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index_part09.html">Part 9 - Advanced Moves and Scenarios</a></li>
 </ul>
 </li>
 </ul>
@@ -332,8 +334,8 @@ meaning no lockdown, <code class="docutils literal notranslate"><span class="pre
 it returns the <code class="docutils literal notranslate"><span class="pre">advance_lockdown</span></code> function that we’ve defined.</p>
 <p>This <code class="docutils literal notranslate"><span class="pre">advance_lockdown</span></code> function obtains the <code class="docutils literal notranslate"><span class="pre">scale_rate</span></code> and
 <code class="docutils literal notranslate"><span class="pre">can_work</span></code> custom user parameters from the
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Parameters" title="metawards.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a> objects in the model
-<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>.</p>
+<a class="reference internal" href="../../api/generated/metawards.Parameters.html#metawards.Parameters" title="metawards.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a> objects in the model
+<a class="reference internal" href="../../api/generated/metawards.Network.html#metawards.Network" title="metawards.Network"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>.</p>
 <p>It calls <a class="reference internal" href="../../api/generated/metawards.iterators.advance_infprob.html#metawards.iterators.advance_infprob" title="metawards.iterators.advance_infprob"><code class="xref py py-meth docutils literal notranslate"><span class="pre">advance_infprob()</span></code></a> with
 the set <code class="docutils literal notranslate"><span class="pre">scale_rate</span></code> scaling factor, before calling
 <a class="reference internal" href="../../api/generated/metawards.iterators.advance_play.html#metawards.iterators.advance_play" title="metawards.iterators.advance_play"><code class="xref py py-meth docutils literal notranslate"><span class="pre">advance_play()</span></code></a>, and then, if
@@ -442,8 +444,8 @@ copy in the following;</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Note that we have added comments to this file using ‘#’ - these
+<p class="admonition-title">Note</p>
+<p>Note that we have added comments to this file using ‘#’ - these
 are useful to help your future self understand what you were doing</p>
 </div>
 <p>Copy all of the files onto a cluster and submit the job where you
@@ -506,7 +508,7 @@ be seen here;</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 12, 2020.
+        Last updated on Aug 14, 2020.
       </span>
 
     </p>

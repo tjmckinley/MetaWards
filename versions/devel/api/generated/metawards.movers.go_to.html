@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -29,11 +29,12 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/custom.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/custom.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -226,9 +227,9 @@
             
   <div class="section" id="metawards-movers-go-to">
 <h1>metawards.movers.go_to<a class="headerlink" href="#metawards-movers-go-to" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="metawards.movers.go_to">
-<code class="descclassname">metawards.movers.</code><code class="descname">go_to</code><span class="sig-paren">(</span><em>go_from: Union[str</em>, <em>int</em>, <em>List[Union[str</em>, <em>int]]] = None</em>, <em>from_demographic: Union[str</em>, <em>int</em>, <em>List[Union[str</em>, <em>int]]] = None</em>, <em>go_to: Union[str</em>, <em>int</em>, <em>List[Union[str</em>, <em>int]]] = None</em>, <em>to_demographic: Union[str</em>, <em>int</em>, <em>List[Union[str</em>, <em>int]]] = None</em>, <em>from_stage: Union[str</em>, <em>int</em>, <em>List[Union[str</em>, <em>int]]] = None</em>, <em>to_stage: Union[str</em>, <em>int</em>, <em>List[Union[str</em>, <em>int]]] = None</em>, <em>from_ward: Union[str</em>, <em>int</em>, <em>metawards._wardid.WardID</em>, <em>List[Union[str</em>, <em>int</em>, <em>metawards._wardid.WardID]]] = None</em>, <em>to_ward: Union[str</em>, <em>int</em>, <em>metawards._wardid.WardID</em>, <em>List[Union[str</em>, <em>int</em>, <em>metawards._wardid.WardID]]] = None</em>, <em>fraction: float = 1.0</em>, <em>number: int = None</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/metawards/movers/_go_to.html#go_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.movers.go_to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">metawards.movers.</code><code class="sig-name descname">go_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">go_from</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">from_demographic</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">go_to</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_demographic</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">from_stage</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_stage</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">from_ward</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>metawards._wardid.WardID<span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>metawards._wardid.WardID<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_ward</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>metawards._wardid.WardID<span class="p">, </span>List<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">, </span>metawards._wardid.WardID<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fraction</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">number</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../../_modules/metawards/movers/_go_to.html#go_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.movers.go_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>This go function will move individuals from the “go_from”
 demographic(s) to the “go_to” demographic, as well as
 the ‘from_stage’ disease stage(s) to the ‘to_stage’
@@ -239,53 +240,49 @@ a subset of individuals if ‘fraction’ is less than 1, e.g.
 a random binomial distribution). You can also specify the
 maximum number of individuals to move per ward by
 specifying the ‘number’ parameters</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>go_from</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the demographic(s) to move from. This is the old
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>go_from</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the demographic(s) to move from. This is the old
 parameter name used to maintain backwards compatibility.
-Prefer to use from_demo if you can</li>
-<li><strong>go_to</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the demographic(s) to move to. This is the old
+Prefer to use from_demo if you can</p></li>
+<li><p><strong>go_to</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the demographic(s) to move to. This is the old
 parameter name used to maintain backwards compatibility.
-Prefer to use to_demo if you can</li>
-<li><strong>from_demographic</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the demographic(s) to move from. This can be either
+Prefer to use to_demo if you can</p></li>
+<li><p><strong>from_demographic</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the demographic(s) to move from. This can be either
 a single demographic (identified by an integer ID or string),
-a list of demographics, or, if None, then all demographics.</li>
-<li><strong>to_demographic</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the demographic to move to. This can be either
+a list of demographics, or, if None, then all demographics.</p></li>
+<li><p><strong>to_demographic</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the demographic to move to. This can be either
 a single demographic (identified by an integer ID or string),
 a list of demographics, or, if None, then all demographics.
-If this is not set, then it is equal to “from_demo”</li>
-<li><strong>from_stage</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the disease stage(s) to move from. This can be either
+If this is not set, then it is equal to “from_demo”</p></li>
+<li><p><strong>from_stage</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the disease stage(s) to move from. This can be either
 a single stage (identified by an integer ID or string),
-a list of stages, or, if None, then all stages.</li>
-<li><strong>to_stage</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the disease stage(s) to move to. This can be either
+a list of stages, or, if None, then all stages.</p></li>
+<li><p><strong>to_stage</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list of int / str</em>) – The ID(s) of the disease stage(s) to move to. This can be either
 a single stage (identified by an integer ID or string),
 a list of stages, or, if None, then all stages. If this
-is not set, then it is equal to “from_stage”</li>
-<li><strong>from_ward</strong> (<em>int</em><em>, </em><em>str</em><em>, </em><a class="reference internal" href="../index_api_MetaWards.html#metawards.WardID" title="metawards.WardID"><em>WardID</em></a><em>, or </em><em>list of int / str / WardID</em>) – The ID(s) of the ward(s) or ward-links(s) to move from. This can
+is not set, then it is equal to “from_stage”</p></li>
+<li><p><strong>from_ward</strong> (<em>int</em><em>, </em><em>str</em><em>, </em><a class="reference internal" href="../index_api_MetaWards.html#metawards.WardID" title="metawards.WardID"><em>WardID</em></a><em>, or </em><em>list of int / str / WardID</em>) – The ID(s) of the ward(s) or ward-links(s) to move from. This can
 be either a single ward or ward-link (identified by an integer ID
 or string or WardID), a list of ward(s)/ward link(s), or, if None,
-then all wards and ward links.</li>
-<li><strong>to_ward</strong> (<em>int</em><em>, </em><em>str</em><em>, </em><a class="reference internal" href="../index_api_MetaWards.html#metawards.WardID" title="metawards.WardID"><em>WardID</em></a><em>, or </em><em>list of int / str / WardID</em>) – The ID(s) of the ward(s) or ward-links(s) to move to. This can
+then all wards and ward links.</p></li>
+<li><p><strong>to_ward</strong> (<em>int</em><em>, </em><em>str</em><em>, </em><a class="reference internal" href="../index_api_MetaWards.html#metawards.WardID" title="metawards.WardID"><em>WardID</em></a><em>, or </em><em>list of int / str / WardID</em>) – The ID(s) of the ward(s) or ward-links(s) to move to. This can
 be either a single ward or ward-link (identified by an integer ID
 or string or WardID), a list of ward(s)/ward link(s), or, if None,
 then all wards and ward links. If this is not set then it is equal
-to “from_ward”</li>
-<li><strong>fraction</strong> (<em>float</em>) – The fraction of individuals in each ward to move, e.g. 0.75 would move
+to “from_ward”</p></li>
+<li><p><strong>fraction</strong> (<em>float</em>) – The fraction of individuals in each ward to move, e.g. 0.75 would move
 75% of the individuals in a ward / ward-link. By default 100%
-are moved.</li>
-<li><strong>number</strong> (<em>int</em>) – The maximum number of individuals in each ward / ward-link to move.
+are moved.</p></li>
+<li><p><strong>number</strong> (<em>int</em>) – The maximum number of individuals in each ward / ward-link to move.
 The fraction is taken from min(number, number_in_ward). By
-default all individuals in a ward / ward-link are sampled.</li>
-<li><strong>**kwargs</strong> – This calls go_ward, so any options that are acceptible to go_ward
-(with the exception of ‘generator’) can be passed here too</li>
+default all individuals in a ward / ward-link are sampled.</p></li>
+<li><p><strong>**kwargs</strong> – This calls go_ward, so any options that are acceptible to go_ward
+(with the exception of ‘generator’) can be passed here too</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -311,7 +308,7 @@ default all individuals in a ward / ward-link are sampled.</li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 12, 2020.
+        Last updated on Aug 14, 2020.
       </span>
 
     </p>
