@@ -305,12 +305,12 @@ def go_ward(generator: MoveGenerator,
                         raise NotImplementedError(
                                 f"Unknown PersonType: {from_type}")
 
-                    with nogil, parallel(num_threads=num_threads):
+                    with nogil:
                         thread_id = cython.parallel.threadid()
                         rng = _get_binomial_ptr(rngs_view[thread_id])
 
-                        # loop over workers
-                        for i in prange(1, nlinks_plus_one, schedule="static"):
+                        # loop over workers (cannot be parallel)
+                        for i in range(1, nlinks_plus_one):
                             if move_ward_only and is_worker and i == ito:
                                 continue
 
@@ -333,10 +333,8 @@ def go_ward(generator: MoveGenerator,
                                                    to_stage=to_stage,
                                                    from_type=worker,
                                                    to_type=to_type,
-                                                   from_ward_begin=i,
-                                                   from_ward_end=i+1,
-                                                   to_ward_begin=ito,
-                                                   to_ward_end=ito+1,
+                                                   from_ward=i,
+                                                   to_ward=ito,
                                                    number=nmove
                                                   )
 
@@ -357,6 +355,7 @@ def go_ward(generator: MoveGenerator,
                                     else:
                                         to_play_suscept[ito] = \
                                             to_play_suscept[ito] + nmove
+
                                     to_save_play_suscept[ito] = \
                                             to_save_play_suscept[ito] + nmove
 
@@ -371,8 +370,8 @@ def go_ward(generator: MoveGenerator,
                                             from_links_weight[i] - nmove
                         # end of loop over workers
 
-                        # loop over players
-                        for i in prange(1, nnodes_plus_one, schedule="static"):
+                        # loop over players - cannot be parallel
+                        for i in range(1, nnodes_plus_one):
                             if move_ward_only and is_player and i == ito:
                                 continue
 
@@ -465,6 +464,7 @@ def go_ward(generator: MoveGenerator,
                     else:
                         ito_delta = 1
 
+                    # cannot be parallel
                     for i in range(0, ifrom_end-ifrom_begin):
                         ifrom = ifrom_begin + i
                         ito = ito_begin + (i * ito_delta)
@@ -540,15 +540,15 @@ def go_ward(generator: MoveGenerator,
 
                             if record_moves:
                                 record.add(from_demographic=stage[0],
-                                        to_demographic=stage[2],
-                                        from_stage=from_stage,
-                                        to_stage=to_stage,
-                                        from_type=from_type,
-                                        to_type=to_type,
-                                        from_ward=ifrom,
-                                        to_ward=ito,
-                                        number=nmove
-                                        )
+                                           to_demographic=stage[2],
+                                           from_stage=from_stage,
+                                           to_stage=to_stage,
+                                           from_type=from_type,
+                                           to_type=to_type,
+                                           from_ward=ifrom,
+                                           to_ward=ito,
+                                           number=nmove
+                                          )
                         # end of from i in range(0, end-begin)
                     # end of if nmove > 0
                 # end of if from_type is None (test move all wards)

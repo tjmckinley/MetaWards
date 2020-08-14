@@ -57,6 +57,10 @@ def network_get_index(network: Network, id: WardID) -> _Tuple[PersonType, int]:
 
     cdef int commute = network.get_node_index(id.commute())
 
+    if home == 0 and commute == 0:
+        # this is the null worker link
+        return (PersonType.WORKER, 0, 1)
+
     # need to see if there is a work link between these
     # two wards...
     wards = network.nodes

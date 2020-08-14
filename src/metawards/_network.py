@@ -386,12 +386,23 @@ class Network:
         self.work_population = workers
         self.play_population = players
 
-        if self.work_population + self.play_population != self.population:
+        test_pop = int(self.work_population + self.play_population)
+
+        if test_pop != self.population:
             from .utils._console import Console
-            Console.error(f"Disagreement in the population size: "
-                          f"{self.work_population}+{self.play_population} != "
-                          f"{self.population}")
-            raise AssertionError("Disagreement in population size")
+
+            # this could be because individuals are in the NULL ward
+            n_null = int(self.nodes.save_play_suscept[0]) + \
+                self.links.weight[0]
+
+            if test_pop + n_null != self.population:
+                Console.error(
+                    f"Disagreement in the population size: "
+                    f"{int(self.work_population)}+"
+                    f"{int(self.play_population)} == "
+                    f"{test_pop} != {self.population}")
+
+                raise AssertionError("Disagreement in population size")
 
     def get_min_max_distances(self, nthreads: int = 1,
                               profiler=None):
