@@ -13,6 +13,8 @@ Changelog
   :doc:`chapter 8 <tutorial/part03/08_local_lockdown>` of
   :doc:`part 3 <tutorial/index_part03>` of the tutorial, plus
   :doc:`chapter 5 of part 8 <tutorial/part08/05_local_network>`.
+  This can also be used to model
+  :doc:`ward-local vaccination strategies <tutorial/part09/02_vaccinate>`.
 * We have re-worked the go_functions. We have added
   :func:`~metawards.movers.go_ward` that can be used with
   :class:`~metawards.movers.MoveGenerator` to specify moves between
@@ -43,6 +45,7 @@ Changelog
   to :class:`~metawards.Disease` to mark whether a disease stage is classed
   as being an infected stage. This is useful for non-recovered,
   non-susceptible and non-infected stages, e.g. vaccinated (V) stages.
+  For example see :doc:`this tutorial <tutorial/part09/02_vaccinate>`.
 * MetaWards now has a `proper R package <https://github.com/metawards/rpkg>`_.
   You can now install and update
   MetaWards directly from within R. See the updated
@@ -52,6 +55,12 @@ Changelog
   the date in the year when disease transmission is highest (if UV is not
   equal to 1.0, and thus disease transmission is seasonal). This defaults
   to the first day of the outbreak.
+* Optimised :func:`~metawards.iterators.advance_foi` to skip calculations
+  of FOI for a stage if beta[stage] is zero. This changes the order
+  of random numbers, so meaning that this version of metawards will
+  give different output than older versions for the same input and
+  same random number seed. We've made a similar change to the original
+  C code to make sure that this has not invalidated the results.
 * Removed all parameters and dead code that were ported from the original
   C code but are unused.
 
