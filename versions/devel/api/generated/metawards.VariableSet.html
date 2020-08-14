@@ -370,20 +370,38 @@ VariableSet from one another</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.fingerprint" title="metawards.VariableSet.fingerprint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fingerprint</span></code></a>([include_index])</p></td>
 <td><p>Return a fingerprint for this VariableSet.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.is_empty" title="metawards.VariableSet.is_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.from_data" title="metawards.VariableSet.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a>(data)</p></td>
+<td><p>Build a VariableSet from the passed data dictionary (which may have been deserialised from json</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.from_json" title="metawards.VariableSet.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a>(s)</p></td>
+<td><p>Construct and return VariableSet loaded from the passed json file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.get_value" title="metawards.VariableSet.get_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_value</span></code></a>(key)</p></td>
+<td><p>Return the value of ‘key’</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.is_empty" title="metawards.VariableSet.is_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_empty</span></code></a>()</p></td>
 <td><p>Return whether or not there is nothing to change</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.make_compatible_with" title="metawards.VariableSet.make_compatible_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_compatible_with</span></code></a>(other)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.make_compatible_with" title="metawards.VariableSet.make_compatible_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_compatible_with</span></code></a>(other)</p></td>
 <td><p>Return a copy of this VariableSet which has been made compatible with ‘other’.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.output_dir" title="metawards.VariableSet.output_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_dir</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.output_dir" title="metawards.VariableSet.output_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_dir</span></code></a>()</p></td>
 <td><p>Return the output directory in which runs using this variable set should be placed.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.read" title="metawards.VariableSet.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filename)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.read" title="metawards.VariableSet.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filename)</p></td>
 <td><p>Read a single set of adjustable variables from the passed file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.repeat_index" title="metawards.VariableSet.repeat_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_index</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.repeat_index" title="metawards.VariableSet.repeat_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat_index</span></code></a>()</p></td>
 <td><p>Return the repeat index of this set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.set_value" title="metawards.VariableSet.set_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_value</span></code></a>(key, value)</p></td>
+<td><p>Set the value of ‘key’ to ‘value’</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.to_data" title="metawards.VariableSet.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a>()</p></td>
+<td><p>Return a data dictionary that can be serialised to json</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.to_json" title="metawards.VariableSet.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a>([filename, indent, auto_bzip])</p></td>
+<td><p>Serialise the VariableSet to JSON.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../index_api_MetaWards.html#metawards.VariableSet.variable_names" title="metawards.VariableSet.variable_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_names</span></code></a>()</p></td>
 <td><p>Return the names of the variables that will be adjusted by this VariableSet</p></td>
@@ -472,7 +490,7 @@ be adjusted</p>
 Note that this directly modifies ‘params’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>params</strong> (<a class="reference internal" href="metawards.Parameters.html#metawards.Parameters" title="metawards.Parameters"><em>Parameters</em></a>) – The parameters whose variables will be adjusted</p>
+<dd class="field-odd"><p><strong>params</strong> (<a class="reference internal" href="../index_api_MetaWards.html#metawards.Parameters" title="metawards.Parameters"><em>Parameters</em></a>) – The parameters whose variables will be adjusted</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
@@ -551,6 +569,26 @@ but different parameters</p>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="metawards.VariableSet.from_data">
+<em class="property">static </em><code class="sig-name descname">from_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.from_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a VariableSet from the passed data dictionary (which
+may have been deserialised from json</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="metawards.VariableSet.from_json">
+<em class="property">static </em><code class="sig-name descname">from_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct and return VariableSet loaded from the passed
+json file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="metawards.VariableSet.get_value">
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of ‘key’</p>
 </dd></dl>
 
 <dl class="py method">
@@ -637,6 +675,44 @@ range from 1 to nrepeats</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="metawards.VariableSet.set_value">
+<code class="sig-name descname">set_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.set_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of ‘key’ to ‘value’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="metawards.VariableSet.to_data">
+<code class="sig-name descname">to_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.to_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.to_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a data dictionary that can be serialised to json</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="metawards.VariableSet.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">auto_bzip</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/metawards/_variableset.html#VariableSet.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.VariableSet.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialise the VariableSet to JSON. This will write to a file
+if filename is set, otherwise it will return a JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – The name of the file to write the JSON to. The absolute
+path to the written file will be returned. If filename is None
+then this will serialise to a JSON string which will be
+returned.</p></li>
+<li><p><strong>indent</strong> (<em>int</em>) – The number of spaces of indent to use when writing the json</p></li>
+<li><p><strong>auto_bzip</strong> (<em>bool</em>) – Whether or not to automatically bzip2 the written json file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns either the absolute path to the written file, or
+the json-serialised string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>

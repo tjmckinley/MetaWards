@@ -76,6 +76,7 @@ metawards.Parameters
       ~Parameters._version
       ~Parameters.additional_seeds
       ~Parameters.adjustments
+      ~Parameters.bg_foi
       ~Parameters.daily_imports
       ~Parameters.disease_params
       ~Parameters.dyn_dist_cutoff
@@ -84,6 +85,7 @@ metawards.Parameters
       ~Parameters.input_files
       ~Parameters.length_day
       ~Parameters.play_to_work
+      ~Parameters.scale_uv
       ~Parameters.stage_0
       ~Parameters.static_play_at_home
       ~Parameters.ward_seed_index

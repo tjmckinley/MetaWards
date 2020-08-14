@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Input files and formats" href="../../fileformats/index.html" />
+    <link rel="next" title="Holidays and quarantine" href="05_holidays.html" />
     <link rel="prev" title="Fading immunity" href="03_fading_immunity.html" /> 
 </head>
 
@@ -123,6 +123,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#performing-the-run">Performing the run</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="05_holidays.html">Holidays and quarantine</a></li>
 </ul>
 </li>
 </ul>
@@ -218,7 +219,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../../fileformats/index.html" class="btn btn-neutral float-right" title="Input files and formats" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="05_holidays.html" class="btn btn-neutral float-right" title="Holidays and quarantine" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="03_fading_immunity.html" class="btn btn-neutral float-left" title="Fading immunity" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -381,9 +382,9 @@ in the null ward.</p>
 and count up the total number of individuals moved, which is the
 total number of students.</p>
 <p>The total number of workers in a ward is held in
-<a class="reference internal" href="../../api/generated/metawards.Links.html#metawards.Links.weight" title="metawards.Links.weight"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.links.weight</span></code></a>. The current number
+<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Links.weight" title="metawards.Links.weight"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.links.weight</span></code></a>. The current number
 of susceptible workers in a ward is held in
-<a class="reference internal" href="../../api/generated/metawards.Links.html#metawards.Links.suscept" title="metawards.Links.suscept"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.links.suscept</span></code></a>. The null ward
+<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Links.suscept" title="metawards.Links.suscept"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.links.suscept</span></code></a>. The null ward
 is at index 0, and so;</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ninfected</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">network</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">suscept</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
@@ -391,9 +392,9 @@ is at index 0, and so;</p>
 <p>gives the number of infected workers in the null ward.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Similarly, <a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.save_play_suscept" title="metawards.Nodes.save_play_suscept"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.save_play_suscept</span></code></a>
+<p>Similarly, <a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.save_play_suscept" title="metawards.Nodes.save_play_suscept"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.save_play_suscept</span></code></a>
 is the number of players in a ward, while
-<a class="reference internal" href="../../api/generated/metawards.Nodes.html#metawards.Nodes.play_suscept" title="metawards.Nodes.play_suscept"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.play_suscept</span></code></a> is the
+<a class="reference internal" href="../../api/index_api_MetaWards.html#metawards.Nodes.play_suscept" title="metawards.Nodes.play_suscept"><code class="xref py py-meth docutils literal notranslate"><span class="pre">network.nodes.play_suscept</span></code></a> is the
 number of susceptible players in a ward. The difference between these
 is the number of infected individuals in a ward.</p>
 </div>
@@ -605,7 +606,7 @@ that was already spreading rapidly due to normal movements.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../fileformats/index.html" class="btn btn-neutral float-right" title="Input files and formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="05_holidays.html" class="btn btn-neutral float-right" title="Holidays and quarantine" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="03_fading_immunity.html" class="btn btn-neutral float-left" title="Fading immunity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

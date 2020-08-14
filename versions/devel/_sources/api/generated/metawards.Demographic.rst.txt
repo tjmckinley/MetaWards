@@ -13,6 +13,7 @@ metawards.Demographic
 
    .. autosummary::
    
+      ~Demographic.__add__
       ~Demographic.__delattr__
       ~Demographic.__dir__
       ~Demographic.__eq__

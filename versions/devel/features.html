@@ -239,9 +239,7 @@ and to
 a single combined group, with custom plugins used to merge data
 between networks, and conditionally move individuals between
 different demographics. We’ve used to model shielding and self-isolation,
-with future plans to use this to model hospital admissions,
-impact of demography on transmission, regional variation in disease
-parameters and the impact of holidays.</p></li>
+hospital admissions, impact of individuals returning from holidays etc.</p></li>
 </ul>
 <div class="align-right figure" id="id3" style="width: 35%">
 <a class="reference internal image-reference" href="_images/tutorial_5_3_1_demographics1.jpg"><img alt="Results of a shielding experiment" src="_images/tutorial_5_3_1_demographics1.jpg" style="width: 100%;" /></a>
@@ -252,6 +250,11 @@ including across multiple networks</span><a class="headerlink" href="#id3" title
 <li><p>per-ward custom parameter support. Different wards can have different
 parameters, meaning that you can easily model local behaviour
 (e.g. local lockdowns, changes in local control measures etc.).</p></li>
+<li><p>complete-detail and full control over horizontal and vertical movements
+through disease stages or across demographics. We’ve used this to
+<a class="reference internal" href="tutorial/part09/02_vaccinate.html"><span class="doc">model vaccination</span></a> and also
+to <a class="reference internal" href="tutorial/part09/03_fading_immunity.html"><span class="doc">model waning immunity</span></a>,
+with individuals returned from the R or V stages back to S.</p></li>
 <li><p>flexible data output support - again handled using an array of in-built
 or user-supplied data extraction plugin functions. Output the data you
 need in the format you want to perform analysis.</p></li>
@@ -275,10 +278,12 @@ MetaWards R interface.</span><a class="headerlink" href="#id4" title="Permalink 
 </div>
 <ul class="simple">
 <li><p>…but - the individual code is optimised and can run happily on small
-laptops. Individual networks fit in approximately 80 MB of memory, and model
-runs can take 15-90 seconds to perform. This scales with the number of
+laptops. Individual national-scale networks fit in approximately
+80 MB of memory, and model runs can take 15-90 seconds to perform.
+This scales with the number of
 demographics that are added, but high performance and low memory consumption
-are design goals.</p></li>
+are design goals. Models using only a few wards are kilobytes, and take
+less than a second.</p></li>
 <li><p><a class="reference internal" href="model_data.html"><span class="doc">flexible input files</span></a> that would enable modelling of any
 region or country to be undertaken (subject to good input data).
 Models of the UK and England and Wales have been created, and a

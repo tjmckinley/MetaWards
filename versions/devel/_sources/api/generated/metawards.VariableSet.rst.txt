@@ -43,11 +43,17 @@ metawards.VariableSet
       ~VariableSet.create_fingerprint
       ~VariableSet.extract_values
       ~VariableSet.fingerprint
+      ~VariableSet.from_data
+      ~VariableSet.from_json
+      ~VariableSet.get_value
       ~VariableSet.is_empty
       ~VariableSet.make_compatible_with
       ~VariableSet.output_dir
       ~VariableSet.read
       ~VariableSet.repeat_index
+      ~VariableSet.set_value
+      ~VariableSet.to_data
+      ~VariableSet.to_json
       ~VariableSet.variable_names
       ~VariableSet.variable_values
       ~VariableSet.variables

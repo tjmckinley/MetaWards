@@ -2,7 +2,7 @@
 Changelog
 =========
 
-`1.4.0 <https://github.com/metawards/MetaWards/compare/1.3.0...1.4.0>`__ - August 10th 2020
+`1.4.0 <https://github.com/metawards/MetaWards/compare/1.3.0...1.4.0>`__ - August 14th 2020
 -------------------------------------------------------------------------------------------
 
 * MetaWards now includes ward-local parameters (e.g. cutoff and scale_uv), plus
@@ -31,9 +31,17 @@ Changelog
 * Added a :meth:`Ward.bg_foi <metawards.Ward.bg_foi>` per-ward
   parameter to set a background force of infection that can be used
   to drive (or suppress) infections regardless of the number of
-  infecteds in each ward. This is useful for creating wards that
-  represent, e.g. holiday destinations that have different background
-  rates of infection.
+  infecteds in each ward.
+* Added a global :meth:`Parameters.bg_foi <metawards.Parameters.bg_foi>`
+  to set a per-network background force of infection. This is
+  useful as a way to model
+  :doc:`holiday destinations as different networks <tutorial/part09/05_holidays>`.
+* Added a global :meth:`Parameters.scale_uv <metawards.Parameters.scale_uv`
+  make it easier to set and control the scale_uv parameter via
+  a design file, parameter or via an adjustment in a demographic.
+* Finalised demographic adjustment support, enabling you to create
+  demographics with adjusted parameters, e.g. see the
+  :doc:`holiday destinations example <tutorial/part09/05_holidays>`.
 * Added :class:`~metawards.movers.MoveRecord` that can be used to
   record all moves performed by a mover or go_function. Added
   :func:`~metawards.go_record` that can move specific individuals

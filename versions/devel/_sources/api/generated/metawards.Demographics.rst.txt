@@ -13,6 +13,7 @@ metawards.Demographics
 
    .. autosummary::
    
+      ~Demographics.__add__
       ~Demographics.__delattr__
       ~Demographics.__dir__
       ~Demographics.__eq__
@@ -28,6 +29,7 @@ metawards.Demographics
       ~Demographics.__lt__
       ~Demographics.__ne__
       ~Demographics.__new__
+      ~Demographics.__radd__
       ~Demographics.__reduce__
       ~Demographics.__reduce_ex__
       ~Demographics.__repr__
