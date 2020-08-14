@@ -2,7 +2,7 @@
 Changelog
 =========
 
-`1.4.0 <https://github.com/metawards/MetaWards/compare/1.3.0...1.4.0>`__ - August 10th 2020
+`1.4.0 <https://github.com/metawards/MetaWards/compare/1.3.0...1.4.0>`__ - August 14th 2020
 -------------------------------------------------------------------------------------------
 
 * MetaWards now includes ward-local parameters (e.g. cutoff and scale_uv), plus
