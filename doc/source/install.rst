@@ -49,11 +49,11 @@ or you may have to `install pip <https://pip.pypa.io/en/stable/installing/>`__.
 If you have trouble installing pip then we recommend that you download
 and install `anaconda <https://anaconda.org>`__, which has pip included)
 
-To install a specific version, e.g. 1.0.0, type
+To install a specific version, e.g. 1.4.0, type
 
 .. code-block:: bash
 
-    pip install metawards==1.0.0
+    pip install metawards==1.4.0
 
 This will install a binary version of metawards if it is avaiable for your
 operating system / processor / version of python. If not, then
@@ -142,12 +142,12 @@ that directory using;
    tar -zxvf MetaWards-X.Y.Z.tar.gz
    cd MetaWards-X.Y.Z
 
-where ``X.Y.Z`` is the version you downloaded. For the 0.6.0 release
+where ``X.Y.Z`` is the version you downloaded. For the 1.4.0 release
 this would be;
 
 .. code-block:: bash
 
-    tar -zxvf MetaWards-0.5.0.tar.gz
+    tar -zxvf MetaWards-1.4.0.tar.gz
     cd MetaWards-X.Y.Z
 
 Next you need to install the dependencies of MetaWards. Do this by typing;
