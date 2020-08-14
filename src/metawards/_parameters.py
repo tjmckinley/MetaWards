@@ -184,6 +184,14 @@ class Parameters:
     #: Date when transmission should be at a maximum
     UV_max: _date = None
 
+    #: The global scale_uv. This is combined with the population and
+    #: per-ward level scale_uvs to give a single value
+    scale_uv: float = 1.0
+
+    #: The global background force of infection (FOI). This is combined
+    #: with the per-ward level bg_foi to give a single value
+    bg_foi: float = 0.0
+
     #: User parameters
     user_params: _Dict[str, float] = _field(default_factory=dict)
 
@@ -224,6 +232,8 @@ class Parameters:
                            ("daily_imports", self.daily_imports),
                            ("UV", self.UV),
                            ("UV_max", self.UV_max),
+                           ("scale_uv", self.scale_uv),
+                           ("bg_foi", self.bg_foi),
                            ("stage_0", self.stage_0)]:
             if value is not None:
                 parts.append(f"* {key}: {value}")
@@ -346,6 +356,8 @@ set the model data.""")
             daily_imports=data.get("daily_imports", 0),
             UV=data.get("UV", 0.0),
             UV_max=data.get("UV_max", None),
+            scale_uv=data.get("scale_uv", 1.0),
+            bg_foi=data.get("bg_foi", 0.0),
             _name=data.get("name", parameters),
             _authors=data.get("author(s)", "unknown"),
             _version=data.get("version", "unknown"),
