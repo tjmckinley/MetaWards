@@ -61,6 +61,9 @@ Changelog
   give different output than older versions for the same input and
   same random number seed. We've made a similar change to the original
   C code to make sure that this has not invalidated the results.
+* Added a "null" or "scratch" ward that can be used to temporarily
+  store individuals during a day. This is useful when implementing more
+  complex moves that involve gathering and scattering populations.
 * Removed all parameters and dead code that were ported from the original
   C code but are unused.
 
