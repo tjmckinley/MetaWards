@@ -173,13 +173,18 @@ def test_move_generator():
     assert m.generate(networks) == [[0, 2, 2, -1],
                                     [0, 3, 2, -1]]
 
+    m = MoveGenerator(from_demographic="blue", from_stage="E", to_stage="I1")
+
+    print(m.generate(networks))
+    assert m.generate(networks) == [[2, 1, 2, 2]]
+
     m = MoveGenerator(to_ward=1)
 
     player = PersonType.PLAYER
     worker = PersonType.WORKER
 
-    assert m.generate_wards(network) == [[None, (player, 1)]]
-    assert m.generate_wards(networks) == [[None, (player, 1)]]
+    assert m.generate_wards(network) == [[None, (player, 1, 2)]]
+    assert m.generate_wards(networks) == [[None, (player, 1, 2)]]
     assert not m.should_move_all()
     assert m.fraction() == 1.0
     assert m.number() >= 1000000000
@@ -209,34 +214,33 @@ def test_move_generator():
 
     print(m.generate_wards(network))
 
-    assert m.generate_wards(network) == [[(player, 1), (player, 3)],
-                                         [(worker, 1), (player, 3)]
+    assert m.generate_wards(network) == [[(player, 1, 2), (player, 3, 4)],
+                                         [(worker, 1, 2), (player, 3, 4)]
                                          ]
 
     m = MoveGenerator(from_ward=WardID("oxford", "bristol"), to_ward=1)
 
-    with pytest.raises(KeyError):
-        m.generate_wards(network)
+    assert m.generate_wards(network) == [[(worker, -1, -1), (player, 1, 2)]]
 
     oxford.add_workers(0, destination=bristol)
 
     network = Network.from_wards(bristol+london+oxford)
 
     print(m.generate_wards(network))
-    assert m.generate_wards(network) == [[(worker, 5), (player, 1)]]
+    assert m.generate_wards(network) == [[(worker, 5, 6), (player, 1, 2)]]
 
     m = MoveGenerator(from_ward=WardID("bristol", "bristol"),
                       to_ward="oxford")
 
-    with pytest.raises(KeyError):
-        m.generate_wards(network)
+    print(m.generate_wards(network))
+    assert m.generate_wards(network) == [[(worker, -1, -1), (player, 3, 4)]]
 
     bristol.add_workers(0, destination=bristol)
 
     network = Network.from_wards(bristol + london + oxford)
 
     print(m.generate_wards(network))
-    assert m.generate_wards(network) == [[(worker, 1), (player, 3)]]
+    assert m.generate_wards(network) == [[(worker, 1, 2), (player, 3, 4)]]
 
     assert network.links.ifrom[1] == network.links.ito[1]
     assert network.links.ifrom[1] == network.get_node_index("bristol")
@@ -244,15 +248,14 @@ def test_move_generator():
     m = MoveGenerator(to_ward=WardID("london", "bristol"))
 
     print(m.generate_wards(network))
-    assert m.generate_wards(network) == [[None, (worker, 4)]]
+    assert m.generate_wards(network) == [[None, (worker, 4, 5)]]
 
     assert network.links.ifrom[4] == network.get_node_index("london")
     assert network.links.ito[4] == network.get_node_index("bristol")
 
-    bristol_ids = network.get_ward_ids("bristol", include_players=True)
-
     m = MoveGenerator(from_stage="S", to_stage="R",
-                      from_ward=bristol_ids,
+                      from_ward=[WardID("bristol", all_commute=True),
+                                 WardID("bristol")],
                       to_ward="oxford",
                       number=42, fraction=0.5)
 
@@ -260,35 +263,61 @@ def test_move_generator():
     print(m.generate_wards(network))
 
     assert m.generate(network) == [[0, -1, 0, 4]]
+    assert m.generate_wards(network) == [[(worker, 1, 4), (player, 3, 4)],
+                                         [(player, 1, 2), (player, 3, 4)]]
 
     record = MoveRecord()
 
     for stage in m.generate(network):
         for ward in m.generate_wards(network):
-            record.add(from_demographic=stage[0], from_stage=stage[1],
-                       to_demographic=stage[2], to_stage=stage[3],
-                       from_type=ward[0][0], from_ward=ward[0][1],
-                       to_type=ward[1][0], to_ward=ward[1][1],
-                       number=m.number() * m.fraction())
+            from_type = ward[0][0]
+            ifrom_begin = ward[0][1]
+            ifrom_end = ward[0][2]
 
-            print(ward)
+            to_type = ward[1][0]
+            ito_begin = ward[1][1]
+            ito_end = ward[1][2]
 
-            assert ward[1] == (player, 3)
+            n = ifrom_end - ifrom_begin
 
-            if ward[0][0] == player:
-                assert ward[0][1] == 1
+            print(ifrom_begin, ifrom_end, ito_begin, ito_end)
+
+            if ito_end - ito_begin == 0:
+                raise ValueError(
+                    "Cannot move individuals to a non-existent "
+                    "ward or ward-link")
+            elif ito_end - ito_begin == 1:
+                # this is a single to-ward (or link)
+                ito_delta = 0
+            elif ito_end - ito_begin != ifrom_end - ifrom_begin:
+                # different number of links
+                raise ValueError(
+                    "Cannot move individuals as the number of from "
+                    "and to links are not the same: "
+                    f"{ifrom_begin}:{ifrom_end} versus "
+                    f"{ito_begin}:{ito_end}")
             else:
-                assert ward[0][0] == worker
-                assert network.links.ifrom[ward[0][1]] == 1
+                ito_delta = 1
 
-    records = [(0, -1, 1, 1, 0, 4, 2, 3, 21),
-               (0, -1, 1, 2, 0, 4, 2, 3, 21),
-               (0, -1, 1, 3, 0, 4, 2, 3, 21),
-               (0, -1, 2, 1, 0, 4, 2, 3, 21)]
+            for i in range(0, n):
+                ifrom = ifrom_begin + i
+                ito = ito_begin + (i * ito_delta)
+                record.add(from_demographic=stage[0], from_stage=stage[1],
+                           to_demographic=stage[2], to_stage=stage[3],
+                           from_type=from_type, from_ward=ifrom,
+                           to_type=to_type, to_ward=ito,
+                           number=m.number() * m.fraction())
 
-    print(record)
+    from array import array
+
+    records = [array("i", (0, -1, 1, 1, 0, 4, 2, 3, 21)),
+               array("i", (0, -1, 1, 2, 0, 4, 2, 3, 21)),
+               array("i", (0, -1, 1, 3, 0, 4, 2, 3, 21)),
+               array("i", (0, -1, 2, 1, 0, 4, 2, 3, 21))]
+
+    print(record._record)
     for i, move in enumerate(record):
-        print(move)
+        print(f"{move} == {records[i]}")
         assert move == records[i]
 
 

@@ -119,7 +119,12 @@ def go_ward(generator: MoveGenerator,
     cdef int is_worker = 0
     cdef int is_player = 0
     cdef int ifrom = 0
+    cdef int ifrom_begin = 0
+    cdef int ifrom_end = 0
     cdef int ito = 0
+    cdef int ito_begin = 0
+    cdef int ito_end = 0
+    cdef int ito_delta = 0
     cdef int move_ward_only = 0
 
     for stage in stages:
@@ -276,14 +281,19 @@ def go_ward(generator: MoveGenerator,
                 # nothing to move
                 continue
 
-            # this cannot run in parallel
-            rng = _get_binomial_ptr(rngs_view[0])
-
             for ward in wards:
                 if ward[0] is None:
                     # everyone will move to 'to_ward'
                     to_type = ward[1][0]
-                    ito = ward[1][1]
+                    ito_begin = ward[1][1]
+                    ito_end = ward[1][2]
+
+                    if ito_end - ito_begin != 1:
+                        # cannot move everyone to multiple ids!
+                        raise ValueError(
+                            "Cannot move all individuals to multiple links")
+
+                    ito = ito_begin
 
                     if to_type == worker:
                         is_worker = 1
@@ -295,12 +305,12 @@ def go_ward(generator: MoveGenerator,
                         raise NotImplementedError(
                                 f"Unknown PersonType: {from_type}")
 
-                    with nogil, parallel(num_threads=num_threads):
+                    with nogil:
                         thread_id = cython.parallel.threadid()
                         rng = _get_binomial_ptr(rngs_view[thread_id])
 
-                        # loop over workers
-                        for i in prange(1, nlinks_plus_one, schedule="static"):
+                        # loop over workers (cannot be parallel)
+                        for i in range(1, nlinks_plus_one):
                             if move_ward_only and is_worker and i == ito:
                                 continue
 
@@ -345,6 +355,7 @@ def go_ward(generator: MoveGenerator,
                                     else:
                                         to_play_suscept[ito] = \
                                             to_play_suscept[ito] + nmove
+
                                     to_save_play_suscept[ito] = \
                                             to_save_play_suscept[ito] + nmove
 
@@ -359,8 +370,8 @@ def go_ward(generator: MoveGenerator,
                                             from_links_weight[i] - nmove
                         # end of loop over workers
 
-                        # loop over players
-                        for i in prange(1, nnodes_plus_one, schedule="static"):
+                        # loop over players - cannot be parallel
+                        for i in range(1, nnodes_plus_one):
                             if move_ward_only and is_player and i == ito:
                                 continue
 
@@ -421,91 +432,124 @@ def go_ward(generator: MoveGenerator,
                     # end of parallel section
                 # end of from_type is None (move all wards)
                 else:
+                    # this cannot run in parallel
+                    rng = _get_binomial_ptr(rngs_view[0])
+
                     from_type = ward[0][0]
-                    ifrom = ward[0][1]
+                    ifrom_begin = ward[0][1]
+                    ifrom_end = ward[0][2]
                     to_type = ward[1][0]
-                    ito = ward[1][1]
+                    ito_begin = ward[1][1]
+                    ito_end = ward[1][2]
 
                     if move_ward_only and from_type == to_type and \
-                      ifrom == ito:
+                      ifrom_begin == ito_begin and ifrom_end == ito_end:
                         # nothing to move
                         continue
 
-                    if from_type == worker:
-                        if from_stage >= 0:
-                            nmove = min(number, from_work_infections[ifrom])
-                        else:
-                            nmove = min(number, <int>from_links_suscept[ifrom])
-                    elif from_type == player:
-                        if from_stage >= 0:
-                            nmove = min(number, from_play_infections[ifrom])
-                        else:
-                            nmove = min(number, <int>from_play_suscept[ifrom])
+                    if ito_end - ito_begin == 0:
+                        raise ValueError(
+                            "Cannot move individuals to a non-existent "
+                            "ward or ward-link")
+                    elif ito_end - ito_begin == 1:
+                        # this is a single to-ward (or link)
+                        ito_delta = 0
+                    elif ito_end - ito_begin != ifrom_end - ifrom_begin:
+                        # different number of links
+                        raise ValueError(
+                            "Cannot move individuals as the number of from "
+                            "and to links are not the same: "
+                            f"{ifrom_begin}:{ifrom_end} versus "
+                            f"{ito_begin}:{ito_end}")
                     else:
-                        raise NotImplementedError(
-                                f"Unknown PersonType: {from_type}")
+                        ito_delta = 1
 
-                    if fraction != 1.0:
-                        nmove = _ran_binomial(rng, fraction, nmove)
-
-                    if nmove > 0:
-                        have_updated[0] = 1
-
-                        if to_type == worker:
-                            if to_stage >= 0:
-                                to_work_infections[ito] = \
-                                        to_work_infections[ito] + nmove
-                            else:
-                                to_links_suscept[ito] = \
-                                        to_links_suscept[ito] + nmove
-
-                            to_links_weight[ito] = to_links_weight[ito] + nmove
-                        elif to_type == player:
-                            if to_stage >= 0:
-                                to_play_infections[ito] = \
-                                        to_play_infections[ito] + nmove
-                            else:
-                                to_play_suscept[ito] = \
-                                        to_play_suscept[ito] + nmove
-
-                            to_save_play_suscept[ito] = \
-                                        to_save_play_suscept[ito] + nmove
-                        else:
-                            raise NotImplementedError(
-                                    f"Unknown PersonType: {to_type}")
+                    # cannot be parallel
+                    for i in range(0, ifrom_end-ifrom_begin):
+                        ifrom = ifrom_begin + i
+                        ito = ito_begin + (i * ito_delta)
 
                         if from_type == worker:
                             if from_stage >= 0:
-                                from_work_infections[ifrom] = \
-                                        from_work_infections[ifrom] - nmove
+                                nmove = min(number,
+                                            from_work_infections[ifrom])
                             else:
-                                from_links_suscept[ifrom] = \
+                                nmove = min(number,
+                                            <int>from_links_suscept[ifrom])
+                        elif from_type == player:
+                            if from_stage >= 0:
+                                nmove = min(number,
+                                            from_play_infections[ifrom])
+                            else:
+                                nmove = min(number,
+                                            <int>from_play_suscept[ifrom])
+                        else:
+                            raise NotImplementedError(
+                                    f"Unknown PersonType: {from_type}")
+
+                        if fraction != 1.0:
+                            nmove = _ran_binomial(rng, fraction, nmove)
+
+                        if nmove > 0:
+                            have_updated[0] = 1
+
+                            if to_type == worker:
+                                if to_stage >= 0:
+                                    to_work_infections[ito] = \
+                                            to_work_infections[ito] + nmove
+                                else:
+                                    to_links_suscept[ito] = \
+                                            to_links_suscept[ito] + nmove
+
+                                to_links_weight[ito] = \
+                                        to_links_weight[ito] + nmove
+                            elif to_type == player:
+                                if to_stage >= 0:
+                                    to_play_infections[ito] = \
+                                        to_play_infections[ito] + nmove
+                                else:
+                                    to_play_suscept[ito] = \
+                                       to_play_suscept[ito] + nmove
+
+                                to_save_play_suscept[ito] = \
+                                        to_save_play_suscept[ito] + nmove
+                            else:
+                                raise NotImplementedError(
+                                        f"Unknown PersonType: {to_type}")
+
+                            if from_type == worker:
+                                if from_stage >= 0:
+                                    from_work_infections[ifrom] = \
+                                        from_work_infections[ifrom] - nmove
+                                else:
+                                    from_links_suscept[ifrom] = \
                                         from_links_suscept[ifrom] - nmove
 
-                            from_links_weight[ifrom] = \
+                                from_links_weight[ifrom] = \
                                         from_links_weight[ifrom] - nmove
-                        else:
-                            if from_stage >= 0:
-                                from_play_infections[ifrom] = \
-                                        from_play_infections[ifrom] - nmove
                             else:
-                                from_play_suscept[ifrom] = \
+                                if from_stage >= 0:
+                                    from_play_infections[ifrom] = \
+                                        from_play_infections[ifrom] - nmove
+                                else:
+                                    from_play_suscept[ifrom] = \
                                         from_play_suscept[ifrom] - nmove
 
-                            from_save_play_suscept[ifrom] = \
+                                from_save_play_suscept[ifrom] = \
                                         from_save_play_suscept[ifrom] - nmove
 
-                        if record_moves:
-                            record.add(from_demographic=stage[0],
-                                    to_demographic=stage[2],
-                                    from_stage=from_stage,
-                                    to_stage=to_stage,
-                                    from_type=from_type,
-                                    to_type=to_type,
-                                    from_ward=ifrom,
-                                    to_ward=ito,
-                                    number=nmove
-                                    )
+                            if record_moves:
+                                record.add(from_demographic=stage[0],
+                                           to_demographic=stage[2],
+                                           from_stage=from_stage,
+                                           to_stage=to_stage,
+                                           from_type=from_type,
+                                           to_type=to_type,
+                                           from_ward=ifrom,
+                                           to_ward=ito,
+                                           number=nmove
+                                          )
+                        # end of from i in range(0, end-begin)
                     # end of if nmove > 0
                 # end of if from_type is None (test move all wards)
             # end of loop over wards

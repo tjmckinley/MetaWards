@@ -287,105 +287,34 @@ class Network:
 
         lookup_function(self, nthreads=nthreads)
 
-    def get_ward_ids(self,
-                     home: _Union[int, str] = None,
-                     destination: _Union[int, str] = None,
-                     include_players: bool = True) -> _List[WardID]:
-        """Return the WardIDs for all of the wards that
-           match the specified home (or all homes if this is not set),
-           with the specified destination (or all destinations,
-           if this is not set), optionally including player WardIDs
-           if include_players is True. This returns a list
-           of matchinig WardIDs, or an empty list if there are
-           no matches
-        """
-        if home is not None:
-            try:
-                home = self.get_node_index(home)
-            except Exception:
-                return []
+    def get_index(self, id: WardID) -> _Tuple[PersonType, int, int]:
+        """Return the index of the Node or Link(s) that corresponds
+           to the passed WardID.
 
-        if destination is not None:
-            try:
-                destination = self.get_node_index(destination)
-            except Exception:
-                if include_players:
-                    return [WardID(home)]
-                else:
-                    return []
+           This returns a tuple of three values;
 
-        wards = []
+           (PersonType, start_idx, end_idx)
 
-        links = self.links
+           If this is a worker, then it will either return the
+           index of the Link for a specific work-link connection,
+           or the range of indicies for all of the work links
+           to this ward, so
 
-        if home is None:
-            if destination is None:
-                for i in range(1, self.nlinks + 1):
-                    wards.append(WardID(links.ifrom[i], links.ito[i]))
-            else:
-                for i in range(1, self.nlinks + 1):
-                    if links.ito[i] == destination:
-                        wards.append(WardID(links.ifrom[i], links.ito[i]))
-        else:
-            nodes = self.nodes
+           (PersonType.WORKER, link_idx, link_idx+!)  for a single link, or
 
-            if destination is None:
-                for i in range(nodes.begin_to[home], nodes.end_to[home]):
-                    assert links.ifrom[i] == home
-                    wards.append(WardID(links.ifrom[i], links.ito[i]))
-            else:
-                for i in range(nodes.begin_to[home], nodes.end_to[home]):
-                    assert links.ifrom[i] == home
-                    if links.ito[i] == destination:
-                        wards.append(WardID(home, destination))
+           (PersonType.WORKER, link.begin_to, link.end_to) for all links
 
-        if include_players:
-            if home is None:
-                for i in range(1, self.nnodes + 1):
-                    wards.append(WardID(i))
-            else:
-                wards.append(WardID(home))
+           If this is a player, then it will return the ID of the
+           Node (which is the index of the Node in Nodes), and
+           so
 
-        return wards
-
-    def get_index(self, id: WardID) -> _Tuple[PersonType, int]:
-        """Return the index of the Node or Link that corresponds
-           to the passed WardID. If this is a player, then it will
-           be the index into Node, while if this is for a worker,
-           then it will be the index of the Link that corresponds
-           to the ward-ward commuter link. This returns a tuple
-           of the PersonType (WORKER or PLAYER) plus the index
-           into the appropriate array.
+           (PersonType.PLAYER, node_index, node_index+1)
 
            This raises a KeyError if there is no ward or ward-link
            that matches the WardID
         """
-        if id.is_null():
-            raise ValueError(f"Cannot get the index of a null WardID")
-
-        home = self.get_node_index(id.home())
-
-        if id.is_ward():
-            return (PersonType.PLAYER, home)
-
-        commute = self.get_node_index(id.commute())
-
-        # need to see if there is a work link between these
-        # two wards...
-        wards = self.nodes
-        links = self.links
-
-        if wards.begin_to[home] != -1 and wards.end_to[home] != -1:
-            for i in range(wards.begin_to[home], wards.end_to[home]):
-                ifrom = links.ifrom[i]
-                ito = links.ito[i]
-
-                if ifrom == home and ito == commute:
-                    return (PersonType.WORKER, i)
-
-        raise KeyError(
-            f"There is no work connection between ward {home} and "
-            f"ward {commute}")
+        from .utils._network_functions import network_get_index
+        return network_get_index(self, id)
 
     def get_node_index(self, index: _Union[str, int]):
         """Return the index of the node in this network that matches
@@ -457,12 +386,23 @@ class Network:
         self.work_population = workers
         self.play_population = players
 
-        if self.work_population + self.play_population != self.population:
+        test_pop = int(self.work_population + self.play_population)
+
+        if test_pop != self.population:
             from .utils._console import Console
-            Console.error(f"Disagreement in the population size: "
-                          f"{self.work_population}+{self.play_population} != "
-                          f"{self.population}")
-            raise AssertionError("Disagreement in population size")
+
+            # this could be because individuals are in the NULL ward
+            n_null = int(self.nodes.save_play_suscept[0]) + \
+                self.links.weight[0]
+
+            if test_pop + n_null != self.population:
+                Console.error(
+                    f"Disagreement in the population size: "
+                    f"{int(self.work_population)}+"
+                    f"{int(self.play_population)} == "
+                    f"{test_pop} != {self.population}")
+
+                raise AssertionError("Disagreement in population size")
 
     def get_min_max_distances(self, nthreads: int = 1,
                               profiler=None):

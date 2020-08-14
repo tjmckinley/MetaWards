@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple as _Tuple
+from array import array as _array
 
 from .._network import PersonType
 
@@ -30,17 +30,17 @@ class MoveRecord:
            If the type is PLAYER, then the ward is the ward index
            If the type is WORKER, then the ward is the link index
         """
-        self._record.append(
-            (int(from_demographic), int(from_stage),
-             int(from_type.value), int(from_ward),
-             int(to_demographic), int(to_stage),
-             int(to_type.value), int(to_ward), int(number)))
+        r = _array("i", (int(from_demographic), int(from_stage),
+                         int(from_type.value), int(from_ward),
+                         int(to_demographic), int(to_stage),
+                         int(to_type.value), int(to_ward),
+                         int(number)))
+        self._record.append(r)
 
     def __len__(self):
         return len(self._record)
 
-    def __getitem__(self, i: int) -> _Tuple[int, int, int, int,
-                                            int, int, int, int, int]:
+    def __getitem__(self, i: int) -> _array:
         return self._record[i]
 
     def __str__(self):

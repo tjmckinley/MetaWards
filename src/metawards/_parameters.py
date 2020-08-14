@@ -1,5 +1,6 @@
 
 from dataclasses import dataclass as _dataclass
+from dataclasses import field as _field
 from typing import List as _List, Dict as _Dict
 from datetime import date as _date
 
@@ -184,7 +185,7 @@ class Parameters:
     UV_max: _date = None
 
     #: User parameters
-    user_params: _Dict[str, float] = None
+    user_params: _Dict[str, float] = _field(default_factory=dict)
 
     #: All of the VariableSet adjustments that have been applied
     #: to these parameters

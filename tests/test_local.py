@@ -207,8 +207,10 @@ def test_local():
 
     p = trajectory[-1]
     p2 = trajectory2[-1]
-    p2.scale_uv = 1
-    assert p == p2
+
+    # won't be identical as different scale_uv causes different order
+    # of random numbers - but should still have 0 infections
+    assert p.has_equal_SEIR(p2)
 
     # now test that setting both to non-zero values has the same effect
 
