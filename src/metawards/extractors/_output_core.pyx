@@ -318,7 +318,7 @@ def output_core_omp(network: Network, population: Population,
     ###
 
     # reset the workspace so that we can accumulate new data for a new day
-    workspace.zero_all()
+    workspace.zero_all(zero_subspaces=False)
 
     # loop over each of the disease stages
     for i in range(0, N_INF_CLASSES):
