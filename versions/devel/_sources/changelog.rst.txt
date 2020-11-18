@@ -2,6 +2,20 @@
 Changelog
 =========
 
+`1.4.1 <https://github.com/metawards/MetaWards/compare/1.4.0...1.4.1>`__ - November 18th 2020
+---------------------------------------------------------------------------------------------
+
+* Fixed a small bug in `output_core` where the Workspace of a demographic
+  subnetwork (its subspace) was being zeroed incorrectly after statistics
+  had been accumulated and processed, when the code was run on more than
+  4 processors. This prevented extractors from getting this data for
+  demographics. Simple fix :-). Bug does not impact any previous runs
+  or would have been likely to have caused any issues.
+* Added Python 3.9 to the GitHub Actions build matrix, and tested that
+  the Python 3.9 packages are built and run correctly.
+* Bumped Sphinx up to the latest version.
+
+
 `1.4.0 <https://github.com/metawards/MetaWards/compare/1.3.0...1.4.0>`__ - August 14th 2020
 -------------------------------------------------------------------------------------------
 

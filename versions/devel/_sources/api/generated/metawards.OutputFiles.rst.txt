@@ -1,4 +1,4 @@
-metawards.OutputFiles
+﻿metawards.OutputFiles
 =====================
 
 .. currentmodule:: metawards

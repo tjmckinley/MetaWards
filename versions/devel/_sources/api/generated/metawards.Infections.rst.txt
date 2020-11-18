@@ -1,4 +1,4 @@
-metawards.Infections
+﻿metawards.Infections
 ====================
 
 .. currentmodule:: metawards

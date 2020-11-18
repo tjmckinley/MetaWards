@@ -1,4 +1,4 @@
-metawards.InputFiles
+﻿metawards.InputFiles
 ====================
 
 .. currentmodule:: metawards

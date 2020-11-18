@@ -1,4 +1,4 @@
-metawards.Wards
+﻿metawards.Wards
 ===============
 
 .. currentmodule:: metawards

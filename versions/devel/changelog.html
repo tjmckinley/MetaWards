@@ -127,6 +127,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#november-18th-2020">1.4.1 - November 18th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#august-14th-2020">1.4.0 - August 14th 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#july-22nd-2020">1.3.0 - July 22nd 2020</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#june-26th-2020">1.2.0 - June 26th 2020</a></li>
@@ -230,6 +231,20 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="november-18th-2020">
+<h2><a class="reference external" href="https://github.com/metawards/MetaWards/compare/1.4.0...1.4.1">1.4.1</a> - November 18th 2020<a class="headerlink" href="#november-18th-2020" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Fixed a small bug in <em class="xref py py-obj">output_core</em> where the Workspace of a demographic
+subnetwork (its subspace) was being zeroed incorrectly after statistics
+had been accumulated and processed, when the code was run on more than
+4 processors. This prevented extractors from getting this data for
+demographics. Simple fix :-). Bug does not impact any previous runs
+or would have been likely to have caused any issues.</p></li>
+<li><p>Added Python 3.9 to the GitHub Actions build matrix, and tested that
+the Python 3.9 packages are built and run correctly.</p></li>
+<li><p>Bumped Sphinx up to the latest version.</p></li>
+</ul>
+</div>
 <div class="section" id="august-14th-2020">
 <h2><a class="reference external" href="https://github.com/metawards/MetaWards/compare/1.3.0...1.4.0">1.4.0</a> - August 14th 2020<a class="headerlink" href="#august-14th-2020" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -699,7 +714,7 @@ understand it.</p></li>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 14, 2020.
+        Last updated on Nov 18, 2020.
       </span>
 
     </p>

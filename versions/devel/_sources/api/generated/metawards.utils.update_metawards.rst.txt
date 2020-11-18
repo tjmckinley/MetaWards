@@ -1,4 +1,4 @@
-metawards.utils.update\_metawards
+﻿metawards.utils.update\_metawards
 =================================
 
 .. currentmodule:: metawards.utils

@@ -1,4 +1,4 @@
-metawards.Node
+﻿metawards.Node
 ==============
 
 .. currentmodule:: metawards
