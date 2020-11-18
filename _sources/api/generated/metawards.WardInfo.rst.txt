@@ -1,4 +1,4 @@
-metawards.WardInfo
+﻿metawards.WardInfo
 ==================
 
 .. currentmodule:: metawards

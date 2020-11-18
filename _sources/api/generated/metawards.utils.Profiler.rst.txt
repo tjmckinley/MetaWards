@@ -1,4 +1,4 @@
-metawards.utils.Profiler
+﻿metawards.utils.Profiler
 ========================
 
 .. currentmodule:: metawards.utils

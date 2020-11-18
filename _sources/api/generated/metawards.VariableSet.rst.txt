@@ -1,4 +1,4 @@
-metawards.VariableSet
+﻿metawards.VariableSet
 =====================
 
 .. currentmodule:: metawards

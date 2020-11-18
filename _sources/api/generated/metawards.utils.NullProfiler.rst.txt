@@ -1,4 +1,4 @@
-metawards.utils.NullProfiler
+﻿metawards.utils.NullProfiler
 ============================
 
 .. currentmodule:: metawards.utils

@@ -466,7 +466,7 @@ being modelled</p>
 
 <dl class="py method">
 <dt id="metawards.Demographics.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span></em>, <em class="sig-param"><span class="n">population</span><span class="p">:</span> <span class="n">Population</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_nodes</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">16384</span></em>, <em class="sig-param"><span class="n">max_links</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4194304</span></em>, <em class="sig-param"><span class="n">nthreads</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; _Union<span class="p">[</span>Network<span class="p">, </span>Networks<span class="p">]</span><a class="reference internal" href="../_modules/metawards/_demographics.html#Demographics.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Demographics.build" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#metawards.Parameters" title="metawards.Parameters">Parameters</a></span></em>, <em class="sig-param"><span class="n">population</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#metawards.Population" title="metawards.Population">Population</a></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_nodes</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">16384</span></em>, <em class="sig-param"><span class="n">max_links</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4194304</span></em>, <em class="sig-param"><span class="n">nthreads</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; _Union<span class="p">[</span><a class="reference internal" href="#metawards.Network" title="metawards.Network">Network</a><span class="p">, </span><a class="reference internal" href="#metawards.Networks" title="metawards.Networks">Networks</a><span class="p">]</span><a class="reference internal" href="../_modules/metawards/_demographics.html#Demographics.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Demographics.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build the set of networks described by these demographics
 and the passed parameters</p>
 <dl class="field-list simple">
@@ -500,7 +500,7 @@ that may change, while shallow copying things that won’t</p>
 
 <dl class="py attribute">
 <dt id="metawards.Demographics.demographics">
-<code class="sig-name descname">demographics</code><em class="property">: _List<span class="p">[</span>Demographic<span class="p">]</span></em><a class="headerlink" href="#metawards.Demographics.demographics" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">demographics</code><em class="property">: List<span class="p">[</span>metawards._demographic.Demographic<span class="p">]</span></em><a class="headerlink" href="#metawards.Demographics.demographics" title="Permalink to this definition">¶</a></dt>
 <dd><p>The list of individual Demographic objects, one for each
 demographic being modelled</p>
 </dd></dl>
@@ -533,7 +533,7 @@ json file</p>
 
 <dl class="py attribute">
 <dt id="metawards.Demographics.interaction_matrix">
-<code class="sig-name descname">interaction_matrix</code><em class="property">: _List<span class="p">[</span>_List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Demographics.interaction_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">interaction_matrix</code><em class="property">: List<span class="p">[</span>List<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Demographics.interaction_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>The interaction matrix between demographics. This should
 be a list of lists that shows how demographic ‘i’ affects
 demographic ‘j’</p>
@@ -588,7 +588,7 @@ are uniquely determined and reproducible across runs</p>
 
 <dl class="py method">
 <dt id="metawards.Demographics.specialise">
-<code class="sig-name descname">specialise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">Network</span></em>, <em class="sig-param"><span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nthreads</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_demographics.html#Demographics.specialise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Demographics.specialise" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">specialise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#metawards.Network" title="metawards.Network">Network</a></span></em>, <em class="sig-param"><span class="n">profiler</span><span class="p">:</span> <span class="n">Profiler</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nthreads</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/metawards/_demographics.html#Demographics.specialise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Demographics.specialise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build the set of networks that will model this set
 of demographics applied to the passed Network.</p>
 <dl class="field-list simple">
@@ -762,13 +762,13 @@ vaccinated individuals</p></li>
 
 <dl class="py attribute">
 <dt id="metawards.Disease.beta">
-<code class="sig-name descname">beta</code><em class="property">: _List<span class="p">[</span>float<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.beta" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">beta</code><em class="property">: List<span class="p">[</span>float<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.beta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Beta parameter for each stage of the disease</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="metawards.Disease.contrib_foi">
-<code class="sig-name descname">contrib_foi</code><em class="property">: _List<span class="p">[</span>float<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.contrib_foi" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">contrib_foi</code><em class="property">: List<span class="p">[</span>float<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.contrib_foi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contribution to the Force of Infection (FOI) parameter for each
 stage of the disease</p>
 </dd></dl>
@@ -861,7 +861,7 @@ vaccinated individuals</p></li>
 
 <dl class="py attribute">
 <dt id="metawards.Disease.is_infected">
-<code class="sig-name descname">is_infected</code><em class="property">: _List<span class="p">[</span>bool<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.is_infected" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_infected</code><em class="property">: List<span class="p">[</span>bool<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.is_infected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether or not this stage is an infected stage. By default
 all stages other than those mapped to “R” are classes
 as infected stages</p>
@@ -902,7 +902,7 @@ repository</p></li>
 
 <dl class="py attribute">
 <dt id="metawards.Disease.mapping">
-<code class="sig-name descname">mapping</code><em class="property">: _List<span class="p">[</span>str<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.mapping" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mapping</code><em class="property">: List<span class="p">[</span>str<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.mapping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mapping label, e.g. “*”, “E”, “I” or “R”</p>
 </dd></dl>
 
@@ -914,13 +914,13 @@ repository</p></li>
 
 <dl class="py attribute">
 <dt id="metawards.Disease.progress">
-<code class="sig-name descname">progress</code><em class="property">: _List<span class="p">[</span>float<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.progress" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">progress</code><em class="property">: List<span class="p">[</span>float<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.progress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Progress parameter for each stage of the disease</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="metawards.Disease.stage">
-<code class="sig-name descname">stage</code><em class="property">: _List<span class="p">[</span>str<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.stage" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stage</code><em class="property">: List<span class="p">[</span>str<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.stage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the stage, e.g. “H1”, “I2”, “E1” etc.</p>
 </dd></dl>
 
@@ -965,7 +965,7 @@ the json-serialised string</p>
 
 <dl class="py attribute">
 <dt id="metawards.Disease.too_ill_to_move">
-<code class="sig-name descname">too_ill_to_move</code><em class="property">: _List<span class="p">[</span>float<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.too_ill_to_move" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">too_ill_to_move</code><em class="property">: List<span class="p">[</span>float<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#metawards.Disease.too_ill_to_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>TooIllToMove parameter for each stage of the disease</p>
 </dd></dl>
 
@@ -2060,7 +2060,7 @@ different demographics</p></li>
 
 <dl class="py attribute">
 <dt id="metawards.Networks.subnets">
-<code class="sig-name descname">subnets</code><em class="property">: _List<span class="p">[</span>Network<span class="p">]</span></em><a class="headerlink" href="#metawards.Networks.subnets" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">subnets</code><em class="property">: List<span class="p">[</span>metawards._network.Network<span class="p">]</span></em><a class="headerlink" href="#metawards.Networks.subnets" title="Permalink to this definition">¶</a></dt>
 <dd><p>The list of Networks, one for each demographic, ordered in the
 same order as the “Demographics” object. This is empty if
 only a single demographic is modelled</p>
@@ -2992,7 +2992,7 @@ in the disease</p>
 
 <dl class="py attribute">
 <dt id="metawards.Parameters.user_params">
-<code class="sig-name descname">user_params</code><em class="property">: _Dict<span class="p">[</span>str<span class="p">, </span>float<span class="p">]</span></em><a class="headerlink" href="#metawards.Parameters.user_params" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">user_params</code><em class="property">: Dict<span class="p">[</span>str<span class="p">, </span>float<span class="p">]</span></em><a class="headerlink" href="#metawards.Parameters.user_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>User parameters</p>
 </dd></dl>
 
@@ -3839,7 +3839,7 @@ wards</p>
 
 <dl class="py method">
 <dt id="metawards.Ward.dereference">
-<code class="sig-name descname">dereference</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">wards</span><span class="p">:</span> <span class="n">Wards</span></em>, <em class="sig-param"><span class="n">_inplace</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Ward<a class="reference internal" href="../_modules/metawards/_ward.html#Ward.dereference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.dereference" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dereference</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">wards</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#metawards.Wards" title="metawards.Wards">Wards</a></span></em>, <em class="sig-param"><span class="n">_inplace</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#metawards.Ward" title="metawards.Ward">Ward</a><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.dereference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.dereference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dereference the IDs and convert those back to WardInfo objects.
 This is the opposite of self.resolve(wards). This will
 return the dereferenced ward.</p>
@@ -3986,7 +3986,7 @@ if cooordinates have not been set.</p>
 
 <dl class="py method">
 <dt id="metawards.Ward.resolve">
-<code class="sig-name descname">resolve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">wards</span><span class="p">:</span> <span class="n">Wards</span></em>, <em class="sig-param"><span class="n">_inplace</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Ward<a class="reference internal" href="../_modules/metawards/_ward.html#Ward.resolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.resolve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">resolve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">wards</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#metawards.Wards" title="metawards.Wards">Wards</a></span></em>, <em class="sig-param"><span class="n">_inplace</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#metawards.Ward" title="metawards.Ward">Ward</a><a class="reference internal" href="../_modules/metawards/_ward.html#Ward.resolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Ward.resolve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve any unresolved links using the passed Wards object
 ‘wards’</p>
 </dd></dl>
@@ -4279,13 +4279,13 @@ authority it is in etc.</p>
 
 <dl class="py attribute">
 <dt id="metawards.WardInfo.alternate_codes">
-<code class="sig-name descname">alternate_codes</code><em class="property">: _List<span class="p">[</span>str<span class="p">]</span></em><a class="headerlink" href="#metawards.WardInfo.alternate_codes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">alternate_codes</code><em class="property">: List<span class="p">[</span>str<span class="p">]</span></em><a class="headerlink" href="#metawards.WardInfo.alternate_codes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Any alternative ID codes of the ward</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="metawards.WardInfo.alternate_names">
-<code class="sig-name descname">alternate_names</code><em class="property">: _List<span class="p">[</span>str<span class="p">]</span></em><a class="headerlink" href="#metawards.WardInfo.alternate_names" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">alternate_names</code><em class="property">: List<span class="p">[</span>str<span class="p">]</span></em><a class="headerlink" href="#metawards.WardInfo.alternate_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Any alternative names of the ward</p>
 </dd></dl>
 
@@ -4416,7 +4416,7 @@ called the first time you use the “contains” or “index” functions</p>
 
 <dl class="py attribute">
 <dt id="metawards.WardInfos.wards">
-<code class="sig-name descname">wards</code><em class="property">: _List<span class="p">[</span>WardInfo<span class="p">]</span></em><a class="headerlink" href="#metawards.WardInfos.wards" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">wards</code><em class="property">: List<span class="p">[</span>metawards._wardinfo.WardInfo<span class="p">]</span></em><a class="headerlink" href="#metawards.WardInfos.wards" title="Permalink to this definition">¶</a></dt>
 <dd><p>The list of WardInfo objects, one for each ward in order</p>
 </dd></dl>
 
@@ -4535,7 +4535,7 @@ resulting Ward with other Wards collections</p>
 
 <dl class="py method">
 <dt id="metawards.Wards.harmonise">
-<em class="property">static </em><code class="sig-name descname">harmonise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">wardss</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Wards<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Wards<span class="p">, </span>List<span class="p">[</span>Wards<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/metawards/_wards.html#Wards.harmonise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Wards.harmonise" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">harmonise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">wardss</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#metawards.Wards" title="metawards.Wards">Wards</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference internal" href="#metawards.Wards" title="metawards.Wards">Wards</a><span class="p">, </span>List<span class="p">[</span><a class="reference internal" href="#metawards.Wards" title="metawards.Wards">Wards</a><span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/metawards/_wards.html#Wards.harmonise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Wards.harmonise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Harmonise the passed list of wards, returning a tuple that
 contains the overall sum of all of these wards, plus a new list
 where all Wards use IDs that are correct and valid
@@ -4818,7 +4818,7 @@ service that doesn’t have access to a tty</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Aug 14, 2020.
+        Last updated on Nov 18, 2020.
       </span>
 
     </p>

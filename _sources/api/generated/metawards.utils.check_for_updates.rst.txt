@@ -1,4 +1,4 @@
-metawards.utils.check\_for\_updates
+﻿metawards.utils.check\_for\_updates
 ===================================
 
 .. currentmodule:: metawards.utils

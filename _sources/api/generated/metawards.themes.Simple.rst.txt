@@ -1,4 +1,4 @@
-metawards.themes.Simple
+﻿metawards.themes.Simple
 =======================
 
 .. currentmodule:: metawards.themes

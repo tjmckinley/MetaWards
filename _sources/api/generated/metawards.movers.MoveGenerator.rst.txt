@@ -1,4 +1,4 @@
-metawards.movers.MoveGenerator
+﻿metawards.movers.MoveGenerator
 ==============================
 
 .. currentmodule:: metawards.movers

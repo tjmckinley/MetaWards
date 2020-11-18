@@ -1,4 +1,4 @@
-metawards.Disease
+﻿metawards.Disease
 =================
 
 .. currentmodule:: metawards

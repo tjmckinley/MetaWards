@@ -1,4 +1,4 @@
-metawards.movers.go\_ward
+﻿metawards.movers.go\_ward
 =========================
 
 .. currentmodule:: metawards.movers

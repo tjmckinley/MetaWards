@@ -1,4 +1,4 @@
-metawards.mixers.InteractionMatrix
+﻿metawards.mixers.InteractionMatrix
 ==================================
 
 .. currentmodule:: metawards.mixers
