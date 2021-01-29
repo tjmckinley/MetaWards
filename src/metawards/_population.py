@@ -363,11 +363,20 @@ class Population:
             else:
                 row[0] = str(i)
 
-            row[columns["S"]] = subpop.susceptibles
-            row[columns["E"]] = subpop.latent
-            row[columns["R"]] = subpop.recovereds
-            row[columns["I"]] = subpop.total
-            row[columns["IW"]] = subpop.n_inf_wards
+            if "S" in columns:
+                row[columns["S"]] = subpop.susceptibles
+
+            if "E" in columns:
+                row[columns["E"]] = subpop.latent
+
+            if "R" in columns:
+                row[columns["R"]] = subpop.recovereds
+
+            if "I" in columns:
+                row[columns["I"]] = subpop.total
+
+            if "IW" in columns:
+                row[columns["IW"]] = subpop.n_inf_wards
 
             if subpop.totals is not None:
                 for key, value in subpop.totals.items():
