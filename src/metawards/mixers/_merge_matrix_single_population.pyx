@@ -11,17 +11,26 @@ from ..utils._profiler import Profiler
 from ..utils._get_array_ptr cimport get_double_array_ptr
 from ..utils._array import create_double_array
 
-__all__ = ["merge_matrix_density"]
+__all__ = ["merge_matrix_single_population"]
 
 
-def merge_matrix_density(network: Networks, nthreads: int,
-                         profiler: Profiler, **kwargs):
+def merge_matrix_single_population(network: Networks, nthreads: int,
+                                   profiler: Profiler, **kwargs):
     """This merge_function merges the FOIs across all demographic
        sub-networks according to the interaction matrix stored
        in networks.demographics.interaction_matrix, using
-       the density (number of individuals) to better capture
-       the effect of different sizes of different
-       demographics
+       the total number of people across all demographics summed,
+       so as to better model populations that mix completely.
+       In this case, the different demographics
+       are assumed to be in the same population and so have
+       same probability of contact. The FOIs are merged
+       together where they are divided by N (where N is
+       the total number of individuals summed across all demographics),
+       e.g.
+
+       N = N_i + N_j + N_k ...
+
+       FOI_i = FOI_i / N + FOI_j / N + FOI_k / N ...
     """
 
     matrix = network.demographics.interaction_matrix

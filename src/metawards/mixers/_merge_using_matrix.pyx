@@ -19,6 +19,21 @@ def merge_using_matrix(network: Networks, nthreads: int,
     """This merge_function merges the FOIs across all demographic
        sub-networks according to the interaction matrix stored
        in networks.demographics.interaction_matrix.
+
+       It makes no attempt to scale by the number of individuals
+       in each demographic, meaning that the FOI of the ith
+       demographic will be divided by the number of individuals
+       in the ith demographics, N_i, e.g.
+
+       FOI_i = FOI_i / N_i + FOI_j / N_i + FOI_k / N_i ...
+
+       If you want to divide by N (total across all demographics)
+       then use merge_matrix_single_population. If you want
+       to divide by the N_j, N_k from individual demographics
+       then use merge_matrix_multi_population. If you want
+       something else then use these three functions
+       as inspiration to write a custom merge function
+       that does what you want :-)
     """
 
     matrix = network.demographics.interaction_matrix
