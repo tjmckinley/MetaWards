@@ -11,17 +11,17 @@ from ..utils._profiler import Profiler
 from ..utils._get_array_ptr cimport get_double_array_ptr
 from ..utils._array import create_double_array
 
-__all__ = ["merge_matrix_density"]
+__all__ = ["merge_matrix_demographics"]
 
 
-def merge_matrix_density(network: Networks, nthreads: int,
-                         profiler: Profiler, **kwargs):
+def merge_matrix_demographics(network: Networks, nthreads: int,
+                              profiler: Profiler, **kwargs):
     """This merge_function merges the FOIs across all demographic
        sub-networks according to the interaction matrix stored
        in networks.demographics.interaction_matrix, using
-       the density (number of individuals) to better capture
-       the effect of different sizes of different
-       demographics
+       the number of people in each demographic separately,
+       so as to better model demographics that have different
+       contact parameters
     """
 
     matrix = network.demographics.interaction_matrix
@@ -65,25 +65,22 @@ def merge_matrix_density(network: Networks, nthreads: int,
     cdef double * wards_day_foi = get_double_array_ptr(wards.day_foi)
     cdef double * wards_night_foi = get_double_array_ptr(wards.night_foi)
 
-    # Note that wards_day_foi will be divided by N_day in each ward
-    # and multiplied by length_day to create lambda. We thus need to
-    # track N_day for the demographic and compare that against
-    # N_day_total across all demographics
-    n_day_total_array = create_double_array(nnodes_plus_one, 0.0)
-    cdef double * n_day_total = get_double_array_ptr(n_day_total_array)
-    cdef double * wards_denominator_d
-    cdef double * wards_denominator_pd
-    cdef double n_day_ward = 0.0
+    cdef double * wards_denominator_d_i
+    cdef double * wards_denominator_pd_i
 
-    # Equally, wards_night_foi will be divided by N_night in each ward
-    # and multiplied by 1 - length_day to create lambda. We thus
-    # need to track N_night for the demographic and compare that
-    # against N_night_total across all demographics
-    n_night_total_array = create_double_array(nnodes_plus_one, 0.0)
-    cdef double * n_night_total = get_double_array_ptr(n_night_total_array)
-    cdef double * wards_denominator_n
-    cdef double * wards_denominator_p
-    cdef double n_night_ward = 0.0
+    cdef double * wards_denominator_n_i
+    cdef double * wards_denominator_p_i
+
+    cdef double * wards_denominator_d_j
+    cdef double * wards_denominator_pd_j
+
+    cdef double * wards_denominator_n_j
+    cdef double * wards_denominator_p_j
+
+    cdef double n_day_ward_i = 0.0
+    cdef double n_night_ward_i = 0.0
+    cdef double n_day_ward_j = 0.0
+    cdef double n_night_ward_j = 0.0
 
     cdef double * day_foi
     cdef double * night_foi
@@ -101,25 +98,6 @@ def merge_matrix_density(network: Networks, nthreads: int,
         night_fois.append(create_double_array(nnodes_plus_one, 0.0))
     p = p.stop()
 
-    # calculate the total N in each ward across all demographics
-    p = profiler.start("calculate_N")
-    for i in range(0, nsubnets):
-        sub_wards = subnets[j].nodes
-        wards_denominator_d = get_double_array_ptr(sub_wards.denominator_d)
-        wards_denominator_n = get_double_array_ptr(sub_wards.denominator_n)
-        wards_denominator_p = get_double_array_ptr(sub_wards.denominator_p)
-        wards_denominator_pd = get_double_array_ptr(sub_wards.denominator_pd)
-
-        with nogil, parallel(num_threads=num_threads):
-            for k in prange(1, nnodes_plus_one, schedule="static"):
-                n_day_total[k] = n_day_total[k] + \
-                                 wards_denominator_d[k] + \
-                                 wards_denominator_pd[k]
-                n_night_total[k] = n_night_total[k] + \
-                                   wards_denominator_n[k] + \
-                                   wards_denominator_p[k]
-    p = p.stop()
-
     # calculate the merged FOIs
     p = profiler.start("accumulate")
     for i in range(0, nsubnets):
@@ -132,19 +110,32 @@ def merge_matrix_density(network: Networks, nthreads: int,
         # that we cancel this out.
         my_wards = subnets[i].nodes
 
-        wards_denominator_d = get_double_array_ptr(
+        # Get the number of individuals in each ward in the ith
+        # demographic
+        wards_denominator_d_i = get_double_array_ptr(
                                         my_wards.denominator_d)
-        wards_denominator_n = get_double_array_ptr(
+        wards_denominator_n_i = get_double_array_ptr(
                                         my_wards.denominator_n)
-        wards_denominator_p = get_double_array_ptr(
+        wards_denominator_p_i = get_double_array_ptr(
                                         my_wards.denominator_p)
-        wards_denominator_pd = get_double_array_ptr(
+        wards_denominator_pd_i = get_double_array_ptr(
                                         my_wards.denominator_pd)
 
         for j in range(0, nsubnets):
             sub_wards = subnets[j].nodes
             sub_day_foi = get_double_array_ptr(sub_wards.day_foi)
             sub_night_foi = get_double_array_ptr(sub_wards.night_foi)
+
+            # Get the number of individuals in each ward in the jth
+            # demographic
+            wards_denominator_d_j = get_double_array_ptr(
+                                            sub_wards.denominator_d)
+            wards_denominator_n_j = get_double_array_ptr(
+                                            sub_wards.denominator_n)
+            wards_denominator_p_j = get_double_array_ptr(
+                                            sub_wards.denominator_p)
+            wards_denominator_pd_j = get_double_array_ptr(
+                                            sub_wards.denominator_pd)
 
             scl = matrix[i][j]
 
@@ -154,25 +145,36 @@ def merge_matrix_density(network: Networks, nthreads: int,
                     # demographics kth ward in the daytime and nighttime
                     # (note that this assignment is thread-safe as
                     # cython makes n_day_ward and n_night_ward lastprivate)
-                    n_day_ward = wards_denominator_d[k] + \
-                                 wards_denominator_pd[k]
-                    n_night_ward = wards_denominator_p[k] + \
-                                   wards_denominator_n[k]
+                    n_day_ward_i = wards_denominator_d_i[k] + \
+                                   wards_denominator_pd_i[k]
+                    n_night_ward_i = wards_denominator_p_i[k] + \
+                                     wards_denominator_n_i[k]
+
+                    # calculate the number of individuals in the jth
+                    # demographics kth ward in the daytime and nighttime
+                    # (note that this assignment is thread-safe as
+                    # cython makes n_day_ward and n_night_ward lastprivate)
+                    n_day_ward_j = wards_denominator_d_j[k] + \
+                                   wards_denominator_pd_j[k]
+                    n_night_ward_j = wards_denominator_p_j[k] + \
+                                     wards_denominator_n_j[k]
 
                     # We want to multiply the FOI by the number in
-                    # the ward and then divide by the number across
-                    # all demographics (it will then be divided by
+                    # the ward in the ith demographic and
+                    # then divide by the number in the
+                    # jth demographic (it will then be divided by
                     # the number in the ward in the ith
                     # demographic in advance_infprob). Doing this will
                     # mean that the denominator for every demographic
-                    # will be N_total for each ward.
+                    # will be N_k where N_k is the number in that
+                    # demographic
 
                     day_foi[k] = day_foi[k] + \
-                                 scl * n_day_ward * \
-                                 sub_day_foi[k] / n_day_total[k]
+                                 scl * n_day_ward_i * \
+                                 sub_day_foi[k] / n_day_ward_j
                     night_foi[k] = night_foi[k] + \
-                                   scl * n_night_ward * \
-                                   sub_night_foi[k] / n_night_total[k]
+                                   scl * n_night_ward_i * \
+                                   sub_night_foi[k] / n_night_ward_j
     p = p.stop()
 
     p = profiler.start("distribute")
