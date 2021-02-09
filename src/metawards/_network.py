@@ -252,6 +252,13 @@ class Network:
 
         return network
 
+    def num_demographics(self) -> int:
+        """Return the number of demographics (always 1 for a Network).
+           This function is added so that a single Network has
+           the same functions as a multi-demographics Networks
+        """
+        return 1
+
     def copy(self):
         """Return a copy of this Network. Use this to hold a copy of
            the network that you can use to reset between runs
