@@ -35,7 +35,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script src="../_static/custom.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
@@ -244,17 +243,38 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.mixers.merge_evenly.html#metawards.mixers.merge_evenly" title="metawards.mixers.merge_evenly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_evenly</span></code></a>(network, nthreads, profiler, …)</p></td>
 <td><p>This merge_function merges the FOIs across all demographic sub-networks evenly.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_custom.html#metawards.mixers.mix_custom" title="metawards.mixers.mix_custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_custom</span></code></a>(custom_function, stage, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.mixers.merge_using_matrix.html#metawards.mixers.merge_using_matrix" title="metawards.mixers.merge_using_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_using_matrix</span></code></a>(network, nthreads, …)</p></td>
+<td><p>This merge_function merges the FOIs across all demographic sub-networks according to the interaction matrix stored in networks.demographics.interaction_matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.mixers.merge_matrix_single_population.html#metawards.mixers.merge_matrix_single_population" title="metawards.mixers.merge_matrix_single_population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_matrix_single_population</span></code></a>(network, …)</p></td>
+<td><p>This merge_function merges the FOIs across all demographic sub-networks according to the interaction matrix stored in networks.demographics.interaction_matrix, using the total number of people across all demographics summed, so as to better model populations that mix completely.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.mixers.merge_matrix_multi_population.html#metawards.mixers.merge_matrix_multi_population" title="metawards.mixers.merge_matrix_multi_population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_matrix_multi_population</span></code></a>(network, …)</p></td>
+<td><p>This merge_function merges the FOIs across all demographic sub-networks according to the interaction matrix stored in networks.demographics.interaction_matrix, using the number of people in each demographic separately, so as to better model demographics that have different contact parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_custom.html#metawards.mixers.mix_custom" title="metawards.mixers.mix_custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_custom</span></code></a>(custom_function, stage, **kwargs)</p></td>
 <td><p>This returns the default list of ‘merge_XXX’ functions that are called in sequence for each iteration of the model run.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_default.html#metawards.mixers.mix_default" title="metawards.mixers.mix_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_default</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_default.html#metawards.mixers.mix_default" title="metawards.mixers.mix_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_default</span></code></a>(**kwargs)</p></td>
 <td><p>This is the default mixer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_evenly.html#metawards.mixers.mix_evenly" title="metawards.mixers.mix_evenly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_evenly</span></code></a>(stage, network, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_evenly.html#metawards.mixers.mix_evenly" title="metawards.mixers.mix_evenly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_evenly</span></code></a>(stage, network, **kwargs)</p></td>
 <td><p>This mixer will evenly mix all demographics.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_none.html#metawards.mixers.mix_none" title="metawards.mixers.mix_none"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_none</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_none.html#metawards.mixers.mix_none" title="metawards.mixers.mix_none"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_none</span></code></a>(**kwargs)</p></td>
 <td><p>This mixer will perform no mixing.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_evenly_single_population.html#metawards.mixers.mix_evenly_single_population" title="metawards.mixers.mix_evenly_single_population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_evenly_single_population</span></code></a>(stage, network, …)</p></td>
+<td><p>This mixer will evenly mix all demographics, assuming that they are all part of the same population.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_evenly_multi_population.html#metawards.mixers.mix_evenly_multi_population" title="metawards.mixers.mix_evenly_multi_population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_evenly_multi_population</span></code></a>(stage, network, …)</p></td>
+<td><p>This mixer will evenly mix all demographics using a matrix of [1] using merge_matrix_multi_population.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_none_single_population.html#metawards.mixers.mix_none_single_population" title="metawards.mixers.mix_none_single_population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_none_single_population</span></code></a>(stage, network, …)</p></td>
+<td><p>This mixer will mix demographics assuming no infection between demographics, but assuming that they are all part of the same population, and so normalising by the total number of individuals across all demographics</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/metawards.mixers.mix_none_multi_population.html#metawards.mixers.mix_none_multi_population" title="metawards.mixers.mix_none_multi_population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix_none_multi_population</span></code></a>(stage, network, …)</p></td>
+<td><p>This mixer will is equivalent to mix_none, in that it will not allow infections to be mixed between demographics, and it will normalise by the number of individuals in each demographic.</p></td>
 </tr>
 </tbody>
 </table>
@@ -278,7 +298,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 09, 2021.
       </span>
 
     </p>

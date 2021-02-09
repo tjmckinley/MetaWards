@@ -35,7 +35,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
         <script src="../../_static/custom.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
@@ -367,6 +366,15 @@ and copy in the below.</p>
 <p>This is essentially an identical mixing function as that used
 in the <a class="reference internal" href="../part05/03_custom.html"><span class="doc">shielding example</span></a>.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that we are using <a class="reference internal" href="../../api/generated/metawards.mixers.merge_using_matrix.html#metawards.mixers.merge_using_matrix" title="metawards.mixers.merge_using_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_using_matrix()</span></code></a>.
+This may not be the right choice depending on how we want the
+population dynamics to mix, e.g.
+<a class="reference internal" href="../../api/generated/metawards.mixers.merge_matrix_single_population.html#metawards.mixers.merge_matrix_single_population" title="metawards.mixers.merge_matrix_single_population"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_matrix_single_population()</span></code></a> or
+<a class="reference internal" href="../../api/generated/metawards.mixers.merge_matrix_multi_population.html#metawards.mixers.merge_matrix_multi_population" title="metawards.mixers.merge_matrix_multi_population"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_matrix_multi_population()</span></code></a> may
+be a better choice. <a class="reference internal" href="../part05/04_contacts.html"><span class="doc">See here for more information</span></a>.</p>
+</div>
 <p>Next, we want to make sure that we have output the populations in the
 <code class="docutils literal notranslate"><span class="pre">H1</span></code> and <code class="docutils literal notranslate"><span class="pre">H2</span></code> states. We can do this by creating a custom extractor
 that writes the populations of all of the disease stages for just
@@ -493,7 +501,7 @@ in the hospital for the two different stages.</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 09, 2021.
       </span>
 
     </p>

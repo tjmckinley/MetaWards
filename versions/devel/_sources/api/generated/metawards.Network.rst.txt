@@ -45,6 +45,7 @@
       ~Network.has_different_work_matrix
       ~Network.initialise_infections
       ~Network.move_from_play_to_work
+      ~Network.num_demographics
       ~Network.recalculate_denominators
       ~Network.rescale_play_matrix
       ~Network.reset_everything

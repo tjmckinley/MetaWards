@@ -35,7 +35,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
         <script src="../../_static/custom.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
@@ -418,7 +417,7 @@ sub-networks</p>
 
 <dl class="py method">
 <dt id="metawards.Infections.build">
-<em class="property">static </em><code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>metawards._network.Network<span class="p">, </span>metawards._networks.Networks<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overall</span><span class="p">:</span> <span class="n">metawards._network.Network</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_infections.html#Infections.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Infections.build" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>metawards._network.Network<span class="p">, </span>metawards._networks.Networks<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overall</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>metawards._network.Network<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/metawards/_infections.html#Infections.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#metawards.Infections.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct and return the Infections object that will track
 infections during a model run on the passed Network (or Networks)</p>
 <dl class="field-list simple">
@@ -538,7 +537,7 @@ of int arrays, size work[N_INF_CLASSES][nlinks+1]</p>
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 09, 2021.
       </span>
 
     </p>

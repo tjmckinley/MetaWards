@@ -39,6 +39,7 @@
       ~Networks.copy
       ~Networks.initialise_infections
       ~Networks.move_from_play_to_work
+      ~Networks.num_demographics
       ~Networks.rescale_play_matrix
       ~Networks.reset_everything
       ~Networks.run

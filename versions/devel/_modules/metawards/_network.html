@@ -35,7 +35,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
         <script src="../../_static/custom.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
@@ -452,6 +451,13 @@
                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">play_population</span><span class="si">}</span><span class="s2">[/]&quot;</span><span class="p">,</span> <span class="n">markup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">network</span></div>
+
+<div class="viewcode-block" id="Network.num_demographics"><a class="viewcode-back" href="../../api/index_api_MetaWards.html#metawards.Network.num_demographics">[docs]</a>    <span class="k">def</span> <span class="nf">num_demographics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the number of demographics (always 1 for a Network).</span>
+<span class="sd">           This function is added so that a single Network has</span>
+<span class="sd">           the same functions as a multi-demographics Networks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="Network.copy"><a class="viewcode-back" href="../../api/index_api_MetaWards.html#metawards.Network.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a copy of this Network. Use this to hold a copy of</span>
@@ -929,7 +935,7 @@
   <div role="contentinfo">
     <p>
       <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 09, 2021.
       </span>
 
     </p>
