@@ -61,6 +61,10 @@ class Networks:
         else:
             return None
 
+    def num_demographics(self) -> int:
+        """Return the number of demographics"""
+        return len(self.subnets)
+
     def assert_sane(self, profiler: None):
         """Assert that the networks is sane. This checks that the
            networks and all of the demographic sub-networks are
