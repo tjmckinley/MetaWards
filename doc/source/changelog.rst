@@ -2,6 +2,32 @@
 Changelog
 =========
 
+`1.5.0 <https://github.com/metawards/MetaWards/compare/1.4.1...1.5.0>`__ - February 9th 2021
+--------------------------------------------------------------------------------------------
+
+* Added :func:`~metawards.mixers.merge_matrix_single_population` and
+  :func:`~metawards.mixers.merge_matrix_multi_population` to account
+  for different normalisation factors when merging FOIs calculated
+  across multiple demographics. This is
+  :doc:`described in the tutorial here <tutorial/part05/04_contacts>`.
+  It allows the population dynamics to be better modelled, e.g.
+  either as all demographics being part of the same population
+  with equal contact probabilities, or the demographics having
+  different contact probabilities, e.g. as in traditional
+  age-based demographics.
+* Added :func:`~metawards.mixers.mix_evenly_single_population`
+  and :func:`~metawards.mixers.mix_none_single_population` as
+  convenience mixers for the case where all demographics are
+  part of the same population.
+* Added :func:`~metawards.mixers.mix_evenly_multi_population`
+  and :func:`~metawards.mixers.mix_none_multi_population` as
+  convenience mixers for the case where the contacts between
+  demographics depend on the number of individuals in each
+  demographic.
+* Fixed a small bug where MetaWards raised an exception
+  in multi-demographic runs when a custom disease model
+  doesn't have a `I` or `R` stage.
+
 `1.4.1 <https://github.com/metawards/MetaWards/compare/1.4.0...1.4.1>`__ - November 18th 2020
 ---------------------------------------------------------------------------------------------
 
