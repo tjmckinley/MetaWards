@@ -176,12 +176,15 @@ def merge_matrix_multi_population(network: Networks, nthreads: int,
                     # will be N_k where N_k is the number in that
                     # demographic
 
-                    day_foi[k] = day_foi[k] + \
-                                 scl * n_day_ward_i * \
-                                 sub_day_foi[k] / n_day_ward_j
-                    night_foi[k] = night_foi[k] + \
-                                   scl * n_night_ward_i * \
-                                   sub_night_foi[k] / n_night_ward_j
+                    if n_day_ward_j > 0:
+                        day_foi[k] = day_foi[k] + \
+                                     scl * n_day_ward_i * \
+                                     sub_day_foi[k] / n_day_ward_j
+
+                    if n_night_ward_j > 0:
+                        night_foi[k] = night_foi[k] + \
+                                       scl * n_night_ward_i * \
+                                       sub_night_foi[k] / n_night_ward_j
     p = p.stop()
 
     p = profiler.start("distribute")
