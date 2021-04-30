@@ -13,12 +13,16 @@ Functions
     advance_fixed_omp
     advance_foi
     advance_foi_omp
+    advance_foi_work_to_play
+    advance_foi_work_to_play_omp
     advance_imports
     advance_imports_omp
     advance_infprob
     advance_infprob_omp
     advance_play
     advance_play_omp
+    advance_work_to_play
+    advance_work_to_play_omp
     advance_recovery
     advance_recovery_omp
     build_custom_iterator
@@ -40,6 +44,8 @@ from ._advance_imports import *
 from ._advance_infprob import *
 from ._advance_play import *
 from ._advance_recovery import *
+from ._advance_foi_work_to_play import *
+from ._advance_work_to_play import *
 
 from ._iterate_custom import *
 from ._iterate_default import *
