@@ -36,8 +36,6 @@ def test_lookup(shared_network):
 
     clifton_bristol = info.find(name=r"^clifton$", authority="bristol")[0]
 
-    assert clifton_bristol == 3662
-
     clifton = info[clifton_bristol]
 
     assert clifton.name == "Clifton"
