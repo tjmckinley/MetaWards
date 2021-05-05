@@ -129,16 +129,20 @@ def setup_package():
         if user_openmp_flag:
             openmp_flags.insert(0, user_openmp_flag)
 
+        print("\nChecking if the compiler supports openmp...\n")
+
         for flag in openmp_flags:
             try:
+                print(f"Checking if the compiler supports openmp flag {flag}")
                 # Compiler and then link using each openmp flag...
                 compiler.compile(sources=["openmp_test.c"],
                                  extra_preargs=[flag])
                 openmp_flag = flag
+                print(f"Compiler supports openmp using flag {flag}. Excellent!\n")
                 break
-            except Exception as e:
-                print(f"Cannot compile: {e.__class__} {e}")
-                pass
+            except Exception:
+                print(f"Compiler doesn't appear to support flag {flag}.")
+                print("No problem - you can ignore the above error message.\n")
 
         # clean up
         os.chdir(curdir)
@@ -161,14 +165,17 @@ def setup_package():
               f"have to compile the serial version of the code.")
 
         if IS_MAC:
-            print(f"\nThis is common on Mac, as the default compiler does not "
-                  f"support OpenMP. If you want to compile with OpenMP then "
-                  f"install llvm via homebrew, e.g. 'brew install llvm', see "
-                  f"https://embeddedartistry.com/blog/2017/02/24/installing-llvm-clang-on-osx/")
+            print("\nThis is common on Mac, as the default compiler does not "
+                  "support OpenMP. If you want to compile with OpenMP then "
+                  "install llvm via homebrew, e.g. 'brew install llvm', see "
+                  "https://embeddedartistry.com/blog/2017/02/24/installing-llvm-clang-on-osx/")
 
-            print(f"\nRemember then to choose that compiler by setting the "
-                  f"CC environment variable, or passing it on the 'make' line, "
-                  f"e.g. 'CC=/usr/local/opt/llvm/bin/clang make'")
+            print("\nRemember then to choose that compiler by setting the "
+                  "CC environment variable, or passing it on the 'make' line, "
+                  "e.g. 'CC=/usr/local/opt/llvm/bin/clang make'")
+        elif IS_LINUX or IS_WINDOWS:
+            print("\nStrange, as OpenMP is normally supported on Windows and Linux.")
+            print("This suggests that there may be something wrong with the compiler.")
 
         result = input("\nDo you want compile without OpenMP? (y/n) ",
                        default="y")
@@ -183,7 +190,7 @@ def setup_package():
 
     if openmp_flag:
         cflags = f"{cflags} {openmp_flag}"
-        lflags.append(openmp_flag)
+        lflags.append(openmp_flag)   ## this line causes a problem on M1 Mac
 
     nbuilders = int(os.getenv("CYTHON_NBUILDERS", 2))
 
