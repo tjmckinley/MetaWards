@@ -146,7 +146,7 @@ def setup_package():
 
                 objects = ["openmp_test" + compiler.obj_extension]
 
-                link_flags = []
+                link_flags = [flag]
 
                 try:
                     compiler.link_executable(objects, "test_openmp",
@@ -166,7 +166,8 @@ def setup_package():
                     libpath = os.path.dirname(libomp)
 
                     try:
-                        link_flags = [f"-L{libpath}", f"-Wl,-rpath,{libpath}", "-lomp"]
+                        link_flags = [flag, f"-L{libpath}", 
+                                      f"-Wl,-rpath,{libpath}", "-lomp"]
                         compiler.link_executable(objects, "test_openmp",
                                                  extra_postargs=[flag]+link_flags)
                     except Exception as e:
