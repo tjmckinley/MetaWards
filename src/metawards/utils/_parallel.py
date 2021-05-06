@@ -78,13 +78,13 @@ def guess_num_threads_and_procs(njobs: int,
 
         if njobs >= 0.8 * ncores:   # not worth going parallel for <80%
             nthreads = 1
-            nprocs = ncores
+            nprocs = min(ncores, njobs)
         else:
             import math
             nthreads = int(math.floor(ncores/njobs))
             if nthreads < 1:
                 nthreads = 1
-            nprocs = int(math.floor(ncores/nthreads))
+            nprocs = min(njobs, int(math.floor(ncores/nthreads)))
             if nprocs < 1:
                 nprocs = 1
     elif nthreads < 1:
@@ -96,8 +96,8 @@ def guess_num_threads_and_procs(njobs: int,
     elif nprocs < 1:
         import math
         max_nprocs = int(math.floor(ncores/nthreads))
-        if max_nprocs < njobs:
-            nprocs = max_nprocs
+        if max_nprocs > njobs:
+            nprocs = njobs
         else:
             nprocs = max_nprocs
 
