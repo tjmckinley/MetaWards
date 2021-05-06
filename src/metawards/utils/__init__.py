@@ -33,6 +33,7 @@ Functions
     get_number_of_processes
     initialise_infections
     initialise_play_infections
+    is_openmp_supported
     move_population_from_work_to_play
     move_population_from_play_to_work
     prepare_worker
@@ -87,6 +88,7 @@ from ._add_lookup import *
 from ._aggregate import *
 from ._build_wards_network import *
 from ._add_wards_network_distance import *
+from ._check_openmp import *
 from ._get_min_max_distances import *
 from ._reset_everything import *
 from ._rescale_matrix import *
