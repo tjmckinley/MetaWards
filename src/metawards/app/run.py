@@ -392,6 +392,11 @@ def get_cores_per_node(args):
 
 
 def get_threads_per_task(args):
+    from .utils._check_openmp import is_openmp_supported
+
+    if not is_openmp_supported():
+        return 1
+
     if args.nthreads:
         return args.nthreads
 

@@ -47,6 +47,17 @@ def guess_num_threads_and_procs(njobs: int,
     if njobs is None or njobs < 0:
         return (1, 1)
 
+    from metawards.utils import is_openmp_supported
+
+    if not is_openmp_supported():
+        if nthreads > 1:
+            from metawards.utils import Console
+            Console.warning("Cannot use more than one thread as "
+                            "this MetaWards executable has been "
+                            "compiled without OpenMP support")
+
+        nthreads = 1
+
     if parallel_scheme is None:
         parallel_scheme = "multiprocessing"
 
@@ -67,13 +78,13 @@ def guess_num_threads_and_procs(njobs: int,
 
         if njobs >= 0.8 * ncores:   # not worth going parallel for <80%
             nthreads = 1
-            nprocs = ncores
+            nprocs = min(ncores, njobs)
         else:
             import math
             nthreads = int(math.floor(ncores/njobs))
             if nthreads < 1:
                 nthreads = 1
-            nprocs = int(math.floor(ncores/nthreads))
+            nprocs = min(njobs, int(math.floor(ncores/nthreads)))
             if nprocs < 1:
                 nprocs = 1
     elif nthreads < 1:
@@ -85,8 +96,8 @@ def guess_num_threads_and_procs(njobs: int,
     elif nprocs < 1:
         import math
         max_nprocs = int(math.floor(ncores/nthreads))
-        if max_nprocs < njobs:
-            nprocs = max_nprocs
+        if max_nprocs > njobs:
+            nprocs = njobs
         else:
             nprocs = max_nprocs
 
@@ -97,6 +108,11 @@ def get_available_num_threads():
     """Return the maximum number of threads that are recommended
        for this computer (the OMP_NUM_THREADS value)
     """
+    from ._check_openmp import is_openmp_supported
+
+    if not is_openmp_supported():
+        return 1
+
     import os
 
     # try OMP_NUM_THREADS as this is the accepted way to

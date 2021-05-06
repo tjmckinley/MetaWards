@@ -2,12 +2,15 @@
 # https://github.com/FedericoStra/cython-package-example
 # Thanks - this was really helpful :-)
 
+from distutils.errors import LinkError
 import os
 import versioneer
 from setuptools import setup, Extension
 import distutils.sysconfig
 import distutils.ccompiler
+from distutils import log
 import multiprocessing
+import subprocess
 from glob import glob
 import platform
 import tempfile
@@ -39,7 +42,7 @@ def setup_package():
     IS_WINDOWS = False
     MACHINE = platform.machine()
 
-    openmp_flags = ["-fopenmp", "-openmp"]
+    openmp_flags = ["-fopenmp"]
 
     if platform.system() == "Darwin":
         IS_MAC = True
@@ -124,36 +127,92 @@ def setup_package():
             file.write(openmp_test)
             file.flush()
 
-        openmp_flag = None
+        openmp_compile_flag = None
+        openmp_link_flags = []
 
         if user_openmp_flag:
             openmp_flags.insert(0, user_openmp_flag)
 
+        print("\nChecking if the compiler supports openmp...\n")
+
+        log_threshold = log.set_threshold(log.FATAL)
+
         for flag in openmp_flags:
             try:
+                print(f"Checking if the compiler supports openmp flag {flag}")
                 # Compiler and then link using each openmp flag...
                 compiler.compile(sources=["openmp_test.c"],
-                                 extra_preargs=[flag])
-                openmp_flag = flag
+                                 extra_postargs=[flag])
+
+                objects = ["openmp_test" + compiler.obj_extension]
+
+                link_flags = [flag]
+
+                try:
+                    compiler.link_executable(objects, "test_openmp",
+                                             extra_postargs=[flag])
+                except Exception:
+                    # We are likely missing the path to the libomp library - get this path
+                    print("\nCould not link - trying again, specifying the path to libomp")
+
+                    compiler_dir = os.path.dirname(compiler.compiler_so[0])
+                    libomp = glob(f"{compiler_dir}/../lib*/libomp*")
+
+                    if len(libomp) == 0:
+                        raise LinkError("Cannot find libomp for linking!")
+
+                    libomp = os.path.abspath(libomp[0])
+                    print(f"libomp = {libomp}\n")
+                    libpath = os.path.dirname(libomp)
+
+                    try:
+                        link_flags = [flag, f"-L{libpath}", 
+                                      f"-Wl,-rpath,{libpath}", "-lomp"]
+                        compiler.link_executable(objects, "test_openmp",
+                                                 extra_postargs=[flag]+link_flags)
+                    except Exception as e:
+                        print("\nFailed to link, likely because the OpenMP\n"
+                              "library can't be found. Make sure that\n"
+                              "this library is in your LD_LIBRARY_PATH\n")
+                        raise e
+
+                try:
+                    subprocess.check_output('./test_openmp')
+                except Exception as e:
+                    print("\nFailed to run test_openmp executable. This\n"
+                          "suggests that even if we can compile with OpenMP\n"
+                          "that we can't run the code.")
+                    raise e
+
+                openmp_compile_flag = flag
+                openmp_link_flags = link_flags
+                print(
+                    f"Compiler supports openmp using flag {flag}. Excellent!\n")
                 break
             except Exception as e:
-                print(f"Cannot compile: {e.__class__} {e}")
-                pass
+                print(e)
+                print(f"Compiler doesn't appear to support flag {flag}.")
+                print("No problem - you can ignore the above error message.\n")
+
+        log.set_threshold(log_threshold)
 
         # clean up
         os.chdir(curdir)
         shutil.rmtree(tmpdir)
 
-        return openmp_flag
+        if openmp_compile_flag is None:
+            return None
+        else:
+            return [openmp_compile_flag, openmp_link_flags] 
 
     if is_build:
-        openmp_flag = get_openmp_flag()
+        openmp_flags = get_openmp_flag()
     else:
-        openmp_flag = None
+        openmp_flags = None
 
     include_dirs = []
 
-    if is_build and (openmp_flag is None):
+    if is_build and (openmp_flags is None):
         print(f"\nYour compiler {compiler.compiler_so[0]} does not support "
               f"OpenMP with any of the known OpenMP flags {openmp_flags}. "
               f"If you know which flag to use can you specify it using "
@@ -161,14 +220,17 @@ def setup_package():
               f"have to compile the serial version of the code.")
 
         if IS_MAC:
-            print(f"\nThis is common on Mac, as the default compiler does not "
-                  f"support OpenMP. If you want to compile with OpenMP then "
-                  f"install llvm via homebrew, e.g. 'brew install llvm', see "
-                  f"https://embeddedartistry.com/blog/2017/02/24/installing-llvm-clang-on-osx/")
+            print("\nThis is common on Mac, as the default compiler does not "
+                  "support OpenMP. If you want to compile with OpenMP then "
+                  "install llvm via homebrew, e.g. 'brew install llvm', see "
+                  "https://embeddedartistry.com/blog/2017/02/24/installing-llvm-clang-on-osx/")
 
-            print(f"\nRemember then to choose that compiler by setting the "
-                  f"CC environment variable, or passing it on the 'make' line, "
-                  f"e.g. 'CC=/usr/local/opt/llvm/bin/clang make'")
+            print("\nRemember then to choose that compiler by setting the "
+                  "CC environment variable, or passing it on the 'make' line, "
+                  "e.g. 'CC=/opt/homebrew/opt/llvm/bin/clang make'")
+        elif IS_LINUX or IS_WINDOWS:
+            print("\nStrange, as OpenMP is normally supported on Windows and Linux.")
+            print("This suggests that there may be something wrong with the compiler.")
 
         result = input("\nDo you want compile without OpenMP? (y/n) ",
                        default="y")
@@ -178,12 +240,15 @@ def setup_package():
 
         include_dirs.append("src/metawards/disable_openmp")
 
-    cflags = "-O3"
+    cflags = ["-O3"]
     lflags = []
 
-    if openmp_flag:
-        cflags = f"{cflags} {openmp_flag}"
-        lflags.append(openmp_flag)
+    if openmp_flags:
+        cflags.append(openmp_flags[0])
+        lflags += openmp_flags[1]
+
+        print(f"\nCFLAGS = {' '.join(cflags)}")
+        print(f"LFLAGS = {' '.join(lflags)}\n")
 
     nbuilders = int(os.getenv("CYTHON_NBUILDERS", 2))
 
@@ -254,7 +319,8 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
-                                    extra_compile_args=lflags,
+                                    extra_compile_args=cflags,
+                                    extra_link_args=lflags,
                                     include_dirs=include_dirs))
 
     for pyx in iterator_pyx_files:
@@ -264,7 +330,8 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
-                                    extra_compile_args=lflags,
+                                    extra_compile_args=cflags,
+                                    extra_link_args=lflags,
                                     include_dirs=include_dirs))
 
     for pyx in extractor_pyx_files:
@@ -274,7 +341,8 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
-                                    extra_compile_args=lflags,
+                                    extra_compile_args=cflags,
+                                    extra_link_args=lflags,
                                     include_dirs=include_dirs))
 
     for pyx in mixer_pyx_files:
@@ -284,7 +352,8 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
-                                    extra_compile_args=lflags,
+                                    extra_compile_args=cflags,
+                                    extra_link_args=lflags,
                                     include_dirs=include_dirs))
 
     for pyx in mover_pyx_files:
@@ -294,15 +363,14 @@ def setup_package():
 
         extensions.append(Extension(module, [pyx], define_macros=define_macros,
                                     libraries=libraries,
-                                    extra_compile_args=lflags,
+                                    extra_compile_args=cflags,
+                                    extra_link_args=lflags,
                                     include_dirs=include_dirs))
 
     CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0)))
 
     if not have_cython:
         CYTHONIZE = False
-
-    os.environ['CFLAGS'] = cflags
 
     if CYTHONIZE:
         extensions = cythonize(extensions,
