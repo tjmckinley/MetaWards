@@ -1,13 +1,13 @@
 
 __all__ = ["iterate_working_week"]
 
-from ._iterate_weekday import iterate_weekday
+from ._iterate_default import iterate_default
 from ._iterate_weekend import iterate_weekend
 
 from .._population import Population
 
 
-def iterate_working_week(population: Population, **kwargs):
+def iterate_working_week(stage: str, population: Population, **kwargs):
     """This returns the default list of 'advance_XXX' functions that
        are called in sequence for each iteration of the model run.
        This iterator understands the concept of a traditional working week,
@@ -27,6 +27,7 @@ def iterate_working_week(population: Population, **kwargs):
     """
 
     kwargs["population"] = population
+    kwargs["stage"] = stage
 
     # is this a weekday or a weekend?
     if population.date is None:
@@ -42,4 +43,4 @@ def iterate_working_week(population: Population, **kwargs):
     if is_weekend:
         return iterate_weekend(**kwargs)
     else:
-        return iterate_weekday(**kwargs)
+        return iterate_default(**kwargs)
