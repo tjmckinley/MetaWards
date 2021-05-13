@@ -168,23 +168,28 @@ def run(help: bool = None,
     import tempfile
     from .utils._console import Console
 
-    # look for the windows-named executable first...
-    metawards = os.path.join(os.path.dirname(sys.executable), "metawards.exe")
+    metawards = None
+    dirpath = os.path.join(os.path.dirname(sys.executable))
 
-    if not os.path.exists(metawards):
-        metawards = os.path.join(os.path.dirname(sys.executable), "metawards")
+    for option in [os.path.join(dirpath, "metawards.exe"),
+                   os.path.join(dirpath, "metawards"),
+                   os.path.join(dirpath, "Scripts", "metawards.exe"),
+                   os.path.join(dirpath, "Scripts", "metawards")]:
+        if os.path.exists(option):
+            metawards = option
+            break
 
-        if not os.path.exists(metawards):
-            # last attempt - is 'metawards' in the PATH?
-            from shutil import which
-            exe = which("metawards")
+    if metawards is None:
+        # last attempt - is 'metawards' in the PATH?
+        from shutil import which
+        exe = which("metawards")
             
-            if exe is None:
-                Console.error(
-                    f"Cannot find the metawards executable: {metawards}")
-                return -1
-            else:
-                metawards = exe
+        if exe is None:
+            Console.error(
+                f"Cannot find the metawards executable in {dirpath}")
+            return -1
+        else:
+            metawards = exe
 
     args = []
 
@@ -466,13 +471,17 @@ def run(help: bool = None,
                         sys.stdout.write(line)
                         sys.stdout.flush()
 
+                print("Going to poll...")
                 return_val = PROC.poll()
+                print(f"POLL COMPLETE {return_val}")
         except Exception as e:
             Console.error(f"[ERROR] {e.__class__}: {e}")
             return_val = -1
 
     if tmpdir is not None:
         _rmdir(tmpdir)
+
+    print(f"HERE - RETURN {return_val}")
 
     if dry_run:
         return
