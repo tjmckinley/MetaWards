@@ -439,7 +439,7 @@ def run(help: bool = None,
             import shlex
             import subprocess
             args = shlex.split(cmd)
-            with subprocess.Popen(args, stdin=sys.stdin,
+            with subprocess.Popen(args,
                                   stderr=subprocess.PIPE,
                                   stdout=subprocess.PIPE, bufsize=1,
                                   universal_newlines=True) as PROC:
