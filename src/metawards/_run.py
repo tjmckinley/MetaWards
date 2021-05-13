@@ -470,18 +470,19 @@ def run(help: bool = None,
                     if not silent:
                         sys.stdout.write(line)
                         sys.stdout.flush()
-
-                print("Going to poll...")
+                
                 return_val = PROC.poll()
-                print(f"POLL COMPLETE {return_val}")
+
+                if return_val is None:
+                    # get None if everything OK on Windows
+                    return_val = 0
+
         except Exception as e:
             Console.error(f"[ERROR] {e.__class__}: {e}")
             return_val = -1
 
     if tmpdir is not None:
         _rmdir(tmpdir)
-
-    print(f"HERE - RETURN {return_val}")
 
     if dry_run:
         return
