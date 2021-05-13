@@ -436,9 +436,15 @@ def run(help: bool = None,
             Console.info(f"Writing output to directory {output}")
 
         try:
-            import shlex
+            if sys.platform.startswith("win"):
+                #shlex.split doesn't work, but the command can 
+                #be passed as a single string
+                args = cmd
+            else:
+                import shlex
+                args = shlex.split(cmd)
+    
             import subprocess
-            args = shlex.split(cmd)
             with subprocess.Popen(args,
                                   stderr=subprocess.PIPE,
                                   stdout=subprocess.PIPE, bufsize=1,
@@ -483,7 +489,7 @@ def run(help: bool = None,
             try:
                 import pandas
                 auto_load = True
-            except ImportError as e:
+            except ImportError:
                 auto_load = False
 
         if auto_load:
@@ -492,6 +498,8 @@ def run(help: bool = None,
         else:
             return results
     else:
+        output_file = os.path.join(output, "console.log.bz2")
+
         Console.error(f"Something went wrong with the run. Please look "
-                      f"at {output}/console.log.bz2 for more information")
+                      f"at {output_file} for more information")
         return None
