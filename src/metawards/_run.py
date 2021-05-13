@@ -168,11 +168,15 @@ def run(help: bool = None,
     import tempfile
     from .utils._console import Console
 
-    metawards = os.path.join(os.path.dirname(sys.executable), "metawards")
+    # look for the windows-named executable first...
+    metawards = os.path.join(os.path.dirname(sys.executable), "metawards.exe")
 
     if not os.path.exists(metawards):
-        Console.error(f"Cannot find the metawards executable: {metawards}")
-        return -1
+        metawards = os.path.join(os.path.dirname(sys.executable), "metawards")
+
+        if not os.path.exists(metawards):
+            Console.error(f"Cannot find the metawards executable: {metawards}")
+            return -1
 
     args = []
 
