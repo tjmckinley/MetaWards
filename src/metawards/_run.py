@@ -175,8 +175,16 @@ def run(help: bool = None,
         metawards = os.path.join(os.path.dirname(sys.executable), "metawards")
 
         if not os.path.exists(metawards):
-            Console.error(f"Cannot find the metawards executable: {metawards}")
-            return -1
+            # last attempt - is 'metawards' in the PATH?
+            from shutil import which
+            exe = which("metawards")
+            
+            if exe is None:
+                Console.error(
+                    f"Cannot find the metawards executable: {metawards}")
+                return -1
+            else:
+                metawards = exe
 
     args = []
 
