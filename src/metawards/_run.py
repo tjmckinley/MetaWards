@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from datetime import date
 
 
-__all__ = ["run"]
+__all__ = ["run", "find_mw_exe", "get_reticulate_command"]
 
 
 def _write_to_file(obj: any, filename: str, dir: str = ".", bzip: bool = False,
@@ -126,6 +126,77 @@ def _find_metawards(dirname):
     return None
 
 
+def find_mw_exe():
+    """Try to find the MetaWards executable. This should be findable
+       if MetaWards has been installed. This raises an exception
+       if it cannot be found. It returns the full path to the
+       executable
+    """
+    import metawards as _metawards
+    import os as _os
+    import sys as _sys
+
+    # Search through the path based on where the metawards module
+    # has been installed.
+    modpath = _metawards.__file__
+
+    metawards = None
+
+    # Loop only 100 times - this should break before now,
+    # We are not using a while loop to avoid an infinite loop
+    for i in range(0, 100):
+        metawards = _find_metawards(modpath)
+
+        if metawards:
+            break
+
+        newpath = _os.path.dirname(modpath)
+
+        if newpath == modpath:
+            break
+
+        modpath = newpath
+
+    if metawards is None:
+        # We couldn't find it that way - try another route...
+        dirpath = _os.path.join(_os.path.dirname(_sys.executable))
+
+        for option in [_os.path.join(dirpath, "metawards.exe"),
+                       _os.path.join(dirpath, "metawards"),
+                       _os.path.join(dirpath, "Scripts", "metawards.exe"),
+                       _os.path.join(dirpath, "Scripts", "metawards")]:
+            if _os.path.exists(option):
+                metawards = option
+                break
+
+    if metawards is None:
+        # last attempt - is 'metawards' in the PATH?
+        from shutil import which
+        metawards = which("metawards")
+
+    if metawards is None:
+        from .utils._console import Console
+        Console.error(
+            "Cannot find the metawards executable. Please could you find "
+            "it and add it to the PATH. Or please post an issue on the "
+            "GitHub repository (https://github.com/metawards/MetaWards) "
+            "as this may indicate a bug in the code.")
+        raise RuntimeError("Cannot locate the metawards executable")
+
+    return metawards
+
+
+def get_reticulate_command():
+    """Print the reticulate command that you need to type
+       to be able to use the Python in which MetaWards is
+       installed
+    """
+    import os as _os
+    import sys as _sys
+    pyexe = _os.path.abspath(_sys.executable)
+    return f"reticulate::use_python(\"{pyexe}\", required=TRUE)"
+
+
 def run(help: bool = None,
         version: bool = None,
         dry_run: bool = None,
@@ -215,54 +286,9 @@ def run(help: bool = None,
     import sys
     import os
     import tempfile
-    import metawards
     from .utils._console import Console
 
-    # Search through the path based on where the metawards module
-    # has been installed.
-    modpath = metawards.__file__
-
-    metawards = None
-
-    # Loop only 100 times - this should break before now,
-    # We are not using a while loop to avoid an infinite loop
-    for i in range(0, 100):
-        metawards = _find_metawards(modpath)
-
-        if metawards:
-            break
-
-        newpath = os.path.dirname(modpath)
-
-        if newpath == modpath:
-            break
-
-        modpath = newpath
-
-    if metawards is None:
-        # We couldn't find it that way - try another route...
-        dirpath = os.path.join(os.path.dirname(sys.executable))
-
-        for option in [os.path.join(dirpath, "metawards.exe"),
-                       os.path.join(dirpath, "metawards"),
-                       os.path.join(dirpath, "Scripts", "metawards.exe"),
-                       os.path.join(dirpath, "Scripts", "metawards")]:
-           if os.path.exists(option):
-                metawards = option
-                break
-
-    if metawards is None:
-        # last attempt - is 'metawards' in the PATH?
-        from shutil import which
-        metawards = which("metawards")
-            
-    if metawards is None:
-        Console.error(
-            "Cannot find the metawards executable. Please could you find "
-            "it and add it to the PATH. Or please post an issue on the "
-            "GitHub repository (https://github.com/metawards/MetaWards) "
-            "as this may indicate a bug in the code.")
-        return -1
+    metawards = find_mw_exe()
 
     args = []
 
@@ -519,28 +545,30 @@ def run(help: bool = None,
         return_val = 0
     else:
         if output is not None:
-            Console.info(f"Writing output to directory {os.path.abspath(output)}")
+            Console.info(
+                f"Writing output to directory {os.path.abspath(output)}")
 
         Console.info(f"[RUNNING] {cmd}")
 
         try:
             if sys.platform.startswith("win"):
-                #shlex.split doesn't work, but the command can 
-                #be passed as a single string
+                # shlex.split doesn't work, but the command can
+                # be passed as a single string
                 args = cmd
             else:
                 import shlex
                 args = shlex.split(cmd)
-    
+
             import subprocess
 
             print(subprocess.PIPE)
 
             with subprocess.Popen(args,
                                   stdin=subprocess.PIPE,  # need all three pipes
-                                  stdout=subprocess.PIPE, # for this to work in 
-                                  stderr=subprocess.PIPE, # reticulate (but breaks github)
-                                  bufsize=1, encoding="utf8", 
+                                  stdout=subprocess.PIPE,  # for this to work in
+                                  # reticulate (but breaks github)
+                                  stderr=subprocess.PIPE,
+                                  bufsize=1, encoding="utf8",
                                   errors="ignore",
                                   text=True) as PROC:
                 while True:
@@ -557,7 +585,7 @@ def run(help: bool = None,
                             pass
                         except Exception as e:
                             Console.error(f"WRITE ERROR: {e.__class__} : {e}")
-            
+
                 return_val = PROC.poll()
 
                 if return_val is None:
