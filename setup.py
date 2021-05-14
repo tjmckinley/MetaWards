@@ -240,8 +240,11 @@ def setup_package():
 
         include_dirs.append("src/metawards/disable_openmp")
 
-    cflags = ["-O3"]
+    cflags = []
     lflags = []
+
+    if not IS_WINDOWS:
+        cflags.append("-O3")
 
     if openmp_flags:
         cflags.append(openmp_flags[0])
