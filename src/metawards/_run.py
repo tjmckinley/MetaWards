@@ -519,7 +519,7 @@ def run(help: bool = None,
         return_val = 0
     else:
         if output is not None:
-            Console.info(f"Writing output to directory {output}")
+            Console.info(f"Writing output to directory {os.path.abspath(output)}")
 
         Console.info(f"[RUNNING] {cmd}")
 
@@ -533,19 +533,31 @@ def run(help: bool = None,
                 args = shlex.split(cmd)
     
             import subprocess
+
+            print(subprocess.PIPE)
+
             with subprocess.Popen(args,
-                                  stderr=subprocess.PIPE,
-                                  stdout=subprocess.PIPE, bufsize=1,
-                                  universal_newlines=True) as PROC:
+                                  stdin=subprocess.PIPE,  # need all three pipes
+                                  stdout=subprocess.PIPE, # for this to work in 
+                                  stderr=subprocess.PIPE, # reticulate (but breaks github)
+                                  bufsize=1, encoding="utf8", 
+                                  errors="ignore",
+                                  text=True) as PROC:
                 while True:
                     line = PROC.stdout.readline()
+
                     if not line:
                         break
 
                     if not silent:
-                        sys.stdout.write(line)
-                        sys.stdout.flush()
-                
+                        try:
+                            sys.stdout.write(line)
+                            sys.stdout.flush()
+                        except UnicodeEncodeError:
+                            pass
+                        except Exception as e:
+                            Console.error(f"WRITE ERROR: {e.__class__} : {e}")
+            
                 return_val = PROC.poll()
 
                 if return_val is None:
