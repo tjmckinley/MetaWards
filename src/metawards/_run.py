@@ -255,7 +255,7 @@ def run(help: bool = None,
         # last attempt - is 'metawards' in the PATH?
         from shutil import which
         metawards = which("metawards")
-            
+
     if metawards is None:
         Console.error(
             "Cannot find the metawards executable. Please could you find "
@@ -525,22 +525,25 @@ def run(help: bool = None,
 
         try:
             if sys.platform.startswith("win"):
-                #shlex.split doesn't work, but the command can 
-                #be passed as a single string
+                # shlex.split doesn't work, but the command can
+                # be passed as a single string
                 args = cmd
             else:
                 import shlex
                 args = shlex.split(cmd)
-    
+
             import subprocess
 
-            print(subprocess.PIPE)
-
+            # We have to specify all of the pipes (stdin, stdout, stderr)
+            # as below as otherwise we will break metawards on Windows
+            # (especially needed to allow metawards to run under
+            #  reticulate via metawards$run. Without these specified
+            #  we end up with Windows File Errors)
             with subprocess.Popen(args,
-                                  stdin=subprocess.PIPE,  # need all three pipes
-                                  stdout=subprocess.PIPE, # for this to work in 
-                                  stderr=subprocess.PIPE, # reticulate (but breaks github)
-                                  bufsize=1, encoding="utf8", 
+                                  stdin=subprocess.PIPE,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE,
+                                  bufsize=1, encoding="utf8",
                                   errors="ignore",
                                   text=True) as PROC:
                 while True:
@@ -554,14 +557,18 @@ def run(help: bool = None,
                             sys.stdout.write(line)
                             sys.stdout.flush()
                         except UnicodeEncodeError:
+                            # We get frequent unicode errors when run
+                            # within RStudio. It is best just to ignore them
                             pass
                         except Exception as e:
                             Console.error(f"WRITE ERROR: {e.__class__} : {e}")
-            
+
                 return_val = PROC.poll()
 
                 if return_val is None:
                     # get None if everything OK on Windows
+                    # (sometimes windows returns 0 as None, which
+                    #  breaks things!)
                     return_val = 0
 
         except Exception as e:
