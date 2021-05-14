@@ -77,6 +77,55 @@ def _rmdir(directory):
     directory.rmdir()
 
 
+def _is_executable(filename):
+    import os
+    if not os.path.exists(filename):
+        return None
+
+    if os.path.isdir(filename):
+        return None
+
+    # determining if this is executable
+    # on windows is really difficult, so just
+    # assume it is...
+    return filename
+
+
+def _find_metawards(dirname):
+    import os
+    m = _is_executable(os.path.join(dirname, "metawards"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "metawards.exe"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "Scripts", "metawards"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "Scripts", "metawards.exe"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "bin", "metawards"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "bin", "metawards.exe"))
+
+    if m:
+        return m
+
+    return None
+
+
 def run(help: bool = None,
         version: bool = None,
         dry_run: bool = None,
@@ -166,30 +215,54 @@ def run(help: bool = None,
     import sys
     import os
     import tempfile
+    import metawards
     from .utils._console import Console
 
-    metawards = None
-    dirpath = os.path.join(os.path.dirname(sys.executable))
+    # Search through the path based on where the metawards module
+    # has been installed.
+    modpath = metawards.__file__
 
-    for option in [os.path.join(dirpath, "metawards.exe"),
-                   os.path.join(dirpath, "metawards"),
-                   os.path.join(dirpath, "Scripts", "metawards.exe"),
-                   os.path.join(dirpath, "Scripts", "metawards")]:
-        if os.path.exists(option):
-            metawards = option
+    metawards = None
+
+    # Loop only 100 times - this should break before now,
+    # We are not using a while loop to avoid an infinite loop
+    for i in range(0, 100):
+        metawards = _find_metawards(modpath)
+
+        if metawards:
             break
+
+        newpath = os.path.dirname(modpath)
+
+        if newpath == modpath:
+            break
+
+        modpath = newpath
+
+    if metawards is None:
+        # We couldn't find it that way - try another route...
+        dirpath = os.path.join(os.path.dirname(sys.executable))
+
+        for option in [os.path.join(dirpath, "metawards.exe"),
+                       os.path.join(dirpath, "metawards"),
+                       os.path.join(dirpath, "Scripts", "metawards.exe"),
+                       os.path.join(dirpath, "Scripts", "metawards")]:
+           if os.path.exists(option):
+                metawards = option
+                break
 
     if metawards is None:
         # last attempt - is 'metawards' in the PATH?
         from shutil import which
-        exe = which("metawards")
+        metawards = which("metawards")
             
-        if exe is None:
-            Console.error(
-                f"Cannot find the metawards executable in {dirpath}")
-            return -1
-        else:
-            metawards = exe
+    if metawards is None:
+        Console.error(
+            "Cannot find the metawards executable. Please could you find "
+            "it and add it to the PATH. Or please post an issue on the "
+            "GitHub repository (https://github.com/metawards/MetaWards) "
+            "as this may indicate a bug in the code.")
+        return -1
 
     args = []
 
@@ -446,7 +519,9 @@ def run(help: bool = None,
         return_val = 0
     else:
         if output is not None:
-            Console.info(f"Writing output to directory {output}")
+            Console.info(f"Writing output to directory {os.path.abspath(output)}")
+
+        Console.info(f"[RUNNING] {cmd}")
 
         try:
             if sys.platform.startswith("win"):
@@ -458,19 +533,31 @@ def run(help: bool = None,
                 args = shlex.split(cmd)
     
             import subprocess
+
+            print(subprocess.PIPE)
+
             with subprocess.Popen(args,
-                                  stderr=subprocess.PIPE,
-                                  stdout=subprocess.PIPE, bufsize=1,
-                                  universal_newlines=True) as PROC:
+                                  stdin=subprocess.PIPE,  # need all three pipes
+                                  stdout=subprocess.PIPE, # for this to work in 
+                                  stderr=subprocess.PIPE, # reticulate (but breaks github)
+                                  bufsize=1, encoding="utf8", 
+                                  errors="ignore",
+                                  text=True) as PROC:
                 while True:
                     line = PROC.stdout.readline()
+
                     if not line:
                         break
 
                     if not silent:
-                        sys.stdout.write(line)
-                        sys.stdout.flush()
-                
+                        try:
+                            sys.stdout.write(line)
+                            sys.stdout.flush()
+                        except UnicodeEncodeError:
+                            pass
+                        except Exception as e:
+                            Console.error(f"WRITE ERROR: {e.__class__} : {e}")
+            
                 return_val = PROC.poll()
 
                 if return_val is None:
