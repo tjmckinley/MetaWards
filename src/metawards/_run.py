@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from datetime import date
 
 
-__all__ = ["run"]
+__all__ = ["run", "find_mw_exe", "get_reticulate_command"]
 
 
 def _write_to_file(obj: any, filename: str, dir: str = ".", bzip: bool = False,
@@ -75,6 +75,126 @@ def _rmdir(directory):
             item.unlink()
 
     directory.rmdir()
+
+
+def _is_executable(filename):
+    import os
+    if not os.path.exists(filename):
+        return None
+
+    if os.path.isdir(filename):
+        return None
+
+    # determining if this is executable
+    # on windows is really difficult, so just
+    # assume it is...
+    return filename
+
+
+def _find_metawards(dirname):
+    import os
+    m = _is_executable(os.path.join(dirname, "metawards"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "metawards.exe"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "Scripts", "metawards"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "Scripts", "metawards.exe"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "bin", "metawards"))
+
+    if m:
+        return m
+
+    m = _is_executable(os.path.join(dirname, "bin", "metawards.exe"))
+
+    if m:
+        return m
+
+    return None
+
+
+def find_mw_exe():
+    """Try to find the MetaWards executable. This should be findable
+       if MetaWards has been installed. This raises an exception
+       if it cannot be found. It returns the full path to the
+       executable
+    """
+    import metawards as _metawards
+    import os as _os
+    import sys as _sys
+
+    # Search through the path based on where the metawards module
+    # has been installed.
+    modpath = _metawards.__file__
+
+    metawards = None
+
+    # Loop only 100 times - this should break before now,
+    # We are not using a while loop to avoid an infinite loop
+    for i in range(0, 100):
+        metawards = _find_metawards(modpath)
+
+        if metawards:
+            break
+
+        newpath = _os.path.dirname(modpath)
+
+        if newpath == modpath:
+            break
+
+        modpath = newpath
+
+    if metawards is None:
+        # We couldn't find it that way - try another route...
+        dirpath = _os.path.join(_os.path.dirname(_sys.executable))
+
+        for option in [_os.path.join(dirpath, "metawards.exe"),
+                       _os.path.join(dirpath, "metawards"),
+                       _os.path.join(dirpath, "Scripts", "metawards.exe"),
+                       _os.path.join(dirpath, "Scripts", "metawards")]:
+            if _os.path.exists(option):
+                metawards = option
+                break
+
+    if metawards is None:
+        # last attempt - is 'metawards' in the PATH?
+        from shutil import which
+        metawards = which("metawards")
+
+    if metawards is None:
+        from .utils._console import Console
+        Console.error(
+            "Cannot find the metawards executable. Please could you find "
+            "it and add it to the PATH. Or please post an issue on the "
+            "GitHub repository (https://github.com/metawards/MetaWards) "
+            "as this may indicate a bug in the code.")
+        raise RuntimeError("Cannot locate the metawards executable")
+
+    return metawards
+
+
+def get_reticulate_command():
+    """Print the reticulate command that you need to type
+       to be able to use the Python in which MetaWards is
+       installed
+    """
+    import os as _os
+    import sys as _sys
+    pyexe = _os.path.abspath(_sys.executable)
+    return f"reticulate::use_python(\"{pyexe}\", required=TRUE)"
 
 
 def run(help: bool = None,
@@ -168,11 +288,7 @@ def run(help: bool = None,
     import tempfile
     from .utils._console import Console
 
-    metawards = os.path.join(os.path.dirname(sys.executable), "metawards")
-
-    if not os.path.exists(metawards):
-        Console.error(f"Cannot find the metawards executable: {metawards}")
-        return -1
+    metawards = find_mw_exe()
 
     args = []
 
@@ -429,26 +545,59 @@ def run(help: bool = None,
         return_val = 0
     else:
         if output is not None:
-            Console.info(f"Writing output to directory {output}")
+            Console.info(
+                f"Writing output to directory {os.path.abspath(output)}")
+
+        Console.info(f"[RUNNING] {cmd}")
 
         try:
-            import shlex
+            if sys.platform.startswith("win"):
+                # shlex.split doesn't work, but the command can
+                # be passed as a single string
+                args = cmd
+            else:
+                import shlex
+                args = shlex.split(cmd)
+
             import subprocess
-            args = shlex.split(cmd)
-            with subprocess.Popen(args, stdin=sys.stdin,
+
+            # We have to specify all of the pipes (stdin, stdout, stderr)
+            # as below as otherwise we will break metawards on Windows
+            # (especially needed to allow metawards to run under
+            #  reticulate via metawards$run. Without these specified
+            #  we end up with Windows File Errors)
+            with subprocess.Popen(args,
+                                  stdin=subprocess.PIPE,
+                                  stdout=subprocess.PIPE,
                                   stderr=subprocess.PIPE,
-                                  stdout=subprocess.PIPE, bufsize=1,
-                                  universal_newlines=True) as PROC:
+                                  bufsize=1, encoding="utf8",
+                                  errors="ignore",
+                                  text=True) as PROC:
                 while True:
                     line = PROC.stdout.readline()
+
                     if not line:
                         break
 
                     if not silent:
-                        sys.stdout.write(line)
-                        sys.stdout.flush()
+                        try:
+                            sys.stdout.write(line)
+                            sys.stdout.flush()
+                        except UnicodeEncodeError:
+                            # We get frequent unicode errors when run
+                            # within RStudio. It is best just to ignore them
+                            pass
+                        except Exception as e:
+                            Console.error(f"WRITE ERROR: {e.__class__} : {e}")
 
                 return_val = PROC.poll()
+
+                if return_val is None:
+                    # get None if everything OK on Windows
+                    # (sometimes windows returns 0 as None, which
+                    #  breaks things!)
+                    return_val = 0
+
         except Exception as e:
             Console.error(f"[ERROR] {e.__class__}: {e}")
             return_val = -1
@@ -479,7 +628,7 @@ def run(help: bool = None,
             try:
                 import pandas
                 auto_load = True
-            except ImportError as e:
+            except ImportError:
                 auto_load = False
 
         if auto_load:
@@ -488,6 +637,8 @@ def run(help: bool = None,
         else:
             return results
     else:
+        output_file = os.path.join(output, "console.log.bz2")
+
         Console.error(f"Something went wrong with the run. Please look "
-                      f"at {output}/console.log.bz2 for more information")
+                      f"at {output_file} for more information")
         return None

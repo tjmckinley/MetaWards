@@ -166,7 +166,7 @@ def setup_package():
                     libpath = os.path.dirname(libomp)
 
                     try:
-                        link_flags = [flag, f"-L{libpath}", 
+                        link_flags = [flag, f"-L{libpath}",
                                       f"-Wl,-rpath,{libpath}", "-lomp"]
                         compiler.link_executable(objects, "test_openmp",
                                                  extra_postargs=[flag]+link_flags)
@@ -203,7 +203,7 @@ def setup_package():
         if openmp_compile_flag is None:
             return None
         else:
-            return [openmp_compile_flag, openmp_link_flags] 
+            return [openmp_compile_flag, openmp_link_flags]
 
     if is_build:
         openmp_flags = get_openmp_flag()
@@ -240,8 +240,11 @@ def setup_package():
 
         include_dirs.append("src/metawards/disable_openmp")
 
-    cflags = ["-O3"]
+    cflags = []
     lflags = []
+
+    if not IS_WINDOWS:
+        cflags.append("-O3")
 
     if openmp_flags:
         cflags.append(openmp_flags[0])

@@ -43,6 +43,8 @@ Functions
     print_version_string
     input
     run
+    find_mw_exe
+    get_reticulate_command
 
 """
 
@@ -129,6 +131,9 @@ Wards = _lazy_import.lazy_class("._wards.Wards")
 Workspace = _lazy_import.lazy_class("._workspace.Workspace")
 
 run = _lazy_import.lazy_class("._run.run")
+find_mw_exe = _lazy_import.lazy_class("._run.find_mw_exe")
+get_reticulate_command = _lazy_import.lazy_class(
+    "._run.get_reticulate_command")
 
 if _sys.version_info < (3, 7):
     print("MetaWards requires Python version 3.7 or above.")
