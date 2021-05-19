@@ -48,6 +48,17 @@ class Links:
         else:
             return len(self.ifrom)
 
+    def get_index_of_link(self, ifrom: int, ito: int) -> int:
+        """Return the index of the link from ward ifrom to ward ito.
+           This raises an exception if there is no such link
+        """
+        for i in range(0, len(self.ifrom)):
+            if self.ifrom[i] == ifrom and self.ito[i] == ito:
+                return i
+
+        raise IndexError(f"There is no link between wards {ifrom} "
+                         f"and {ito}.")
+
     def population(self) -> int:
         """Return the population of these links"""
         if self.weight is None:
