@@ -322,37 +322,65 @@ def advance_additional(network: _Union[Network, Networks],
 
                 seed_network = network.subnets[demographic]
                 seed_wards = seed_network.nodes
+                seed_links = seed_network.links
                 seed_infections = infections.subinfs[demographic].play
+                seed_work_infections = infections.subinfs[demographic].work
             else:
                 demographic = None
                 seed_network = network
                 seed_wards = seed_network.nodes
+                seed_links = seed_network.links
                 seed_infections = infections.play
+                seed_work_infections = infections.work
 
             try:
                 ward = seed_network.get_node_index(ward)
 
-                if seed_wards.play_suscept[ward] == 0:
-                    Console.warning(
-                        f"Cannot seed {num} infection(s) in ward {ward} "
-                        f"as there are no susceptibles remaining")
+                num_to_seed = min(num, seed_wards.play_suscept[ward])
+
+                if num_to_seed > 0:
+                    seed_wards.play_suscept[ward] -= num_to_seed
+                    if demographic is not None:
+                        Console.print(
+                            f"seeding demographic {demographic} "
+                            f"play_infections[0][{ward}] += {num_to_seed}")
+                    else:
+                        Console.print(f"seeding play_infections[0][{ward}] "
+                                      f"+= {num_to_seed}")
+
+                    seed_infections[0][ward] += num_to_seed
+
+                num -= num_to_seed
+
+                if num <= 0:
                     continue
 
-                elif seed_wards.play_suscept[ward] < num:
+                try:
+                    link = seed_links.get_index_of_link(ward, ward)
+                except Exception:
+                    link = None
+
+                if link is not None:
+                    num_to_seed = int(min(num, seed_links.suscept[link]))
+
+                    if num_to_seed > 0:
+                        seed_links.suscept[link] -= num_to_seed
+                        if demographic is not None:
+                            Console.print(
+                                f"seeding demographic {demographic} "
+                                f"work_infections[0][{link}] += {num_to_seed}")
+                        else:
+                            Console.print(f"seeding work_infections[0][{link}]"
+                                          f" += {num_to_seed}")
+
+                        seed_work_infections[0][link] += num_to_seed
+
+                    num -= num_to_seed
+
+                if num > 0:
                     Console.warning(
-                        f"Not enough susceptibles in ward to see all {num}")
-                    num = seed_wards.play_suscept[ward]
-
-                seed_wards.play_suscept[ward] -= num
-                if demographic is not None:
-                    Console.print(
-                        f"seeding demographic {demographic} "
-                        f"play_infections[0][{ward}] += {num}")
-                else:
-                    Console.print(
-                        f"seeding play_infections[0][{ward}] += {num}")
-
-                seed_infections[0][ward] += num
+                        f"Could not fully seed the ward {ward}. "
+                        f"Number remaining equals {num}.")
 
             except Exception as e:
                 Console.error(

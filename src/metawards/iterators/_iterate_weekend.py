@@ -18,7 +18,6 @@ def iterate_weekend(stage, **kwargs):
        funcs: List[function]
          The list of functions that ```iterate``` will call in sequence
     """
-
     if stage == "foi":
         from ._advance_foi_work_to_play import advance_foi_work_to_play
         from ._advance_recovery import advance_recovery
