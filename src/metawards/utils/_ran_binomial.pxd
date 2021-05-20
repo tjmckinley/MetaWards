@@ -1,7 +1,7 @@
 
 from libc.stdint cimport uintptr_t
 
-cdef extern from "../ran_binomial/distributions.h":
+cdef extern from "ran_binomial/distributions.h":
     ctypedef struct binomial_rng
 
     binomial_rng* binomial_rng_alloc() nogil

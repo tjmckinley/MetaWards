@@ -210,7 +210,7 @@ def setup_package():
     else:
         openmp_flags = None
 
-    include_dirs = []
+    include_dirs = ["src/metawards"]
 
     if is_build and (openmp_flags is None):
         print(f"\nYour compiler {compiler.compiler_so[0]} does not support "
@@ -410,7 +410,9 @@ def setup_package():
             ]
         },
         data_files=[("share/metawards/requirements",
-                     ["requirements.txt", "requirements-optional.txt"])]
+                     ["requirements.txt", "requirements-optional.txt"]),
+                    ("include/metawards/ran_binomial",
+                     glob("src/metawards/ran_binomial/*.h"))]
     )
 
 
