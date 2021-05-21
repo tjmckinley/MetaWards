@@ -95,7 +95,18 @@ def import_module(module):
                         import pyximport
                         pyfile = _clean_cython(pyfile)
                         Console.print(f"Compiling cython plugin from {pyfile}")
-                        pyximport.install(language_level=3)
+                        Console.print(f"Module name: {module}")
+                        from metawards import find_mw_include
+                        include_path = find_mw_include()
+                        Console.print(f"Include path: {include_path}")
+
+                        ext_libraries = [['metawards_random', {}]]
+
+                        pyximport.install(setup_args={
+                                            "include_dirs": include_path,
+                                            "libraries": ext_libraries
+                                          },
+                                          language_level=3)
                         m = pyximport.load_module(module, pyfile,
                                                   language_level=3)
                         Console.print(f"Loaded cython {module} from {pyfile}")

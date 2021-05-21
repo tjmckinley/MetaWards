@@ -13,7 +13,7 @@ ncovparams_csv = os.path.join(script_dir, "data", "ncovparams.csv")
 def test_iterator():
     """This test repeats main_RepeatsNcov.c and validates that the
        various stages report the same results as the original C code
-       for ncov, when using a custom integrator that just calls
+       for ncov, when using a custom iterator that just calls
        iterate_weekday
     """
     prompt = None
@@ -66,7 +66,7 @@ def test_iterator():
     # Here is a custom integrator function that just calls
     # iterate_weekday after 'print_hello'
     def print_hello(**kwargs):
-        print(f"Hello")
+        print("Hello")
 
     def my_iterator(**kwargs):
         from metawards.iterators import iterate_weekday

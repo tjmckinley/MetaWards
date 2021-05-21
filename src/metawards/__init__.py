@@ -44,6 +44,7 @@ Functions
     input
     run
     find_mw_exe
+    find_mw_include
     get_reticulate_command
 
 """
@@ -132,6 +133,7 @@ Workspace = _lazy_import.lazy_class("._workspace.Workspace")
 
 run = _lazy_import.lazy_class("._run.run")
 find_mw_exe = _lazy_import.lazy_class("._run.find_mw_exe")
+find_mw_include = _lazy_import.lazy_class("._run.find_mw_include")
 get_reticulate_command = _lazy_import.lazy_class(
     "._run.get_reticulate_command")
 

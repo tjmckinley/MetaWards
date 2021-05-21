@@ -16,7 +16,8 @@ if TYPE_CHECKING:
     from datetime import date
 
 
-__all__ = ["run", "find_mw_exe", "get_reticulate_command"]
+__all__ = ["run", "find_mw_exe", "find_mw_include",
+           "get_reticulate_command"]
 
 
 def _write_to_file(obj: any, filename: str, dir: str = ".", bzip: bool = False,
@@ -124,6 +125,66 @@ def _find_metawards(dirname):
         return m
 
     return None
+
+
+def _find_metawards_include(dirname):
+    import os
+
+    # this is from a metawards installation
+    m = os.path.abspath(os.path.join(dirname, "include", "metawards"))
+
+    if os.path.exists(m):
+        return m
+
+    # this is from a metawards source run (used for testing)
+    m = os.path.abspath(os.path.join(dirname, "src", "metawards"))
+
+    if os.path.exists(m):
+        return m
+
+    return None
+
+
+def find_mw_include():
+    """Try to find the directory containing the MetaWards include files.
+       This raises an exception if the include files cannot be found.
+       It returns the full path to the include files
+    """
+    import metawards as _metawards
+    import os as _os
+
+    # Search through the path based on where the metawards module
+    # has been installed.
+    modpath = _metawards.__file__
+
+    metawards = None
+
+    # Loop only 100 times - this should break before now,
+    # We are not using a while loop to avoid an infinite loop
+    for i in range(0, 100):
+        metawards = _find_metawards_include(modpath)
+
+        if metawards:
+            break
+
+        newpath = _os.path.dirname(modpath)
+
+        if newpath == modpath:
+            break
+
+        modpath = newpath
+
+    if metawards is None:
+        from .utils._console import Console
+        Console.error(
+            "Cannot find the metawards include directory, when starting from "
+            f"{_metawards.__file__}. Please could you "
+            "find it and then post an issue on the "
+            "GitHub repository (https://github.com/metawards/MetaWards) "
+            "as this may indicate a bug in the code.")
+        raise RuntimeError("Cannot locate the metawards include directory")
+
+    return metawards
 
 
 def find_mw_exe():
