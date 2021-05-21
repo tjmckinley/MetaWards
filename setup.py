@@ -388,6 +388,17 @@ def setup_package():
     with open("requirements-dev.txt") as fp:
         dev_requires = fp.read().strip().split("\n")
 
+    if IS_WINDOWS:
+        mw_random_lib = glob("build/*/metawards.lib")
+        libs_dir = os.path.abspath(os.path.join(sys.prefix, "libs"))
+
+        if not os.path.exists(libs_dir):
+            print(f"Cannot find libs directory? {libs_dir}")
+            raise RuntimeError(f"Cannot find libs directory {libs_dir}")
+    else:
+        mw_random_lib = glob("build/*/libmetawards_random.a")
+        libs_dir = "lib"
+
     setup(
         version=versioneer.get_version(),
         cmdclass=versioneer.get_cmdclass(),
@@ -413,8 +424,7 @@ def setup_package():
                      ["requirements.txt", "requirements-optional.txt"]),
                     ("include/metawards/ran_binomial",
                      glob("src/metawards/ran_binomial/*.h")),
-                    ("lib",
-                     glob("build/*/libmetawards_random.a"))]
+                    (libs_dir, mw_random_lib)]
     )
 
 
