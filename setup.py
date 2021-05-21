@@ -413,7 +413,7 @@ def setup_package():
                      ["requirements.txt", "requirements-optional.txt"]),
                     ("include/metawards/ran_binomial",
                      glob("src/metawards/ran_binomial/*.h")),
-                    ("lib/",
+                    ("lib",
                      glob("build/*/libmetawards_random.a"))]
     )
 
