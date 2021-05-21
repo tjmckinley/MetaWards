@@ -28,3 +28,5 @@ __pycache__
 /.coverage
 .Rproj.user
 R/output_*
+/_cython_cython_iterator.pyx
+/_pyxbld

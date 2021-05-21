@@ -100,8 +100,12 @@ def import_module(module):
                         include_path = find_mw_include()
                         Console.print(f"Include path: {include_path}")
 
+                        ext_libraries = [['metawards_random', {}]]
+
                         pyximport.install(setup_args={
-                                            "include_dirs": include_path},
+                                            "include_dirs": include_path,
+                                            "libraries": ext_libraries
+                                          },
                                           language_level=3)
                         m = pyximport.load_module(module, pyfile,
                                                   language_level=3)
