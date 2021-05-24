@@ -160,6 +160,19 @@ class Interpret:
         return rmin + ((rmax - rmin) * ran_uniform(rng))
 
     @staticmethod
+    def list(s: any):
+        """Interpret and return a list from the passed string 's'"""
+        try:
+            import ast
+            my_list = []
+            for val in ast.literal_eval(s):
+                my_list.append(val)
+
+            return my_list
+        except Exception:
+            raise ValueError(f"Cannot interpret a list from {s}")
+
+    @staticmethod
     def integer(s: any, rng=None, minval: int = None,
                 maxval: int = None) -> int:
         """Interpret and return an integer from 's', using the

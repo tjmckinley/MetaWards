@@ -261,6 +261,17 @@ def test_read_edgecase():
         assert v[".date2"] == "five days ago"
 
 
+def test_read_edgecase2():
+    vertical3 = os.path.join(script_dir, "data", "vertical3.dat")
+    v = VariableSet.read(vertical3)
+
+    print(v[".myvar"])
+
+    assert v[".myvar"][0] == "cat"
+    assert v[".myvar"][1] == 42
+    assert v[".myvar"][2] == 3.141
+
+
 if __name__ == "__main__":
     test_variableset()
     test_parameterset()
@@ -268,3 +279,4 @@ if __name__ == "__main__":
     test_set_variables()
     test_set_custom()
     test_read_edgecase()
+    test_read_edgecase2()
