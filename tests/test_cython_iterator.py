@@ -14,12 +14,6 @@ def test_cython_iterator():
     """Validate that we can compile and link cython iterators
        dynamically
     """
-    if sys.platform.startswith("win"):
-        print(
-            "Skipping test as this functionality is not yet "
-            "supported on Windows.")
-        return
-
     # load all of the parameters
     try:
         params = Parameters.load(parameters="march29")

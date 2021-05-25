@@ -227,7 +227,6 @@ def _interpret(value):
     elif canonical.startswith("i'"):
         # this is an integer
         return Interpret.integer(value[2:-1])
-
     elif canonical.startswith("s'"):
         # this is a string
         return Interpret.string(value[2:-1])
@@ -235,6 +234,12 @@ def _interpret(value):
     elif canonical.startswith("b'"):
         # this is a boolean
         return Interpret.boolean(value[2:-1])
+
+    elif canonical.startswith("[") and canonical.endswith("]"):
+        return Interpret.list(value)
+
+    elif canonical.startswith("(") and canonical.endswith(")"):
+        return Interpret.list(value)
 
     # now we have to guess...
     try:
@@ -778,6 +783,9 @@ class VariableSet:
                         v = "T"
                     else:
                         v = "F"
+                elif isinstance(val, list):
+                    v = [str(x) for x in val]
+                    v = "|".join(v)
                 else:
                     v = float(val)
 
@@ -1386,7 +1394,30 @@ class VariableSets:
             # there is nothing to read?
             return VariableSets()
 
-        if len(lines[0]) > 1 and len(lines[0]) > 1 and lines[0][1] == "==":
+        if lines[0][0].find("=") != -1 or lines[0][0].find(":") != -1:
+            # this is a vertical file that should be split on spaces
+            lines = []
+            for line in csvlines:
+                cleaned = [_clean(x) for x in line.split()]
+
+                line = []
+
+                if len(cleaned) > 0:
+                    for clean in cleaned:
+                        if isinstance(clean, list) or isinstance(clean, tuple):
+                            for c in clean:
+                                if len(c) > 0:
+                                    line.append(c)
+                        else:
+                            line.append(clean)
+
+                    lines.append(line)
+
+        if len(lines) == 0:
+            # there is nothing to read?
+            return VariableSets()
+
+        if len(lines[0]) > 1 and lines[0][1] == "==":
             # this is a vertical file
             if line_numbers is not None:
                 raise ValueError(

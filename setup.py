@@ -153,7 +153,8 @@ def setup_package():
                                              extra_postargs=[flag])
                 except Exception:
                     # We are likely missing the path to the libomp library - get this path
-                    print("\nCould not link - trying again, specifying the path to libomp")
+                    print(
+                        "\nCould not link - trying again, specifying the path to libomp")
 
                     compiler_dir = os.path.dirname(compiler.compiler_so[0])
                     libomp = glob(f"{compiler_dir}/../lib*/libomp*")
@@ -389,14 +390,35 @@ def setup_package():
         dev_requires = fp.read().strip().split("\n")
 
     if IS_WINDOWS:
-        mw_random_lib = glob("build/*/metawards.lib")
+        import sys
+        v = sys.version_info
+        print(os.getcwd())
+        print(f"build/*{v.major}.{v.minor}/metawards_random.lib")
+        mw_random_lib = glob(
+            f"build/*{v.major}.{v.minor}/metawards_random.lib")
+
+        if len(mw_random_lib) == 0:
+            if not is_build:
+                print("WARNING: CANNOT FIND metawards_random.lib!")
+        elif len(mw_random_lib) > 1:
+            mw_random_lib = [mw_random_lib[0]]
+
         libs_dir = os.path.abspath(os.path.join(sys.prefix, "libs"))
 
-        if not os.path.exists(libs_dir):
-            print(f"Cannot find libs directory? {libs_dir}")
-            raise RuntimeError(f"Cannot find libs directory {libs_dir}")
+        if not is_build:
+            print(f"Installing {mw_random_lib} to {libs_dir}")
     else:
-        mw_random_lib = glob("build/*/libmetawards_random.a")
+        import sys
+        v = sys.version_info
+        mw_random_lib = glob(
+            f"build/*{v.major}.{v.minor}/libmetawards_random.a")
+
+        if len(mw_random_lib) == 0:
+            if not is_build:
+                print("WARNING: CANNOT FIND metawards_random.lib!")
+        elif len(mw_random_lib) > 1:
+            mw_random_lib = [mw_random_lib[0]]
+
         libs_dir = "lib"
 
     setup(

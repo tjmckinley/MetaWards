@@ -103,7 +103,7 @@ def _load_additional_seeds(network: _Union[Network, Networks],
 
         words = []
 
-        # yes, the original files really do mix tabe and spaces... need
+        # yes, the original files really do mix tabs and spaces... need
         # to extract these separately!
         for l in line:
             rest_commented = False
