@@ -423,10 +423,14 @@ def run(help: bool = None,
                 elif not isinstance(additional, str):
                     additional = str(int(additional))
 
-                if "'" in additional:
-                    args.append(f"--additional \"{additional}\"")
+                if "\"" in additional:
+                    if sys.platform.startswith("win"):
+                        additional.replace("\"", "'")
+                        args.append(f"--additional \"{additional}\"")
+                    else:
+                        args.append(f"--additional '{additional}'")
                 else:
-                    args.append(f"--additional '{additional}'")
+                    args.append(f"--additional \"{additional}\"")
 
             if output is not None:
                 args.append(f"--output {output}")
@@ -630,7 +634,7 @@ def run(help: bool = None,
             with subprocess.Popen(args,
                                   stdin=subprocess.PIPE,
                                   stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE,
+                                  stderr=subprocess.STDOUT,
                                   bufsize=1, encoding="utf8",
                                   errors="ignore",
                                   text=True) as PROC:
