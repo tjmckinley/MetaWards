@@ -392,8 +392,7 @@ def setup_package():
     if IS_WINDOWS:
         import sys
         v = sys.version_info
-        print(os.getcwd())
-        print(f"build/*{v.major}.{v.minor}/metawards_random.lib")
+
         mw_random_lib = glob(
             f"build/*{v.major}.{v.minor}/metawards_random.lib")
 
