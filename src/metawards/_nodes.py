@@ -151,6 +151,8 @@ class Nodes:
         nodes.cutoff = deepcopy(self.cutoff)
         nodes.bg_foi = deepcopy(self.bg_foi)
 
+        nodes._custom_params = {}
+
         for key, value in self._custom_params.items():
             nodes._custom_params[key] = deepcopy(value)
 
