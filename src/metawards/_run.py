@@ -245,13 +245,13 @@ def find_mw_lib():
         return metawards
 
     # This could have been put in the hostedtoolcache folder...
-    p = os.path.abspath(os.path.join(os.path.dirname(_metawards.__file__),
-                                     "..", "hostedtoolcache"))
+    p = _os.path.abspath(_os.path.join(_os.path.dirname(_metawards.__file__),
+                                       "..", "hostedtoolcache"))
 
-    if os.path.exists(p):
-        for dirpath, dirnames, filenames in os.walk(p):
+    if _os.path.exists(p):
+        for dirpath, dirnames, filenames in _os.walk(p):
             for filename in [f for f in filenames if (f.endswith(".lib") or
-                                                     (f.endswith(".a")))]:
+                                                      (f.endswith(".a")))]:
                 if filename.find("metawards") != -1:
                     metawards = dirpath
 

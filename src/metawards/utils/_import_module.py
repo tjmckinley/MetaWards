@@ -132,9 +132,11 @@ def import_module(module):
                         pyfile = _clean_cython(pyfile)
                         Console.print(f"Compiling cython plugin from {pyfile}")
                         Console.print(f"Module name: {module}")
-                        from metawards import find_mw_include
+                        from metawards import find_mw_include, find_mw_lib
                         include_path = find_mw_include()
+                        lib_path = find_mw_lib()
                         Console.print(f"Include path: {include_path}")
+                        Console.print(f"Library path: {lib_path}")
 
                         ext_libraries = [['metawards_random', {}]]
 
