@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from datetime import date
 
 
-__all__ = ["run", "find_mw_exe", "find_mw_include",
+__all__ = ["run", "find_mw_exe", "find_mw_include", "find_mw_lib",
            "get_reticulate_command"]
 
 
@@ -145,6 +145,115 @@ def _find_metawards_include(dirname):
     return None
 
 
+def _find_metawards_lib(dirname):
+    import os
+    import glob
+
+    m = glob.glob(os.path.join(dirname, "lib", "libmetawards_*"))
+
+    if m is None:
+        m = []
+
+    if len(m) >= 1:
+        m = os.path.dirname(os.path.abspath(m[0]))
+        return m
+
+    m = glob.glob(os.path.join(dirname, "libmetawards_*"))
+
+    if m is None:
+        m = []
+
+    if len(m) >= 1:
+        m = os.path.dirname(os.path.abspath(m[0]))
+        return m
+
+    m = glob.glob(os.path.join(dirname, "lib", "metawards_random.*"))
+
+    if m is None:
+        m = []
+
+    if len(m) >= 1:
+        m = os.path.dirname(os.path.abspath(m[0]))
+        return m
+
+    m = glob.glob(os.path.join(dirname, "metawards_random.*"))
+
+    if m is None:
+        m = []
+
+    if len(m) >= 1:
+        m = os.path.dirname(os.path.abspath(m[0]))
+        return m
+
+    return None
+
+
+def find_mw_lib():
+    """Try to find the directory containing the MetaWards libraries
+       (e.g. metawards_random).
+
+       This raises an exception if the libraries cannot be found.
+       It returns the full path to the library directory
+    """
+    import metawards as _metawards
+    import os as _os
+    import sys as _sys
+
+    # Search through the path based on where the metawards module
+    # has been installed.
+    modpath = _metawards.__file__
+
+    metawards = None
+
+    # Loop only 100 times - this should break before now,
+    # We are not using a while loop to avoid an infinite loop
+    for i in range(0, 100):
+        metawards = _find_metawards_lib(modpath)
+
+        if metawards:
+            break
+
+        newpath = _os.path.dirname(modpath)
+
+        if newpath == modpath:
+            break
+
+        modpath = newpath
+
+    if metawards is not None:
+        return metawards
+
+    # Search from sys.prefix
+    modpath = _sys.prefix
+
+    # Loop only 100 times - this should break before now,
+    # We are not using a while loop to avoid an infinite loop
+    for i in range(0, 100):
+        metawards = _find_metawards_lib(modpath)
+
+        if metawards:
+            break
+
+        newpath = _os.path.dirname(modpath)
+
+        if newpath == modpath:
+            break
+
+        modpath = newpath
+
+    if metawards is None:
+        from .utils._console import Console
+        Console.error(
+            "Cannot find the metawards include directory, when starting from "
+            f"{_metawards.__file__}. Please could you "
+            "find it and then post an issue on the "
+            "GitHub repository (https://github.com/metawards/MetaWards) "
+            "as this may indicate a bug in the code.")
+        raise RuntimeError("Cannot locate the metawards include directory")
+
+    return metawards
+
+
 def find_mw_include():
     """Try to find the directory containing the MetaWards include files.
        This raises an exception if the include files cannot be found.
@@ -152,12 +261,34 @@ def find_mw_include():
     """
     import metawards as _metawards
     import os as _os
+    import sys as _sys
 
     # Search through the path based on where the metawards module
     # has been installed.
     modpath = _metawards.__file__
 
     metawards = None
+
+    # Loop only 100 times - this should break before now,
+    # We are not using a while loop to avoid an infinite loop
+    for i in range(0, 100):
+        metawards = _find_metawards_include(modpath)
+
+        if metawards:
+            break
+
+        newpath = _os.path.dirname(modpath)
+
+        if newpath == modpath:
+            break
+
+        modpath = newpath
+
+    if metawards is not None:
+        return metawards
+
+    # Search from sys.prefix
+    modpath = _sys.prefix
 
     # Loop only 100 times - this should break before now,
     # We are not using a while loop to avoid an infinite loop
@@ -202,6 +333,27 @@ def find_mw_exe():
     modpath = _metawards.__file__
 
     metawards = None
+
+    # Loop only 100 times - this should break before now,
+    # We are not using a while loop to avoid an infinite loop
+    for i in range(0, 100):
+        metawards = _find_metawards(modpath)
+
+        if metawards:
+            break
+
+        newpath = _os.path.dirname(modpath)
+
+        if newpath == modpath:
+            break
+
+        modpath = newpath
+
+    if metawards is not None:
+        return metawards
+
+    # Search from sys.prefix
+    modpath = _sys.prefix
 
     # Loop only 100 times - this should break before now,
     # We are not using a while loop to avoid an infinite loop

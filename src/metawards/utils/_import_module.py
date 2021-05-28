@@ -41,6 +41,29 @@ def _clean_cython(pyfile):
     return cleaned
 
 
+def _add_to_libpath(libdir):
+    """Adds the passed directory to the library search path"""
+    import sys
+    import os
+    from metawards.utils import Console
+
+    varname = "LD_LIBRARY_PATH"
+
+    if sys.platform.startswith("win"):
+        varname = "PATH"
+
+    Console.print(f"Add {libdir} to {varname}")
+
+    path = os.getenv(varname)
+
+    if path is None:
+        os.environ[varname] = libdir
+    else:
+        os.environ[varname] = f"{libdir}:{path}"
+
+    Console.print(f"{varname} = {os.getenv(varname)}")
+
+
 def import_module(module):
     """This will try to import the passed module. This will return
        the module if it was imported, or will return 'None' if
@@ -51,8 +74,21 @@ def import_module(module):
        module: str
          The name of the module to import
     """
-
     from ._console import Console
+
+    # make sure that the metawards library is in the path
+    try:
+        import metawards
+        libdir = metawards.find_mw_lib()
+    except Exception:
+        Console.error(
+            "Cannot find the MetaWards library directory. This will "
+            "prevent you from dynamically compiling cython plugins."
+        )
+        libdir = None
+
+    if libdir is not None:
+        _add_to_libpath(libdir)
 
     try:
         import importlib
