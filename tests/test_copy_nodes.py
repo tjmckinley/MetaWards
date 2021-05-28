@@ -13,8 +13,10 @@ def test_copy_nodes():
 
     assert len(v1) == 100
 
-    for i in range(0,100):
+    for i in range(0, 100):
         v1[i] = i + 0.5
+
+    print(v1)
 
     v2 = n2.get_custom("test")
 
@@ -26,6 +28,9 @@ def test_copy_nodes():
 
     for i in range(0, 100):
         assert v1[i] == i + 0.5
+
+    print(v2)
+    print(v1)
 
 
 if __name__ == "__main__":

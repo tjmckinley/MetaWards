@@ -420,6 +420,13 @@ def setup_package():
 
         libs_dir = "lib"
 
+    print(os.listdir("build"))
+    for p in os.listdir("build"):
+        print(p)
+        print(os.listdir(os.path.join("build", p)))
+
+    print(f"\n** mw_random_lib: {mw_random_lib} libs_dir: {libs_dir}")
+
     setup(
         version=versioneer.get_version(),
         cmdclass=versioneer.get_cmdclass(),
