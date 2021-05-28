@@ -167,7 +167,7 @@ def _find_metawards_lib(dirname):
         m = os.path.dirname(os.path.abspath(m[0]))
         return m
 
-    m = glob.glob(os.path.join(dirname, "lib", "metawards_random.*"))
+    m = glob.glob(os.path.join(dirname, "lib*", "metawards_random.*"))
 
     if m is None:
         m = []
@@ -241,15 +241,29 @@ def find_mw_lib():
 
         modpath = newpath
 
+    if metawards is not None:
+        return metawards
+
+    # This could have been put in the hostedtoolcache folder...
+    p = os.path.abspath(os.path.join(os.path.dirname(_metawards.__file__),
+                                     "..", "hostedtoolcache"))
+
+    if os.path.exists(p):
+        for dirpath, dirnames, filenames in os.walk(p):
+            for filename in [f for f in filenames if (f.endswith(".lib") or
+                                                     (f.endswith(".a")))]:
+                if filename.find("metawards") != -1:
+                    metawards = dirpath
+
     if metawards is None:
         from .utils._console import Console
         Console.error(
-            "Cannot find the metawards include directory, when starting from "
+            "Cannot find the metawards library directory, when starting from "
             f"{_metawards.__file__}. Please could you "
             "find it and then post an issue on the "
             "GitHub repository (https://github.com/metawards/MetaWards) "
             "as this may indicate a bug in the code.")
-        raise RuntimeError("Cannot locate the metawards include directory")
+        raise RuntimeError("Cannot locate the metawards library directory")
 
     return metawards
 
