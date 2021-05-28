@@ -420,6 +420,9 @@ def setup_package():
 
         libs_dir = "lib"
 
+    if not os.path.exists("build"):
+        os.mkdir("build")
+
     print(os.listdir("build"))
     for p in os.listdir("build"):
         print(p)
